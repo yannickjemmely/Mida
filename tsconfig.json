@@ -1,0 +1,63 @@
+{
+    "compilerOptions": {
+        "target": "es6",
+        "module": "commonjs",
+        "outDir": "build",
+        "baseUrl": ".",
+        "paths": {
+            "!/*": [
+                "*"
+            ],
+            "#/*": [
+                "src/*"
+            ],
+            "#brokers/*": [
+                "src/brokers/*"
+            ],
+            "#browsers/*": [
+                "src/browsers/*"
+            ],
+            "#currency/*": [
+                "src/currency/*"
+            ],
+            "#factors/*": [
+                "src/factors/*"
+            ],
+            "#forex/*": [
+                "src/forex/*"
+            ],
+            "#market/*": [
+                "src/market/*"
+            ],
+            "#position/*": [
+                "src/position/*"
+            ],
+            "#predictor/*": [
+                "src/predictor/*"
+            ],
+            "#scrapers/*": [
+                "src/scrapers/*"
+            ],
+            "#signals/*": [
+                "src/signals/*"
+            ],
+            "#tracer/*": [
+                "src/tracer/*"
+            ],
+            "#utilities/*": [
+                "src/utilities/*"
+            ]
+        },
+        "strict": true,
+        "declaration": true,
+        "incremental": true,
+        "sourceMap": true,
+        "inlineSources": true,
+        "removeComments": true
+    },
+    "compileOnSave": true,
+    "exclude": [
+        "build",
+        "node_modules"
+    ]
+}

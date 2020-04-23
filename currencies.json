@@ -1,0 +1,42 @@
+[
+    {
+        "id": "EUR",
+        "name": "Euro",
+        "symbol": "€"
+    },
+    {
+        "id": "GBP",
+        "name": "Great British Pound",
+        "symbol": "£"
+    },
+    {
+        "id": "USD",
+        "name": "United States Dollar",
+        "symbol": "$"
+    },
+    {
+        "id": "NZD",
+        "name": "New Zealand Dollar",
+        "symbol": "$"
+    },
+    {
+        "id": "AUD",
+        "name": "Australian Dollar",
+        "symbol": "$"
+    },
+    {
+        "id": "CAD",
+        "name": "Canadian Dollar",
+        "symbol": "$"
+    },
+    {
+        "id": "JPY",
+        "name": "Japanese Yen",
+        "symbol": "¥"
+    },
+    {
+        "id": "CHF",
+        "name": "Swiss Franc",
+        "symbol": "₣"
+    }
+]

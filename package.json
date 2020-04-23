@@ -1,0 +1,40 @@
+{
+    "name": "midafx",
+    "version": "1.0.0",
+    "description": "",
+    "private": true,
+    "scripts": {
+        "lint": "tslint --project .",
+        "build": "npm run lint && tsc",
+        "start": "npm run build && node ./build/Index.js",
+        "dev": "nodemon npm start"
+    },
+    "dependencies": {
+        "module-alias": "2.2.2",
+        "puppeteer": "2.1.1",
+        "axios": "0.19.2"
+    },
+    "devDependencies": {
+        "nodemon": "2.0.3",
+        "typescript": "3.7.2",
+        "tslint": "5.18.0",
+        "@types/node": "12.7.2",
+        "@types/puppeteer": "1.19.1"
+    },
+    "_moduleAliases": {
+        "!": ".",
+        "#": "build/src",
+        "#brokers": "build/src/brokers",
+        "#browsers": "build/src/browsers",
+        "#currency": "build/src/currency",
+        "#factors": "build/src/factors",
+        "#forex": "build/src/forex",
+        "#market": "build/src/market",
+        "#position": "build/src/position",
+        "#predictor": "build/src/predictor",
+        "#scrapers": "build/src/scrapers",
+        "#signals": "build/src/signals",
+        "#tracer": "build/src/tracer",
+        "#utilities": "build/src/utilities"
+    }
+}
