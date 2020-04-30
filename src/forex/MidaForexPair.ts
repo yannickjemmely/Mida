@@ -1,4 +1,5 @@
 import { MidaCurrency } from "#currency/MidaCurrency";
+import { MidaForexPairHistory } from "#forex/MidaForexPairHistory";
 import { MidaPredictor } from "#predictor/MidaPredictor";
 
 // Represents a forex pair.
@@ -9,9 +10,12 @@ export class MidaForexPair {
     // Represents the quote currency.
     private readonly _quoteCurrency: MidaCurrency;
 
+    private readonly _history: MidaForexPairHistory;
+
     public constructor (baseCurrency: MidaCurrency, quoteCurrency: MidaCurrency) {
         this._baseCurrency = baseCurrency;
         this._quoteCurrency = quoteCurrency;
+        this._history = require("!/forex.json")[this.id];
     }
 
     public get baseCurrency (): MidaCurrency {
@@ -26,6 +30,10 @@ export class MidaForexPair {
         return `${this.baseCurrency.id}/${this.quoteCurrency.id}`;
     }
 
+    public get history (): MidaForexPairHistory {
+        return this._history;
+    }
+
     public async predictBaseCurrencyStrengthDirection (): Promise<number> {
         return MidaPredictor.predictCurrencyStrengthDirection(this._baseCurrency.id);
     }
@@ -33,4 +41,6 @@ export class MidaForexPair {
     public async predictQuoteCurrencyStrengthDirection (): Promise<number> {
         return MidaPredictor.predictCurrencyStrengthDirection(this._quoteCurrency.id);
     }
+
+    //public getWeeklyAverageHighPrice ();
 }

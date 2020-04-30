@@ -17,7 +17,7 @@ export type MidaPosition = {
     // Represents the time the position has been opened.
     openDate: Date;
 
-    // Represents the quote currency price when at the position close time.
+    // Represents the quote currency price at the position close time.
     closePrice?: number;
 
     // Represents the time the position has been closed.

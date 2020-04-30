@@ -29,22 +29,14 @@ export class MidaMarket {
     }
 
     public static getForexPair (forexPairID: string): MidaForexPair {
-        let forexPair: MidaForexPair | null = this._forexPairs.get(forexPairID);
+        const sanitizedForexPairID: string = forexPairID.toUpperCase();
+        let forexPair: MidaForexPair | null = this._forexPairs.get(sanitizedForexPairID);
 
         if (!forexPair) {
-            let baseCurrency: MidaCurrency;
-            let quoteCurrency: MidaCurrency;
+            const baseCurrencyID: string = sanitizedForexPairID.split("/")[0];
+            const quoteCurrencyID: string = sanitizedForexPairID.split("/")[1];
 
-            if (forexPairID.indexOf("/") !== -1) {
-                baseCurrency = this.getCurrency(forexPairID.split("/")[0]);
-                quoteCurrency = this.getCurrency(forexPairID.split("/")[1]);
-            }
-            else {
-                baseCurrency = this.getCurrency(forexPairID.substr(0, 3));
-                quoteCurrency = this.getCurrency(forexPairID.substr(3));
-            }
-
-            forexPair = new MidaForexPair(baseCurrency, quoteCurrency);
+            forexPair = new MidaForexPair(this.getCurrency(baseCurrencyID), this.getCurrency(quoteCurrencyID));
 
             this._forexPairs.add(forexPair);
         }

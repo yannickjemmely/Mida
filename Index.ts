@@ -24,23 +24,8 @@ void (async (): Promise<void> => {
     });
 
     if (loggedIn) {
-        await myAccount.openPosition({
-            forexPair: MidaMarket.getForexPair("EUR/USD"),
-            direction: MidaPositionDirectionType.BUY,
-            lots: 1,
-        });
+        console.log("Logged in.");
     }
-
-    console.log("Position has been opened.");
-
-    setInterval(async (): Promise<void> => {
-        console.log(await myAccount.getOpenPositions());
-    }, 5000);
-/*
-    MidaPredictor.predictCurrencyStrengthDirection("USD").then((a:any):any => console.log("USD => " + a));
-    MidaPredictor.predictCurrencyStrengthDirection("EUR").then((a:any):any => console.log("EUR => " + a));//*/
-/*
-    console.log(5);
 
     MidaTower.addTelegramSpy({
         name: "Me",
@@ -84,7 +69,7 @@ void (async (): Promise<void> => {
                 directives: {
                     forexPair,
                     direction,
-                    lots: 1,
+                    lots: 5,
                     takeProfit,
                     stopLoss,
                 },
@@ -94,19 +79,12 @@ void (async (): Promise<void> => {
 
     MidaTower.addSignalListener({
         notify (signal: MidaSignal): void {
-            console.log("Eccoci");
+            console.log("Signal received: " + signal.directives.forexPair.id + ".");
             myAccount.openPosition(signal.directives);
         },
     });
 
-
-
-
-
     MidaTower.enabled = true;
 
-   /* console.log(await Promise.all([
-        MidaPredictor.predictCurrencyStrengthDirection("CAD"),
-        MidaPredictor.predictCurrencyStrengthDirection("USD"),
-    ]));//*/
+    console.log("Listening...");//*/
 })();

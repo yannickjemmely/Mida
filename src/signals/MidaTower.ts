@@ -67,7 +67,7 @@ export class MidaTower {
             if (!this._telegramSpiesTabs[telegramSpy.channelID]) {
                 browser = new ChromiumBrowser();
 
-                await browser.open(`${this.name}-${telegramSpy.name}`);
+                await browser.open(`${this.name}-${telegramSpy.channelID}`);
 
                 browserTab = await browser.openTab();
 

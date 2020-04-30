@@ -8,7 +8,7 @@ export class MidaEconomicScraper {
 
     // Used to fetch the latest statement data of an economic factor from a webpage.
     // At this time only www.investing.com is supported.
-    public static async fetchLatestEconomicStatementData (uri: string): Promise<any> {
+    public static async fetchLatestEconomicStatement (uri: string): Promise<any> {
         const browserTab: IMidaBrowserTab = await ChromiumBrowser.openTab();
         const historyTabSelector: string = ".historyTab";
 

@@ -66,7 +66,7 @@ export function defineEconomicFactor (factor: MidaEconomicFactor): void {
 async function _fetchLatestEconomicStatement (factor: MidaEconomicFactor, uri: string, positiveBearish: boolean): Promise<MidaEconomicFactorStatement> {
     const statement: MidaEconomicFactorStatement = {
         factor,
-        ...(await MidaEconomicScraper.fetchLatestEconomicStatementData(uri)),
+        ...(await MidaEconomicScraper.fetchLatestEconomicStatement(uri)),
     };
 
     statement.makeCurrencyPrediction = (currencyID: string): MidaEconomicFactorStatementCurrencyPrediction => {
@@ -174,6 +174,18 @@ defineEconomicFactor({
     },
     async getLatestStatement (): Promise<MidaEconomicFactorStatement> {
         return _fetchLatestEconomicStatement(this,"https://www.investing.com/economic-calendar/eia-crude-oil-inventories-75", true);
+    },
+});
+
+// U.S. CB Consumer Confidence
+defineEconomicFactor({
+    name: "U.S. CB Consumer Confidences",
+    description: "",
+    influencedCurrencies: {
+        "USD": 9,
+    },
+    async getLatestStatement (): Promise<MidaEconomicFactorStatement> {
+        return _fetchLatestEconomicStatement(this,"https://www.investing.com/economic-calendar/cb-consumer-confidence-48", false);
     },
 });
 
