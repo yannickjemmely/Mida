@@ -1,7 +1,7 @@
 import { IMidaBroker } from "#brokers/IMidaBroker";
 import { IMidaBrowser } from "#browsers/IMidaBrowser";
 import { IMidaBrowserTab } from "#browsers/IMidaBrowserTab";
-import { ChromiumBrowser } from "#browsers/chromium/ChromiumBrowser";
+import { ChromiumBrowser } from "#browsers/ChromiumBrowser";
 import { MidaForexPair } from "#forex/MidaForexPair";
 import { MidaPosition } from "#position/MidaPosition";
 import { MidaPositionDirectionType } from "#position/MidaPositionDirectionType";
@@ -19,9 +19,14 @@ export class BDSwissBroker implements IMidaBroker {
 
     private _accountMeta: any;
     private _loggedIn: boolean;
-
     private _positions: {
-        [positionID: string]: MidaPositionDirectives;
+        [positionID: string]: {
+            directives: MidaPositionDirectives;
+            openDate: Date;
+            openPrice: number;
+            closePrice?: number;
+            closeDate?: Date;
+        };
     };
 
     public constructor () {
@@ -87,12 +92,11 @@ export class BDSwissBroker implements IMidaBroker {
 
     public async openPosition (positionDirectives: MidaPositionDirectives): Promise<MidaPosition> {
         const tradeTab: IMidaBrowserTab = this._browserTabs.tradeTab;
-        const forexPairText: string = `${positionDirectives.forexPair.baseCurrency.id}/${positionDirectives.forexPair.quoteCurrency.id}`;
         const amount: number = positionDirectives.lots * 100000;
         const searchTextBoxSelector: string = "#assetsSearchInput";
         const firstSearchResultSelector: string = ".select-assets__table .rt-table .rt-tbody > [role=rowgroup]:first-child";
 
-        await tradeTab.type(searchTextBoxSelector, forexPairText);
+        await tradeTab.type(searchTextBoxSelector, positionDirectives.forexPair.ID);
         await tradeTab.click(firstSearchResultSelector);
 
         if (positionDirectives.direction === MidaPositionDirectionType.BUY) {
@@ -134,43 +138,33 @@ export class BDSwissBroker implements IMidaBroker {
         await tradeTab.click(placeTradeButtonSelector);
         await tradeTab.click(searchTextBoxSelector, 3);
         await tradeTab.type(searchTextBoxSelector, "");
+        await new Promise((resolve: any): any => setTimeout(resolve, 3000));
 
-        const positionNotificationSelector: string = ".Toastify .Toastify__toast-container .Toastify__toast--success .Toastify__toast-body:first-child";
-
-        await tradeTab.waitForSelector(positionNotificationSelector);
-
-        const positionID: string = await tradeTab.evaluate(`(() => {
-            return window.document.querySelector("").innerText.split(" ")[3];
+        const positionID: string = await this._browserTabs.positionsTab.evaluate(`(() => {
+            return window.document.querySelector("#positionsPaneContent .rt-tbody [role=rowgroup] [role=row]").childNodes[2].innerText.trim();
         })();`);
 
-        this._positions[positionID] = positionDirectives;
+        this._positions[positionID] = {
+            directives: positionDirectives,
+            openDate: new Date(),
+            openPrice: await this.getForexPairPrice(positionDirectives.forexPair),
+        };
 
         return this._getPositionByID(positionID);
     }
 
     public async getPositions (status: MidaPositionStatusType): Promise<MidaPosition[]> {
-        return this._browserTabs.positionsTab.evaluate(`(() => {
-            const positions = [];
-            const rows = window.document.querySelectorAll("#positionsPaneContent .rt-tbody [role=rowgroup] [role=row]");
-            
-            for (const row of rows) {
-                const columns = row.childNodes;
-                const assetName = row.childNodes[1].innerText;
-                
-                if (!assetName || assetName.length < 3) {
-                    continue;
-                }
-                
-                positions.push({
-                    assetName,
-                    direction: columns[3].innerText,
-                    profit: columns[5].innerText,
-                    openPrice: columns[6].innerText,
-                });
+        const positions: MidaPosition[] = [];
+
+        for (const positionID in this._positions) {
+            const position: MidaPosition = await this._getPositionByID(positionID);
+
+            if (position.status === status) {
+                positions.push(position);
             }
-            
-            return positions;
-        })();`);
+        }
+
+        return positions;
     }
 
     public async getEquity (): Promise<number> {
@@ -185,37 +179,77 @@ export class BDSwissBroker implements IMidaBroker {
     public async getForexPairPrice (forexPair: MidaForexPair): Promise<number> {
         const forexTab: IMidaBrowserTab = this._browserTabs.forexTab;
         const forexPairPrice: any = await forexTab.evaluate(`(() => {
-            const forexPairRow = window.document.querySelector("[data-cy='${forexPair.id}']").parentNode.parentNode;
+            const forexPairRow = window.document.querySelector("[data-cy='${forexPair.ID}']").parentNode.parentNode;
             
-            return forexPairRow.querySelector(".rt-td:nth-child(5)").innerText.trim();
+            return forexPairRow.querySelector(".rt-td:nth-child(5)").innerText.trim().replace(/,/g, "");
         })();`);
 
         return parseFloat(forexPairPrice);
     }
 
     public async logout (): Promise<boolean> {
+        this._loggedIn = false;
         this._positions = {};
 
         return false;
     }
 
-    private async _getPositionByID (id: string): Promise<MidaPosition | null> {
-        const positionDirectives: MidaPositionDirectives = this._positions[id];
-        const positionDescriptor: any = this._browserTabs.positionsTab.evaluate(`(() => {
-            const rows = window.document.querySelectorAll("#positionsPaneContent .rt-tbody [role=rowgroup] [role=row]");
+    private async _getPositionByID (positionID: string): Promise<MidaPosition> {
+        const openPositionDescriptor: any = await this._browserTabs.positionsTab.evaluate(`(() => {
+            const rowSelector = ".rt-td > [title='${positionID}']";
+            const column = window.document.querySelector(rowSelector);
             
-            for (const row of rows) {
-                const columns = row.childNodes;
-                const id = row.childNodes[2].innerText.trim();
-                
-                if (id === "${id}") {
-                    return {
-                        
-                    };
-                }
+            if (!column) {
+                return null;
             }
             
-            return null;
+            const row = column.parentNode.parentNode;
+            
+            return {
+                profit: row.childNodes[5].innerText.trim().split(" ")[1],
+            };
+        })();`);
+
+        if (!openPositionDescriptor) {
+            // Silence is golden...
+        }
+
+        return {
+            directives: this._positions[positionID].directives,
+            status: MidaPositionStatusType.OPEN,
+            date: new Date(),
+            openDate: this._positions[positionID].openDate,
+            openPrice: this._positions[positionID].openPrice,
+            profit: parseFloat(openPositionDescriptor.profit),
+        };
+    }
+
+    private async _countAllPositions (): Promise<number> {
+        return this._browserTabs.positionsTab.evaluate(`(() => {
+            const rows = window.document.querySelectorAll("#positionsPaneContent .rt-tbody [role=rowgroup] [role=row]");
+            let positions = 0;
+            
+            for (const row of rows) {
+                const assetName = row.childNodes[1].innerText;
+                
+                if (!assetName || assetName.length < 2) {
+                    continue;
+                }
+                
+                ++positions;
+            }
+            
+            return positions;
+        })();`);
+    }
+
+    private async _closePositionByID (positionID: string): Promise<boolean> {
+        return this._browserTabs.positionsTab.evaluate(`(() => {
+            const rowSelector = ".rt-td > [title='${positionID}']";
+            
+            window.document.querySelector(rowSelector).parentNode.parentNode.childNodes[10].click();
+            
+            return window.document.querySelector(rowSelector) === null;
         })();`);
     }
 

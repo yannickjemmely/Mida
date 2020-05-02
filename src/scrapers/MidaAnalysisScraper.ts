@@ -1,5 +1,5 @@
 import { IMidaBrowserTab } from "#browsers/IMidaBrowserTab";
-import { ChromiumBrowser } from "#browsers/chromium/ChromiumBrowser";
+import { ChromiumBrowser } from "#browsers/ChromiumBrowser";
 import { MidaForexPair } from "#forex/MidaForexPair";
 
 export class MidaAnalysisScraper {

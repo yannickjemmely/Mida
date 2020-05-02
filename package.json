@@ -6,12 +6,13 @@
     "scripts": {
         "lint": "tslint --project .",
         "build": "npm run lint && tsc",
-        "start": "npm run build && node ./build/Index.js",
+        "start": "npm run build && node ./build/main.js",
         "dev": "nodemon npm start"
     },
     "dependencies": {
         "module-alias": "2.2.2",
         "puppeteer": "2.1.1",
+        "technicalindicators": "3.1.0",
         "axios": "0.19.2"
     },
     "devDependencies": {
@@ -32,6 +33,7 @@
         "#market": "build/src/market",
         "#position": "build/src/position",
         "#predictor": "build/src/predictor",
+        "#scalpers": "build/src/scalpers",
         "#scrapers": "build/src/scrapers",
         "#signals": "build/src/signals",
         "#tracer": "build/src/tracer",

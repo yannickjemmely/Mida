@@ -1,7 +1,7 @@
 import * as Path from "path";
 import * as Puppeteer from "puppeteer";
 import { IMidaBrowser } from "#browsers/IMidaBrowser";
-import { ChromiumBrowserTab } from "#browsers/chromium/ChromiumBrowserTab";
+import { ChromiumBrowserTab } from "#browsers/ChromiumBrowserTab";
 
 export class ChromiumBrowser implements IMidaBrowser {
     private static readonly _shared: ChromiumBrowser = new ChromiumBrowser();
@@ -29,6 +29,8 @@ export class ChromiumBrowser implements IMidaBrowser {
                 "--disable-gl-drawing-for-tests",
                 "--mute-audio",
                 "--window-size=1280,1024",
+                "--disable-accelerated-2d-canvas",
+                "--disable-background-timer-throttling",
                 "--disable-gpu",
                 "--disable-infobars",
                 "--disable-features=site-per-process",

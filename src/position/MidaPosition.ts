@@ -1,3 +1,4 @@
+import { MidaCurrency } from "#currency/MidaCurrency";
 import { MidaPositionDirectives } from "#position/MidaPositionDirectives";
 import { MidaPositionStatusType } from "#position/MidaPositionStatusType";
 
@@ -26,6 +27,9 @@ export type MidaPosition = {
     // Represents the actual profit of the position.
     profit: number;
 
+    // Represents the currency of the position profit.
+    // profitCurrency: MidaCurrency;
+
     // Used to close the position.
-    close (): Promise<boolean>;
+    // close (): Promise<boolean>;
 };

@@ -35,6 +35,9 @@
             "#predictor/*": [
                 "src/predictor/*"
             ],
+            "#scalpers/*": [
+                "src/scalpers/*"
+            ],
             "#scrapers/*": [
                 "src/scrapers/*"
             ],

@@ -1,6 +1,6 @@
 import { IMidaBrowser } from "#browsers/IMidaBrowser";
 import { IMidaBrowserTab } from "#browsers/IMidaBrowserTab";
-import { ChromiumBrowser } from "#browsers/chromium/ChromiumBrowser";
+import { ChromiumBrowser } from "#browsers/ChromiumBrowser";
 import { MidaSignal } from "#signals/MidaSignal";
 import { MidaSignalListener } from "#signals/MidaSignalListener";
 import { MidaTelegramSpy } from "#signals/MidaTelegramSpy";

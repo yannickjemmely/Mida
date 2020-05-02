@@ -11,7 +11,7 @@ export class MidaMarket {
     private static readonly _forexPairs: MidaForexPairSet = new MidaForexPairSet();
 
     public static defineCurrency (currency: MidaCurrency): void {
-        if (this._currencies.has(currency.id)) {
+        if (this._currencies.has(currency.ID)) {
             throw new Error();
         }
 
