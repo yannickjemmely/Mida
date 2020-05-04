@@ -13,13 +13,13 @@ export interface IMidaBroker {
     // Used to place a trade.
     openPosition (positionDirectives: MidaPositionDirectives): Promise<MidaPosition>;
 
-    // Used to get the created positions.
+    // Used to get the placed trades.
     getPositions (status: MidaPositionStatusType): Promise<MidaPosition[]>;
 
     // Used to get the actual equity.
     getEquity (): Promise<number>;
 
-    // Used to get the price of a forex pair directly from the broker.
+    // Used to get the price of a forex pair.
     getForexPairPrice (forexPair: MidaForexPair): Promise<number>;
 
     // Used to logout.

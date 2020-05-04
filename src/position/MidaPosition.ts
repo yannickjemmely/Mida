@@ -30,6 +30,9 @@ export type MidaPosition = {
     // Represents the currency of the position profit.
     // profitCurrency: MidaCurrency;
 
+    // Used to update the position.
+    // update (): Promise<MidaPosition>;
+
     // Used to close the position.
-    // close (): Promise<boolean>;
+    close (): Promise<boolean>;
 };

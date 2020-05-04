@@ -1,11 +1,11 @@
 import { IMidaBroker } from "#brokers/IMidaBroker";
 import { MidaForexPair } from "#forex/MidaForexPair";
 import { MidaPosition } from "#position/MidaPosition";
-import { MidaPositionDirectionType } from "#position/MidaPositionDirectionType";
+import { MidaPositionDirectives } from "#position/MidaPositionDirectives";
 import { MidaPositionStatusType } from "#position/MidaPositionStatusType";
 import { MidaScalperOptions } from "#scalpers/MidaScalperOptions";
 
-export abstract class MidaScalper {
+export abstract class AMidaScalper {
     private readonly _options: MidaScalperOptions;
     private readonly _broker: IMidaBroker;
     private readonly _forexPair: MidaForexPair;
@@ -65,24 +65,12 @@ export abstract class MidaScalper {
         return this._previousForexPairPrice;
     }
 
-    protected async buy (): Promise<void> {
-        if (this._openPositions.length < this._options.maxPositions) {
-            await this._broker.openPosition({
-                forexPair: this._forexPair,
-                direction: MidaPositionDirectionType.BUY,
-                lots: 1,
-            });
-        }
+    protected get openPositions (): MidaPosition[] {
+        return this._openPositions;
     }
 
-    protected async sell (): Promise<void> {
-        if (this._openPositions.length < this._options.maxPositions) {
-            await this._broker.openPosition({
-                forexPair: this._forexPair,
-                direction: MidaPositionDirectionType.SELL,
-                lots: 1,
-            });
-        }
+    protected async openPosition (positionDirectives: MidaPositionDirectives): Promise<MidaPosition> {
+        return this._broker.openPosition(positionDirectives);
     }
 
     protected getPricesInTimeRange (leftDate: Date, rightDate: Date): number[] {
@@ -99,9 +87,7 @@ export abstract class MidaScalper {
         return prices;
     }
 
-    protected async updatePositions (): Promise<void> {
-        // Silence is golden.
-    }
+    protected abstract async updatePositions (openPositions: MidaPosition[]): Promise<void>;
 
     protected abstract async update (forexPairPrice: number): Promise<void>;
 
@@ -110,10 +96,13 @@ export abstract class MidaScalper {
 
         if (forexPairPrice !== this._previousForexPairPrice) {
             this._forexPairPrice = forexPairPrice;
-            this._pricesHistory[(new Date).toISOString()] = forexPairPrice;
+            this._pricesHistory[(new Date()).toISOString()] = forexPairPrice;
             this._openPositions = await this._broker.getPositions(MidaPositionStatusType.OPEN);
 
-            await this.updatePositions();
+            await this.updatePositions(this._openPositions);
+
+            this._openPositions = await this._broker.getPositions(MidaPositionStatusType.OPEN);
+
             await this.update(forexPairPrice);
 
             this._previousForexPairPrice = forexPairPrice;

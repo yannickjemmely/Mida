@@ -32,7 +32,7 @@ export type MidaEconomicFactorStatement = {
 
 export function getCurrencyStrengthDirection (currencyID: string, statement: MidaEconomicFactorStatement, positiveBearish: boolean): number {
     const influence: number = statement.factor.influencedCurrencies[currencyID] || 0;
-    const elapsedTime: number = 1 / Math.exp(MidaUtilities.getDaysDifferenceBetweenTwoDates(new Date(), statement.date));
+    const elapsedTime: number = 1 / Math.exp(MidaUtilities.getDaysBetweenDates(new Date(), statement.date));
     const direction: number = statement.actualDistance * (Math.exp(Math.sqrt(influence)) - 1) * elapsedTime;
 
     if (positiveBearish) {

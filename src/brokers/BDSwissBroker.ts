@@ -24,8 +24,8 @@ export class BDSwissBroker implements IMidaBroker {
             directives: MidaPositionDirectives;
             openDate: Date;
             openPrice: number;
-            closePrice?: number;
             closeDate?: Date;
+            closePrice?: number;
         };
     };
 
@@ -66,11 +66,11 @@ export class BDSwissBroker implements IMidaBroker {
 
             await new Promise((resolve: any): any => setTimeout(resolve, 10000));
 
-            const isLoggedIn: boolean = await loginTab.evaluate(`(() => {
+            const loggedIn: boolean = await loginTab.evaluate(`(() => {
                 return window.location.href === "https://dashboard.bdswiss.com/accounts";
             })();`);
 
-            if (!isLoggedIn) {
+            if (!loggedIn) {
                 return false;
             }
 
@@ -134,11 +134,14 @@ export class BDSwissBroker implements IMidaBroker {
         }
 
         const placeTradeButtonSelector: string = "button[data-cy=placeTrade]";
+        const openPrice: number = await this.getForexPairPrice(positionDirectives.forexPair);
 
         await tradeTab.click(placeTradeButtonSelector);
         await tradeTab.click(searchTextBoxSelector, 3);
         await tradeTab.type(searchTextBoxSelector, "");
-        await new Promise((resolve: any): any => setTimeout(resolve, 3000));
+        await new Promise((resolve: any): void => {
+            setTimeout(resolve, 5000);
+        });
 
         const positionID: string = await this._browserTabs.positionsTab.evaluate(`(() => {
             return window.document.querySelector("#positionsPaneContent .rt-tbody [role=rowgroup] [role=row]").childNodes[2].innerText.trim();
@@ -147,19 +150,25 @@ export class BDSwissBroker implements IMidaBroker {
         this._positions[positionID] = {
             directives: positionDirectives,
             openDate: new Date(),
-            openPrice: await this.getForexPairPrice(positionDirectives.forexPair),
+            openPrice,
         };
 
-        return this._getPositionByID(positionID);
+        const position: MidaPosition | null = await this._getPositionByID(positionID);
+
+        if (!position) {
+            throw new Error();
+        }
+
+        return position;
     }
 
     public async getPositions (status: MidaPositionStatusType): Promise<MidaPosition[]> {
         const positions: MidaPosition[] = [];
 
         for (const positionID in this._positions) {
-            const position: MidaPosition = await this._getPositionByID(positionID);
+            const position: MidaPosition | null = await this._getPositionByID(positionID);
 
-            if (position.status === status) {
+            if (position && position.status === status) {
                 positions.push(position);
             }
         }
@@ -194,7 +203,7 @@ export class BDSwissBroker implements IMidaBroker {
         return false;
     }
 
-    private async _getPositionByID (positionID: string): Promise<MidaPosition> {
+    private async _getPositionByID (positionID: string): Promise<MidaPosition | null> {
         const openPositionDescriptor: any = await this._browserTabs.positionsTab.evaluate(`(() => {
             const rowSelector = ".rt-td > [title='${positionID}']";
             const column = window.document.querySelector(rowSelector);
@@ -211,7 +220,7 @@ export class BDSwissBroker implements IMidaBroker {
         })();`);
 
         if (!openPositionDescriptor) {
-            // Silence is golden...
+            return null;
         }
 
         return {
@@ -221,36 +230,45 @@ export class BDSwissBroker implements IMidaBroker {
             openDate: this._positions[positionID].openDate,
             openPrice: this._positions[positionID].openPrice,
             profit: parseFloat(openPositionDescriptor.profit),
+            close: async (): Promise<boolean> => this._closePositionByID(positionID),
         };
     }
 
-    private async _countAllPositions (): Promise<number> {
-        return this._browserTabs.positionsTab.evaluate(`(() => {
-            const rows = window.document.querySelectorAll("#positionsPaneContent .rt-tbody [role=rowgroup] [role=row]");
-            let positions = 0;
-            
-            for (const row of rows) {
-                const assetName = row.childNodes[1].innerText;
-                
-                if (!assetName || assetName.length < 2) {
-                    continue;
-                }
-                
-                ++positions;
-            }
-            
-            return positions;
-        })();`);
-    }
-
     private async _closePositionByID (positionID: string): Promise<boolean> {
-        return this._browserTabs.positionsTab.evaluate(`(() => {
-            const rowSelector = ".rt-td > [title='${positionID}']";
-            
-            window.document.querySelector(rowSelector).parentNode.parentNode.childNodes[10].click();
-            
-            return window.document.querySelector(rowSelector) === null;
-        })();`);
+        try {
+            const positionsTab: IMidaBrowserTab = this._browserTabs.positionsTab;
+            const closeModalOpened: boolean = await positionsTab.evaluate(`(() => {
+                try {
+                    const rowSelector = ".rt-td > [title='${positionID}']";
+                    
+                    window.document.querySelector(rowSelector).parentNode.parentNode.childNodes[10].childNodes[0].click();
+                    
+                    return true;
+                }
+                catch (error) {
+                    return false;
+                }
+            })();`);
+
+            if (!closeModalOpened) {
+                return false;
+            }
+
+            const closeButtonSelector: string = ".modal-footer [data-cy=confirm]";
+
+            await positionsTab.waitForSelector(closeButtonSelector);
+            await positionsTab.click(closeButtonSelector);
+
+            this._positions[positionID].closeDate = new Date();
+            this._positions[positionID].closePrice = await this.getForexPairPrice(this._positions[positionID].directives.forexPair);
+
+            return true;
+        }
+        catch (error) {
+            console.log(error);
+
+            return false;
+        }
     }
 
     private async _loadTradeTab (): Promise<boolean> {

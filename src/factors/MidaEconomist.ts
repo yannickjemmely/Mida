@@ -43,8 +43,8 @@ export class MidaEconomist {
             const statement: MidaEconomicFactorStatement = await factor.getLatestStatement();
 
             if (
-                MidaUtilities.getDaysDifferenceBetweenTwoDates(statement.date, new Date()) === 0 ||
-                (statement.nextStatementDate && MidaUtilities.getDaysDifferenceBetweenTwoDates(statement.nextStatementDate, new Date()) === 0)
+                MidaUtilities.getDaysBetweenDates(statement.date, new Date()) === 0 ||
+                (statement.nextStatementDate && MidaUtilities.getDaysBetweenDates(statement.nextStatementDate, new Date()) === 0)
             ) {
                 statements.push(statement);
             }
