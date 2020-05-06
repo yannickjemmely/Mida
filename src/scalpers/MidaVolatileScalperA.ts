@@ -42,7 +42,7 @@ export class MidaVolatileScalperA extends AMidaScalper {
             return;
         }
 
-        const priceVariationsSecondsAgo: number[] = this.getPricesInTimeRange(new Date(Date.now() - 15000), new Date());
+        const priceVariationsSecondsAgo: number[] = this.getPricesInDateRange(new Date(Date.now() - 15000), new Date());
 
         // Assert volatility.
         if (priceVariationsSecondsAgo.length < 10) {

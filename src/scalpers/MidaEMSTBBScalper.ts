@@ -7,7 +7,7 @@ import {AlphaVantage} from "#utilities/AlphaVantage";
 import {MidaForexPairPeriod} from "#forex/MidaForexPairPeriod";
 import {MidaForexPairTrendType} from "#forex/MidaForexPairTrendType";
 
-export class MidaTrendScalperA extends AMidaScalper {
+export class MidaEMSTBBScalper extends AMidaScalper {
     private _lastPositionOpenDate: Date | null;
 
     public constructor (options: MidaScalperOptions) {
@@ -62,6 +62,10 @@ export class MidaTrendScalperA extends AMidaScalper {
         }
 
         return MidaForexPairTrendType.NEUTRAL;
+    }
+
+    public static async isPAAboveEMA200 (forexPairPrice: number): Promise<boolean> {
+        return false;
     }
 
     public static async calculate1HTrend (timeSeries: MidaForexPairPeriod[], exponentialAverages21: number[]): Promise<MidaForexPairTrendType> {

@@ -18,7 +18,7 @@ export class BDSwissBroker implements IMidaBroker {
     };
 
     private _accountMeta: any;
-    private _loggedIn: boolean;
+    private _isLoggedIn: boolean;
     private _positions: {
         [positionID: string]: {
             directives: MidaPositionDirectives;
@@ -32,16 +32,16 @@ export class BDSwissBroker implements IMidaBroker {
     public constructor () {
         this._browser = new ChromiumBrowser();
         this._browserTabs = {};
-        this._loggedIn = false;
+        this._isLoggedIn = false;
         this._positions = {};
     }
 
-    public get loggedIn (): boolean {
-        return this._loggedIn;
+    public get isLoggedIn (): boolean {
+        return this._isLoggedIn;
     }
 
     public async login (meta: any): Promise<boolean> {
-        if (this._loggedIn) {
+        if (this._isLoggedIn) {
             return true;
         }
 
@@ -66,16 +66,16 @@ export class BDSwissBroker implements IMidaBroker {
 
             await new Promise((resolve: any): any => setTimeout(resolve, 10000));
 
-            const loggedIn: boolean = await loginTab.evaluate(`(() => {
+            const isLoggedIn: boolean = await loginTab.evaluate(`(() => {
                 return window.location.href === "https://dashboard.bdswiss.com/accounts";
             })();`);
 
-            if (!loggedIn) {
+            if (!isLoggedIn) {
                 return false;
             }
 
             this._accountMeta = meta;
-            this._loggedIn = true;
+            this._isLoggedIn = true;
         }
         catch (error) {
             console.error(error);
@@ -197,7 +197,7 @@ export class BDSwissBroker implements IMidaBroker {
     }
 
     public async logout (): Promise<boolean> {
-        this._loggedIn = false;
+        this._isLoggedIn = false;
         this._positions = {};
 
         return false;

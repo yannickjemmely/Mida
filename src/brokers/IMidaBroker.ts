@@ -5,7 +5,7 @@ import { MidaPositionStatusType } from "#position/MidaPositionStatusType";
 
 export interface IMidaBroker {
     // Indicates if the user is logged in.
-    loggedIn: boolean;
+    isLoggedIn: boolean;
 
     // Used to login.
     login (meta?: any): Promise<boolean>;
@@ -15,6 +15,8 @@ export interface IMidaBroker {
 
     // Used to get the placed trades.
     getPositions (status: MidaPositionStatusType): Promise<MidaPosition[]>;
+
+    // getPositionByUUID (UUID: string): Promise<MidaPosition | null>;
 
     // Used to get the actual equity.
     getEquity (): Promise<number>;

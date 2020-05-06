@@ -3,15 +3,20 @@ import { MidaForexPair } from "#forex/MidaForexPair";
 import { MidaForexPairPeriod } from "#forex/MidaForexPairPeriod";
 
 export class AlphaVantage {
-    private static readonly _API_URI = "https://www.alphavantage.co/query";
+    private static readonly _API_URI: string = "https://www.alphavantage.co/query";
     private static readonly _API_KEYS: string[] = [
+        "HWC4VYKJMSECDMU7",
+        "J1S22ZXI2HIBRDGS",
+        "ZI5H078ZHSWO7CFG",
+        "6NROBYRAWS69YZB4",
+        "I49UL0R623EPME21",
         "95825WO2LWZK2KKX",
         "GRO0I00BGVRN0NYQ",
-        "0RFJYUUZTPMRA29O",
-        "8RUV51UCUC11QLEM",
+        "65AQIAA86CP64U2K",
         "EXWFPKEED22XI618",
         "5QBDLX79A8PUEXLE",
-        "65AQIAA86CP64U2K",
+        "0RFJYUUZTPMRA29O",
+        "8RUV51UCUC11QLEM",
     ];
 
     private static _keyIndex: number = 0;
@@ -20,25 +25,30 @@ export class AlphaVantage {
         // Silence is golden.
     }
 
-    public static async getEMA (period: number, interval: string): Promise<any> {
-        const response: any = await Axios.get("https://www.alphavantage.co/query", {
+    public static async getEMA (forexPair: MidaForexPair, interval: string, period: number): Promise<number[]> {
+        const exponentialAverages: number[] = [];
+        const response: any = await Axios.get(this._API_URI, {
             params: {
-                function: "EMA",
-                symbol: "EURUSD",
-                interval: interval,
+                "function": "EMA",
+                "symbol": forexPair.ID2,
+                "interval": interval,
                 "time_period": period,
                 "series_type": "close",
-                apikey: this._getKey(),
+                "apikey": this._getKey(),
             },
         });
+        const responseBody: any = response.data;
+        const plainExponentialAverages: any = responseBody["Technical Analysis: EMA"];
 
-        const data: any = response.data;
-
-        if (data["Technical Analysis: EMA"]) {
-            return Object.values(data["Technical Analysis: EMA"]).slice(0, 10).map((item: any): any => parseFloat(item.EMA));
+        if (!plainExponentialAverages) {
+            return AlphaVantage.getEMA(forexPair, interval, period);
         }
 
-        return null;
+        for (const plainDate in plainExponentialAverages) {
+            exponentialAverages.push(parseFloat(plainExponentialAverages[plainDate].EMA));
+        }
+
+        return exponentialAverages;
     }
 
     public static async getForexIntraday (forexPair: MidaForexPair, interval: string): Promise<MidaForexPairPeriod[]> {
@@ -49,15 +59,15 @@ export class AlphaVantage {
                 "from_symbol": forexPair.baseCurrency.ID,
                 "to_symbol": forexPair.quoteCurrency.ID,
                 "interval": interval,
+                "outputsize": "full",
                 "apikey": this._getKey(),
             },
         });
-
-        const data: any = response.data;
-        const plainTimeSeries: any = data[`Time Series FX (${interval})`];
+        const responseBody: any = response.data;
+        const plainTimeSeries: any = responseBody[`Time Series FX (${interval})`];
 
         if (!plainTimeSeries) {
-            return timeSeries;
+            return AlphaVantage.getForexIntraday(forexPair, interval);
         }
 
         for (const plainDate in plainTimeSeries) {

@@ -4,8 +4,11 @@ import { MidaPosition } from "#position/MidaPosition";
 import { MidaPositionDirectives } from "#position/MidaPositionDirectives";
 import { MidaPositionStatusType } from "#position/MidaPositionStatusType";
 import { MidaScalperOptions } from "#scalpers/MidaScalperOptions";
+import { MidaUtilities } from "#utilities/MidaUtilities";
 
 export abstract class AMidaScalper {
+    private static readonly _UPDATE_DELAY: number = 300;
+
     private readonly _options: MidaScalperOptions;
     private readonly _broker: IMidaBroker;
     private readonly _forexPair: MidaForexPair;
@@ -18,7 +21,7 @@ export abstract class AMidaScalper {
 
     private _openPositions: MidaPosition[];
 
-    private _sleep: boolean;
+    private _isActive: boolean;
 
     protected constructor (options: MidaScalperOptions) {
         this._options = options;
@@ -28,21 +31,29 @@ export abstract class AMidaScalper {
         this._forexPairPrice = 0;
         this._previousForexPairPrice = 0;
         this._openPositions = [];
-        this._sleep = true;
+        this._isActive = false;
     }
 
     public start (): void {
-        if (this._sleep) {
-            this._sleep = false;
-
-            this._internalUpdate();
+        if (this._isActive) {
+            return;
         }
+
+        this._isActive = true;
+
+        this._internalUpdate();
     }
 
     public stop (): void {
-        if (!this._sleep) {
-            this._sleep = true;
+        if (!this._isActive) {
+            return;
         }
+
+        this._isActive = false;
+    }
+
+    public get isActive (): boolean {
+        return this._isActive;
     }
 
     protected get options (): MidaScalperOptions {
@@ -73,7 +84,7 @@ export abstract class AMidaScalper {
         return this._broker.openPosition(positionDirectives);
     }
 
-    protected getPricesInTimeRange (leftDate: Date, rightDate: Date): number[] {
+    protected getPricesInDateRange (leftDate: Date, rightDate: Date): number[] {
         const prices: number[] = [];
 
         for (const plainDate in this._pricesHistory) {
@@ -108,8 +119,11 @@ export abstract class AMidaScalper {
             this._previousForexPairPrice = forexPairPrice;
         }
 
-        if (!this._sleep) {
-            this._internalUpdate();
+        if (!this._isActive) {
+            return;
         }
+
+        await MidaUtilities.wait(AMidaScalper._UPDATE_DELAY);
+        this._internalUpdate();
     }
 }

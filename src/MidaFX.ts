@@ -9,29 +9,19 @@ import {MidaUtilities} from "#utilities/MidaUtilities";
 import {MidaVolatileScalperA} from "#scalpers/MidaVolatileScalperA";
 import {AMidaScalper} from "#scalpers/AMidaScalper";
 import {AlphaVantage} from "#utilities/AlphaVantage";
-import { EMA } from "technicalindicators";
-import {MidaTrendScalperA} from "#scalpers/MidaTrendScalperA";
+import { EMA, RSI, BollingerBands, Stochastic } from "technicalindicators";
+import {MidaEMTrendScalper} from "#scalpers/MidaEMTrendScalper";
+import {MidaForexPairPeriod} from "#forex/MidaForexPairPeriod";
+
+
+import {MidaEMSTBBScalper} from "#scalpers/MidaEMSTBBScalper";
+import {MidaBBScalper} from "#scalpers/MidaBBScalper";
 
 export namespace MidaFX {
     
 }
 
 void (async (): Promise<void> => {
-    console.log(await MidaTrendScalperA.calculate5MTrend());
-    /*console.log(new EMA({
-        period: 8,
-        values: [
-            1.0902,
-            1.0902,
-            1.0902,
-            1.0900,
-            1.0897,
-            1.0896,
-            1.0899,
-            1.0902,
-        ],
-    }).result);*/
-/*
     const myAccount: IMidaBroker = new BDSwissBroker();
 
     await myAccount.login({
@@ -40,14 +30,32 @@ void (async (): Promise<void> => {
         accountID: "6844385",
     });
 
-    if (myAccount.loggedIn) {
+    if (myAccount.isLoggedIn) {
         console.log("Logged in.");
     }
 
-    const scalperA: MidaVolatileScalperA = new MidaVolatileScalperA({
+    const scalperA: AMidaScalper = new MidaBBScalper({
         broker: myAccount,
         forexPair: MidaMarket.getForexPair("EUR/USD"),
     });
 
-    scalperA.start();//*/
+    const scalperB: AMidaScalper = new MidaBBScalper({
+        broker: myAccount,
+        forexPair: MidaMarket.getForexPair("EUR/GBP"),
+    });
+
+    const scalperC: AMidaScalper = new MidaBBScalper({
+        broker: myAccount,
+        forexPair: MidaMarket.getForexPair("GBP/CAD"),
+    });
+
+    const scalperD: AMidaScalper = new MidaBBScalper({
+        broker: myAccount,
+        forexPair: MidaMarket.getForexPair("USD/JPY"),
+    });
+
+    scalperA.start();
+    scalperB.start();
+    scalperC.start();
+    scalperD.start();
 })();
