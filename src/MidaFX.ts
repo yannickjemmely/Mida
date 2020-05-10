@@ -6,22 +6,22 @@ import {MidaPositionDirectionType} from "#position/MidaPositionDirectionType";
 import {MidaForexPair} from "#forex/MidaForexPair";
 import {MidaPatternAnalysis} from "#utilities/MidaPatternAnalysis";
 import {MidaUtilities} from "#utilities/MidaUtilities";
-import {MidaVolatileScalperA} from "#scalpers/MidaVolatileScalperA";
 import {AMidaScalper} from "#scalpers/AMidaScalper";
 import {AlphaVantage} from "#utilities/AlphaVantage";
 import { EMA, RSI, BollingerBands, Stochastic } from "technicalindicators";
-import {MidaEMTrendScalper} from "#scalpers/MidaEMTrendScalper";
+//import {MidaTFScalper} from "#scalpers/MidaTFScalper";
 import {MidaForexPairPeriod} from "#forex/MidaForexPairPeriod";
 
-
-import {MidaEMSTBBScalper} from "#scalpers/MidaEMSTBBScalper";
-import {MidaBBScalper} from "#scalpers/MidaBBScalper";
+import {MidaBollingerScalper} from "#scalpers/MidaBollingerScalper";
+import {MidaEconomist} from "#factors/MidaEconomist";
+import {MidaPredictor} from "#predictor/MidaPredictor";
 
 export namespace MidaFX {
     
 }
 
 void (async (): Promise<void> => {
+
     const myAccount: IMidaBroker = new BDSwissBroker();
 
     await myAccount.login({
@@ -34,22 +34,22 @@ void (async (): Promise<void> => {
         console.log("Logged in.");
     }
 
-    const scalperA: AMidaScalper = new MidaBBScalper({
+    const scalperA: AMidaScalper = new MidaBollingerScalper({
         broker: myAccount,
         forexPair: MidaMarket.getForexPair("EUR/USD"),
     });
 
-    const scalperB: AMidaScalper = new MidaBBScalper({
+    const scalperB: AMidaScalper = new MidaBollingerScalper({
         broker: myAccount,
         forexPair: MidaMarket.getForexPair("EUR/GBP"),
     });
 
-    const scalperC: AMidaScalper = new MidaBBScalper({
+    const scalperC: AMidaScalper = new MidaBollingerScalper({
         broker: myAccount,
         forexPair: MidaMarket.getForexPair("GBP/CAD"),
     });
 
-    const scalperD: AMidaScalper = new MidaBBScalper({
+    const scalperD: AMidaScalper = new MidaBollingerScalper({
         broker: myAccount,
         forexPair: MidaMarket.getForexPair("USD/JPY"),
     });

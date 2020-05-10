@@ -1,6 +1,7 @@
 import Axios from "axios";
 import { MidaForexPair } from "#forex/MidaForexPair";
 import { MidaForexPairPeriod } from "#forex/MidaForexPairPeriod";
+import { MidaForexPairPeriodType } from "#forex/MidaForexPairPeriodType";
 
 export class AlphaVantage {
     private static readonly _API_URI: string = "https://www.alphavantage.co/query";
@@ -25,14 +26,14 @@ export class AlphaVantage {
         // Silence is golden.
     }
 
-    public static async getEMA (forexPair: MidaForexPair, interval: string, period: number): Promise<number[]> {
+    public static async getEMA (forexPair: MidaForexPair, interval: MidaForexPairPeriodType, periods: number): Promise<number[]> {
         const exponentialAverages: number[] = [];
         const response: any = await Axios.get(this._API_URI, {
             params: {
                 "function": "EMA",
                 "symbol": forexPair.ID2,
                 "interval": interval,
-                "time_period": period,
+                "time_period": periods,
                 "series_type": "close",
                 "apikey": this._getKey(),
             },
@@ -41,7 +42,7 @@ export class AlphaVantage {
         const plainExponentialAverages: any = responseBody["Technical Analysis: EMA"];
 
         if (!plainExponentialAverages) {
-            return AlphaVantage.getEMA(forexPair, interval, period);
+            return AlphaVantage.getEMA(forexPair, interval, periods);
         }
 
         for (const plainDate in plainExponentialAverages) {
@@ -51,7 +52,7 @@ export class AlphaVantage {
         return exponentialAverages;
     }
 
-    public static async getForexIntraday (forexPair: MidaForexPair, interval: string): Promise<MidaForexPairPeriod[]> {
+    public static async getForexIntraday (forexPair: MidaForexPair, interval: MidaForexPairPeriodType): Promise<MidaForexPairPeriod[]> {
         const timeSeries: MidaForexPairPeriod[] = [];
         const response: any = await Axios.get(this._API_URI, {
             params: {
@@ -75,11 +76,12 @@ export class AlphaVantage {
 
             timeSeries.push({
                 forexPair,
+                type: interval,
                 date: new Date(plainDate),
+                open: parseFloat(period["1. open"]),
                 close: parseFloat(period["4. close"]),
                 low: parseFloat(period["3. low"]),
                 high: parseFloat(period["2. high"]),
-                open: parseFloat(period["1. open"]),
             });
         }
 

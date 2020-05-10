@@ -542,7 +542,7 @@ defineEconomicFactor({
     name: "U.S. Nonfarm Payrolls",
     description: "",
     influencedCurrencies: {
-        "USD": 10,
+        "USD": 20,
     },
     async getLatestStatement (): Promise<MidaEconomicFactorStatement> {
         return _fetchLatestEconomicStatement(this,"https://www.investing.com/economic-calendar/nonfarm-payrolls-227", false);

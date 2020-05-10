@@ -3,7 +3,7 @@ import { MidaHTTPResponse } from "#utilities/MidaHTTPResponse";
 
 // Represents a browser tab (used by Mida to load and manipulate webpages).
 export interface IMidaBrowserTab {
-    // Represents a reference to the browser that created the window.
+    // Represents the browser that created the window.
     browser: IMidaBrowser;
 
     // Used to set the user agent of the tab.

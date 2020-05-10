@@ -1,4 +1,5 @@
 import { BollingerBands } from "technicalindicators";
+import { MidaForexPairExchangeRate } from "#forex/MidaForexPairExchangeRate";
 import { MidaForexPairPeriod } from "#forex/MidaForexPairPeriod";
 import { MidaPosition } from "#position/MidaPosition";
 import { MidaPositionDirectionType } from "#position/MidaPositionDirectionType";
@@ -7,7 +8,7 @@ import { MidaScalperOptions } from "#scalpers/MidaScalperOptions";
 import { AlphaVantage } from "#utilities/AlphaVantage";
 import { MidaUtilities } from "#utilities/MidaUtilities";
 
-export class MidaBBScalper extends AMidaScalper {
+export class MidaBollingerScalper extends AMidaScalper {
     private _last15MPeriods: MidaForexPairPeriod[];
     private _last15MPeriodsUpdateDate: Date | null;
     private _lastEMA200: number;
@@ -26,19 +27,8 @@ export class MidaBBScalper extends AMidaScalper {
         this._lastUpdateNoticeDate = null;
     }
 
-    protected async updatePositions (openPositions: MidaPosition[]): Promise<void> {
-        for (const position of openPositions) {
-            const profit: number = position.profit;
-            // const elapsedMinutes: number = MidaUtilities.getMinutesBetweenDates(position.openDate, new Date());
-
-            if (profit > 0 || profit < -350) {
-                await position.close();
-            }
-        }
-    }
-
-    protected async update (forexPairPrice: number): Promise<void> {
-        if (this._lastPositionOpenDate && MidaUtilities.getMinutesBetweenDates(this._lastPositionOpenDate, new Date()) < 15 && this.openPositions.length !== 0) {
+    protected async update (forexPairExchangeRate: MidaForexPairExchangeRate): Promise<void> {
+        if (this._lastPositionOpenDate && MidaUtilities.getMinutesBetweenDates(this._lastPositionOpenDate, new Date()) < 10) {
             return;
         }
 
@@ -56,6 +46,7 @@ export class MidaBBScalper extends AMidaScalper {
             // console.log("::UPDATED EMA200::");
         }
 
+        const forexPairPrice: number = forexPairExchangeRate.price;
         const lastPeriod: MidaForexPairPeriod = this._last15MPeriods[0];
         const lastEMA200: number = this._lastEMA200;
         const lastBollingerBand: any = BollingerBands.calculate({
@@ -82,7 +73,7 @@ export class MidaBBScalper extends AMidaScalper {
 
                 this._lastPositionOpenDate = new Date();
 
-                // console.log("::OPENED SELL FOR " + this.forexPair.ID + "::");
+                console.log("::OPENED SELL FOR " + this.forexPair.ID + "::");
             }
         }
         else if (forexPairPrice > lastEMA200) {
@@ -95,7 +86,7 @@ export class MidaBBScalper extends AMidaScalper {
 
                 this._lastPositionOpenDate = new Date();
 
-                // console.log("::OPENED BUY FOR " + this.forexPair.ID + "::");
+                console.log("::OPENED BUY FOR " + this.forexPair.ID + "::");
             }
         }
 

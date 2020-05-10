@@ -1,37 +1,57 @@
 import { IMidaBroker } from "#brokers/IMidaBroker";
+import { MidaForexPairExchangeRate } from "#forex/MidaForexPairExchangeRate";
 import { MidaForexPair } from "#forex/MidaForexPair";
 import { MidaPosition } from "#position/MidaPosition";
 import { MidaPositionDirectives } from "#position/MidaPositionDirectives";
 import { MidaPositionStatusType } from "#position/MidaPositionStatusType";
 import { MidaScalperOptions } from "#scalpers/MidaScalperOptions";
 import { MidaUtilities } from "#utilities/MidaUtilities";
+import { IMidaObservable } from "#utilities/events/IMidaObservable";
+import { MidaListenerDispatcher } from "#utilities/events/MidaListenerDispatcher";
 
-export abstract class AMidaScalper {
+export abstract class AMidaScalper implements IMidaObservable {
+    // Represents the delay between each forex pair exchange rate change check.
     private static readonly _UPDATE_DELAY: number = 300;
 
+    // Represents the scalper options.
     private readonly _options: MidaScalperOptions;
+
+    // Represents the broker.
     private readonly _broker: IMidaBroker;
+
+    // Represents the operated forex pair.
     private readonly _forexPair: MidaForexPair;
-    private readonly _pricesHistory: {
-        [date: string]: number;
+
+    // Represents the forex pair exchange rate changes during the scalper activity.
+    private readonly _exchangeRateHistory: {
+        [date: string]: MidaForexPairExchangeRate;
     };
 
-    private _forexPairPrice: number;
-    private _previousForexPairPrice: number;
+    // Represents a list of created positions (UUIDs).
+    private readonly _createdPositions: string[];
 
-    private _openPositions: MidaPosition[];
+    // Represents the listener dispatcher.
+    private readonly _listenerDispatcher: MidaListenerDispatcher;
 
+    // Indicates if the scalper is operating.
     private _isActive: boolean;
 
     protected constructor (options: MidaScalperOptions) {
         this._options = options;
         this._broker = options.broker;
         this._forexPair = options.forexPair;
-        this._pricesHistory = {};
-        this._forexPairPrice = 0;
-        this._previousForexPairPrice = 0;
-        this._openPositions = [];
+        this._exchangeRateHistory = {};
+        this._createdPositions = [];
+        this._listenerDispatcher = new MidaListenerDispatcher();
         this._isActive = false;
+    }
+
+    public get isActive (): boolean {
+        return this._isActive;
+    }
+
+    protected get forexPair (): MidaForexPair {
+        return this._forexPair;
     }
 
     public start (): void {
@@ -42,81 +62,99 @@ export abstract class AMidaScalper {
         this._isActive = true;
 
         this._internalUpdate();
+        this._listenerDispatcher.notifyListeners("start");
     }
 
-    public stop (): void {
+    public stop (closePositions: boolean = false): void {
         if (!this._isActive) {
             return;
         }
 
         this._isActive = false;
+
+        if (closePositions) {
+            this.closeAllPositions();
+        }
+
+        this._listenerDispatcher.notifyListeners("stop");
     }
 
-    public get isActive (): boolean {
-        return this._isActive;
+    public addEventListener (eventName: string, listener: Function): string {
+        return this._listenerDispatcher.addListener(eventName, listener);
     }
 
-    protected get options (): MidaScalperOptions {
-        return this._options;
+    public removeEventListener (listenerUUID: string): boolean {
+        return this._listenerDispatcher.removeListener(listenerUUID);
     }
 
-    protected get broker (): IMidaBroker {
-        return this._broker;
-    }
-
-    protected get forexPair (): MidaForexPair {
-        return this._forexPair;
-    }
-
-    protected get forexPairPrice (): number {
-        return this._forexPairPrice;
-    }
-
-    protected get previousForexPairPrice (): number {
-        return this._previousForexPairPrice;
-    }
-
-    protected get openPositions (): MidaPosition[] {
-        return this._openPositions;
-    }
+    protected abstract async update (forexPairExchangeRate: MidaForexPairExchangeRate): Promise<void>;
 
     protected async openPosition (positionDirectives: MidaPositionDirectives): Promise<MidaPosition> {
-        return this._broker.openPosition(positionDirectives);
+        const position: MidaPosition = await this._broker.openPosition(positionDirectives);
+
+        this._createdPositions.push(position.UUID);
+        this._listenerDispatcher.notifyListeners("position-create", position);
+
+        return position;
+    }
+
+    protected async getPositionsByStatus (status: MidaPositionStatusType): Promise<MidaPosition[]> {
+        const positions: MidaPosition[] = [];
+
+        for (const positionUUID of this._createdPositions) {
+            const position: MidaPosition | null = await this._broker.getPositionByUUID(positionUUID);
+
+            if (position && position.status === status) {
+                positions.push(position);
+            }
+        }
+
+        return positions;
     }
 
     protected getPricesInDateRange (leftDate: Date, rightDate: Date): number[] {
         const prices: number[] = [];
 
-        for (const plainDate in this._pricesHistory) {
+        for (const plainDate in this._exchangeRateHistory) {
             const date: Date = new Date(plainDate);
 
             if (date >= leftDate && date <= rightDate) {
-                prices.push(this._pricesHistory[plainDate]);
+                prices.push(this._exchangeRateHistory[plainDate].price);
             }
         }
 
         return prices;
     }
 
-    protected abstract async updatePositions (openPositions: MidaPosition[]): Promise<void>;
+    protected async updatePositions (openPositions: MidaPosition[]): Promise<void> {
+        for (const position of openPositions) {
+            const profit: number = position.profit;
+            // const elapsedMinutes: number = MidaUtilities.getMinutesBetweenDates(position.openDate, new Date());
 
-    protected abstract async update (forexPairPrice: number): Promise<void>;
+            if (profit >= 5 || profit < -115) {
+                await position.close();
 
-    private async _internalUpdate (): Promise<void> {
-        const forexPairPrice: number = await this._broker.getForexPairPrice(this._forexPair);
+                console.log("Closed with profit " + profit);
+            }
+        }
+    }
 
-        if (forexPairPrice !== this._previousForexPairPrice) {
-            this._forexPairPrice = forexPairPrice;
-            this._pricesHistory[(new Date()).toISOString()] = forexPairPrice;
-            this._openPositions = await this._broker.getPositions(MidaPositionStatusType.OPEN);
+    protected async closeAllPositions (): Promise<void> {
+        const openPositions: MidaPosition[] = await this.getPositionsByStatus(MidaPositionStatusType.OPEN);
 
-            await this.updatePositions(this._openPositions);
+        for (const position of openPositions) {
+            await position.close();
+        }
+    }
 
-            this._openPositions = await this._broker.getPositions(MidaPositionStatusType.OPEN);
+    private async _internalUpdate (previousForexPairExchangeRate?: MidaForexPairExchangeRate): Promise<void> {
+        const forexPairExchangeRate: MidaForexPairExchangeRate = await this._broker.getForexPairExchangeRate(this._forexPair);
 
-            await this.update(forexPairPrice);
+        if (!previousForexPairExchangeRate || forexPairExchangeRate.price !== previousForexPairExchangeRate.price) {
+            this._exchangeRateHistory[forexPairExchangeRate.date.toISOString()] = forexPairExchangeRate;
 
-            this._previousForexPairPrice = forexPairPrice;
+            await this.updatePositions(await this.getPositionsByStatus(MidaPositionStatusType.OPEN));
+            await this.update(forexPairExchangeRate);
         }
 
         if (!this._isActive) {
@@ -124,6 +162,6 @@ export abstract class AMidaScalper {
         }
 
         await MidaUtilities.wait(AMidaScalper._UPDATE_DELAY);
-        this._internalUpdate();
+        this._internalUpdate(forexPairExchangeRate);
     }
 }

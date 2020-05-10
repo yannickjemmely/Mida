@@ -21,7 +21,8 @@
         "typescript": "3.7.2",
         "tslint": "5.18.0",
         "@types/node": "12.7.2",
-        "@types/puppeteer": "1.19.1"
+        "@types/puppeteer": "1.19.1",
+        "@types/uuid": "7.0.3"
     },
     "_moduleAliases": {
         "!": ".",

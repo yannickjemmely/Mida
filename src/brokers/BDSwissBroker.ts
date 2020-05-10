@@ -2,42 +2,64 @@ import { IMidaBroker } from "#brokers/IMidaBroker";
 import { IMidaBrowser } from "#browsers/IMidaBrowser";
 import { IMidaBrowserTab } from "#browsers/IMidaBrowserTab";
 import { ChromiumBrowser } from "#browsers/ChromiumBrowser";
+import { MidaCurrency } from "#currency/MidaCurrency";
 import { MidaForexPair } from "#forex/MidaForexPair";
-import { MidaPosition } from "#position/MidaPosition";
+import { MidaForexPairExchangeRate } from "#forex/MidaForexPairExchangeRate";
+import { MidaMarket } from "#market/MidaMarket";
+import { MidaPosition, createPositionUUID } from "#position/MidaPosition";
 import { MidaPositionDirectionType } from "#position/MidaPositionDirectionType";
 import { MidaPositionDirectives } from "#position/MidaPositionDirectives";
 import { MidaPositionStatusType } from "#position/MidaPositionStatusType";
 
 export class BDSwissBroker implements IMidaBroker {
-    // A reference to the browser used internally to navigate the website of the broker.
-    private _browser: IMidaBrowser;
+    // Represents the name of the broker.
+    public static readonly NAME: string = "BDSwiss";
 
-    // A list of browser tabs used to perform actions on the website of the broker.
+    // Represents a reference to the browser used internally to navigate the website of the broker.
+    private _browser: IMidaBrowser | null;
+
+    // Represents a list of browser tabs used to perform actions on the website of the broker.
     private _browserTabs: {
         [name: string]: IMidaBrowserTab;
     };
 
+    // Represents the meta of the logged in account.
     private _accountMeta: any;
+
+    // Indicates if an account is logged in.
     private _isLoggedIn: boolean;
-    private _positions: {
-        [positionID: string]: {
+
+    // Represents a set of positions created through this broker.
+    private _localPositions: {
+        [positionUUID: string]: {
+            // Represents the order ID of the position.
+            orderID: string;
+
+            // Represents the directives of the position.
             directives: MidaPositionDirectives;
+
+            // Represents the position open date.
             openDate: Date;
-            openPrice: number;
+
+            // Represents the position close date.
             closeDate?: Date;
-            closePrice?: number;
         };
     };
 
     public constructor () {
-        this._browser = new ChromiumBrowser();
+        this._browser = null;
         this._browserTabs = {};
+        this._accountMeta = null;
         this._isLoggedIn = false;
-        this._positions = {};
+        this._localPositions = {};
     }
 
     public get isLoggedIn (): boolean {
         return this._isLoggedIn;
+    }
+
+    public get name (): string {
+        return BDSwissBroker.NAME;
     }
 
     public async login (meta: any): Promise<boolean> {
@@ -46,6 +68,8 @@ export class BDSwissBroker implements IMidaBroker {
         }
 
         try {
+            this._browser = new ChromiumBrowser();
+
             await this._browser.open();
 
             const loginTab: IMidaBrowserTab = await this._browser.openTab();
@@ -134,7 +158,6 @@ export class BDSwissBroker implements IMidaBroker {
         }
 
         const placeTradeButtonSelector: string = "button[data-cy=placeTrade]";
-        const openPrice: number = await this.getForexPairPrice(positionDirectives.forexPair);
 
         await tradeTab.click(placeTradeButtonSelector);
         await tradeTab.click(searchTextBoxSelector, 3);
@@ -143,17 +166,18 @@ export class BDSwissBroker implements IMidaBroker {
             setTimeout(resolve, 5000);
         });
 
-        const positionID: string = await this._browserTabs.positionsTab.evaluate(`(() => {
+        const orderID: string = await this._browserTabs.positionsTab.evaluate(`(() => {
             return window.document.querySelector("#positionsPaneContent .rt-tbody [role=rowgroup] [role=row]").childNodes[2].innerText.trim();
         })();`);
+        const positionUUID: string = createPositionUUID();
 
-        this._positions[positionID] = {
+        this._localPositions[positionUUID] = {
+            orderID,
             directives: positionDirectives,
             openDate: new Date(),
-            openPrice,
         };
 
-        const position: MidaPosition | null = await this._getPositionByID(positionID);
+        const position: MidaPosition | null = await this.getPositionByUUID(positionUUID);
 
         if (!position) {
             throw new Error();
@@ -162,11 +186,62 @@ export class BDSwissBroker implements IMidaBroker {
         return position;
     }
 
-    public async getPositions (status: MidaPositionStatusType): Promise<MidaPosition[]> {
+    public async getPositionByUUID (UUID: string): Promise<MidaPosition | null> {
+        const localPosition: any = this._localPositions[UUID];
+        const livePosition: any = await this._getPositionByOrderID(localPosition.orderID);
+
+        if (!localPosition || !livePosition) {
+            return null;
+        }
+
+        const position: MidaPosition = {
+            UUID,
+            directives: localPosition.directives,
+            status: MidaPositionStatusType.OPEN,
+            date: new Date(),
+            openDate: localPosition.openDate,
+            openPrice: parseFloat(livePosition.openPrice),
+            closeDate: undefined,
+            profit: parseFloat(livePosition.profit),
+            brokerName: BDSwissBroker.NAME,
+            update: async (): Promise<MidaPosition> => {
+                const position: MidaPosition | null = await this.getPositionByUUID(UUID);
+
+                if (!position) {
+                    throw new Error();
+                }
+
+                return position;
+            },
+            close: async (): Promise<boolean> => this.closePositionByUUID(UUID),
+        };
+
+        if (localPosition.closeDate) {
+            position.status = MidaPositionStatusType.CLOSE;
+            position.closeDate = localPosition.closeDate;
+        }
+        else {
+            delete position.closeDate;
+        }
+
+        return position;
+    }
+
+    public async closePositionByUUID (UUID: string): Promise<boolean> {
+        const localPosition: any = this._localPositions[UUID];
+
+        if (!localPosition) {
+            return false;
+        }
+
+        return this._closePositionByOrderID(localPosition.orderID);
+    }
+
+    public async getPositionsByStatus (status: MidaPositionStatusType): Promise<MidaPosition[]> {
         const positions: MidaPosition[] = [];
 
-        for (const positionID in this._positions) {
-            const position: MidaPosition | null = await this._getPositionByID(positionID);
+        for (const positionUUID in this._localPositions) {
+            const position: MidaPosition | null = await this.getPositionByUUID(positionUUID);
 
             if (position && position.status === status) {
                 positions.push(position);
@@ -185,7 +260,16 @@ export class BDSwissBroker implements IMidaBroker {
         return parseFloat(plainEquity);
     }
 
-    public async getForexPairPrice (forexPair: MidaForexPair): Promise<number> {
+    public async getEquityCurrency (): Promise<MidaCurrency> {
+        const forexTab: IMidaBrowserTab = this._browserTabs.forexTab;
+        const currencySymbol: any = await forexTab.evaluate(`(() => {
+            return window.document.querySelector("[data-cy=equity]").innerText.trim().split(" ")[0];
+        })();`);
+
+        return MidaMarket.getCurrencyBySymbol(currencySymbol);
+    }
+
+    public async getForexPairExchangeRate (forexPair: MidaForexPair): Promise<MidaForexPairExchangeRate> {
         const forexTab: IMidaBrowserTab = this._browserTabs.forexTab;
         const forexPairPrice: any = await forexTab.evaluate(`(() => {
             const forexPairRow = window.document.querySelector("[data-cy='${forexPair.ID}']").parentNode.parentNode;
@@ -193,19 +277,32 @@ export class BDSwissBroker implements IMidaBroker {
             return forexPairRow.querySelector(".rt-td:nth-child(5)").innerText.trim().replace(/,/g, "");
         })();`);
 
-        return parseFloat(forexPairPrice);
+        return {
+            forexPair,
+            date: new Date(),
+            price: parseFloat(forexPairPrice),
+        };
     }
 
     public async logout (): Promise<boolean> {
-        this._isLoggedIn = false;
-        this._positions = {};
+        if (!this.isLoggedIn) {
+            return false;
+        }
 
-        return false;
+        await this._browser?.close();
+
+        this._browser = null;
+        this._browserTabs = {};
+        this._accountMeta = null;
+        this._isLoggedIn = false;
+        this._localPositions = {};
+
+        return true;
     }
 
-    private async _getPositionByID (positionID: string): Promise<MidaPosition | null> {
+    private async _getPositionByOrderID (orderID: string): Promise<any> {
         const openPositionDescriptor: any = await this._browserTabs.positionsTab.evaluate(`(() => {
-            const rowSelector = ".rt-td > [title='${positionID}']";
+            const rowSelector = ".rt-td > [title='${orderID}']";
             const column = window.document.querySelector(rowSelector);
             
             if (!column) {
@@ -215,7 +312,8 @@ export class BDSwissBroker implements IMidaBroker {
             const row = column.parentNode.parentNode;
             
             return {
-                profit: row.childNodes[5].innerText.trim().split(" ")[1],
+                profit: row.childNodes[5].innerText.trim().split(" ")[1].replace(/,/g, ""),
+                openPrice: row.childNodes[7].innerText.trim().replace(/,/g, ""),
             };
         })();`);
 
@@ -223,23 +321,15 @@ export class BDSwissBroker implements IMidaBroker {
             return null;
         }
 
-        return {
-            directives: this._positions[positionID].directives,
-            status: MidaPositionStatusType.OPEN,
-            date: new Date(),
-            openDate: this._positions[positionID].openDate,
-            openPrice: this._positions[positionID].openPrice,
-            profit: parseFloat(openPositionDescriptor.profit),
-            close: async (): Promise<boolean> => this._closePositionByID(positionID),
-        };
+        return openPositionDescriptor;
     }
 
-    private async _closePositionByID (positionID: string): Promise<boolean> {
+    private async _closePositionByOrderID (orderID: string): Promise<boolean> {
         try {
             const positionsTab: IMidaBrowserTab = this._browserTabs.positionsTab;
-            const closeModalOpened: boolean = await positionsTab.evaluate(`(() => {
+            const isCloseModalOpen: boolean = await positionsTab.evaluate(`(() => {
                 try {
-                    const rowSelector = ".rt-td > [title='${positionID}']";
+                    const rowSelector = ".rt-td > [title='${orderID}']";
                     
                     window.document.querySelector(rowSelector).parentNode.parentNode.childNodes[10].childNodes[0].click();
                     
@@ -250,7 +340,7 @@ export class BDSwissBroker implements IMidaBroker {
                 }
             })();`);
 
-            if (!closeModalOpened) {
+            if (!isCloseModalOpen) {
                 return false;
             }
 
@@ -259,19 +349,20 @@ export class BDSwissBroker implements IMidaBroker {
             await positionsTab.waitForSelector(closeButtonSelector);
             await positionsTab.click(closeButtonSelector);
 
-            this._positions[positionID].closeDate = new Date();
-            this._positions[positionID].closePrice = await this.getForexPairPrice(this._positions[positionID].directives.forexPair);
-
             return true;
         }
         catch (error) {
-            console.log(error);
+            console.error("Failed to close position.");
 
             return false;
         }
     }
 
     private async _loadTradeTab (): Promise<boolean> {
+        if (!this._browser) {
+            throw new Error();
+        }
+
         try {
             const tradeTab: IMidaBrowserTab = await this._browser.openTab();
 
@@ -289,6 +380,10 @@ export class BDSwissBroker implements IMidaBroker {
     }
 
     private async _loadForexTab (): Promise<boolean> {
+        if (!this._browser) {
+            throw new Error();
+        }
+
         try {
             const forexTab: IMidaBrowserTab = await this._browser.openTab();
             const forexFilterSelector: string = "[data-cy=forex]";
@@ -309,6 +404,10 @@ export class BDSwissBroker implements IMidaBroker {
     }
 
     private async _loadPositionsTab (): Promise<boolean> {
+        if (!this._browser) {
+            throw new Error();
+        }
+
         try {
             const positionsTab: IMidaBrowserTab = await this._browser.openTab();
             const positionsButtonSelector: string = ".actions .actions__item:nth-child(2) > button";

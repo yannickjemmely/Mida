@@ -4,7 +4,7 @@ import { MidaForexPair } from "#forex/MidaForexPair";
 import { MidaForexPairSet } from "#forex/MidaForexPairSet";
 
 export class MidaMarket {
-    // Represents a set of currencies.
+    // Represents a set of currencies integrated by default.
     private static readonly _currencies: MidaCurrencySet = new MidaCurrencySet();
 
     // Represents a set of forex pairs.
@@ -26,6 +26,16 @@ export class MidaMarket {
         }
 
         return currency;
+    }
+
+    public static getCurrencyBySymbol (currencySymbol: string): MidaCurrency {
+        for (const currency of this._currencies.valuesToArray()) {
+            if (currency.symbol === currencySymbol) {
+                return currency;
+            }
+        }
+
+        throw new Error();
     }
 
     public static getForexPair (forexPairID: string): MidaForexPair {
