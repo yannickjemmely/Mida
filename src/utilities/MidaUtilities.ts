@@ -11,7 +11,7 @@ export namespace MidaUtilities {
     }
 
     export async function wait (milliseconds: number): Promise<void> {
-        await new Promise((resolve: Function): void => {
+        await new Promise((resolve: (value?: any) => void): void => {
             setTimeout(resolve, milliseconds);
         });
     }
@@ -20,11 +20,11 @@ export namespace MidaUtilities {
         let length: number = array.length;
 
         while (length > 0) {
-            const index: number = Math.floor(Math.random() * length);
-            const item: any = array[--length];
+            const randomIndex: number = Math.floor(Math.random() * length);
+            const element: any = array[--length];
 
-            array[length] = array[index];
-            array[index] = item;
+            array[length] = array[randomIndex];
+            array[randomIndex] = element;
         }
 
         return array;

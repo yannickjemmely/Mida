@@ -1,9 +1,7 @@
 import { MidaCurrency } from "#currency/MidaCurrency";
-import { MidaPredictor } from "#predictor/MidaPredictor";
 
-// Represents a forex pair.
 export class MidaForexPair {
-    // Represennts the base currency.
+    // Represents the base currency.
     private readonly _baseCurrency: MidaCurrency;
 
     // Represents the quote currency.
@@ -22,21 +20,13 @@ export class MidaForexPair {
         return this._quoteCurrency;
     }
 
+    // Represents the forex pair ID as "baseCurrencyID/quoteCurrencyID".
     public get ID (): string {
         return `${this.baseCurrency.ID}/${this.quoteCurrency.ID}`;
     }
 
+    // Represents the forex pair ID as "baseCurrencyIDquoteCurrencyID".
     public get ID2 (): string {
         return `${this.baseCurrency.ID}${this.quoteCurrency.ID}`;
     }
-
-    public async predictBaseCurrencyStrengthDirection (): Promise<number> {
-        return MidaPredictor.predictCurrencyStrengthDirection(this._baseCurrency.ID);
-    }
-
-    public async predictQuoteCurrencyStrengthDirection (): Promise<number> {
-        return MidaPredictor.predictCurrencyStrengthDirection(this._quoteCurrency.ID);
-    }
-
-    // public getWeeklyAverageHighPrice ();
 }

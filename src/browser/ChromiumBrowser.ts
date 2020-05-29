@@ -1,7 +1,7 @@
 import * as Path from "path";
 import * as Puppeteer from "puppeteer";
-import { IMidaBrowser } from "#browsers/IMidaBrowser";
-import { ChromiumBrowserTab } from "#browsers/ChromiumBrowserTab";
+import { IMidaBrowser } from "#browser/IMidaBrowser";
+import { ChromiumBrowserTab } from "#browser/ChromiumBrowserTab";
 
 export class ChromiumBrowser implements IMidaBrowser {
     private static readonly _shared: ChromiumBrowser = new ChromiumBrowser();
@@ -18,7 +18,7 @@ export class ChromiumBrowser implements IMidaBrowser {
         return this._PID;
     }
 
-    public get opened (): boolean {
+    public get isOpen (): boolean {
         return this.PID !== -1;
     }
 
@@ -76,7 +76,7 @@ export class ChromiumBrowser implements IMidaBrowser {
     }
 
     public static async openTab (): Promise<ChromiumBrowserTab> {
-        if (!this._shared.opened) {
+        if (!this._shared.isOpen) {
             await this._shared.open();
         }
 

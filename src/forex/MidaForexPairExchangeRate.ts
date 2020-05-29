@@ -4,9 +4,12 @@ export type MidaForexPairExchangeRate = {
     // Represents the forex pair.
     forexPair: MidaForexPair;
 
-    // Represents the date of the exchange rate representation.
+    // Represents the exchange rate date.
     date: Date;
 
-    // Represents the exchange rate (the quantity of quote currency necessary to buy one base currency).
-    price: number;
+    // Represents the bid price.
+    bid: number;
+
+    // Represents the ask price.
+    ask: number;
 };

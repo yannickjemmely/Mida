@@ -1,7 +1,7 @@
 // Represents a currency.
 export type MidaCurrency = {
     // Represents the currency ID.
-    ID: string;
+    readonly ID: string;
 
     // Represents the currency name.
     name: string;

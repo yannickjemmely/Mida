@@ -23,4 +23,7 @@ export type MidaForexPairPeriod = {
 
     // Represents the period highest price.
     high: number;
+
+    // Represents the period volume.
+    volume: number;
 };

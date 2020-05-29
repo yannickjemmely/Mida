@@ -3,9 +3,10 @@ import { MidaCurrency } from "#currency/MidaCurrency";
 import { MidaPositionDirectives } from "#position/MidaPositionDirectives";
 import { MidaPositionStatusType } from "#position/MidaPositionStatusType";
 
+// Represents a position.
 export type MidaPosition = {
-    // Represents a universally unique identifier of the position.
-    UUID: string;
+    // Represents the position universally unique identifier.
+    readonly UUID: string;
 
     // Represents the position directives.
     directives: MidaPositionDirectives;
@@ -13,35 +14,41 @@ export type MidaPosition = {
     // Represents the position status.
     status: MidaPositionStatusType;
 
-    // Represents the time the position representation has been created.
-    date: Date;
-
-    // Represents the time the position has been opened.
+    // Represents the position open date.
     openDate: Date;
 
-    // Represents the quote currency price at the position open time.
+    // Represents the position open price.
     openPrice: number;
 
-    // Represents the time the position has been closed.
-    closeDate?: Date;
+    // Represents the position close date.
+    closeDate: Date | null;
 
-    // Represents the quote currency price at the position close time.
-    closePrice?: number;
+    // Represents the position close price.
+    closePrice: number | null;
 
-    // Represents the actual profit of the position.
-    profit: number;
+    // Represents a piece of information about the broker used to open the position.
+    broker?: {
+        // Represents the name of the broker.
+        name: string;
 
-    // Represents the currency of the position profit.
-    profitCurrency: MidaCurrency;
+        // Represents the broker position ID (if applicable).
+        positionID?: string;
+    }
 
-    // Represents the name of the broker used to open the position.
-    brokerName: string;
+    // Used to get the actual profit of the position.
+    getProfit (): Promise<number>;
 
-    // Used to update the position.
-    update (): Promise<MidaPosition>;
+    // Used to get the position commission.
+    getCommission (): Promise<number>;
+
+    // Used to get the position swaps.
+    getSwaps (): Promise<number>;
+
+    // Used to get the position currency.
+    getCurrency (): Promise<MidaCurrency>;
 
     // Used to close the position.
-    close (): Promise<boolean>;
+    close (): Promise<void>;
 };
 
 export function createPositionUUID (): string {

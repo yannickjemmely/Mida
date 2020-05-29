@@ -1,8 +1,8 @@
 import * as Puppeteer from "puppeteer";
-import { IMidaBrowser } from "#browsers/IMidaBrowser";
-import { IMidaBrowserTab } from "#browsers/IMidaBrowserTab";
-import { ChromiumBrowser } from "#browsers/ChromiumBrowser";
-import { MidaHTTPResponse } from "#utilities/MidaHTTPResponse";
+import { IMidaBrowser } from "#browser/IMidaBrowser";
+import { IMidaBrowserTab } from "#browser/IMidaBrowserTab";
+import { ChromiumBrowser } from "#browser/ChromiumBrowser";
+import { MidaHTTPResponse } from "#utilities/http/MidaHTTPResponse";
 
 export class ChromiumBrowserTab implements IMidaBrowserTab {
     private readonly _chromiumBrowser: ChromiumBrowser;
@@ -44,6 +44,10 @@ export class ChromiumBrowserTab implements IMidaBrowserTab {
 
     public async evaluate (text: string): Promise<any> {
         return this._puppeteerPage.evaluate(text);
+    }
+
+    public async exposeProcedure (name: string, procedure: (...parameters: any[]) => any): Promise<void> {
+        return this._puppeteerPage.exposeFunction(name, procedure);
     }
 
     public async focus (selector: string): Promise<boolean> {

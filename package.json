@@ -13,8 +13,8 @@
         "module-alias": "2.2.2",
         "puppeteer": "2.1.1",
         "uuid": "8.0.0",
-        "technicalindicators": "3.1.0",
-        "axios": "0.19.2"
+        "axios": "0.19.2",
+        "tulind": "0.8.18"
     },
     "devDependencies": {
         "nodemon": "2.0.3",
@@ -27,18 +27,12 @@
     "_moduleAliases": {
         "!": ".",
         "#": "build/src",
-        "#brokers": "build/src/brokers",
-        "#browsers": "build/src/browsers",
+        "#advisor": "build/src/advisor",
+        "#broker": "build/src/broker",
+        "#browser": "build/src/browser",
         "#currency": "build/src/currency",
-        "#factors": "build/src/factors",
         "#forex": "build/src/forex",
-        "#market": "build/src/market",
         "#position": "build/src/position",
-        "#predictor": "build/src/predictor",
-        "#scalpers": "build/src/scalpers",
-        "#scrapers": "build/src/scrapers",
-        "#signals": "build/src/signals",
-        "#tracer": "build/src/tracer",
         "#utilities": "build/src/utilities"
     }
 }
