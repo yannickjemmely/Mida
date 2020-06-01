@@ -1,5 +1,5 @@
 export enum MidaForexPairTrendType {
-    BUY = "buy",
+    BULLISH = "bullish",
     NEUTRAL = "neutral",
-    SELL = "sell",
+    BEARISH = "bearish",
 }

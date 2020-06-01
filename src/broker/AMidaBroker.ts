@@ -18,7 +18,10 @@ export abstract class AMidaBroker extends AMidaObservable<MidaBrokerEventType> {
     // Indicates if an account is logged in.
     public abstract get isLoggedIn (): boolean;
 
-    // Represents the type of the account logged in.
+    // Represents the ID of the account logged in.
+    public abstract get accountID (): string;
+
+    // Represents the type of the actual account.
     public abstract get accountType (): MidaBrokerAccountType;
 
     // Represents the name of the broker.
@@ -42,7 +45,7 @@ export abstract class AMidaBroker extends AMidaObservable<MidaBrokerEventType> {
     // Used to get the actual balance.
     public abstract getBalance (): Promise<number>;
 
-    // Used to reset the balance (if the account logged in is demo).
+    // Used to reset the balance (only for demo accounts).
     public abstract resetBalance (): Promise<void>;
 
     // Used to get the actual equity.
@@ -54,8 +57,17 @@ export abstract class AMidaBroker extends AMidaObservable<MidaBrokerEventType> {
     // Used to get the account currency.
     public abstract getCurrency (): Promise<MidaCurrency>;
 
-    // Used to listen the ticks and periods of a forex pair.
-    public abstract listenForexPair (forexPair: MidaForexPair): void;
+    // Used to listen the ticks of a forex pair.
+    public abstract addForexPairTickListener (forexPair: MidaForexPair, listener: (forexPairExchangeRate: MidaForexPairExchangeRate) => void): string;
+
+    // Used to unlisten the ticks of a forex pair.
+    public abstract removeForexPairTickListener (listenerUUID: string): boolean;
+
+    // Used to listen the periods of a forex pair.
+    public abstract addForexPairPeriodListener (forexPair: MidaForexPair, listener: (forexPairPeriod: MidaForexPairPeriod) => void): string;
+
+    // Used to unlisten the periods of a forex pair.
+    public abstract removeForexPairPeriodListener (listenerUUID: string): boolean;
 
     // Used to get the actual exchange rate of a forex pair.
     public abstract getForexPairExchangeRate (forexPair: MidaForexPair): Promise<MidaForexPairExchangeRate>;

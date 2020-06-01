@@ -27,6 +27,10 @@ export abstract class AMidaObservable<T extends string> {
             if (this._listeners[eventType].hasOwnProperty(listenerUUID)) {
                 delete this._listeners[eventType][listenerUUID];
 
+                if (Object.keys(this._listeners[eventType]).length === 0) {
+                    delete this._listeners[eventType];
+                }
+
                 return true;
             }
         }
@@ -38,5 +42,15 @@ export abstract class AMidaObservable<T extends string> {
         for (const listenerUUID in this._listeners[eventType]) {
             void this._listeners[eventType][listenerUUID](...parameters);
         }
+    }
+}
+
+export class MidaPrivateObservable extends AMidaObservable<string> {
+    public constructor () {
+        super();
+    }
+
+    public notifyEvent (eventType: string, ...parameters: any[]): void {
+        super.notifyEvent(eventType, ...parameters);
     }
 }

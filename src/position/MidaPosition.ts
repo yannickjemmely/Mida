@@ -8,6 +8,18 @@ export type MidaPosition = {
     // Represents the position universally unique identifier.
     readonly UUID: string;
 
+    // Represents a piece of information about the broker used to open the position.
+    broker: {
+        // Represents the name of the broker.
+        name: string;
+
+        // Represents the broker account ID.
+        accountID: string;
+
+        // Represents the broker position ID.
+        positionID: string;
+    };
+
     // Represents the position directives.
     directives: MidaPositionDirectives;
 
@@ -25,15 +37,6 @@ export type MidaPosition = {
 
     // Represents the position close price.
     closePrice: number | null;
-
-    // Represents a piece of information about the broker used to open the position.
-    broker?: {
-        // Represents the name of the broker.
-        name: string;
-
-        // Represents the broker position ID (if applicable).
-        positionID?: string;
-    }
 
     // Used to get the actual profit of the position.
     getProfit (): Promise<number>;

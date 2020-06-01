@@ -28,6 +28,7 @@
         "!": ".",
         "#": "build/src",
         "#advisor": "build/src/advisor",
+        "#analysis": "build/src/analysis",
         "#broker": "build/src/broker",
         "#browser": "build/src/browser",
         "#currency": "build/src/currency",

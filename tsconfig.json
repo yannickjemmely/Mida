@@ -14,6 +14,9 @@
             "#advisor/*": [
                 "src/advisor/*"
             ],
+            "#analysis/*": [
+                "src/analysis/*"
+            ],
             "#broker/*": [
                 "src/broker/*"
             ],

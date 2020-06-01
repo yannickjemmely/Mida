@@ -1,4 +1,4 @@
-// Represents a period timeframe expressed in seconds.
+// Represents the timeframe (expressed in seconds) of a period.
 export enum MidaForexPairPeriodType {
     M1 = 60,
     M5 = 300,

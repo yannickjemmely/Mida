@@ -11,7 +11,7 @@ import {MidaForexPairType} from "#forex/MidaForexPairType";
 import {MidaForexPairExchangeRate} from "#forex/MidaForexPairExchangeRate";
 import {MidaBrokerEventType} from "#broker/MidaBrokerEventType";
 import {MidaForexPairPeriodType} from "#forex/MidaForexPairPeriodType";
-import { MidaTA } from "#utilities/MidaTA";
+import { MidaTA } from "#/analysis/MidaTA";
 import {AMidaAdvisor} from "#advisor/AMidaAdvisor";
 
 export namespace MidaFX {
@@ -25,7 +25,6 @@ class MyAD extends AMidaAdvisor {
 }
 
 void (async (): Promise<void> => {
-
     const myAccount: AMidaBroker = new BDSwissBroker();
 
     await myAccount.login({
@@ -33,10 +32,4 @@ void (async (): Promise<void> => {
         email: "vasile.peste@protonmail.ch",
         password: "b83c159fd52a5A",
     });
-
-    const hi: MyAD = new MyAD({
-        broker: myAccount,
-        forexPair: MidaForexPairType.EUR_USD,
-    });
-
 })();

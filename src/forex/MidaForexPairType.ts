@@ -38,6 +38,15 @@ export class MidaForexPairType {
     // Represents the EUR/USD forex pair.
     public static readonly EUR_USD: MidaForexPair = MidaForexPairType.getByID("EUR/USD");
 
+    // Represents the EUR/GBP forex pair.
+    public static readonly EUR_GBP: MidaForexPair = MidaForexPairType.getByID("EUR/GBP");
+
+    // Represents the USD/CAD forex pair.
+    public static readonly USD_CAD: MidaForexPair = MidaForexPairType.getByID("USD/CAD");
+
+    // Represents the USD/JPY forex pair.
+    public static readonly USD_JPY: MidaForexPair = MidaForexPairType.getByID("USD/JPY");
+
     // Represents the GBP/USD forex pair.
     public static readonly GBP_USD: MidaForexPair = MidaForexPairType.getByID("GBP/USD");
 
