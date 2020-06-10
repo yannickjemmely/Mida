@@ -1,7 +1,5 @@
-import {MidaCongestionArea} from "#analysis/MidaCongestionArea";
-import {MidaCongestionAreaType} from "#analysis/MidaCongestionAreaType";
-import {MidaForexPairPeriod} from "#forex/MidaForexPairPeriod";
-import {MidaForexPairTrendType} from "#forex/MidaForexPairTrendType";
+import { MidaCongestionArea } from "#analysis/MidaCongestionArea";
+import { MidaForexPairPeriod } from "#forex/MidaForexPairPeriod";
 
 const Tulind: any = require("tulind");
 
@@ -11,17 +9,17 @@ export class MidaTA {
     }
 
     // Very Important Notice:
-    // 1. All the passed periods or prices must be ordered from oldest to newest.
-    // 2. All the results are ordered from oldest to newest.
+    // 1. All the periods or prices passed as parameters must be ordered from oldest to newest.
+    // 2. All the returned values are ordered from oldest to newest.
 
-    public static async calculateRSI (closePrices: number[], period: number): Promise<number[]> {
+    public static async calculateRSI (closePrices: number[], length: number): Promise<number[]> {
         return new Promise((resolve: (...parameters: any[]) => void, reject: (...parameters: any[]) => void): void => {
             Tulind.indicators.rsi.indicator(
                 [
                     closePrices,
                 ],
                 [
-                    period,
+                    length,
                 ],
                 (error: any, results: any): void => {
                     if (error) {
@@ -35,14 +33,14 @@ export class MidaTA {
         });
     }
 
-    public static async calculateSMA (prices: number[], period: number): Promise<number[]> {
+    public static async calculateSMA (prices: number[], length: number): Promise<number[]> {
         return new Promise((resolve: (...parameters: any[]) => void, reject: (...parameters: any[]) => void): void => {
             Tulind.indicators.sma.indicator(
                 [
                     prices,
                 ],
                 [
-                    period,
+                    length,
                 ],
                 (error: any, results: any): void => {
                     if (error) {
@@ -56,60 +54,105 @@ export class MidaTA {
         });
     }
 
-    public static async calculateCongestionAreas (periods: MidaForexPairPeriod[], minLength: number = 3): Promise<MidaCongestionArea[]> {
-        const margin: number = 0.3;
-        const offset: number = margin / 4;
-        const congestionAreas: MidaCongestionArea[] = [];
-
-        for (let i: number = 0; i < periods.length; ++i) {
-            const periodCenter: number = (periods[i].open + periods[i].close) / 2;
-            const periodResistance: number = periodCenter + margin;
-            const periodSupport: number = periodCenter - margin;
-            let congestionPeriods: MidaForexPairPeriod[] = [];
-
-            for (let j: number = 0; j < periods.length; ++j) {
-                if (periods[j].high > periodResistance + offset) {
-                    congestionAreas.push({
-                        periods: congestionPeriods,
-                        type: MidaCongestionAreaType.DISTRIBUTION,
-                        resistancePrice: periodResistance,
-                        supportPrice: periodSupport,
-                    });
-
-                    congestionPeriods = [];
+    public static async calculateEMA (prices: number[], length: number): Promise<number[]> {
+        return new Promise((resolve: (...parameters: any[]) => void, reject: (...parameters: any[]) => void): void => {
+            Tulind.indicators.ema.indicator(
+                [
+                    prices,
+                ],
+                [
+                    length,
+                ],
+                (error: any, results: any): void => {
+                    if (error) {
+                        reject(error);
+                    }
+                    else {
+                        resolve(results[0]);
+                    }
                 }
-                else if (periods[j].low < periodSupport - offset) {
-                    congestionAreas.push({
-                        periods: congestionPeriods,
-                        type: MidaCongestionAreaType.ACCUMULATION,
-                        resistancePrice: periodResistance,
-                        supportPrice: periodSupport,
-                    });
+            );
+        });
+    }
 
-                    congestionPeriods = [];
+    public static async calculateBB (prices: number[], length: number, multiplier: number): Promise<number[][]> {
+        return new Promise((resolve: (...parameters: any[]) => void, reject: (...parameters: any[]) => void): void => {
+            Tulind.indicators.bbands.indicator(
+                [
+                    prices,
+                ],
+                [
+                    length,
+                    multiplier,
+                ],
+                (error: any, results: any): void => {
+                    if (error) {
+                        reject(error);
+                    }
+                    else {
+                        resolve([
+                            // Represents the lower band.
+                            results[0],
+                            // Represents the middle band.
+                            results[1],
+                            // Represents the upper band.
+                            results[2],
+                        ]);
+                    }
                 }
-                else {
-                    congestionPeriods.push(periods[j]);
+            );
+        });
+    }
+
+    public static async calculateSTOCH (prices: number[][], length: number, K: number, D: number): Promise<number[][]> {
+        return new Promise((resolve: (...parameters: any[]) => void, reject: (...parameters: any[]) => void): void => {
+            Tulind.indicators.stoch.indicator(
+                [
+                    // Represents the high prices.
+                    prices[0],
+                    // Represents the low prices.
+                    prices[1],
+                    // Represents the close prices.
+                    prices[2],
+                ],
+                [
+                    length,
+                    K,
+                    D,
+                ],
+                (error: any, results: any): void => {
+                    if (error) {
+                        reject(error);
+                    }
+                    else {
+                        resolve([
+                            // K.
+                            results[0],
+                            // D.
+                            results[1],
+                        ]);
+                    }
                 }
-            }
+            );
+        });
+    }
+
+    public static async calculateCongestionArea (periods: MidaForexPairPeriod[]): Promise<MidaCongestionArea | null> {
+        const closePrices: number[] = periods.map((period: MidaForexPairPeriod): number => period.close);
+        const minPrice: number = Math.min(...closePrices);
+        const maxPrice: number = Math.max(...closePrices);
+        const averagePrice: number = closePrices.reduce((leftPrice: number, rightPrice: number): number => leftPrice + rightPrice, 0) / closePrices.length;
+        const distance: number = averagePrice / ((minPrice + maxPrice) / 2);
+
+        if (distance < 0.95 || distance > 1.05) {
+            return null;
         }
 
-        return congestionAreas;
-    }
-
-    public static async calculateResistancePrice (periods: MidaForexPairPeriod[]): Promise<number> {
-        return -1;
-    }
-
-    public static async calculateSupportPrice (periods: MidaForexPairPeriod[]): Promise<number> {
-        return -1;
-    }
-
-    public static async calculateTrendType (periods: MidaForexPairPeriod[]): Promise<MidaForexPairTrendType> {
-        return MidaForexPairTrendType.NEUTRAL;
-    }
-
-    public static async calculateSwings (): Promise<void> {
-
+        return {
+            periods,
+            averagePrice,
+            supportPrice: Math.min(...periods.map((period: MidaForexPairPeriod): number => period.low)),
+            resistancePrice: Math.max(...periods.map((period: MidaForexPairPeriod): number => period.high)),
+        };
     }
 }

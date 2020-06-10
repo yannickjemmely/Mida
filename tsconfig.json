@@ -26,6 +26,12 @@
             "#currency/*": [
                 "src/currency/*"
             ],
+            "#errors/*": [
+                "src/errors/*"
+            ],
+            "#factors/*": [
+                "src/factors/*"
+            ],
             "#forex/*": [
                 "src/forex/*"
             ],

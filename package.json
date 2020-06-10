@@ -7,7 +7,8 @@
         "lint": "tslint --project .",
         "build": "npm run lint && tsc",
         "start": "npm run build && node ./build/main.js",
-        "dev": "nodemon npm start"
+        "start-dev": "nodemon npm start",
+        "start-prod": "npm run build && forever start ./build/main.js"
     },
     "dependencies": {
         "module-alias": "2.2.2",
@@ -20,6 +21,7 @@
         "nodemon": "2.0.3",
         "typescript": "3.7.2",
         "tslint": "5.18.0",
+        "forever": "3.0.0",
         "@types/node": "12.7.2",
         "@types/puppeteer": "1.19.1",
         "@types/uuid": "7.0.3"
@@ -32,6 +34,8 @@
         "#broker": "build/src/broker",
         "#browser": "build/src/browser",
         "#currency": "build/src/currency",
+        "#errors": "build/src/errors",
+        "#factors": "build/src/factors",
         "#forex": "build/src/forex",
         "#position": "build/src/position",
         "#utilities": "build/src/utilities"

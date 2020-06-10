@@ -33,4 +33,9 @@ export namespace MidaUtilities {
 
         return array;
     }
+
+    // Used to get a random integer in an inclusive range.
+    export function generateInRandomInteger (min: number, max: number): number {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
 }

@@ -182,17 +182,17 @@ export class BDSwissBroker extends AMidaBroker {
 
         const position: MidaPosition = {
             UUID: positionUUID,
+            broker: {
+                name: this.name,
+                accountID: this.accountID,
+                positionID: openDescriptor.orderID,
+            },
             directives: positionDirectives,
             status: MidaPositionStatusType.OPEN,
             openDate: new Date(),
             openPrice: openDescriptor.openPrice,
             closeDate: null,
             closePrice: null,
-            broker: {
-                name: this.name,
-                accountID: this.accountID,
-                positionID: openDescriptor.orderID,
-            },
             getProfit: async (): Promise<number> => this._getPositionProfitByOrderID(openDescriptor.orderID),
             getCommission: async (): Promise<number> => openDescriptor.commission,
             getSwaps: async (): Promise<number> => openDescriptor.swaps,

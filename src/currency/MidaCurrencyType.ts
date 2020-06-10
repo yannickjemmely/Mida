@@ -1,5 +1,6 @@
 import { MidaCurrency } from "#currency/MidaCurrency";
 import { MidaCurrencySet } from "#currency/MidaCurrencySet";
+import { MidaUndefinedCurrencyError } from "#currency/MidaUndefinedCurrencyError";
 
 export class MidaCurrencyType {
     // Represents the set of currencies integrated by default.
@@ -23,7 +24,7 @@ export class MidaCurrencyType {
         const currency: MidaCurrency | null = MidaCurrencyType._currencies.get(currencyID);
 
         if (!currency) {
-            throw new Error();
+            throw new MidaUndefinedCurrencyError(currencyID);
         }
 
         return currency;
@@ -31,12 +32,12 @@ export class MidaCurrencyType {
 
     public static getBySymbol (currencySymbol: string): MidaCurrency {
         for (const currency of MidaCurrencyType._currencies.toArray()) {
-            if (currency.symbol === currencySymbol) {
+            if (currencySymbol === currency.symbol) {
                 return currency;
             }
         }
 
-        throw new Error();
+        throw new MidaUndefinedCurrencyError(currencySymbol);
     }
 
     // Represents the EUR currency.

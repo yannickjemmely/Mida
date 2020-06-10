@@ -1,4 +1,4 @@
 export enum MidaPositionDirectionType {
-    BUY = "buy",
     SELL = "sell",
+    BUY = "buy",
 }

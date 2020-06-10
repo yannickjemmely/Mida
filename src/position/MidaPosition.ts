@@ -50,6 +50,9 @@ export type MidaPosition = {
     // Used to get the position currency.
     getCurrency (): Promise<MidaCurrency>;
 
+    // TODO: Used to cancel the position schedule.
+    // cancelSchedule (): Promise<void>;
+
     // Used to close the position.
     close (): Promise<void>;
 };
