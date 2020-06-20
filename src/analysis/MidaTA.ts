@@ -3,14 +3,13 @@ import { MidaForexPairPeriod } from "#forex/MidaForexPairPeriod";
 
 const Tulind: any = require("tulind");
 
+// Very Important Notice:
+// 1. All the periods or prices passed as parameters must be ordered from oldest to newest.
+// 2. All the returned values are ordered from oldest to newest.
 export class MidaTA {
     private constructor () {
         // Silence is golden.
     }
-
-    // Very Important Notice:
-    // 1. All the periods or prices passed as parameters must be ordered from oldest to newest.
-    // 2. All the returned values are ordered from oldest to newest.
 
     public static async calculateRSI (closePrices: number[], length: number): Promise<number[]> {
         return new Promise((resolve: (...parameters: any[]) => void, reject: (...parameters: any[]) => void): void => {

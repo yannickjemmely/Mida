@@ -1,21 +1,11 @@
 import {AMidaBroker} from "src/broker/AMidaBroker";
 import {BDSwissBroker} from "#broker/BDSwissBroker";
-import {MidaPosition} from "#position/MidaPosition";
-import {MidaPositionDirectionType} from "#position/MidaPositionDirectionType";
-import {MidaForexPair} from "#forex/MidaForexPair";
-
-import {MidaForexPairPeriod} from "#forex/MidaForexPairPeriod";
 
 
 import {MidaForexPairType} from "#forex/MidaForexPairType";
-import {MidaForexPairExchangeRate} from "#forex/MidaForexPairExchangeRate";
-import {MidaBrokerEventType} from "#broker/MidaBrokerEventType";
 import {MidaForexPairPeriodType} from "#forex/MidaForexPairPeriodType";
-import { MidaTA } from "#/analysis/MidaTA";
-import {AMidaAdvisor} from "#advisor/AMidaAdvisor";
-import {MidaAndrewAdvisor} from "#advisor/MidaAndrewAdvisor";
-import {MidaUtilities} from "#utilities/MidaUtilities";
-import {MidaUpperBandAdvisor} from "#advisor/MidaUpperBandAdvisor";
+import {MidaBollingerTrendAdvisor} from "#advisors/bollinger-trend/MidaBollingerTrendAdvisor";
+import {MidaForexPair} from "#forex/MidaForexPair";
 
 export namespace MidaFX {
     
@@ -29,69 +19,31 @@ void (async (): Promise<void> => {
         email: "vasile.peste@protonmail.ch",
         password: "b83c159fd52a5A",
     });
-/*
-    const a: MidaAndrewAdvisor = new MidaAndrewAdvisor({
-        broker: myAccount,
-        forexPair: MidaForexPairType.EUR_USD,
-    });
 
-    a.start();
+    const advisorPairs: MidaForexPair[] = [
+        MidaForexPairType.EUR_USD,
+        MidaForexPairType.EUR_AUD,
+        MidaForexPairType.EUR_CAD,
+        MidaForexPairType.EUR_GBP,
+        MidaForexPairType.USD_CAD,
+        MidaForexPairType.GBP_USD,
+        MidaForexPairType.GBP_AUD,
+        MidaForexPairType.GBP_CAD,
+        MidaForexPairType.GBP_CHF,
+        MidaForexPairType.USD_JPY,
+    ];
 
-    const b: MidaAndrewAdvisor = new MidaAndrewAdvisor({
-        broker: myAccount,
-        forexPair: MidaForexPairType.EUR_GBP,
-    });
+    const advisors: MidaBollingerTrendAdvisor[] = [];
 
-    b.start();
+    for (const forexPair of advisorPairs) {
+        const upperAdvisor: MidaBollingerTrendAdvisor = new MidaBollingerTrendAdvisor({
+            broker: myAccount,
+            forexPair,
+        });
 
-    const c: MidaAndrewAdvisor = new MidaAndrewAdvisor({
-        broker: myAccount,
-        forexPair: MidaForexPairType.USD_CAD,
-    });
-
-    c.start();
-
-    const d: MidaAndrewAdvisor = new MidaAndrewAdvisor({
-        broker: myAccount,
-        forexPair: MidaForexPairType.GBP_CHF,
-    });
-
-    d.start();
-
-    const trend: MidaSimpleTrendAdvisor = new MidaSimpleTrendAdvisor({
-        broker: myAccount,
-        forexPair: MidaForexPairType.EUR_USD,
-    });
-
-    trend.start();
-
-    const trend2: MidaSimpleTrendAdvisor = new MidaSimpleTrendAdvisor({
-        broker: myAccount,
-        forexPair: MidaForexPairType.EUR_GBP,
-    });
-
-    trend2.start();
-*/
-    const trend3: MidaUpperBandAdvisor = new MidaUpperBandAdvisor({
-        broker: myAccount,
-        forexPair: MidaForexPairType.GBP_USD,
-    });
-
-    trend3.start();
-
-    const trend4: MidaUpperBandAdvisor = new MidaUpperBandAdvisor({
-        broker: myAccount,
-        forexPair: MidaForexPairType.GBP_CHF,
-    });
-
-    trend4.start();
-
-    const trend5: MidaUpperBandAdvisor = new MidaUpperBandAdvisor({
-        broker: myAccount,
-        forexPair: MidaForexPairType.USD_CAD,
-    });
-
-    trend5.start();
+        advisors.push(upperAdvisor);
+        upperAdvisor.start();
+    }
 
     console.log("Operative.");
 })();

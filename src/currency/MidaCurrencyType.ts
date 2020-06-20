@@ -64,3 +64,12 @@ export class MidaCurrencyType {
     // Represents the CHF currency.
     public static readonly CHF: MidaCurrency = MidaCurrencyType.getByID("CHF");
 }
+
+export const EUR: MidaCurrency = MidaCurrencyType.EUR;
+export const GBP: MidaCurrency = MidaCurrencyType.GBP;
+export const USD: MidaCurrency = MidaCurrencyType.USD;
+export const NZD: MidaCurrency = MidaCurrencyType.NZD;
+export const AUD: MidaCurrency = MidaCurrencyType.AUD;
+export const CAD: MidaCurrency = MidaCurrencyType.CAD;
+export const JPY: MidaCurrency = MidaCurrencyType.JPY;
+export const CHF: MidaCurrency = MidaCurrencyType.CHF;

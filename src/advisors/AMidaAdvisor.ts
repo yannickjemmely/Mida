@@ -1,5 +1,5 @@
-import { MidaAdvisorEventType } from "#advisor/MidaAdvisorEventType";
-import { MidaAdvisorOptions } from "#advisor/MidaAdvisorOptions";
+import { MidaAdvisorEventType } from "#advisors/MidaAdvisorEventType";
+import { MidaAdvisorOptions } from "#advisors/MidaAdvisorOptions";
 import { AMidaBroker } from "#broker/AMidaBroker";
 import { MidaBrokerEventType } from "#broker/MidaBrokerEventType";
 import { MidaForexPair } from "#forex/MidaForexPair";
@@ -57,6 +57,10 @@ export abstract class AMidaAdvisor extends AMidaObservable<MidaAdvisorEventType>
         if (options.operative) {
             this.start();
         }
+    }
+
+    public get options (): Readonly<MidaAdvisorOptions> {
+        return this._options;
     }
 
     public get broker (): AMidaBroker {
@@ -176,7 +180,7 @@ export abstract class AMidaAdvisor extends AMidaObservable<MidaAdvisorEventType>
             this.onTick(forexPairExchangeRate);
         }
         catch (error) {
-            console.log(error);
+            console.error(error);
         }
     }
 
@@ -187,7 +191,7 @@ export abstract class AMidaAdvisor extends AMidaObservable<MidaAdvisorEventType>
             await this._asyncTickPromise;
         }
         catch (error) {
-            console.log(error);
+            console.error(error);
         }
 
         const nextTick: MidaForexPairExchangeRate | undefined = this._asyncTicks.shift();

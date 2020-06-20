@@ -5,6 +5,7 @@
         "member-access": true,
         "curly": true,
         "no-duplicate-variable": true,
+        "space-before-function-paren": true,
         "no-return-await": true,
         "eofline": true,
         "semicolon": [
@@ -30,7 +31,6 @@
             "property-declaration",
             "variable-declaration",
             "member-variable-declaration",
-            "object-destructuring",
             "array-destructuring"
         ]
     }

@@ -11,8 +11,8 @@
             "#/*": [
                 "src/*"
             ],
-            "#advisor/*": [
-                "src/advisor/*"
+            "#advisors/*": [
+                "src/advisors/*"
             ],
             "#analysis/*": [
                 "src/analysis/*"

@@ -8,6 +8,9 @@ export type MidaAdvisorOptions = {
     // Represents the operated forex pair.
     forexPair: MidaForexPair;
 
-    // Indicates if the advisor must be operative immediately after being instantiated.
+    // Indicates if the advisors must be operative immediately after being instantiated.
     operative?: boolean;
+
+    // Indicates if the advisor is being backtested.
+    isTest?: boolean;
 };

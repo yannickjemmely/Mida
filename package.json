@@ -29,7 +29,7 @@
     "_moduleAliases": {
         "!": ".",
         "#": "build/src",
-        "#advisor": "build/src/advisor",
+        "#advisors": "build/src/advisors",
         "#analysis": "build/src/analysis",
         "#broker": "build/src/broker",
         "#browser": "build/src/browser",
