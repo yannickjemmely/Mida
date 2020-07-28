@@ -1,11 +1,12 @@
-import {AMidaBroker} from "src/broker/AMidaBroker";
+import {AMidaBroker} from "#broker/AMidaBroker";
 import {BDSwissBroker} from "#broker/BDSwissBroker";
 
-
 import {MidaForexPairType} from "#forex/MidaForexPairType";
-import {MidaForexPairPeriodType} from "#forex/MidaForexPairPeriodType";
-import {MidaBollingerTrendAdvisor} from "#advisors/bollinger-trend/MidaBollingerTrendAdvisor";
+import {MidaPrincepsAdvisor} from "#advisors/princeps/MidaPrincepsAdvisor";
 import {MidaForexPair} from "#forex/MidaForexPair";
+import {MidaAndrewAdvisor} from "#advisors/andrew/MidaAndrewAdvisor";
+import {MidaRunwayAdvisor} from "#advisors/runway/MidaRunwayAdvisor";
+import {MidaPositionDirectionType} from "#position/MidaPositionDirectionType";
 
 export namespace MidaFX {
     
@@ -33,16 +34,35 @@ void (async (): Promise<void> => {
         MidaForexPairType.USD_JPY,
     ];
 
-    const advisors: MidaBollingerTrendAdvisor[] = [];
+    const advisors: MidaPrincepsAdvisor[] = [];
+    const andrewAdvisors: MidaAndrewAdvisor[] = [];
+    const runwayAdvisors: MidaRunwayAdvisor[] = [];
+
+    myAccount.openPosition({
+        forexPair: MidaForexPairType.USD_JPY,
+        direction: MidaPositionDirectionType.SELL,
+        lots: 2,
+    });
 
     for (const forexPair of advisorPairs) {
-        const upperAdvisor: MidaBollingerTrendAdvisor = new MidaBollingerTrendAdvisor({
+
+        advisors.push(new MidaPrincepsAdvisor({
             broker: myAccount,
             forexPair,
-        });
+            operative: true,
+        }));
 
-        advisors.push(upperAdvisor);
-        upperAdvisor.start();
+        runwayAdvisors.push(new MidaRunwayAdvisor({
+            broker: myAccount,
+            forexPair,
+            operative: true,
+        }));
+/*
+        andrewAdvisors.push(new MidaAndrewAdvisor({
+            broker: myAccount,
+            forexPair,
+            operative: true,
+        }));*/
     }
 
     console.log("Operative.");

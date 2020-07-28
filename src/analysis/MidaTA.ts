@@ -3,7 +3,7 @@ import { MidaForexPairPeriod } from "#forex/MidaForexPairPeriod";
 
 const Tulind: any = require("tulind");
 
-// Very Important Notice:
+// Very Important Points:
 // 1. All the periods or prices passed as parameters must be ordered from oldest to newest.
 // 2. All the returned values are ordered from oldest to newest.
 export class MidaTA {
@@ -136,14 +136,14 @@ export class MidaTA {
         });
     }
 
-    public static async calculateCongestionArea (periods: MidaForexPairPeriod[]): Promise<MidaCongestionArea | null> {
+    public static async calculateCongestionAreaByVasile (periods: MidaForexPairPeriod[], threshold: number = 0.05): Promise<MidaCongestionArea | null> {
         const closePrices: number[] = periods.map((period: MidaForexPairPeriod): number => period.close);
         const minPrice: number = Math.min(...closePrices);
         const maxPrice: number = Math.max(...closePrices);
         const averagePrice: number = closePrices.reduce((leftPrice: number, rightPrice: number): number => leftPrice + rightPrice, 0) / closePrices.length;
         const distance: number = averagePrice / ((minPrice + maxPrice) / 2);
 
-        if (distance < 0.95 || distance > 1.05) {
+        if (distance < 1 - threshold || distance > 1 + threshold) {
             return null;
         }
 

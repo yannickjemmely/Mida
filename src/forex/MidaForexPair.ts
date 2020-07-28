@@ -31,20 +31,22 @@ export class MidaForexPair {
     }
 
     public get pipPosition (): number {
-        if (this.quoteCurrency === MidaCurrencyType.JPY) {
-            return 2;
-        }
+        switch (this._quoteCurrency) {
+            case MidaCurrencyType.JPY:
+                return 2;
 
-        return 4;
+            default:
+                return 4;
+        }
     }
 
     // Represents the forex pair ID as "baseCurrencyID/quoteCurrencyID".
     public get ID (): string {
-        return `${this.baseCurrency.ID}/${this.quoteCurrency.ID}`;
+        return `${this._baseCurrency.ID}/${this._quoteCurrency.ID}`;
     }
 
     // Represents the forex pair ID as "baseCurrencyIDquoteCurrencyID".
     public get ID2 (): string {
-        return `${this.baseCurrency.ID}${this.quoteCurrency.ID}`;
+        return `${this._baseCurrency.ID}${this._quoteCurrency.ID}`;
     }
 }

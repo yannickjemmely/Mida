@@ -1,15 +1,15 @@
-import { AMidaAdvisor } from "#advisors/AMidaAdvisor";
-import { MidaAdvisorOptions } from "#advisors/MidaAdvisorOptions";
-import { MidaTA } from "#analysis/MidaTA";
-import { MidaForexPairExchangeRate } from "#forex/MidaForexPairExchangeRate";
-import { MidaForexPairPeriod } from "#forex/MidaForexPairPeriod";
-import { MidaForexPairPeriodType } from "#forex/MidaForexPairPeriodType";
-import { MidaForexPairTrendType } from "#forex/MidaForexPairTrendType";
-import { MidaPosition } from "#position/MidaPosition";
-import { MidaPositionDirectionType } from "#position/MidaPositionDirectionType";
-import { MidaUtilities } from "#utilities/MidaUtilities";
+import {AMidaAdvisor} from "#advisors/AMidaAdvisor";
+import {MidaAdvisorOptions} from "#advisors/MidaAdvisorOptions";
+import {MidaTA} from "#analysis/MidaTA";
+import {MidaForexPairExchangeRate} from "#forex/MidaForexPairExchangeRate";
+import {MidaForexPairPeriod} from "#forex/MidaForexPairPeriod";
+import {MidaForexPairPeriodType} from "#forex/MidaForexPairPeriodType";
+import {MidaForexPairTrendType} from "#forex/MidaForexPairTrendType";
+import {MidaPosition} from "#position/MidaPosition";
+import {MidaPositionDirectionType} from "#position/MidaPositionDirectionType";
+import {MidaUtilities} from "#utilities/MidaUtilities";
 
-export class MidaBollingerTrendAdvisor extends AMidaAdvisor {
+export class MidaPrincepsAdvisor extends AMidaAdvisor {
     private _lastUpdateDate: Date | null;
     private _lastPositionOpen: MidaPosition | null;
 
@@ -20,16 +20,16 @@ export class MidaBollingerTrendAdvisor extends AMidaAdvisor {
         this._lastPositionOpen = null;
     }
 
-    protected async onTickAsync (forexPairExchangeRate: MidaForexPairExchangeRate): Promise<void> {
-        if (this._lastPositionOpen && MidaUtilities.getMinutesBetweenDates(this._lastPositionOpen.openDate, forexPairExchangeRate.date) < 20) {
+    protected async onTickAsync (exchangeRate: MidaForexPairExchangeRate): Promise<void> {
+        if (this._lastPositionOpen && MidaUtilities.getMinutesBetweenDates(this._lastPositionOpen.openDate, exchangeRate.date) < 40) {
             return;
         }
 
-        if (this._lastUpdateDate && MidaUtilities.getMinutesBetweenDates(this._lastUpdateDate, forexPairExchangeRate.date) < 2) {
+        if (this._lastUpdateDate && MidaUtilities.getMinutesBetweenDates(this._lastUpdateDate, exchangeRate.date) < 2) {
             return;
         }
         else {
-            this._lastUpdateDate = forexPairExchangeRate.date;
+            this._lastUpdateDate = exchangeRate.date;
         }
 
         const trendTypeM15: MidaForexPairTrendType = await this._calculateM15TrendType();
@@ -52,7 +52,7 @@ export class MidaBollingerTrendAdvisor extends AMidaAdvisor {
             return;
         }
 
-        const profitPips: number = this.forexPair.normalizePips(5);
+        const profitPips: number = this.forexPair.normalizePips(30);
         const lossPips: number = this.forexPair.normalizePips(15);
         let direction: MidaPositionDirectionType;
         let stopLoss: number;
@@ -60,13 +60,13 @@ export class MidaBollingerTrendAdvisor extends AMidaAdvisor {
 
         if (trendTypeM15 === MidaForexPairTrendType.BEARISH && trendTypeH1 === MidaForexPairTrendType.BEARISH) {
             direction = MidaPositionDirectionType.SELL;
-            stopLoss = forexPairExchangeRate.ask + lossPips;
-            takeProfit = forexPairExchangeRate.bid - profitPips;
+            stopLoss = exchangeRate.ask + lossPips;
+            takeProfit = exchangeRate.bid - profitPips;
         }
         else {
             direction = MidaPositionDirectionType.BUY;
-            stopLoss = forexPairExchangeRate.bid - lossPips;
-            takeProfit = forexPairExchangeRate.ask + profitPips;
+            stopLoss = exchangeRate.bid - lossPips;
+            takeProfit = exchangeRate.ask + profitPips;
         }
 
         this._lastPositionOpen = await this.openPosition({
@@ -89,6 +89,9 @@ export class MidaBollingerTrendAdvisor extends AMidaAdvisor {
         const exponentialAverage200: number[] = await MidaTA.calculateEMA(closePrices, 200);
         const stochasticOscillator: number[][] = await MidaTA.calculateSTOCH([ highPrices, lowPrices, closePrices, ], 5, 3, 3);
         const bollingerBands: number[][] = await MidaTA.calculateBB(closePrices, 20, 2);
+        const trendStrength: number = 1;
+        let bearish: number = 0;
+        let bullish: number = 0;
 
         periods.reverse();
         exponentialAverage21.reverse();
@@ -99,23 +102,32 @@ export class MidaBollingerTrendAdvisor extends AMidaAdvisor {
         bollingerBands[1].reverse();
         bollingerBands[2].reverse();
 
-        for (let i: number = 0; i < 2; ++i) {
+        for (let i: number = 0; i < trendStrength; ++i) {
             if (
-                exponentialAverage21[i] < periods[i].low &&
-                exponentialAverage200[i] < periods[i].low &&
-                (stochasticOscillator[0][i] > 77 || stochasticOscillator[1][i] > 77) &&
-                bollingerBands[2][i] < periods[i].high
-            ) {
-                return MidaForexPairTrendType.BULLISH;
-            }
-            else if (
                 exponentialAverage21[i] > periods[i].high &&
                 exponentialAverage200[i] > periods[i].high &&
                 (stochasticOscillator[0][i] < 23 || stochasticOscillator[1][i] < 23) &&
+                bollingerBands[1][i] > periods[i].high &&
                 bollingerBands[0][i] > periods[i].low
             ) {
-                return MidaForexPairTrendType.BEARISH;
+                ++bearish;
             }
+            else if (
+                exponentialAverage21[i] < periods[i].low &&
+                exponentialAverage200[i] < periods[i].low &&
+                (stochasticOscillator[0][i] > 77 || stochasticOscillator[1][i] > 77) &&
+                bollingerBands[1][i] < periods[i].low &&
+                bollingerBands[2][i] < periods[i].high
+            ) {
+                ++bullish;
+            }
+        }
+
+        if (bearish === trendStrength) {
+            return MidaForexPairTrendType.BEARISH;
+        }
+        else if (bullish === trendStrength) {
+            return MidaForexPairTrendType.BULLISH;
         }
 
         return MidaForexPairTrendType.NEUTRAL;
@@ -126,6 +138,7 @@ export class MidaBollingerTrendAdvisor extends AMidaAdvisor {
         const closePrices: number[] = periods.map((period: MidaForexPairPeriod): number => period.close);
         const exponentialAverage21: number[] = await MidaTA.calculateEMA(closePrices, 21);
         const exponentialAverage100: number[] = await MidaTA.calculateEMA(closePrices, 100);
+        const trendStrength: number = 3;
         let bearish: number = 0;
         let bullish: number = 0;
 
@@ -133,26 +146,26 @@ export class MidaBollingerTrendAdvisor extends AMidaAdvisor {
         exponentialAverage21.reverse();
         exponentialAverage100.reverse();
 
-        for (let i: number = 0; i < 5; ++i) {
+        for (let i: number = 0; i < trendStrength; ++i) {
             if (
-                exponentialAverage21[i] < periods[i].low &&
-                exponentialAverage100[i] < periods[i].low
-            ) {
-                ++bullish;
-            }
-            else if (
                 exponentialAverage21[i] > periods[i].high &&
                 exponentialAverage100[i] > periods[i].high
             ) {
                 ++bearish;
             }
+            else if (
+                exponentialAverage21[i] < periods[i].low &&
+                exponentialAverage100[i] < periods[i].low
+            ) {
+                ++bullish;
+            }
         }
 
-        if (bullish > bearish && bullish >= 2) {
-            return MidaForexPairTrendType.BULLISH;
-        }
-        else if (bearish > bullish && bearish >= 2) {
+        if (bearish > bullish && bearish >= 2) {
             return MidaForexPairTrendType.BEARISH;
+        }
+        else if (bullish > bearish && bullish >= 2) {
+            return MidaForexPairTrendType.BULLISH;
         }
 
         return MidaForexPairTrendType.NEUTRAL;

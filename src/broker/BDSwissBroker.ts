@@ -15,7 +15,6 @@ import { MidaPosition, createPositionUUID } from "#position/MidaPosition";
 import { MidaPositionDirectives } from "#position/MidaPositionDirectives";
 import { MidaPositionSet } from "#position/MidaPositionSet";
 import { MidaPositionStatusType } from "#position/MidaPositionStatusType";
-import { MidaUtilities } from "#utilities/MidaUtilities";
 import { MidaPrivateObservable } from "#utilities/observable/AMidaObservable";
 
 export class BDSwissBroker extends AMidaBroker {
@@ -98,7 +97,7 @@ export class BDSwissBroker extends AMidaBroker {
 
         await this._browser.open();
 
-        // TODO: Close the login tab in a safe way.
+        // TODO: Close the login tab in a safe way and delete the password after using it.
         const loginTab: IMidaBrowserTab = await this._browser.openTab();
         const loginURI: string = "https://dashboard.bdswiss.com/login";
         const emailInputSelector: string = "#email";
@@ -190,6 +189,8 @@ export class BDSwissBroker extends AMidaBroker {
             throw new Error();
         }
 
+        const openProfit: number = 0; // await this._getPositionProfitByOrderID(openDescriptor.orderID);
+        
         const position: MidaPosition = {
             UUID: positionUUID,
             broker: {
@@ -203,10 +204,12 @@ export class BDSwissBroker extends AMidaBroker {
             openPrice: openDescriptor.openPrice,
             closeDate: null,
             closePrice: null,
-            getProfit: async (): Promise<number> => this._getPositionProfitByOrderID(openDescriptor.orderID),
-            getCommission: async (): Promise<number> => openDescriptor.commission,
-            getSwaps: async (): Promise<number> => openDescriptor.swaps,
-            getCurrency: async (): Promise<MidaCurrency> => this.getCurrency(),
+            lowestProfit: openProfit,
+            highestProfit: openProfit,
+            profit: async (): Promise<number> => this._getPositionProfitByOrderID(openDescriptor.orderID),
+            commission: async (): Promise<number> => openDescriptor.commission,
+            swaps: async (): Promise<number> => openDescriptor.swaps,
+            currency: async (): Promise<MidaCurrency> => this.getCurrency(),
             close: async (): Promise<void> => this.closePositionByUUID(positionUUID),
         };
 
@@ -220,6 +223,16 @@ export class BDSwissBroker extends AMidaBroker {
         return this._positions.get(positionUUID);
     }
 
+    public async getPositionByOrderID (orderID: string): Promise<MidaPosition | null> {
+        for (const position of this._positions.toArray()) {
+            if (position.broker.positionID === orderID) {
+                return position;
+            }
+        }
+
+        return null;
+    }
+
     public async closePositionByUUID (positionUUID: string): Promise<void> {
         const position: MidaPosition | null = await this.getPositionByUUID(positionUUID);
 
@@ -227,62 +240,16 @@ export class BDSwissBroker extends AMidaBroker {
             throw new Error();
         }
 
-        const closeDescriptor: any = await this._browserTabs.tradeTab.evaluate(`((w) => {
+        await this._browserTabs.tradeTab.evaluate(`((w) => {
             const socket = w._MidaBroker.socket;
             const closeDirectives = {
-                order: ${position?.broker?.positionID},
+                order: ${position.broker.positionID},
                 volume: ${position.directives.lots},
                 uuid: "${positionUUID}",
             };
             
-            return new Promise((resolve, reject) => {
-                const listener = (event) => {
-                    try {
-                        if (event.data.indexOf("ORDER_CLOSED") === -1) {
-                            return;
-                        }
-                        
-                        const message = JSON.parse(event.data.substr(2));
-                        const position = message[1];
-                        
-                        if (position.order === closeDirectives.order) {
-                            clearTimeout(timeout);
-                            socket.removeEventListener("message", listener);
-                            resolve({
-                                orderID: position.order,
-                                closePrice: position.closePrice,
-                                profit: position.mt4Profit,
-                                commission: position.commission,
-                                swaps: position.swaps,
-                            });
-                        }
-                    }
-                    catch (error) {
-                        // Silence is golden.
-                    }
-                };
-                const timeout = setTimeout(() => {
-                    socket.removeEventListener("message", listener);
-                    resolve(null);
-                }, 20000);
-                
-                socket.addEventListener("message", listener);
-                socket.send('42["CLOSE_TRADE",' + JSON.stringify(closeDirectives) + ']');
-            });
+            socket.send('42["CLOSE_TRADE",' + JSON.stringify(closeDirectives) + ']');
         })(window);`);
-
-        if (!closeDescriptor) {
-            throw new Error();
-        }
-
-        position.status = MidaPositionStatusType.CLOSE;
-        position.closeDate = new Date();
-        position.closePrice = closeDescriptor.closePrice;
-        position.getProfit = async (): Promise<number> => closeDescriptor.profit;
-        position.getCommission = async (): Promise<number> => closeDescriptor.commission;
-        position.getSwaps = async (): Promise<number> => closeDescriptor.swaps;
-
-        this.notifyEvent(MidaBrokerEventType.POSITION_CLOSE, position);
     }
 
     public async getPositionsByStatus (status: MidaPositionStatusType): Promise<MidaPosition[]> {
@@ -446,7 +413,7 @@ export class BDSwissBroker extends AMidaBroker {
     }
 
     public async logout (): Promise<void> {
-        if (!this.isLoggedIn) {
+        if (!this._isLoggedIn) {
             throw new Error();
         }
 
@@ -458,6 +425,8 @@ export class BDSwissBroker extends AMidaBroker {
         this._isLoggedIn = false;
 
         this._positions.clear();
+
+        this.notifyEvent(MidaBrokerEventType.LOGOUT, this);
     }
 
     private async _getPositionProfitByOrderID (orderID: string): Promise<number> {
@@ -505,11 +474,11 @@ export class BDSwissBroker extends AMidaBroker {
                 version: 3,
                 platform: "web",
             };
-            
+
             socket.addEventListener("message", (event) => {
                 try {
                     const message = JSON.parse(event.data.substr(2));
-                    
+
                     if (message[0] === "TICK") {
                         _onTick(message[1]);
                     }
@@ -518,18 +487,40 @@ export class BDSwissBroker extends AMidaBroker {
                     // Silence is golden.
                 }
             });
-            
+
+            socket.addEventListener("message", (event) => {
+                try {
+                    if (event.data.indexOf("ORDER_CLOSED") === -1) {
+                        return;
+                    }
+
+                    const message = JSON.parse(event.data.substr(2));
+                    const position = message[1];
+
+                    _onPositionClose({
+                        orderID: position.order,
+                        closePrice: position.closePrice,
+                        profit: position.mt4Profit,
+                        commission: position.commission,
+                        swaps: position.swaps,
+                    });
+                }
+                catch (error) {
+                    // Silence is golden.
+                }
+             });
+
             // Used to keep the connection alive.
             setInterval(() => {
                 if (socket.readyState === WebSocket.OPEN) {
                     socket.send("2");
                 }
-            }, 6000);
-            
+            }, 5000);
+
             w._MidaBroker = {
                 socket,
             };
-            
+
             return new Promise((resolve) => {
                 socket.addEventListener("open", (event) => {
                     resolve();
@@ -561,6 +552,7 @@ export class BDSwissBroker extends AMidaBroker {
             date: new Date(),
             bid: plainTick.b,
             ask: plainTick.a,
+            spread: plainTick.a - plainTick.b,
         };
 
         if (isNaN(forexPairExchangeRate.bid) || isNaN(forexPairExchangeRate.ask)) {
@@ -572,7 +564,22 @@ export class BDSwissBroker extends AMidaBroker {
         this._forexPairTickListeners.notifyEvent(forexPairExchangeRate.forexPair.ID, forexPairExchangeRate);
     }
 
-    private _onPositionClose (closeDescriptor: any): void {
+    private async _onPositionClose (closeDescriptor: any): Promise<void> {
+        const position: MidaPosition | null = await this.getPositionByOrderID(closeDescriptor.orderID);
 
+        if (!position) {
+            return;
+        }
+
+        position.status = MidaPositionStatusType.CLOSE;
+        position.closeDate = new Date();
+        position.closePrice = closeDescriptor.closePrice;
+        position.profit = async (): Promise<number> => closeDescriptor.profit;
+        position.commission = async (): Promise<number> => closeDescriptor.commission;
+        position.swaps = async (): Promise<number> => closeDescriptor.swaps;
+
+        console.log(position);
+
+        this.notifyEvent(MidaBrokerEventType.POSITION_CLOSE, position);
     }
 }

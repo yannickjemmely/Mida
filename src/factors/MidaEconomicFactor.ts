@@ -16,4 +16,7 @@ export type MidaEconomicFactor = {
 
     // Used to get the latest factor statement.
     getLatestStatement (): Promise<MidaEconomicFactorStatement>;
+
+    // Used to get the previous factor statement.
+    // getPreviousStatement (): Promise<MidaEconomicFactorStatement>;
 };

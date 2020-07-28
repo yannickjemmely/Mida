@@ -38,17 +38,23 @@ export type MidaPosition = {
     // Represents the position close price.
     closePrice: number | null;
 
+    // Represents the lowest position profit.
+    lowestProfit: number;
+
+    // Represents the highest position profit.
+    highestProfit: number;
+
     // Used to get the actual profit of the position.
-    getProfit (): Promise<number>;
+    profit (): Promise<number>;
 
-    // Used to get the position commission.
-    getCommission (): Promise<number>;
+    // Used to get the actual commission of the position.
+    commission (): Promise<number>;
 
-    // Used to get the position swaps.
-    getSwaps (): Promise<number>;
+    // Used to get the actual swaps of the position.
+    swaps (): Promise<number>;
 
-    // Used to get the position currency.
-    getCurrency (): Promise<MidaCurrency>;
+    // Used to get the currency of the position.
+    currency (): Promise<MidaCurrency>;
 
     // TODO: Used to cancel the position schedule.
     // cancelSchedule (): Promise<void>;

@@ -31,13 +31,13 @@ export abstract class AMidaBroker extends AMidaObservable<MidaBrokerEventType> {
     public abstract login (account?: any): Promise<void>;
 
     // Used to open a position.
-    public abstract openPosition (positionDirectives: MidaPositionDirectives): Promise<MidaPosition>;
+    public abstract openPosition (directives: MidaPositionDirectives): Promise<MidaPosition>;
 
     // Used to get a position by its UUID.
-    public abstract getPositionByUUID (positionUUID: string): Promise<MidaPosition | null>;
+    public abstract getPositionByUUID (UUID: string): Promise<MidaPosition | null>;
 
     // Used to close a position by its UUID.
-    public abstract closePositionByUUID (positionUUID: string): Promise<void>;
+    public abstract closePositionByUUID (UUID: string): Promise<void>;
 
     // Used to get positions by their status.
     public abstract getPositionsByStatus (status: MidaPositionStatusType): Promise<MidaPosition[]>;
@@ -58,16 +58,16 @@ export abstract class AMidaBroker extends AMidaObservable<MidaBrokerEventType> {
     public abstract getCurrency (): Promise<MidaCurrency>;
 
     // Used to listen the ticks of a forex pair.
-    public abstract addForexPairTickListener (forexPair: MidaForexPair, listener: (forexPairExchangeRate: MidaForexPairExchangeRate) => void): string;
+    public abstract addForexPairTickListener (forexPair: MidaForexPair, listener: (exchangeRate: MidaForexPairExchangeRate) => void): string;
 
     // Used to unlisten the ticks of a forex pair.
-    public abstract removeForexPairTickListener (listenerUUID: string): boolean;
+    public abstract removeForexPairTickListener (UUID: string): boolean;
 
     // Used to listen the periods of a forex pair.
-    public abstract addForexPairPeriodListener (forexPair: MidaForexPair, listener: (forexPairPeriod: MidaForexPairPeriod) => void): string;
+    public abstract addForexPairPeriodListener (forexPair: MidaForexPair, listener: (period: MidaForexPairPeriod) => void): string;
 
     // Used to unlisten the periods of a forex pair.
-    public abstract removeForexPairPeriodListener (listenerUUID: string): boolean;
+    public abstract removeForexPairPeriodListener (UUID: string): boolean;
 
     // Used to get the actual exchange rate of a forex pair.
     public abstract getForexPairExchangeRate (forexPair: MidaForexPair): Promise<MidaForexPairExchangeRate>;

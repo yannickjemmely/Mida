@@ -141,7 +141,7 @@ export class MidaAndrewAdvisor extends AMidaAdvisor {
                     directives: {
                         forexPair: this.forexPair,
                         direction: MidaPositionDirectionType.BUY,
-                        lots: 1,
+                        lots: 2,
                         takeProfit,
                         stopLoss,
                     },
