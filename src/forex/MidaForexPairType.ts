@@ -10,24 +10,24 @@ export class MidaForexPairType {
         // Silence is golden.
     }
 
-    public static getByID (forexPairID: string): MidaForexPair {
-        const sanitizedForexPairID: string = forexPairID.toUpperCase();
-        let baseCurrencyID: string;
-        let quoteCurrencyID: string;
+    public static getById (id: string): MidaForexPair {
+        const sanitizedId: string = id.toUpperCase();
+        let baseCurrencyId: string;
+        let quoteCurrencyId: string;
 
-        if (sanitizedForexPairID.indexOf("/") === -1) {
-            baseCurrencyID = sanitizedForexPairID.substr(0, 3);
-            quoteCurrencyID = sanitizedForexPairID.substr(3);
+        if (sanitizedId.indexOf("/") === -1) {
+            baseCurrencyId = sanitizedId.substr(0, 3);
+            quoteCurrencyId = sanitizedId.substr(3);
         }
         else {
-            baseCurrencyID = sanitizedForexPairID.split("/")[0];
-            quoteCurrencyID = sanitizedForexPairID.split("/")[1];
+            baseCurrencyId = sanitizedId.split("/")[0];
+            quoteCurrencyId = sanitizedId.split("/")[1];
         }
 
-        let forexPair: MidaForexPair | null = this._forexPairs.get(`${baseCurrencyID}/${quoteCurrencyID}`);
+        let forexPair: MidaForexPair | null = this._forexPairs.get(`${baseCurrencyId}/${quoteCurrencyId}`);
 
         if (!forexPair) {
-            forexPair = new MidaForexPair(MidaCurrencyType.getByID(baseCurrencyID), MidaCurrencyType.getByID(quoteCurrencyID));
+            forexPair = new MidaForexPair(MidaCurrencyType.getById(baseCurrencyId), MidaCurrencyType.getById(quoteCurrencyId));
 
             this._forexPairs.add(forexPair);
         }
@@ -36,34 +36,34 @@ export class MidaForexPairType {
     }
 
     // Represents the EUR/USD forex pair.
-    public static readonly EUR_USD: MidaForexPair = MidaForexPairType.getByID("EUR/USD");
+    public static readonly EUR_USD: MidaForexPair = MidaForexPairType.getById("EUR/USD");
 
     // Represents the EUR/AUD forex pair.
-    public static readonly EUR_AUD: MidaForexPair = MidaForexPairType.getByID("EUR/AUD");
+    public static readonly EUR_AUD: MidaForexPair = MidaForexPairType.getById("EUR/AUD");
 
     // Represents the EUR/CAD forex pair.
-    public static readonly EUR_CAD: MidaForexPair = MidaForexPairType.getByID("EUR/CAD");
+    public static readonly EUR_CAD: MidaForexPair = MidaForexPairType.getById("EUR/CAD");
 
     // Represents the EUR/GBP forex pair.
-    public static readonly EUR_GBP: MidaForexPair = MidaForexPairType.getByID("EUR/GBP");
+    public static readonly EUR_GBP: MidaForexPair = MidaForexPairType.getById("EUR/GBP");
 
     // Represents the GBP/USD forex pair.
-    public static readonly GBP_USD: MidaForexPair = MidaForexPairType.getByID("GBP/USD");
+    public static readonly GBP_USD: MidaForexPair = MidaForexPairType.getById("GBP/USD");
 
     // Represents the GBP/AUD forex pair.
-    public static readonly GBP_AUD: MidaForexPair = MidaForexPairType.getByID("GBP/AUD");
+    public static readonly GBP_AUD: MidaForexPair = MidaForexPairType.getById("GBP/AUD");
 
     // Represents the GBP/CAD forex pair.
-    public static readonly GBP_CAD: MidaForexPair = MidaForexPairType.getByID("GBP/CAD");
+    public static readonly GBP_CAD: MidaForexPair = MidaForexPairType.getById("GBP/CAD");
 
     // Represents the GBP/CHF forex pair.
-    public static readonly GBP_CHF: MidaForexPair = MidaForexPairType.getByID("GBP/CHF");
+    public static readonly GBP_CHF: MidaForexPair = MidaForexPairType.getById("GBP/CHF");
 
     // Represents the USD/CAD forex pair.
-    public static readonly USD_CAD: MidaForexPair = MidaForexPairType.getByID("USD/CAD");
+    public static readonly USD_CAD: MidaForexPair = MidaForexPairType.getById("USD/CAD");
 
     // Represents the USD/JPY forex pair.
-    public static readonly USD_JPY: MidaForexPair = MidaForexPairType.getByID("USD/JPY");
+    public static readonly USD_JPY: MidaForexPair = MidaForexPairType.getById("USD/JPY");
 }
 
 export const EUR_USD: MidaForexPair = MidaForexPairType.EUR_USD;

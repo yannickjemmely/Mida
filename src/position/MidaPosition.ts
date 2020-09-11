@@ -1,4 +1,4 @@
-import { v1 as UUIDV1 } from "uuid";
+import { v1 as generateUuidV1 } from "uuid";
 import { MidaCurrency } from "#currency/MidaCurrency";
 import { MidaPositionDirectives } from "#position/MidaPositionDirectives";
 import { MidaPositionStatusType } from "#position/MidaPositionStatusType";
@@ -6,7 +6,7 @@ import { MidaPositionStatusType } from "#position/MidaPositionStatusType";
 // Represents a position.
 export type MidaPosition = {
     // Represents the position universally unique identifier.
-    readonly UUID: string;
+    readonly uuid: string;
 
     // Represents a piece of information about the broker used to open the position.
     broker: {
@@ -14,10 +14,10 @@ export type MidaPosition = {
         name: string;
 
         // Represents the broker account ID.
-        accountID: string;
+        accountId: string;
 
         // Represents the broker position ID.
-        positionID: string;
+        positionId: string;
     };
 
     // Represents the position directives.
@@ -39,10 +39,10 @@ export type MidaPosition = {
     closePrice: number | null;
 
     // Represents the lowest position profit.
-    lowestProfit: number;
+    lowestProfit?: number;
 
     // Represents the highest position profit.
-    highestProfit: number;
+    highestProfit?: number;
 
     // Used to get the actual profit of the position.
     profit (): Promise<number>;
@@ -63,6 +63,6 @@ export type MidaPosition = {
     close (): Promise<void>;
 };
 
-export function createPositionUUID (): string {
-    return UUIDV1();
+export function generatePositionUuid (): string {
+    return generateUuidV1();
 }

@@ -49,12 +49,12 @@ export class MidaAndrewAdvisor extends AMidaAdvisor {
                     await this.openPosition(this._pendingBuy.directives);
 
                     this._lastPositionOpenDate = new Date();
-                    console.log(this.forexPair.ID + " opened");
+                    //console.log(this.forexPair.id + " opened");
 
                     this._pendingBuy = null;
                 }
                 else if (actualPrice < this._pendingBuy.cancelPrice) {
-                    console.log(this.forexPair.ID + "cancelll buy");
+                    //console.log(this.forexPair.id + "cancelll buy");
                     this._pendingBuy = null;
                 }
             }
@@ -64,20 +64,16 @@ export class MidaAndrewAdvisor extends AMidaAdvisor {
                     await this.openPosition(this._pendingSell.directives);
 
                     this._lastPositionOpenDate = new Date();
-                    console.log(this.forexPair.ID + " opened");
+                    //console.log(this.forexPair.id + " opened");
 
                     this._pendingSell = null;
                 }
                 else if (actualPrice > this._pendingSell.cancelPrice) {
-                    console.log(this.forexPair.ID + " cancelll sell");
+                    //console.log(this.forexPair.id + " cancelll sell");
                     this._pendingSell = null;
                 }
             }
 
-            return;
-        }
-
-        if (this._lastUpdateDate && MidaUtilities.getMinutesBetweenDates(this._lastUpdateDate, new Date()) < MidaUtilities.generateInRandomInteger(4, 6)) {
             return;
         }
 
@@ -94,7 +90,7 @@ export class MidaAndrewAdvisor extends AMidaAdvisor {
 
         this._lastUpdateDate = new Date();
 
-        console.log(this.forexPair.ID, trendTypeM5, trendTypeH1, confirmedTrendType);
+        //console.log(this.forexPair.id, trendTypeM5, trendTypeH1, confirmedTrendType);
 
         if (confirmedTrendType === MidaForexPairTrendType.NEUTRAL) {
             return;
@@ -113,7 +109,7 @@ export class MidaAndrewAdvisor extends AMidaAdvisor {
         const previousPeriod: MidaForexPairPeriod = periodsM5[1];
 
         if (confirmedTrendType === MidaForexPairTrendType.BULLISH) {
-            console.log(new Date() + " Conditions good buy... " + this.forexPair.ID);
+            //console.log(new Date() + " Conditions good buy... " + this.forexPair.id);
             let buyPrice: number = NaN;
             let stopLoss: number = NaN;
             let takeProfit: number = NaN;
@@ -129,11 +125,11 @@ export class MidaAndrewAdvisor extends AMidaAdvisor {
                 takeProfit = buyPrice + (buyPrice - stopLoss);
             }
             else {
-                console.log(this.forexPair.ID + " but no pullback");
+                //console.log(this.forexPair.id + " but no pullback");
             }
 
             if (!isNaN(buyPrice)) {
-                console.log(this.forexPair.ID + " pending buy...");
+                //console.log(this.forexPair.id + " pending buy...");
                 this._pendingBuy = {
                     creationDate: new Date(),
                     buyPrice,
@@ -147,11 +143,11 @@ export class MidaAndrewAdvisor extends AMidaAdvisor {
                     },
                 };
 
-                console.log(this._pendingBuy);
+                //console.log(this._pendingBuy);
             }
         }
         else if (confirmedTrendType === MidaForexPairTrendType.BEARISH) {
-            console.log(new Date() + " Conditions good sell... " + this.forexPair.ID);
+            //console.log(new Date() + " Conditions good sell... " + this.forexPair.id);
             let sellPrice: number = NaN;
             let stopLoss: number = NaN;
             let takeProfit: number = NaN;
@@ -167,11 +163,11 @@ export class MidaAndrewAdvisor extends AMidaAdvisor {
                 takeProfit = sellPrice - (stopLoss - sellPrice);
             }
             else {
-                console.log(this.forexPair.ID + " but no pullback");
+                //console.log(this.forexPair.id + " but no pullback");
             }
 
             if (!isNaN(sellPrice)) {
-                console.log(this.forexPair.ID + " pending sell");
+                //console.log(this.forexPair.id + " pending sell");
                 this._pendingSell = {
                     creationDate: new Date(),
                     sellPrice,
@@ -185,7 +181,7 @@ export class MidaAndrewAdvisor extends AMidaAdvisor {
                     },
                 };
 
-                console.log(this._pendingSell);
+                //console.log(this._pendingSell);
             }
         }
     }

@@ -1,4 +1,5 @@
 build
 node_modules
+series
 .idea
 **/.DS_Store

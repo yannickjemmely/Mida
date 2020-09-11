@@ -1,17 +1,14 @@
 import { MidaCongestionArea } from "#analysis/MidaCongestionArea";
+import { MidaSwingPoint } from "#analysis/MidaSwingPoint";
 import { MidaForexPairPeriod } from "#forex/MidaForexPairPeriod";
 
 const Tulind: any = require("tulind");
 
 // Very Important Points:
-// 1. All the periods or prices passed as parameters must be ordered from oldest to newest.
-// 2. All the returned values are ordered from oldest to newest.
-export class MidaTA {
-    private constructor () {
-        // Silence is golden.
-    }
-
-    public static async calculateRSI (closePrices: number[], length: number): Promise<number[]> {
+// 1. All periods and prices passed as parameters must be ordered from oldest to newest.
+// 2. All returned periods and prices are ordered from oldest to newest.
+export module MidaTA {
+    export async function calculateRSI (closePrices: number[], length: number): Promise<number[]> {
         return new Promise((resolve: (...parameters: any[]) => void, reject: (...parameters: any[]) => void): void => {
             Tulind.indicators.rsi.indicator(
                 [
@@ -32,7 +29,7 @@ export class MidaTA {
         });
     }
 
-    public static async calculateSMA (prices: number[], length: number): Promise<number[]> {
+    export async function calculateSMA (prices: number[], length: number): Promise<number[]> {
         return new Promise((resolve: (...parameters: any[]) => void, reject: (...parameters: any[]) => void): void => {
             Tulind.indicators.sma.indicator(
                 [
@@ -53,7 +50,7 @@ export class MidaTA {
         });
     }
 
-    public static async calculateEMA (prices: number[], length: number): Promise<number[]> {
+    export async function calculateEMA (prices: number[], length: number): Promise<number[]> {
         return new Promise((resolve: (...parameters: any[]) => void, reject: (...parameters: any[]) => void): void => {
             Tulind.indicators.ema.indicator(
                 [
@@ -74,7 +71,7 @@ export class MidaTA {
         });
     }
 
-    public static async calculateBB (prices: number[], length: number, multiplier: number): Promise<number[][]> {
+    export async function calculateBB (prices: number[], length: number, multiplier: number): Promise<number[][]> {
         return new Promise((resolve: (...parameters: any[]) => void, reject: (...parameters: any[]) => void): void => {
             Tulind.indicators.bbands.indicator(
                 [
@@ -103,7 +100,7 @@ export class MidaTA {
         });
     }
 
-    public static async calculateSTOCH (prices: number[][], length: number, K: number, D: number): Promise<number[][]> {
+    export async function calculateSTOCH (prices: number[][], length: number, K: number, D: number): Promise<number[][]> {
         return new Promise((resolve: (...parameters: any[]) => void, reject: (...parameters: any[]) => void): void => {
             Tulind.indicators.stoch.indicator(
                 [
@@ -136,7 +133,7 @@ export class MidaTA {
         });
     }
 
-    public static async calculateCongestionAreaByVasile (periods: MidaForexPairPeriod[], threshold: number = 0.05): Promise<MidaCongestionArea | null> {
+    export function calculateCongestionAreaV1 (periods: MidaForexPairPeriod[], threshold: number = 0.05): MidaCongestionArea | null {
         const closePrices: number[] = periods.map((period: MidaForexPairPeriod): number => period.close);
         const minPrice: number = Math.min(...closePrices);
         const maxPrice: number = Math.max(...closePrices);
@@ -153,5 +150,14 @@ export class MidaTA {
             supportPrice: Math.min(...periods.map((period: MidaForexPairPeriod): number => period.low)),
             resistancePrice: Math.max(...periods.map((period: MidaForexPairPeriod): number => period.high)),
         };
+    }
+
+    export function calculateSwingPoints (periods: MidaForexPairPeriod[], minDistance: number = 2): MidaSwingPoint[] {
+        const orderedPeriods: MidaForexPairPeriod[] = [ ...periods ];
+        const swingPoints: MidaSwingPoint[] = [];
+
+
+
+        return swingPoints;
     }
 }

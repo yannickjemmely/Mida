@@ -1,6 +1,6 @@
 import { MidaCurrency } from "#currency/MidaCurrency";
 
-export type MidaLocalBrokerOptions = {
+export type MidaPlaygroundBrokerOptions = {
     currency?: MidaCurrency;
 
     negativeEquityProtection?: boolean;

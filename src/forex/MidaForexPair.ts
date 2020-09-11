@@ -9,17 +9,35 @@ export class MidaForexPair {
     // Represents the quote currency.
     private readonly _quoteCurrency: MidaCurrency;
 
+    // Represents the pip position in the forex pair price.
+    private readonly _pipPosition: number;
+
+    // Represents the value of ten raised to the pip position.
+    private readonly _tenRaisedToPipPosition: number;
+
     public constructor (baseCurrency: MidaCurrency, quoteCurrency: MidaCurrency) {
         this._baseCurrency = baseCurrency;
         this._quoteCurrency = quoteCurrency;
+
+        switch (quoteCurrency) {
+            case MidaCurrencyType.JPY:
+                this._pipPosition = 2;
+
+                break;
+
+            default:
+                this._pipPosition = 4;
+        }
+
+        this._tenRaisedToPipPosition = 10 ** this._pipPosition;
     }
 
-    public normalizePips (pips: number): number {
-        return pips / (10 ** this.pipPosition);
+    public pipsToPrice (pips: number): number {
+        return pips / this._tenRaisedToPipPosition;
     }
 
     public countPips (price: number): number {
-        return parseFloat(price.toFixed(this.pipPosition)) * (10 ** this.pipPosition);
+        return price * this._tenRaisedToPipPosition;
     }
 
     public get baseCurrency (): MidaCurrency {
@@ -31,22 +49,16 @@ export class MidaForexPair {
     }
 
     public get pipPosition (): number {
-        switch (this._quoteCurrency) {
-            case MidaCurrencyType.JPY:
-                return 2;
-
-            default:
-                return 4;
-        }
+        return this._pipPosition;
     }
 
-    // Represents the forex pair ID as "baseCurrencyID/quoteCurrencyID".
-    public get ID (): string {
-        return `${this._baseCurrency.ID}/${this._quoteCurrency.ID}`;
+    // Represents the forex pair id as "baseCurrencyId/quoteCurrencyId".
+    public get id (): string {
+        return `${this._baseCurrency.id}/${this._quoteCurrency.id}`;
     }
 
-    // Represents the forex pair ID as "baseCurrencyIDquoteCurrencyID".
-    public get ID2 (): string {
-        return `${this._baseCurrency.ID}${this._quoteCurrency.ID}`;
+    // Represents the forex pair id as "baseCurrencyIdquoteCurrencyId".
+    public get id2 (): string {
+        return `${this._baseCurrency.id}${this._quoteCurrency.id}`;
     }
 }

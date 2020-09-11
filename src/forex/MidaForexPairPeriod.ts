@@ -3,14 +3,14 @@ import { MidaForexPairPeriodType } from "#forex/MidaForexPairPeriodType";
 
 // Represents the period of a forex pair exchange rate.
 export type MidaForexPairPeriod = {
-    // Represents the forex pair.
+    // Represents the period forex pair.
     forexPair: MidaForexPair;
 
     // Represents the period time interval.
     type: MidaForexPairPeriodType;
 
-    // Represents the date of the period.
-    date: Date;
+    // Represents the period time.
+    time: Date;
 
     // Represents the period open price.
     open: number;

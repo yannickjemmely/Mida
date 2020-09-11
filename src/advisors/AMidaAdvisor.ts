@@ -1,15 +1,15 @@
-import { MidaAdvisorEventType } from "#advisors/MidaAdvisorEventType";
-import { MidaAdvisorOptions } from "#advisors/MidaAdvisorOptions";
-import { AMidaBroker } from "#broker/AMidaBroker";
-import { MidaBrokerEventType } from "#broker/MidaBrokerEventType";
-import { MidaForexPair } from "#forex/MidaForexPair";
-import { MidaForexPairExchangeRate } from "#forex/MidaForexPairExchangeRate";
-import { MidaForexPairPeriod } from "#forex/MidaForexPairPeriod";
-import { MidaPosition } from "#position/MidaPosition";
-import { MidaPositionDirectives } from "#position/MidaPositionDirectives";
-import { MidaPositionSet } from "#position/MidaPositionSet";
-import { MidaPositionStatusType } from "#position/MidaPositionStatusType";
-import { AMidaObservable } from "#utilities/observable/AMidaObservable";
+import {MidaAdvisorEventType} from "#advisors/MidaAdvisorEventType";
+import {MidaAdvisorOptions} from "#advisors/MidaAdvisorOptions";
+import {AMidaBroker} from "#broker/AMidaBroker";
+import {MidaBrokerEventType} from "#broker/MidaBrokerEventType";
+import {MidaForexPair} from "#forex/MidaForexPair";
+import {MidaForexPairExchangeRate} from "#forex/MidaForexPairExchangeRate";
+import {MidaForexPairPeriod} from "#forex/MidaForexPairPeriod";
+import {MidaPosition} from "#position/MidaPosition";
+import {MidaPositionDirectives} from "#position/MidaPositionDirectives";
+import {MidaPositionSet} from "#position/MidaPositionSet";
+import {MidaPositionStatusType} from "#position/MidaPositionStatusType";
+import {AMidaObservable} from "#utilities/observable/AMidaObservable";
 
 export abstract class AMidaAdvisor extends AMidaObservable<MidaAdvisorEventType> {
     // Represents the advisor options.
@@ -131,7 +131,7 @@ export abstract class AMidaAdvisor extends AMidaObservable<MidaAdvisorEventType>
         const matchedTicks: MidaForexPairExchangeRate[] = [];
 
         for (const capturedTick of this._capturedTicks) {
-            const date: Date = capturedTick.date;
+            const date: Date = capturedTick.time;
 
             if (date >= fromDate && date <= toDate) {
                 matchedTicks.push(capturedTick);
@@ -157,8 +157,12 @@ export abstract class AMidaAdvisor extends AMidaObservable<MidaAdvisorEventType>
             }
         });
 
-        this._broker.addForexPairTickListener(this._forexPair, (forexPairExchangeRate: MidaForexPairExchangeRate): void => {
-            this._onTick(forexPairExchangeRate);
+        this._broker.addForexPairTickListener(this._forexPair, (exchangeRate: MidaForexPairExchangeRate): void => this._onTick(exchangeRate));
+
+        this._broker.addEventListener(MidaBrokerEventType.POSITION_CLOSE, (position: MidaPosition) => {
+            if (this._positions.has(position.uuid)) {
+                this.notifyEvent(MidaAdvisorEventType.POSITION_CLOSE, position);
+            }
         });
     }
 

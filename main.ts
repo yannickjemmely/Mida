@@ -3,7 +3,7 @@ require("#/MidaFX");
 
 /*
 const fs: any = require("fs");
-const path: string = "series/EURUSD/ticks/2000/06.csv";
+const path: string = "series/EURUSD/ticks/2019/01.csv";
 
 const lines: string = fs.readFileSync(path).toString().split("\n");
 let sanitized: string = "";
@@ -19,5 +19,5 @@ for (let i: number = 0; i < lines.length - 1; ++i) {
     sanitized += `${dateTime.toISOString()},${parts[1]},${parts[2]},${parts[3]}\n`;
 }
 
-fs.writeFileSync("series/EURUSD/ticks/2000/06a.csv", sanitized);
-*/
+fs.writeFileSync("series/EURUSD/ticks/2019/01a.csv", sanitized);
+//*/

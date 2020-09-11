@@ -19,7 +19,7 @@ export abstract class AMidaBroker extends AMidaObservable<MidaBrokerEventType> {
     public abstract get isLoggedIn (): boolean;
 
     // Represents the ID of the account logged in.
-    public abstract get accountID (): string;
+    public abstract get accountId (): string;
 
     // Represents the type of the actual account.
     public abstract get accountType (): MidaBrokerAccountType;
@@ -28,19 +28,19 @@ export abstract class AMidaBroker extends AMidaObservable<MidaBrokerEventType> {
     public abstract get name (): string;
 
     // Used to login.
-    public abstract login (account?: any): Promise<void>;
+    public abstract login (accountDescriptor?: any): Promise<void>;
 
     // Used to open a position.
     public abstract openPosition (directives: MidaPositionDirectives): Promise<MidaPosition>;
 
-    // Used to get a position by its UUID.
-    public abstract getPositionByUUID (UUID: string): Promise<MidaPosition | null>;
-
-    // Used to close a position by its UUID.
-    public abstract closePositionByUUID (UUID: string): Promise<void>;
+    // Used to get a position by its uuid.
+    public abstract getPositionByUuid (uuid: string): Promise<MidaPosition | null>;
 
     // Used to get positions by their status.
     public abstract getPositionsByStatus (status: MidaPositionStatusType): Promise<MidaPosition[]>;
+
+    // Used to close a position by its UUID.
+    public abstract closePositionByUUID (UUID: string): Promise<void>;
 
     // Used to get the actual balance.
     public abstract getBalance (): Promise<number>;

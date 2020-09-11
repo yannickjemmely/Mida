@@ -21,20 +21,20 @@ export class MidaPrincepsAdvisor extends AMidaAdvisor {
     }
 
     protected async onTickAsync (exchangeRate: MidaForexPairExchangeRate): Promise<void> {
-        if (this._lastPositionOpen && MidaUtilities.getMinutesBetweenDates(this._lastPositionOpen.openDate, exchangeRate.date) < 40) {
+        if (this._lastPositionOpen && MidaUtilities.getMinutesBetweenDates(this._lastPositionOpen.openDate, exchangeRate.time) < 40) {
             return;
         }
 
-        if (this._lastUpdateDate && MidaUtilities.getMinutesBetweenDates(this._lastUpdateDate, exchangeRate.date) < 2) {
+        if (this._lastUpdateDate && MidaUtilities.getMinutesBetweenDates(this._lastUpdateDate, exchangeRate.time) < 2) {
             return;
         }
         else {
-            this._lastUpdateDate = exchangeRate.date;
+            this._lastUpdateDate = exchangeRate.time;
         }
 
         const trendTypeM15: MidaForexPairTrendType = await this._calculateM15TrendType();
 
-        console.log((new Date()).toTimeString().split(" ")[0] + " " + this.forexPair.ID + " => " + "( M15 => " + trendTypeM15 + " )");
+        //console.log((new Date()).toTimeString().split(" ")[0] + " " + this.forexPair.id + " => " + "( M15 => " + trendTypeM15 + " )");
 
         if (trendTypeM15 === MidaForexPairTrendType.NEUTRAL) {
             return;
@@ -42,7 +42,7 @@ export class MidaPrincepsAdvisor extends AMidaAdvisor {
 
         const trendTypeH1: MidaForexPairTrendType = await this._calculateH1TrendType();
 
-        console.log((new Date()).toTimeString().split(" ")[0] + " " + this.forexPair.ID + " => " + "( H1 => " + trendTypeH1 + " )");
+        //console.log((new Date()).toTimeString().split(" ")[0] + " " + this.forexPair.id + " => " + "( H1 => " + trendTypeH1 + " )");
 
         if (trendTypeH1 == MidaForexPairTrendType.NEUTRAL) {
             return;
@@ -52,8 +52,8 @@ export class MidaPrincepsAdvisor extends AMidaAdvisor {
             return;
         }
 
-        const profitPips: number = this.forexPair.normalizePips(30);
-        const lossPips: number = this.forexPair.normalizePips(15);
+        const profitPips: number = this.forexPair.pipsToPrice(30);
+        const lossPips: number = this.forexPair.pipsToPrice(15);
         let direction: MidaPositionDirectionType;
         let stopLoss: number;
         let takeProfit: number;
@@ -77,7 +77,7 @@ export class MidaPrincepsAdvisor extends AMidaAdvisor {
             takeProfit,
         });
 
-        console.log((new Date()).toTimeString().split(" ")[0] + " " + this.forexPair.ID + " => " + direction);
+        //console.log((new Date()).toTimeString().split(" ")[0] + " " + this.forexPair.id + " => " + direction);
     }
 
     private async _calculateM15TrendType (): Promise<MidaForexPairTrendType> {

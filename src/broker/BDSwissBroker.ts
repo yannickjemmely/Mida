@@ -11,11 +11,11 @@ import { MidaForexPairExchangeRate } from "#forex/MidaForexPairExchangeRate";
 import { MidaForexPairPeriod } from "#forex/MidaForexPairPeriod";
 import { MidaForexPairPeriodType } from "#forex/MidaForexPairPeriodType";
 import { MidaForexPairType } from "#forex/MidaForexPairType";
-import { MidaPosition, createPositionUUID } from "#position/MidaPosition";
+import { MidaPosition, generatePositionUuid } from "#position/MidaPosition";
 import { MidaPositionDirectives } from "#position/MidaPositionDirectives";
 import { MidaPositionSet } from "#position/MidaPositionSet";
 import { MidaPositionStatusType } from "#position/MidaPositionStatusType";
-import { MidaPrivateObservable } from "#utilities/observable/AMidaObservable";
+import { MidaProtectedObservable } from "#utilities/observable/AMidaObservable";
 
 export class BDSwissBroker extends AMidaBroker {
     // Represents the broker name.
@@ -42,10 +42,10 @@ export class BDSwissBroker extends AMidaBroker {
     private readonly _positions: MidaPositionSet;
 
     // Represents the forex pair tick listeners.
-    private readonly _forexPairTickListeners: MidaPrivateObservable;
+    private readonly _forexPairTickListeners: MidaProtectedObservable<string>;
 
     // Represents the forex pair period listeners.
-    private readonly _forexPairPeriodListeners: MidaPrivateObservable;
+    private readonly _forexPairPeriodListeners: MidaProtectedObservable<string>;
 
     // Represents the last ticks.
     private readonly _lastTicks: {
@@ -67,8 +67,8 @@ export class BDSwissBroker extends AMidaBroker {
         this._accountType = MidaBrokerAccountType.ANONYMOUS;
         this._isLoggedIn = false;
         this._positions = new MidaPositionSet();
-        this._forexPairTickListeners = new MidaPrivateObservable();
-        this._forexPairPeriodListeners = new MidaPrivateObservable();
+        this._forexPairTickListeners = new MidaProtectedObservable();
+        this._forexPairPeriodListeners = new MidaProtectedObservable();
         this._lastTicks = {};
         this._isForexPairPeriodsBusy = false;
         this._forexPairPeriodsRequests = [];
@@ -78,7 +78,7 @@ export class BDSwissBroker extends AMidaBroker {
         return this._isLoggedIn;
     }
 
-    public get accountID (): string {
+    public get accountId (): string {
         return this._account.ID;
     }
 
@@ -131,11 +131,11 @@ export class BDSwissBroker extends AMidaBroker {
     }
 
     public async openPosition (positionDirectives: MidaPositionDirectives): Promise<MidaPosition> {
-        const positionUUID: string = createPositionUUID();
+        const positionUUID: string = generatePositionUuid();
         const openDescriptor: any = await this._browserTabs.tradeTab.evaluate(`((w) => {
             const socket = w._MidaBroker.socket;
             const openDirectives = {
-                symbol: "${positionDirectives.forexPair.ID2}",
+                symbol: "${positionDirectives.forexPair.id2}",
                 volume: ${positionDirectives.lots},
                 uuid: "${positionUUID}",
                 platform: "BDS.WT",
@@ -192,11 +192,11 @@ export class BDSwissBroker extends AMidaBroker {
         const openProfit: number = 0; // await this._getPositionProfitByOrderID(openDescriptor.orderID);
         
         const position: MidaPosition = {
-            UUID: positionUUID,
+            uuid: positionUUID,
             broker: {
                 name: this.name,
-                accountID: this.accountID,
-                positionID: openDescriptor.orderID,
+                accountId: this.accountId,
+                positionId: openDescriptor.orderID,
             },
             directives: positionDirectives,
             status: MidaPositionStatusType.OPEN,
@@ -219,13 +219,13 @@ export class BDSwissBroker extends AMidaBroker {
         return position;
     }
 
-    public async getPositionByUUID (positionUUID: string): Promise<MidaPosition | null> {
-        return this._positions.get(positionUUID);
+    public async getPositionByUuid (UUID: string): Promise<MidaPosition | null> {
+        return this._positions.get(UUID);
     }
 
     public async getPositionByOrderID (orderID: string): Promise<MidaPosition | null> {
         for (const position of this._positions.toArray()) {
-            if (position.broker.positionID === orderID) {
+            if (position.broker.positionId === orderID) {
                 return position;
             }
         }
@@ -233,8 +233,8 @@ export class BDSwissBroker extends AMidaBroker {
         return null;
     }
 
-    public async closePositionByUUID (positionUUID: string): Promise<void> {
-        const position: MidaPosition | null = await this.getPositionByUUID(positionUUID);
+    public async closePositionByUUID (UUID: string): Promise<void> {
+        const position: MidaPosition | null = await this.getPositionByUuid(UUID);
 
         if (!position) {
             throw new Error();
@@ -243,9 +243,9 @@ export class BDSwissBroker extends AMidaBroker {
         await this._browserTabs.tradeTab.evaluate(`((w) => {
             const socket = w._MidaBroker.socket;
             const closeDirectives = {
-                order: ${position.broker.positionID},
+                order: ${position.broker.positionId},
                 volume: ${position.directives.lots},
-                uuid: "${positionUUID}",
+                uuid: "${UUID}",
             };
             
             socket.send('42["CLOSE_TRADE",' + JSON.stringify(closeDirectives) + ']');
@@ -305,8 +305,8 @@ export class BDSwissBroker extends AMidaBroker {
     }
 
     public async getForexPairExchangeRate (forexPair: MidaForexPair): Promise<MidaForexPairExchangeRate> {
-        if (this._lastTicks[forexPair.ID]) {
-            return this._lastTicks[forexPair.ID];
+        if (this._lastTicks[forexPair.id]) {
+            return this._lastTicks[forexPair.id];
         }
 
         return new Promise((resolve: any): void => {
@@ -321,10 +321,10 @@ export class BDSwissBroker extends AMidaBroker {
         this._browserTabs.tradeTab.evaluate(`((w) => {
             const socket = w._MidaBroker.socket;
             
-            socket.send('42["SUBSCRIBE",{"symbol":"${forexPair.ID2}"}]');
+            socket.send('42["SUBSCRIBE",{"symbol":"${forexPair.id2}"}]');
         })(window);`);
 
-        return this._forexPairTickListeners.addEventListener(forexPair.ID, listener);
+        return this._forexPairTickListeners.addEventListener(forexPair.id, listener);
     }
 
     public removeForexPairTickListener (listenerUUID: string): boolean {
@@ -332,7 +332,7 @@ export class BDSwissBroker extends AMidaBroker {
     }
 
     public addForexPairPeriodListener (forexPair: MidaForexPair, listener: (forexPairPeriod: MidaForexPairPeriod) => void): string {
-        return this._forexPairPeriodListeners.addEventListener(forexPair.ID, listener);
+        return this._forexPairPeriodListeners.addEventListener(forexPair.id, listener);
     }
 
     public removeForexPairPeriodListener (listenerUUID: string): boolean {
@@ -377,7 +377,7 @@ export class BDSwissBroker extends AMidaBroker {
                 }, 20000);
                 
                 socket.addEventListener("message", listener);
-                socket.send('42["GET_CHART",{"resolution":${periodsType},"symbol":"${forexPair.ID2}"}]');
+                socket.send('42["GET_CHART",{"resolution":${periodsType},"symbol":"${forexPair.id2}"}]');
             });
         })(window);`);
 
@@ -400,7 +400,7 @@ export class BDSwissBroker extends AMidaBroker {
             periods.push({
                 forexPair,
                 type: periodsType,
-                date: new Date((new Date(plainPeriod.t.replace(/-/g, "/"))).valueOf() - 2 * 60 * 60 * 1000),
+                time: new Date((new Date(plainPeriod.t.replace(/-/g, "/"))).valueOf() - 2 * 60 * 60 * 1000),
                 open: plainPeriod.o,
                 close: plainPeriod.c,
                 low: plainPeriod.l,
@@ -548,8 +548,8 @@ export class BDSwissBroker extends AMidaBroker {
 
     private _onTick (plainTick: any): void {
         const forexPairExchangeRate: MidaForexPairExchangeRate = {
-            forexPair: MidaForexPairType.getByID(plainTick.s),
-            date: new Date(),
+            forexPair: MidaForexPairType.getById(plainTick.s),
+            time: new Date(),
             bid: plainTick.b,
             ask: plainTick.a,
             spread: plainTick.a - plainTick.b,
@@ -559,9 +559,9 @@ export class BDSwissBroker extends AMidaBroker {
             throw new Error();
         }
 
-        this._lastTicks[forexPairExchangeRate.forexPair.ID] = forexPairExchangeRate;
+        this._lastTicks[forexPairExchangeRate.forexPair.id] = forexPairExchangeRate;
 
-        this._forexPairTickListeners.notifyEvent(forexPairExchangeRate.forexPair.ID, forexPairExchangeRate);
+        this._forexPairTickListeners.notifyEvent(forexPairExchangeRate.forexPair.id, forexPairExchangeRate);
     }
 
     private async _onPositionClose (closeDescriptor: any): Promise<void> {
@@ -577,8 +577,6 @@ export class BDSwissBroker extends AMidaBroker {
         position.profit = async (): Promise<number> => closeDescriptor.profit;
         position.commission = async (): Promise<number> => closeDescriptor.commission;
         position.swaps = async (): Promise<number> => closeDescriptor.swaps;
-
-        console.log(position);
 
         this.notifyEvent(MidaBrokerEventType.POSITION_CLOSE, position);
     }

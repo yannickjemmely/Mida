@@ -2,7 +2,7 @@ import { MidaForexPairPeriod } from "#forex/MidaForexPairPeriod";
 
 // Represents a congestion area.
 export type MidaCongestionArea = {
-    // Represents the periods of the congestion area.
+    // Represents the periods.
     periods: MidaForexPairPeriod[];
 
     // Represents the average price.
@@ -14,3 +14,7 @@ export type MidaCongestionArea = {
     // Represents the resistance price.
     resistancePrice: number;
 };
+
+export function calculateCongestionAreaForce (congestion: MidaCongestionArea): number {
+    throw new Error();
+}

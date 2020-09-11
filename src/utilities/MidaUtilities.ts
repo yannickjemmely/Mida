@@ -24,7 +24,7 @@ export namespace MidaUtilities {
         let length: number = array.length;
 
         while (length > 0) {
-            const randomIndex: number = Math.floor(Math.random() * length);
+            const randomIndex: number = generateInRandomInteger(0, length - 1);
             const element: any = array[--length];
 
             array[length] = array[randomIndex];
@@ -37,5 +37,28 @@ export namespace MidaUtilities {
     // Used to get a random integer in an inclusive range.
     export function generateInRandomInteger (min: number, max: number): number {
         return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    // Used to merge two options objects.
+    export function mergeOptions (initial: any, user: any): any {
+        const options: any = {
+            ...initial,
+            ...user,
+        };
+
+        for (const hash in initial) {
+            const initialValue: any = initial[hash];
+            const userValue: any = user[hash];
+
+            if (!initialValue || !userValue) {
+                continue;
+            }
+
+            if (initialValue.constructor === Object && userValue.constructor === Object) {
+                options[hash] = mergeOptions(initialValue, userValue);
+            }
+        }
+
+        return options;
     }
 }

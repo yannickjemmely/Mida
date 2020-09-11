@@ -75,7 +75,7 @@ async function _fetchLatestEconomicStatement (factor: MidaEconomicFactor, uri: s
         return {
             statement: statement,
             date: new Date(),
-            currency: MidaCurrencyType.getByID(currencyID),
+            currency: MidaCurrencyType.getById(currencyID),
             strengthDirection: getCurrencyStrengthDirection(currencyID, statement, positiveBearish),
         };
     };

@@ -1,10 +1,10 @@
-import { v1 as UUIDV1 } from "uuid";
+import { v1 as generateUuidV1 } from "uuid";
 
 export abstract class AMidaObservable<T extends string> {
     // Represents a set of events listeners.
     private readonly _listeners: {
         [eventType: string]: {
-            [listenerUUID: string]: (...parameters: any[]) => void;
+            [listenerUuid: string]: (...parameters: any[]) => void;
         };
     };
 
@@ -14,18 +14,18 @@ export abstract class AMidaObservable<T extends string> {
 
     public addEventListener (eventType: T, listener: (...parameters: any[]) => void): string {
         const eventListeners: any = this._listeners[eventType] || {};
-        const listenerUUID: string = UUIDV1();
+        const uuid: string = generateUuidV1();
 
-        eventListeners[listenerUUID] = listener;
+        eventListeners[uuid] = listener;
         this._listeners[eventType] = eventListeners;
 
-        return listenerUUID;
+        return uuid;
     }
 
-    public removeEventListener (listenerUUID: string): boolean {
+    public removeEventListener (uuid: string): boolean {
         for (const eventType in this._listeners) {
-            if (this._listeners[eventType].hasOwnProperty(listenerUUID)) {
-                delete this._listeners[eventType][listenerUUID];
+            if (this._listeners[eventType].hasOwnProperty(uuid)) {
+                delete this._listeners[eventType][uuid];
 
                 if (Object.keys(this._listeners[eventType]).length === 0) {
                     delete this._listeners[eventType];
@@ -39,18 +39,18 @@ export abstract class AMidaObservable<T extends string> {
     }
 
     protected notifyEvent (eventType: T, ...parameters: any[]): void {
-        for (const listenerUUID in this._listeners[eventType]) {
-            void this._listeners[eventType][listenerUUID](...parameters);
+        for (const uuid in this._listeners[eventType]) {
+            this._listeners[eventType][uuid](...parameters);
         }
     }
 }
 
-export class MidaPrivateObservable extends AMidaObservable<string> {
+export class MidaProtectedObservable<T extends string> extends AMidaObservable<T> {
     public constructor () {
         super();
     }
 
-    public notifyEvent (eventType: string, ...parameters: any[]): void {
+    public notifyEvent (eventType: T, ...parameters: any[]): void {
         super.notifyEvent(eventType, ...parameters);
     }
 }

@@ -1,13 +1,14 @@
-import { AMidaAdvisor } from "#advisors/AMidaAdvisor";
-import { MidaAdvisorOptions } from "#advisors/MidaAdvisorOptions";
-import { MidaTA } from "#analysis/MidaTA";
-import { MidaForexPairExchangeRate } from "#forex/MidaForexPairExchangeRate";
-import { MidaForexPairPeriod } from "#forex/MidaForexPairPeriod";
-import { MidaForexPairPeriodType } from "#forex/MidaForexPairPeriodType";
-import { MidaForexPairTrendType } from "#forex/MidaForexPairTrendType";
-import { MidaPosition } from "#position/MidaPosition";
-import { MidaPositionDirectionType } from "#position/MidaPositionDirectionType";
-import { MidaUtilities } from "#utilities/MidaUtilities";
+import {AMidaAdvisor} from "#advisors/AMidaAdvisor";
+import {MidaAdvisorOptions} from "#advisors/MidaAdvisorOptions";
+import {MidaTA} from "#analysis/MidaTA";
+import {MidaForexPairExchangeRate} from "#forex/MidaForexPairExchangeRate";
+import {MidaForexPairPeriod} from "#forex/MidaForexPairPeriod";
+import {MidaForexPairPeriodType} from "#forex/MidaForexPairPeriodType";
+import {MidaForexPairTrendType} from "#forex/MidaForexPairTrendType";
+import {MidaPosition} from "#position/MidaPosition";
+import {MidaPositionDirectionType} from "#position/MidaPositionDirectionType";
+import {MidaUtilities} from "#utilities/MidaUtilities";
+import {MidaPositionStatusType} from "#position/MidaPositionStatusType";
 
 export class MidaRunwayAdvisor extends AMidaAdvisor {
     private _lastUpdateDate: Date | null;
@@ -21,20 +22,29 @@ export class MidaRunwayAdvisor extends AMidaAdvisor {
     }
 
     protected async onTickAsync (exchangeRate: MidaForexPairExchangeRate): Promise<void> {
-        if (this._lastPositionOpen && MidaUtilities.getMinutesBetweenDates(this._lastPositionOpen.openDate, exchangeRate.date) < 30) {
+        if (this.getPositionsByStatus(MidaPositionStatusType.OPEN).length > 0) {
             return;
         }
 
-        if (this._lastUpdateDate && MidaUtilities.getMinutesBetweenDates(this._lastUpdateDate, exchangeRate.date) < 2) {
+        if (
+            this._lastPositionOpen &&
+            this._lastPositionOpen.status === MidaPositionStatusType.CLOSE &&
+            this._lastPositionOpen.closeDate &&
+            MidaUtilities.getMinutesBetweenDates(this._lastPositionOpen.closeDate, exchangeRate.time) < 7
+        ) {
+            return;
+        }
+
+        if (this._lastUpdateDate && MidaUtilities.getMinutesBetweenDates(this._lastUpdateDate, exchangeRate.time) < 2) {
             return;
         }
         else {
-            this._lastUpdateDate = exchangeRate.date;
+            this._lastUpdateDate = exchangeRate.time;
         }
 
         const trendTypeM5: MidaForexPairTrendType = await this._calculateM5TrendType();
 
-        console.log((new Date()).toTimeString().split(" ")[0] + " " + this.forexPair.ID + " => " + "( M5 => " + trendTypeM5 + " )");
+        //console.log(exchangeRate.date.toTimeString().split(" ")[0] + " " + this.forexPair.ID + " => " + "( M5 => " + trendTypeM5 + " )");
 
         if (trendTypeM5 === MidaForexPairTrendType.NEUTRAL) {
             return;
@@ -42,7 +52,7 @@ export class MidaRunwayAdvisor extends AMidaAdvisor {
 
         const trendTypeM15: MidaForexPairTrendType = await this._calculateM15TrendType();
 
-        console.log((new Date()).toTimeString().split(" ")[0] + " " + this.forexPair.ID + " => " + "( M15 => " + trendTypeM15 + " )");
+        //console.log(exchangeRate.date.toTimeString().split(" ")[0] + " " + this.forexPair.ID + " => " + "( M15 => " + trendTypeM15 + " )");
 
         if (trendTypeM15 == MidaForexPairTrendType.NEUTRAL) {
             return;
@@ -52,8 +62,8 @@ export class MidaRunwayAdvisor extends AMidaAdvisor {
             return;
         }
 
-        const profitPips: number = this.forexPair.normalizePips(2);
-        const lossPips: number = this.forexPair.normalizePips(5);
+        const profitPips: number = this.forexPair.pipsToPrice(8);
+        const lossPips: number = this.forexPair.pipsToPrice(4);
         let direction: MidaPositionDirectionType;
         let stopLoss: number;
         let takeProfit: number;
@@ -72,12 +82,14 @@ export class MidaRunwayAdvisor extends AMidaAdvisor {
         this._lastPositionOpen = await this.openPosition({
             direction,
             forexPair: this.forexPair,
-            lots: 0.5,
+            lots: 1,
             stopLoss,
             takeProfit,
         });
 
-        console.log((new Date()).toTimeString().split(" ")[0] + " " + this.forexPair.ID + " => " + direction);
+        await this._lastPositionOpen.close();
+
+        // console.log(exchangeRate.date.toTimeString().split(" ")[0] + " " + this.forexPair.ID + " => " + direction);
     }
 
     private async _calculateM5TrendType (): Promise<MidaForexPairTrendType> {
@@ -87,12 +99,14 @@ export class MidaRunwayAdvisor extends AMidaAdvisor {
         const closePrices: number[] = periods.map((period: MidaForexPairPeriod): number => period.close);
         const exponentialAverage21: number[] = await MidaTA.calculateEMA(closePrices, 21);
         const stochasticOscillator: number[][] = await MidaTA.calculateSTOCH([ highPrices, lowPrices, closePrices, ], 5, 3, 3);
+        const relativeStrengthIndex: number[] = await MidaTA.calculateRSI(closePrices, 14);
         const bollingerBands: number[][] = await MidaTA.calculateBB(closePrices, 20, 2);
 
         periods.reverse();
         exponentialAverage21.reverse();
         stochasticOscillator[0].reverse();
         stochasticOscillator[1].reverse();
+        relativeStrengthIndex.reverse();
         bollingerBands[0].reverse();
         bollingerBands[1].reverse();
         bollingerBands[2].reverse();
@@ -101,6 +115,7 @@ export class MidaRunwayAdvisor extends AMidaAdvisor {
             if (
                 exponentialAverage21[i] > periods[i].high &&
                 (stochasticOscillator[0][i] < 30 || stochasticOscillator[1][i] < 30) &&
+                relativeStrengthIndex[i] < 37 &&
                 bollingerBands[1][i] > periods[i].high &&
                 bollingerBands[0][i] > periods[i].low
             ) {
@@ -109,6 +124,7 @@ export class MidaRunwayAdvisor extends AMidaAdvisor {
             else if (
                 exponentialAverage21[i] < periods[i].low &&
                 (stochasticOscillator[0][i] > 60 || stochasticOscillator[1][i] > 60) &&
+                relativeStrengthIndex[i] > 63 &&
                 bollingerBands[1][i] < periods[i].low &&
                 bollingerBands[2][i] < periods[i].high
             ) {

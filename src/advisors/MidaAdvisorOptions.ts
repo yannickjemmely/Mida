@@ -25,4 +25,6 @@ export type MidaAdvisorOptions = {
 
     // Represents the profit multiplier.
     profitMultiplier?: number;
+
+    maxSpreadPips?: number;
 };

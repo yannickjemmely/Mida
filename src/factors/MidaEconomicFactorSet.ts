@@ -12,7 +12,7 @@ export class MidaEconomicFactorSet extends MidaSet<MidaEconomicFactor> {
         const matchedFactors: MidaEconomicFactor[] = [];
 
         for (const factor of this.toArray()) {
-            if (factor.influencedCurrencies.hasOwnProperty(currency.ID)) {
+            if (factor.influencedCurrencies.hasOwnProperty(currency.id)) {
                 matchedFactors.push(factor);
             }
         }

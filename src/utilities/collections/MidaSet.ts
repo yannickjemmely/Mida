@@ -43,6 +43,6 @@ export class MidaSet<T> {
     }
 
     public toArray (): T[] {
-        return Object.keys(this._elements).map((hash: string): T => this._elements[hash]);
+        return Object.values(this._elements);
     }
 }
