@@ -11,13 +11,13 @@ export class MidaCurrencyType {
     }
 
     /*
-        public static define (currency: MidaCurrency): void {
-            if (this._currencies.has(currency.ID)) {
-                throw new Error();
-            }
-
-            this._currencies.add(currency);
+    public static define (currency: MidaCurrency): void {
+        if (this._currencies.has(currency.id)) {
+            throw new Error();
         }
+
+        this._currencies.add(currency);
+    }
     */
 
     public static getById (id: string): MidaCurrency {

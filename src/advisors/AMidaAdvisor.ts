@@ -1,15 +1,15 @@
-import {MidaAdvisorEventType} from "#advisors/MidaAdvisorEventType";
-import {MidaAdvisorOptions} from "#advisors/MidaAdvisorOptions";
-import {AMidaBroker} from "#broker/AMidaBroker";
-import {MidaBrokerEventType} from "#broker/MidaBrokerEventType";
-import {MidaForexPair} from "#forex/MidaForexPair";
-import {MidaForexPairExchangeRate} from "#forex/MidaForexPairExchangeRate";
-import {MidaForexPairPeriod} from "#forex/MidaForexPairPeriod";
-import {MidaPosition} from "#position/MidaPosition";
-import {MidaPositionDirectives} from "#position/MidaPositionDirectives";
-import {MidaPositionSet} from "#position/MidaPositionSet";
-import {MidaPositionStatusType} from "#position/MidaPositionStatusType";
-import {AMidaObservable} from "#utilities/observable/AMidaObservable";
+import { MidaAdvisorEventType } from "#advisors/MidaAdvisorEventType";
+import { MidaAdvisorOptions } from "#advisors/MidaAdvisorOptions";
+import { AMidaBroker } from "#broker/AMidaBroker";
+import { MidaBrokerEventType } from "#broker/MidaBrokerEventType";
+import { MidaForexPair } from "#forex/MidaForexPair";
+import { MidaForexPairExchangeRate } from "#forex/MidaForexPairExchangeRate";
+import { MidaForexPairPeriod } from "#forex/MidaForexPairPeriod";
+import { MidaPosition } from "#position/MidaPosition";
+import { MidaPositionDirectives } from "#position/MidaPositionDirectives";
+import { MidaPositionSet } from "#position/MidaPositionSet";
+import { MidaPositionStatusType } from "#position/MidaPositionStatusType";
+import { AMidaObservable } from "#utilities/observable/AMidaObservable";
 
 export abstract class AMidaAdvisor extends AMidaObservable<MidaAdvisorEventType> {
     // Represents the advisor options.
@@ -24,8 +24,8 @@ export abstract class AMidaAdvisor extends AMidaObservable<MidaAdvisorEventType>
     // Represents the positions created by the advisor.
     private readonly _positions: MidaPositionSet;
 
-    // Represents the forex pair tick listener UUID.
-    private _forexPairTickListenerUUID: string;
+    // Represents the forex pair tick listener uuid.
+    private _forexPairTickListenerUuid: string;
 
     // Indicates if the advisor is operative.
     private _isOperative: boolean;
@@ -46,7 +46,7 @@ export abstract class AMidaAdvisor extends AMidaObservable<MidaAdvisorEventType>
         this._broker = options.broker;
         this._forexPair = options.forexPair;
         this._positions = new MidaPositionSet();
-        this._forexPairTickListenerUUID = "";
+        this._forexPairTickListenerUuid = "";
         this._isOperative = false;
         this._capturedTicks = [];
         this._asyncTickPromise = null;
@@ -111,29 +111,29 @@ export abstract class AMidaAdvisor extends AMidaObservable<MidaAdvisorEventType>
         return this._positions.toArray().filter((position: MidaPosition): boolean => position.status === status);
     }
 
-    protected onTick (forexPairExchangeRate: MidaForexPairExchangeRate): void {
+    protected onTick (exchangeRate: MidaForexPairExchangeRate): void {
         // Silence is golden.
     }
 
-    protected async onTickAsync (forexPairExchangeRate: MidaForexPairExchangeRate): Promise<void> {
+    protected async onTickAsync (exchangeRate: MidaForexPairExchangeRate): Promise<void> {
         // Silence is golden.
     }
 
-    protected onPeriod (forexPairPeriod: MidaForexPairPeriod): void {
+    protected onPeriod (period: MidaForexPairPeriod): void {
         // Silence is golden.
     }
 
-    protected async onPeriodAsync (forexPairPeriod: MidaForexPairPeriod): Promise<void> {
+    protected async onPeriodAsync (period: MidaForexPairPeriod): Promise<void> {
         // Silence is golden.
     }
 
-    protected getTicksInDateRange (fromDate: Date, toDate: Date): MidaForexPairExchangeRate[] {
+    protected getTicksInTimeRange (from: Date, to: Date): MidaForexPairExchangeRate[] {
         const matchedTicks: MidaForexPairExchangeRate[] = [];
 
         for (const capturedTick of this._capturedTicks) {
-            const date: Date = capturedTick.time;
+            const time: Date = capturedTick.time;
 
-            if (date >= fromDate && date <= toDate) {
+            if (time >= from && time <= to) {
                 matchedTicks.push(capturedTick);
             }
         }
@@ -141,8 +141,8 @@ export abstract class AMidaAdvisor extends AMidaObservable<MidaAdvisorEventType>
         return matchedTicks;
     }
 
-    protected async openPosition (positionDirectives: MidaPositionDirectives): Promise<MidaPosition> {
-        const position: MidaPosition = await this._broker.openPosition(positionDirectives);
+    protected async openPosition (directives: MidaPositionDirectives): Promise<MidaPosition> {
+        const position: MidaPosition = await this._broker.openPosition(directives);
 
         this._positions.add(position);
         this.notifyEvent(MidaAdvisorEventType.POSITION_OPEN, position, this);
@@ -151,46 +151,48 @@ export abstract class AMidaAdvisor extends AMidaObservable<MidaAdvisorEventType>
     }
 
     private _construct (): void {
-        this._broker.addEventListener(MidaBrokerEventType.LOGOUT, (): void => {
-            if (this._isOperative) {
-                this.stop();
-            }
-        });
-
+        this._broker.addEventListener(MidaBrokerEventType.LOGOUT, (): void => this._onBrokerLogout());
+        this._broker.addEventListener(MidaBrokerEventType.POSITION_CLOSE, (position: MidaPosition): void => this._onBrokerPositionClose(position));
         this._broker.addForexPairTickListener(this._forexPair, (exchangeRate: MidaForexPairExchangeRate): void => this._onTick(exchangeRate));
-
-        this._broker.addEventListener(MidaBrokerEventType.POSITION_CLOSE, (position: MidaPosition) => {
-            if (this._positions.has(position.uuid)) {
-                this.notifyEvent(MidaAdvisorEventType.POSITION_CLOSE, position);
-            }
-        });
     }
 
-    private _onTick (forexPairExchangeRate: MidaForexPairExchangeRate): void {
+    private _onBrokerLogout (): void {
+        if (this._isOperative) {
+            this.stop();
+        }
+    }
+
+    private _onBrokerPositionClose (position: MidaPosition): void {
+        if (this._positions.has(position.uuid)) {
+            this.notifyEvent(MidaAdvisorEventType.POSITION_CLOSE, position);
+        }
+    }
+
+    private _onTick (exchangeRate: MidaForexPairExchangeRate): void {
         if (!this._isOperative) {
             return;
         }
 
-        this._capturedTicks.push(forexPairExchangeRate);
+        this._capturedTicks.push(exchangeRate);
 
         if (this._asyncTickPromise) {
-            this._asyncTicks.push(forexPairExchangeRate);
+            this._asyncTicks.push(exchangeRate);
         }
         else {
-            this._onTickAsync(forexPairExchangeRate);
+            this._onTickAsync(exchangeRate);
         }
 
         try {
-            this.onTick(forexPairExchangeRate);
+            this.onTick(exchangeRate);
         }
         catch (error) {
             console.error(error);
         }
     }
 
-    private async _onTickAsync (forexPairExchangeRate: MidaForexPairExchangeRate): Promise<void> {
+    private async _onTickAsync (exchangeRate: MidaForexPairExchangeRate): Promise<void> {
         try {
-            this._asyncTickPromise = this.onTickAsync(forexPairExchangeRate);
+            this._asyncTickPromise = this.onTickAsync(exchangeRate);
 
             await this._asyncTickPromise;
         }

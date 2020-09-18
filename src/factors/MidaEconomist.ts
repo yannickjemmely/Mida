@@ -15,7 +15,7 @@ export class MidaEconomist {
         // Silence is golden.
     }
 
-    public static defineEconomicFactor (factor: MidaEconomicFactor): void {
+    public static defineFactor (factor: MidaEconomicFactor): void {
         if (this._factors.has(factor.name)) {
             throw new Error();
         }
@@ -23,7 +23,7 @@ export class MidaEconomist {
         this._factors.add(factor);
     }
 
-    public static getEconomicFactor (name: string): MidaEconomicFactor {
+    public static getFactor (name: string): MidaEconomicFactor {
         const factor: MidaEconomicFactor | null = this._factors.get(name);
 
         if (!factor) {
@@ -33,7 +33,7 @@ export class MidaEconomist {
         return factor;
     }
 
-    public static getEconomicFactorsByCurrency (currency: MidaCurrency): MidaEconomicFactor[] {
+    public static getFactorsByCurrency (currency: MidaCurrency): MidaEconomicFactor[] {
         return this._factors.getByCurrency(currency);
     }
 /*
@@ -57,7 +57,7 @@ export class MidaEconomist {
 }
 
 export function defineEconomicFactor (factor: MidaEconomicFactor): void {
-    MidaEconomist.defineEconomicFactor(factor);
+    MidaEconomist.defineFactor(factor);
 }
 
 //////////

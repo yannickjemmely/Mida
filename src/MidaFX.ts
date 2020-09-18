@@ -1,8 +1,9 @@
 import {EUR_USD} from "#forex/MidaForexPairType";
-import {M30, MidaForexPairPeriodType} from "#forex/MidaForexPairPeriodType";
+import {D1, H1, M30, MidaForexPairPeriodType} from "#forex/MidaForexPairPeriodType";
 import {MidaForexPairPeriod} from "#forex/MidaForexPairPeriod";
 import {AMidaBroker} from "#broker/AMidaBroker";
 import {BDSwissBroker} from "#broker/BDSwissBroker";
+import {MidaTA} from "#analysis/MidaTA";
 
 export module MidaFX {
     
@@ -18,11 +19,11 @@ void (async (): Promise<void> => {
         password: "b83c159fd52a5A",
     });
 
-    const periods: MidaForexPairPeriod[] = await myAccount.getForexPairPeriods(EUR_USD, M30);
+    const periods: MidaForexPairPeriod[] = await myAccount.getForexPairPeriods(EUR_USD, D1);
 
-    periods.reverse();
+    console.log(MidaTA.calculateSwingPointsV1(periods.slice(periods.length - 35, periods.length)));
 
-    console.log(periods);
+
 
     /*
 

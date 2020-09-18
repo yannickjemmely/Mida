@@ -8,10 +8,10 @@ export type MidaEconomicFactorStatement = {
     factor: MidaEconomicFactor;
 
     // Represents the time of the statement.
-    date: Date;
+    time: Date;
 
     // Represents the time of the next statement.
-    nextStatementDate?: Date;
+    nextStatementTime?: Date;
 
     // Represents the actual value of the factor.
     actual: number;
@@ -27,12 +27,12 @@ export type MidaEconomicFactorStatement = {
     actualDistance: number;
 
     // Used to predict what this statement implies for a currency at this day.
-    makeCurrencyPrediction (currencyID: string): MidaEconomicFactorStatementCurrencyPrediction;
+    makeCurrencyPrediction (currencyId: string): MidaEconomicFactorStatementCurrencyPrediction;
 };
 
-export function getCurrencyStrengthDirection (currencyID: string, statement: MidaEconomicFactorStatement, positiveBearish: boolean): number {
-    const influence: number = statement.factor.influencedCurrencies[currencyID] || 0;
-    const elapsedTime: number = 1 / Math.exp(MidaUtilities.getDaysBetweenDates(new Date(), statement.date));
+export function getCurrencyStrengthDirection (currencyId: string, statement: MidaEconomicFactorStatement, positiveBearish: boolean): number {
+    const influence: number = statement.factor.influencedCurrencies[currencyId] || 0;
+    const elapsedTime: number = 1 / Math.exp(MidaUtilities.getDaysBetweenDates(new Date(), statement.time));
     const direction: number = statement.actualDistance * (Math.exp(Math.sqrt(influence)) - 1) * elapsedTime;
 
     if (positiveBearish) {

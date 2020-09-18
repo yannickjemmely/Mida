@@ -27,4 +27,6 @@ export type MidaAdvisorOptions = {
     profitMultiplier?: number;
 
     maxSpreadPips?: number;
+
+    onlySignals?: boolean;
 };

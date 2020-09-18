@@ -7,19 +7,19 @@ export class ChromiumBrowser implements IMidaBrowser {
     private static readonly _shared: ChromiumBrowser = new ChromiumBrowser();
 
     private _puppeteerBrowser: Puppeteer.Browser | null;
-    private _PID: number;
+    private _pid: number;
 
     public constructor () {
         this._puppeteerBrowser = null;
-        this._PID = -1;
+        this._pid = -1;
     }
 
-    public get PID (): number {
-        return this._PID;
+    public get pid (): number {
+        return this._pid;
     }
 
     public get isOpen (): boolean {
-        return this.PID !== -1;
+        return this.pid !== -1;
     }
 
     public async open (user?: string): Promise<void> {
@@ -46,7 +46,7 @@ export class ChromiumBrowser implements IMidaBrowser {
                 ignoreHTTPSErrors: true,
                 args: browserArguments,
             });
-            this._PID = this._puppeteerBrowser.process().pid;
+            this._pid = this._puppeteerBrowser.process().pid;
 
             await this.closeTabs();
         }
@@ -71,7 +71,8 @@ export class ChromiumBrowser implements IMidaBrowser {
     public async close (): Promise<void> {
         if (this._puppeteerBrowser) {
             await this._puppeteerBrowser.close();
-            this._PID = -1;
+
+            this._pid = -1;
         }
     }
 
