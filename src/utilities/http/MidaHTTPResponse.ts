@@ -1,4 +1,4 @@
-// Represents an HTTP response (with the information necessary to Mida).
+// Represents an HTTP response.
 export type MidaHTTPResponse = {
     // Represents the response status.
     status: number;

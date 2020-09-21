@@ -20,14 +20,25 @@ void (async (): Promise<void> => {
     });
 
     const periods: MidaForexPairPeriod[] = await myAccount.getForexPairPeriods(EUR_USD, D1);
+    const last10Periods: MidaForexPairPeriod[] = periods.slice(periods.length - 10, periods.length);
 
-    console.log(MidaTA.calculateSwingPointsV1(periods.slice(periods.length - 35, periods.length)));
+    const angles: number[] = [];
 
+    for (let i: number = 0; i < last10Periods.length - 1; ++i) {
+        const period: MidaForexPairPeriod = last10Periods[i];
+        const nextPeriod: MidaForexPairPeriod = last10Periods[i + 1];
 
+        console.log(period.close);
+
+        angles.push(Math.atan2(nextPeriod.close - period.close, nextPeriod.time.valueOf() - period.time.valueOf()) * 180 / Math.PI);
+    }
+
+    console.log(angles);
 
     /*
 
 
+// 1.01 ora
     const advisorPairs: MidaForexPair[] = [
         MidaForexPairType.EUR_USD,
         MidaForexPairType.EUR_AUD,

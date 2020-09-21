@@ -25,6 +25,18 @@ export type MidaPositionDirectives = {
         // In case the forex pair price goes under this value then the schedule will be canceled.
         cancelUnder?: number;
 
+        // Represents the position buy stop.
+        buyStop?: number;
+
+        // Represents the position buy limit.
+        buyLimit?: number;
+
+        // Represents the position sell stop.
+        sellStop?: number;
+
+        // Represents the position sell limit.
+        sellLimit?: number;
+
         // In case this time is reached and the position has not yet been opened then the schedule will be canceled.
         expirationTime?: Date;
     };

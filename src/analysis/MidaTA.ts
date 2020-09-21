@@ -71,7 +71,7 @@ export module MidaTA {
         });
     }
 
-    export async function calculateSTOCH (prices: number[][], length: number, K: number, D: number): Promise<number[][]> {
+    export async function calculateSTOCH (prices: number[][], length: number, k: number, d: number): Promise<number[][]> {
         return new Promise((resolve: (...parameters: any[]) => void, reject: (...parameters: any[]) => void): void => {
             Tulind.indicators.stoch.indicator([
                     // Represents the high prices.
@@ -83,16 +83,17 @@ export module MidaTA {
                     // Represents the close prices.
                     prices[2],
                 ],
-                [ length, K, D, ],
+                [ length, k, d, ],
                 (error: any, results: any): void => {
                     if (error) {
                         reject(error);
                     }
                     else {
                         resolve([
-                            // K.
+                            // Represents k.
                             results[0],
-                            // D.
+
+                            // Represents d.
                             results[1],
                         ]);
                     }
@@ -120,6 +121,7 @@ export module MidaTA {
         };
     }
 
+    // TODO: Ragionare per rette e coefficienti angolari.
     export function calculateTrendV1 (periods: MidaForexPairPeriod): MidaForexPairTrendType {
         return MidaForexPairTrendType.NEUTRAL;
     }

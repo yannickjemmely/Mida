@@ -7,8 +7,8 @@ and execute investments.
 npm install midafx
 ```
 
-## Interface
-The documentation of the MidaFX interface.
+## API
+The MidaFX API documentation.
 
 ### Playground Broker
 The playground broker is a local broker designed by MidaFX, acts as a real broker once time series are imported and it's

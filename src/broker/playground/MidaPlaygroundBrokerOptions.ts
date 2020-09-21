@@ -3,15 +3,15 @@ import { MidaCurrency } from "#currency/MidaCurrency";
 export type MidaPlaygroundBrokerOptions = {
     currency?: MidaCurrency;
 
-    negativeEquityProtection?: boolean;
+    negativeBalanceProtection?: boolean;
     initialBalance?: number;
 
     fixedCommission?: {
-        [forexPairID: string]: number;
+        [forexPairId: string]: number;
     };
 
     fixedSwaps?: {
-        [forexPairID: string]: number;
+        [forexPairId: string]: number;
     };
 
     initialTime?: Date;
