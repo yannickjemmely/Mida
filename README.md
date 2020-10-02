@@ -1,11 +1,11 @@
 <p align="center"> 
-    <img src="images/logo.svg" alt="" width="210px">
+    <img src="images/logo.svg" alt="" width="390px">
 </p>
+<br>
 
-# MidaFX
 MidaFX is a framework designed to perform real time investments in the forex market. Designed to create expert advisors, perform analysis, manage portfolios, test
 and execute investments.
-
+s
 ## Installation
 ```console
 npm install midafx
