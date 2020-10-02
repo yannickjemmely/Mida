@@ -14,18 +14,6 @@ export type MidaAdvisorOptions = {
     // Indicates if the advisor is being backtested.
     isTest?: boolean;
 
-    // Represents the pips to risk.
-    riskPips?: number;
-
-    // Represents the pips to profit.
-    profitPips?: number;
-
-    // Represents the risk multiplier.
-    riskMultiplier?: number;
-
-    // Represents the profit multiplier.
-    profitMultiplier?: number;
-
     maxSpreadPips?: number;
 
     onlySignals?: boolean;

@@ -1,3 +1,7 @@
+<p align="center"> 
+    <img src="images/logo.svg" alt="" width="210px">
+</p>
+
 # MidaFX
 MidaFX is a framework designed to perform real time investments in the forex market. Designed to create expert advisors, perform analysis, manage portfolios, test
 and execute investments.

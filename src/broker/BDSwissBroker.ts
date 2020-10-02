@@ -210,7 +210,7 @@ export class BDSwissBroker extends AMidaBroker {
             commission: async (): Promise<number> => openDescriptor.commission,
             swaps: async (): Promise<number> => openDescriptor.swaps,
             currency: async (): Promise<MidaCurrency> => this.getCurrency(),
-            close: async (): Promise<void> => this.closePositionByUUID(positionUUID),
+            close: async (): Promise<void> => this.closePositionByUuid(positionUUID),
         };
 
         this._positions.add(position);
@@ -233,7 +233,7 @@ export class BDSwissBroker extends AMidaBroker {
         return null;
     }
 
-    public async closePositionByUUID (UUID: string): Promise<void> {
+    public async closePositionByUuid (UUID: string): Promise<void> {
         const position: MidaPosition | null = await this.getPositionByUuid(UUID);
 
         if (!position) {

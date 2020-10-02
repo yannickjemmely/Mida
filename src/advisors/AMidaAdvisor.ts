@@ -12,7 +12,7 @@ import { MidaPositionStatusType } from "#position/MidaPositionStatusType";
 import { AMidaObservable } from "#utilities/observable/AMidaObservable";
 
 export abstract class AMidaAdvisor extends AMidaObservable<MidaAdvisorEventType> {
-    // Represents the advisor options.
+    // Represents the options.
     private readonly _options: MidaAdvisorOptions;
 
     // Represents the broker used to operate.
@@ -21,10 +21,10 @@ export abstract class AMidaAdvisor extends AMidaObservable<MidaAdvisorEventType>
     // Represents the operated forex pair.
     private readonly _forexPair: MidaForexPair;
 
-    // Represents the positions created by the advisor.
+    // Represents the created positions.
     private readonly _positions: MidaPositionSet;
 
-    // Represents the forex pair tick listener uuid.
+    // Represents the forex pair ticks listener uuid.
     private _forexPairTickListenerUuid: string;
 
     // Indicates if the advisor is operative.
@@ -33,7 +33,7 @@ export abstract class AMidaAdvisor extends AMidaObservable<MidaAdvisorEventType>
     // Represents the captured ticks of the operated forex pair.
     private readonly _capturedTicks: MidaForexPairExchangeRate[];
 
-    // Represents the async tick Promise.
+    // Represents the async tick.
     private _asyncTickPromise: Promise<void> | null;
 
     // Represents the async captured ticks queue.
@@ -59,7 +59,7 @@ export abstract class AMidaAdvisor extends AMidaObservable<MidaAdvisorEventType>
         }
     }
 
-    public get options (): Readonly<MidaAdvisorOptions> {
+    public get options (): MidaAdvisorOptions {
         return this._options;
     }
 
@@ -75,17 +75,21 @@ export abstract class AMidaAdvisor extends AMidaObservable<MidaAdvisorEventType>
         return this._isOperative;
     }
 
-    public get positions (): MidaPosition[] {
+    public get positions (): readonly MidaPosition[] {
         return this._positions.toArray();
     }
 
-    protected get capturedTicks (): ReadonlyArray<MidaForexPairExchangeRate> {
+    protected get capturedTicks (): readonly MidaForexPairExchangeRate[] {
         return this._capturedTicks;
     }
 
     public start (): void {
         if (this._isOperative) {
             return;
+        }
+
+        if (!this._broker.isLoggedIn) {
+            throw new Error();
         }
 
         this._isOperative = true;
@@ -127,13 +131,13 @@ export abstract class AMidaAdvisor extends AMidaObservable<MidaAdvisorEventType>
         // Silence is golden.
     }
 
-    protected getTicksInTimeRange (from: Date, to: Date): MidaForexPairExchangeRate[] {
+    protected getTicksInTimeRange (fromTime: Date, toTime: Date): MidaForexPairExchangeRate[] {
         const matchedTicks: MidaForexPairExchangeRate[] = [];
 
         for (const capturedTick of this._capturedTicks) {
             const time: Date = capturedTick.time;
 
-            if (time >= from && time <= to) {
+            if (time >= fromTime && time <= toTime) {
                 matchedTicks.push(capturedTick);
             }
         }

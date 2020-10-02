@@ -1,14 +1,13 @@
 import {AMidaAdvisor} from "#advisors/AMidaAdvisor";
 import {MidaAdvisorOptions} from "#advisors/MidaAdvisorOptions";
-import {MidaTA} from "#analysis/MidaTA";
+import {MidaTA} from "#analysis/MidaAnalysis";
 import {MidaForexPairExchangeRate} from "#forex/MidaForexPairExchangeRate";
 import {MidaForexPairPeriod} from "#forex/MidaForexPairPeriod";
 import {MidaForexPairPeriodType} from "#forex/MidaForexPairPeriodType";
 import {MidaForexPairTrendType} from "#forex/MidaForexPairTrendType";
 import {MidaPosition} from "#position/MidaPosition";
-import {MidaPositionDirectionType} from "#position/MidaPositionDirectionType";
 import {MidaUtilities} from "#utilities/MidaUtilities";
-import {MidaPositionStatusType} from "#position/MidaPositionStatusType";
+import {MidaPositionDirectionType} from "#position/MidaPositionDirectionType";
 
 export class MidaRunwayAdvisor extends AMidaAdvisor {
     private _lastUpdateDate: Date | null;
@@ -22,74 +21,31 @@ export class MidaRunwayAdvisor extends AMidaAdvisor {
     }
 
     protected async onTickAsync (exchangeRate: MidaForexPairExchangeRate): Promise<void> {
-        if (this.getPositionsByStatus(MidaPositionStatusType.OPEN).length > 0) {
+        if (this._lastUpdateDate && MidaUtilities.getMinutesBetweenDates(this._lastUpdateDate, exchangeRate.time) < 60) {
             return;
         }
 
-        if (
-            this._lastPositionOpen &&
-            this._lastPositionOpen.status === MidaPositionStatusType.CLOSE &&
-            this._lastPositionOpen.closeDate &&
-            MidaUtilities.getMinutesBetweenDates(this._lastPositionOpen.closeDate, exchangeRate.time) < 7
-        ) {
-            return;
-        }
+        const periods: MidaForexPairPeriod[] = await this.broker.getForexPairPeriods(this.forexPair, MidaForexPairPeriodType.M15);
+        const last24Periods: MidaForexPairPeriod[] = periods.slice(periods.length - 24, periods.length);
+        let direction: MidaPositionDirectionType | null = null;
+        const trend: MidaForexPairTrendType = MidaTA.calculateTrendV1(last24Periods);
 
-        if (this._lastUpdateDate && MidaUtilities.getMinutesBetweenDates(this._lastUpdateDate, exchangeRate.time) < 2) {
+        if (trend === MidaForexPairTrendType.NEUTRAL) {
             return;
         }
         else {
-            this._lastUpdateDate = exchangeRate.time;
+            direction = trend === MidaForexPairTrendType.BULLISH ? MidaPositionDirectionType.SELL : MidaPositionDirectionType.BUY;
         }
 
-        const trendTypeM5: MidaForexPairTrendType = await this._calculateM5TrendType();
-
-        //console.log(exchangeRate.date.toTimeString().split(" ")[0] + " " + this.forexPair.ID + " => " + "( M5 => " + trendTypeM5 + " )");
-
-        if (trendTypeM5 === MidaForexPairTrendType.NEUTRAL) {
-            return;
-        }
-
-        const trendTypeM15: MidaForexPairTrendType = await this._calculateM15TrendType();
-
-        //console.log(exchangeRate.date.toTimeString().split(" ")[0] + " " + this.forexPair.ID + " => " + "( M15 => " + trendTypeM15 + " )");
-
-        if (trendTypeM15 == MidaForexPairTrendType.NEUTRAL) {
-            return;
-        }
-
-        if (trendTypeM5 !== trendTypeM15) {
-            return;
-        }
-
-        const profitPips: number = this.forexPair.pipsToPrice(8);
-        const lossPips: number = this.forexPair.pipsToPrice(4);
-        let direction: MidaPositionDirectionType;
-        let stopLoss: number;
-        let takeProfit: number;
-
-        if (trendTypeM5 === MidaForexPairTrendType.BEARISH && trendTypeM15 === MidaForexPairTrendType.BEARISH) {
-            direction = MidaPositionDirectionType.SELL;
-            stopLoss = exchangeRate.ask + lossPips;
-            takeProfit = exchangeRate.bid - profitPips;
-        }
-        else {
-            direction = MidaPositionDirectionType.BUY;
-            stopLoss = exchangeRate.bid - lossPips;
-            takeProfit = exchangeRate.ask + profitPips;
-        }
-
-        this._lastPositionOpen = await this.openPosition({
-            direction,
+        await this.openPosition({
             forexPair: this.forexPair,
-            lots: 1,
-            stopLoss,
-            takeProfit,
+            lots: 2,
+            direction,
+            takeProfit: exchangeRate.ask - exchangeRate.forexPair.pipsToPrice(3),
+            stopLoss: exchangeRate.ask + exchangeRate.forexPair.pipsToPrice(20),
         });
 
-        await this._lastPositionOpen.close();
-
-        // console.log(exchangeRate.date.toTimeString().split(" ")[0] + " " + this.forexPair.ID + " => " + direction);
+        this._lastUpdateDate = exchangeRate.time;
     }
 
     private async _calculateM5TrendType (): Promise<MidaForexPairTrendType> {

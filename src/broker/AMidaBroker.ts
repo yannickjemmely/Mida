@@ -39,8 +39,8 @@ export abstract class AMidaBroker extends AMidaObservable<MidaBrokerEventType> {
     // Used to get positions by their status.
     public abstract getPositionsByStatus (status: MidaPositionStatusType): Promise<MidaPosition[]>;
 
-    // Used to close a position by its UUID.
-    public abstract closePositionByUUID (UUID: string): Promise<void>;
+    // Used to close a position by its uuid.
+    public abstract closePositionByUuid (uuid: string): Promise<void>;
 
     // Used to get the actual balance.
     public abstract getBalance (): Promise<number>;

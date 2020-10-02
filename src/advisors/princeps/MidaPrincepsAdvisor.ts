@@ -1,6 +1,6 @@
 import {AMidaAdvisor} from "#advisors/AMidaAdvisor";
 import {MidaAdvisorOptions} from "#advisors/MidaAdvisorOptions";
-import {MidaTA} from "#analysis/MidaTA";
+import {MidaTA} from "#analysis/MidaAnalysis";
 import {MidaForexPairExchangeRate} from "#forex/MidaForexPairExchangeRate";
 import {MidaForexPairPeriod} from "#forex/MidaForexPairPeriod";
 import {MidaForexPairPeriodType} from "#forex/MidaForexPairPeriodType";

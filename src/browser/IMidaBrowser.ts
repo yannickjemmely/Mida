@@ -1,12 +1,12 @@
 import { IMidaBrowserTab } from "#browser/IMidaBrowserTab";
 
-// Represents a web browser (used by Mida to navigate websites).
+// Represents a web browser.
 export interface IMidaBrowser {
     // Indicates if the browser is open.
     readonly isOpen: boolean;
 
     // Used to open the browser.
-    open (user?: string): Promise<void>;
+    open (id?: string): Promise<void>;
 
     // Used to open a browser tab.
     openTab (): Promise<IMidaBrowserTab>;

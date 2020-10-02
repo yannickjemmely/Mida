@@ -32,7 +32,7 @@ export class MidaCurrencyType {
 
     public static getBySymbol (symbol: string): MidaCurrency {
         for (const currency of MidaCurrencyType._currencies.toArray()) {
-            if (symbol === currency.symbol) {
+            if (currency.symbol === symbol) {
                 return currency;
             }
         }

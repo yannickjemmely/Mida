@@ -1,0 +1,15 @@
+Trend Confirmations:
+
+when a Swing Point Break occurs
+
+then confirmations are:
+1. Swing Point Break with close > than support/resistance line or close > than previous swing point
+2. Big Momentum in the direction of the Swing Point Break
+3. Bollinger Bands break in the direction of the Swing Point Break
+4. Trend of the timeframe is in the same direction of the swing point break
+5. Trend of upper timeframes is in the same direction of the swing point break
+
+Remember:
+the longer the congestion/resistance/support the bigger the momentum of the break
+
+if there is a downtrend, the lesser the congestion/resistance/support break the bigger the momentum of the generic trend

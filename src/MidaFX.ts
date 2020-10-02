@@ -1,16 +1,15 @@
-import {EUR_USD} from "#forex/MidaForexPairType";
-import {D1, H1, M30, MidaForexPairPeriodType} from "#forex/MidaForexPairPeriodType";
-import {MidaForexPairPeriod} from "#forex/MidaForexPairPeriod";
-import {AMidaBroker} from "#broker/AMidaBroker";
-import {BDSwissBroker} from "#broker/BDSwissBroker";
-import {MidaTA} from "#analysis/MidaTA";
+import {EUR_USD, MidaForexPairType} from "#forex/MidaForexPairType";
+import {MidaRunwayAdvisor} from "#advisors/runway/MidaRunwayAdvisor";
+import {MidaForexPairExchangeRate} from "#forex/MidaForexPairExchangeRate";
+import {MidaPlaygroundBroker} from "#broker/playground/MidaPlaygroundBroker";
+import {MidaPositionStatusType} from "#position/MidaPositionStatusType";
 
 export module MidaFX {
     
 }
 
 void (async (): Promise<void> => {
-
+/*
     const myAccount: AMidaBroker = new BDSwissBroker();
 
     await myAccount.login({
@@ -20,7 +19,22 @@ void (async (): Promise<void> => {
     });
 
     const periods: MidaForexPairPeriod[] = await myAccount.getForexPairPeriods(EUR_USD, D1);
-    const last10Periods: MidaForexPairPeriod[] = periods.slice(periods.length - 10, periods.length);
+    const lastPeriods: MidaForexPairPeriod[] = periods.slice(periods.length - 15, periods.length);
+
+    console.log("EUR/USD trend => " + MidaTA.calculateTrendV1(lastPeriods));
+
+    const swingPointsLow: MidaSwingPoint[] = MidaTA.calculateSwingPointsV1(lastPeriods, MidaSwingPointType.LOW);
+
+
+    for (const swingPointLow of swingPointsLow) {
+        console.log(swingPointLow.priceMomentum);
+        console.log(swingPointLow.lastPeriod);
+    }
+
+
+
+    /*
+
 
     const angles: number[] = [];
 
@@ -35,9 +49,9 @@ void (async (): Promise<void> => {
 
     console.log(angles);
 
-    /*
 
-
+*/
+/*
 // 1.01 ora
     const advisorPairs: MidaForexPair[] = [
         MidaForexPairType.EUR_USD,
@@ -52,7 +66,16 @@ void (async (): Promise<void> => {
         MidaForexPairType.USD_JPY,
     ];
 
-*/
+    for (const forexPair of advisorPairs) {
+        const periods: MidaForexPairPeriod[] = await myAccount.getForexPairPeriods(forexPair, D1);
+        const last30Periods: MidaForexPairPeriod[] = periods.slice(periods.length - 24, periods.length);
+
+        console.log(forexPair.id + " trend = " + MidaTA.calculateTrendV1(last30Periods));
+
+        console.log("\n\n\n\n");
+    }
+
+
 
     /*
 
@@ -109,7 +132,7 @@ void (async (): Promise<void> => {
 
 
 
-/*
+
 
 
 
@@ -138,9 +161,7 @@ void (async (): Promise<void> => {
 
 
     try {
-        playground.addForexPairTickListener(MidaForexPairType.EUR_USD, (exchangeRate: MidaForexPairExchangeRate): void => {
-            //console.log(exchangeRate);
-        });
+
 
         await playground.addTime(60000 * 60 * 24 * 3);
 
@@ -150,7 +171,7 @@ void (async (): Promise<void> => {
             operative: true,
         });
 
-        await playground.addTime(60000 * 60 * 24 * 6);
+        await playground.addTime(60000 * 60 * 24 * 3);
 
         let profit: number = 0;
         let positive: number = 0;

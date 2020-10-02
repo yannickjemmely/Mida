@@ -15,13 +15,13 @@ import {generatePositionUuid, MidaPosition} from "#position/MidaPosition";
 import {MidaPositionDirectives} from "#position/MidaPositionDirectives";
 
 export class MidaPlaygroundBroker extends AMidaBroker {
-    // Represents the options of the broker.
+    // Represents the broker options.
     private readonly _options: Readonly<MidaPlaygroundBrokerOptions>;
 
-    // Represents the time of the broker.
+    // Represents the broker time.
     private _time: Date;
 
-    // Represents the the time series of a forex pair.
+    // Represents the forex pairs time series.
     private readonly _ticks: {
         [forexPairId: string]: MidaForexPairExchangeRate[];
     };
@@ -32,6 +32,7 @@ export class MidaPlaygroundBroker extends AMidaBroker {
         };
     };
 
+    // Represents the positions.
     private readonly _positions: MidaPositionSet;
 
     // Represents the forex pair tick listeners.
@@ -101,10 +102,10 @@ export class MidaPlaygroundBroker extends AMidaBroker {
             closeDate: null,
             closePrice: null,
             profit: async (): Promise<number> => this._getPositionProfit(uuid),
-            commission: async (): Promise<number> => 2,
+            commission: async (): Promise<number> => 0,
             swaps: async (): Promise<number> => 0,
             currency: async (): Promise<MidaCurrency> => MidaCurrencyType.EUR,
-            close: async (): Promise<void> => this.closePositionByUUID(uuid),
+            close: async (): Promise<void> => this.closePositionByUuid(uuid),
         };
 
         this._positions.add(position);
@@ -124,7 +125,7 @@ export class MidaPlaygroundBroker extends AMidaBroker {
         return this._positions.toArray().filter((position: MidaPosition): boolean => position.directives.forexPair === forexPair);
     }
 
-    public async closePositionByUUID (UUID: string): Promise<void> {
+    public async closePositionByUuid (UUID: string): Promise<void> {
         const position: MidaPosition | null = await this.getPositionByUuid(UUID);
 
         if (!position) {
@@ -382,7 +383,7 @@ export class MidaPlaygroundBroker extends AMidaBroker {
 
     private async _onTick (exchangeRate: MidaForexPairExchangeRate): Promise<void> {
         for (const position of await this.getPositionsByForexPair(exchangeRate.forexPair)) {
-            if (position.status === MidaPositionStatusType.CLOSE) {
+            if (position.status !== MidaPositionStatusType.OPEN) {
                 continue;
             }
 

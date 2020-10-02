@@ -22,7 +22,7 @@ export class ChromiumBrowser implements IMidaBrowser {
         return this.pid !== -1;
     }
 
-    public async open (user?: string): Promise<void> {
+    public async open (id?: string): Promise<void> {
         if (!this._puppeteerBrowser) {
             const browserArguments: string[] = [
                 "--no-sandbox",
@@ -36,8 +36,8 @@ export class ChromiumBrowser implements IMidaBrowser {
                 "--disable-features=site-per-process",
             ];
 
-            if (user) {
-                browserArguments.push(`--user-data-dir=${Path.resolve(__dirname, user)}`);
+            if (id) {
+                browserArguments.push(`--user-data-dir=${Path.resolve(__dirname, id)}`);
             }
 
             this._puppeteerBrowser = await Puppeteer.launch({
