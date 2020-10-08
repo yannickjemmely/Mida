@@ -4,6 +4,8 @@ import {MidaSwingPointType} from "#analysis/swing/MidaSwingPointType";
 import {MidaForexPairPeriod} from "#forex/MidaForexPairPeriod";
 import {MidaForexPairTrendType} from "#forex/MidaForexPairTrendType";
 import {MidaForexPairExchangeRate} from "#forex/MidaForexPairExchangeRate";
+import {MidaHorizontalRejectionArea} from "#analysis/rejection/MidaHorizontalRejectionArea";
+import {MidaRejectionAreaType} from "#analysis/rejection/MidaRejectionAreaType";
 
 const Tulind: any = require("tulind");
 
@@ -212,14 +214,24 @@ export module MidaAnalysis {
         return swingPoints;
     }
 
-    export function calculateHorizontalRejections (swingPoints: MidaSwingPoint[], maxDistance: number = 0.08): any[] {
+    /*
+    export function calculateHorizontalRejectionAreas (swingPoints: MidaSwingPoint[], maxDistance: number = 0): MidaHorizontalRejectionArea[]  {
         if (swingPoints.length < 2) {
             return [];
         }
 
+        type PriceRangeIntersection = {
+            priceRangeIndex: number;
+            distance: number;
+        };
+
+        const rejectionAreas: MidaHorizontalRejectionArea[] = [];
         const priceRanges: number[][] = [];
-        const includedSwingPoints: {
-            [priceRangeHash: string]: MidaSwingPoint[];
+        const priceRangesIntersections: {
+            [swingPointLastTime: string]: PriceRangeIntersection[];
+        } = {};
+        const priceRangesRejections: {
+            [priceRange: string]: MidaSwingPoint[];
         } = {};
 
         for (const swingPoint of swingPoints) {
@@ -227,9 +239,79 @@ export module MidaAnalysis {
             const priceRange: number[] = [ closePrice - closePrice * maxDistance, closePrice + closePrice * maxDistance, ];
 
             priceRanges.push(priceRange);
-            includedSwingPoints[priceRange[0].toString() + priceRange[1].toString()] = [];
+            priceRangesIntersections[swingPoint.lastPeriod.time.toISOString()] = [];
+            priceRangesRejections[priceRange[0].toString() + priceRange[1].toString()] = [];
         }
 
-        return [];
+        for (const swingPoint of swingPoints) {
+            const closePrice: number = swingPoint.lastPeriod.close;
+            const timeHash: string = swingPoint.lastPeriod.time.toISOString();
+
+            for (let i: number = 0, length: number = priceRanges.length; i < length; ++i) {
+                const priceRange: number[] = priceRanges[i];
+
+                if (closePrice >= priceRange[0] && closePrice <= priceRange[1]) {
+                    priceRangesIntersections[timeHash].push({
+                        priceRangeIndex: i,
+                        distance: Math.abs(closePrice - ((priceRange[0]) + priceRange[1]) / 2),
+                    });
+                }
+            }
+        }
+
+        for (const swingPoint of swingPoints) {
+            const timeHash: string = swingPoint.lastPeriod.time.toISOString();
+            const distances: PriceRangeIntersection[]  = priceRangesIntersections[timeHash];
+
+            if (distances.length < 2) {
+                continue;
+            }
+
+            distances.sort((left: PriceRangeIntersection, right: PriceRangeIntersection): number => left.distance - right.distance);
+
+            const priceRange: number[] = priceRanges[distances[1].priceRangeIndex];
+
+            priceRangesRejections[priceRange[0].toString() + priceRange[1].toString()].push(swingPoint);
+        }
+
+        for (const priceRange of priceRanges) {
+            const swingPoints: MidaSwingPoint[] = priceRangesRejections[priceRange[0].toString() + priceRange[1].toString()];
+
+            if (swingPoints.length < 2) {
+                continue;
+            }
+
+            const type: MidaRejectionAreaType = swingPoints[0].type === MidaSwingPointType.LOW ? MidaRejectionAreaType.SUPPORT : MidaRejectionAreaType.RESISTANCE;
+
+            rejectionAreas.push(new MidaHorizontalRejectionArea(swingPoints, priceRange, type));
+        }
+
+        return rejectionAreas;
+    }*/
+
+    export function calculateHorizontalRejectionAreas (swingPoints: MidaSwingPoint[], maxDistance: number = 0.05): MidaHorizontalRejectionArea[]  {
+        if (swingPoints.length < 2) {
+            return [];
+        }
+
+        const rejectionAreas: MidaHorizontalRejectionArea[] = [];
+
+        for (const swingPoint of swingPoints) {
+            const closePrice: number = swingPoint.lastPeriod.close;
+            const priceRange: number[] = [ closePrice - closePrice * maxDistance, closePrice + closePrice * maxDistance, ];
+            const rejectedSwingPoints: MidaSwingPoint[] = [];
+
+            for (const swingPoint2 of swingPoints) {
+                if (swingPoint2.lastPeriod.close >= priceRange[0] && swingPoint2.lastPeriod.close <= priceRange[1]) {
+                    rejectedSwingPoints.push(swingPoint2);
+                }
+            }
+
+            if (rejectedSwingPoints.length > 1) {
+                rejectionAreas.push(new MidaHorizontalRejectionArea(rejectedSwingPoints, priceRange, MidaRejectionAreaType.RESISTANCE));
+            }
+        }
+
+        return rejectionAreas;
     }
 }

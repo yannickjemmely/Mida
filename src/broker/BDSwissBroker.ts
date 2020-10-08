@@ -400,7 +400,7 @@ export class BDSwissBroker extends AMidaBroker {
             periods.push({
                 forexPair,
                 type: periodsType,
-                time: new Date((new Date(plainPeriod.t.replace(/-/g, "/"))).valueOf() - 60 * 60 * 1000),
+                time: new Date((new Date(plainPeriod.t.replace(/-/g, "/"))).valueOf() - 60 * 60 * 1000 * 2),
                 open: plainPeriod.o,
                 close: plainPeriod.c,
                 low: plainPeriod.l,

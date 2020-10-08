@@ -12,7 +12,7 @@ import { MidaPositionStatusType } from "#position/MidaPositionStatusType";
 import { AMidaObservable } from "#utilities/observable/AMidaObservable";
 
 export abstract class AMidaAdvisor extends AMidaObservable<MidaAdvisorEventType> {
-    // Represents the options.
+    // Represents the advisor options.
     private readonly _options: MidaAdvisorOptions;
 
     // Represents the broker used to operate.
@@ -115,13 +115,9 @@ export abstract class AMidaAdvisor extends AMidaObservable<MidaAdvisorEventType>
         return this._positions.toArray().filter((position: MidaPosition): boolean => position.status === status);
     }
 
-    protected onTick (exchangeRate: MidaForexPairExchangeRate): void {
-        // Silence is golden.
-    }
+    protected abstract onTick (exchangeRate: MidaForexPairExchangeRate): void;
 
-    protected async onTickAsync (exchangeRate: MidaForexPairExchangeRate): Promise<void> {
-        // Silence is golden.
-    }
+    protected abstract async onTickAsync (exchangeRate: MidaForexPairExchangeRate): Promise<void>;
 
     protected onPeriod (period: MidaForexPairPeriod): void {
         // Silence is golden.

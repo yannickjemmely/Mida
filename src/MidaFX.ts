@@ -1,15 +1,23 @@
-import {EUR_USD, MidaForexPairType} from "#forex/MidaForexPairType";
-import {MidaRunwayAdvisor} from "#advisors/runway/MidaRunwayAdvisor";
+import {EUR_USD, GBP_USD, MidaForexPairType} from "#forex/MidaForexPairType";
+
 import {MidaForexPairExchangeRate} from "#forex/MidaForexPairExchangeRate";
 import {MidaPlaygroundBroker} from "#broker/playground/MidaPlaygroundBroker";
 import {MidaPositionStatusType} from "#position/MidaPositionStatusType";
+import {MidaForexPairPeriod} from "#forex/MidaForexPairPeriod";
+import {MidaAnalysis} from "#analysis/MidaAnalysis";
+import {MidaSwingPoint} from "#analysis/swing/MidaSwingPoint";
+import {D1, H4, M30} from "#forex/MidaForexPairPeriodType";
+import {BDSwissBroker} from "#broker/BDSwissBroker";
+import {AMidaBroker} from "#broker/AMidaBroker";
+import {MidaSwingPointType} from "#analysis/swing/MidaSwingPointType";
+import {MidaHorizontalRejectionArea} from "#analysis/rejection/MidaHorizontalRejectionArea";
 
 export module MidaFX {
     
 }
 
 void (async (): Promise<void> => {
-/*
+
     const myAccount: AMidaBroker = new BDSwissBroker();
 
     await myAccount.login({
@@ -18,20 +26,27 @@ void (async (): Promise<void> => {
         password: "b83c159fd52a5A",
     });
 
-    const periods: MidaForexPairPeriod[] = await myAccount.getForexPairPeriods(EUR_USD, D1);
-    const lastPeriods: MidaForexPairPeriod[] = periods.slice(periods.length - 15, periods.length);
+    console.log("Logged in.\n\n");
 
-    console.log("EUR/USD trend => " + MidaTA.calculateTrendV1(lastPeriods));
+    const periods: MidaForexPairPeriod[] = await myAccount.getForexPairPeriods(GBP_USD, H4);
+    const lastPeriods: MidaForexPairPeriod[] = periods.slice(periods.length - 200, periods.length);
 
-    const swingPointsLow: MidaSwingPoint[] = MidaTA.calculateSwingPointsV1(lastPeriods, MidaSwingPointType.LOW);
+    console.log("GBP/USD trend => " + MidaAnalysis.calculateTrendV1(lastPeriods));
 
+    const swingPointsLow: MidaSwingPoint[] = MidaAnalysis.calculateSwingPointsV1(lastPeriods, MidaSwingPointType.LOW);
+    const swingPointsHigh: MidaSwingPoint[] = MidaAnalysis.calculateSwingPointsV1(lastPeriods, MidaSwingPointType.HIGH);
 
-    for (const swingPointLow of swingPointsLow) {
-        console.log(swingPointLow.priceMomentum);
-        console.log(swingPointLow.lastPeriod);
+    const horizontalRejections: MidaHorizontalRejectionArea[] = MidaAnalysis.calculateHorizontalRejectionAreas([ ...swingPointsHigh, ], 0.08);
+
+    for (const rejection of horizontalRejections) {
+        console.log("\n\n");
+        console.log("rejected high at ");
+        for (const swing of rejection.swingPoints) {
+            console.log(swing.lastPeriod.time);
+        }
+
+        console.log("\n\n");
     }
-
-
 
     /*
 
@@ -135,7 +150,7 @@ void (async (): Promise<void> => {
 
 
 
-
+/*
     const playground: MidaPlaygroundBroker = new MidaPlaygroundBroker();
 
     const fs: any = require("fs");

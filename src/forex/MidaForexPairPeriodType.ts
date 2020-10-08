@@ -15,6 +15,9 @@ export enum MidaForexPairPeriodType {
     // 3600 seconds = 1 hour.
     H1 = 3600,
 
+    // 14400 seconds = 4 hours.
+    H4 = 14400,
+
     // 86400 seconds = 1 day.
     D1 = 86400,
 
@@ -27,5 +30,6 @@ export const M5: MidaForexPairPeriodType = MidaForexPairPeriodType.M5;
 export const M15: MidaForexPairPeriodType = MidaForexPairPeriodType.M15;
 export const M30: MidaForexPairPeriodType = MidaForexPairPeriodType.M30;
 export const H1: MidaForexPairPeriodType = MidaForexPairPeriodType.H1;
+export const H4: MidaForexPairPeriodType = MidaForexPairPeriodType.H4;
 export const D1: MidaForexPairPeriodType = MidaForexPairPeriodType.D1;
 export const W1: MidaForexPairPeriodType = MidaForexPairPeriodType.W1;

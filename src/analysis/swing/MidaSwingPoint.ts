@@ -9,17 +9,9 @@ export class MidaSwingPoint {
     // Represents the swing point periods.
     private readonly _periods: MidaForexPairPeriod[];
 
-    // Represents the swing point last period.
-    private readonly _lastPeriod: MidaForexPairPeriod;
-
-    // Represents the swing point rate of change.
-    private readonly _priceMomentum: number;
-
     public constructor (periods: MidaForexPairPeriod[], type: MidaSwingPointType) {
         this._type = type;
         this._periods = periods;
-        this._lastPeriod = periods[periods.length - 1];
-        this._priceMomentum = this._lastPeriod.close / periods[0].close * 100;
     }
 
     public get type (): MidaSwingPointType {
@@ -31,10 +23,14 @@ export class MidaSwingPoint {
     }
 
     public get lastPeriod (): MidaForexPairPeriod {
-        return this._lastPeriod;
+        return this._periods[this._periods.length - 1];
     }
 
     public get priceMomentum (): number {
-        return this._priceMomentum;
+        return this.lastPeriod.close / this._periods[0].close;
+    }
+
+    public get importance (): number {
+        return Math.abs(1 - Math.abs(this.priceMomentum)) * this.lastPeriod.type * this._periods.length;
     }
 }

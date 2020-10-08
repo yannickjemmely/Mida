@@ -14,6 +14,7 @@ export type MidaAdvisorOptions = {
     // Indicates if the advisor is being backtested.
     isTest?: boolean;
 
+
     maxSpreadPips?: number;
 
     onlySignals?: boolean;
