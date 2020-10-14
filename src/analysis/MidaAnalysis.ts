@@ -128,8 +128,8 @@ export module MidaAnalysis {
     // TODO: Ragionare per rette e coefficienti angolari.
     // TODO: Take into account also rejections.
     export function calculateTrendV1 (periods: MidaForexPairPeriod[]): MidaForexPairTrendType {
-        const swingPointsLow: MidaSwingPoint[] = calculateSwingPointsV1(periods, MidaSwingPointType.LOW);
-        const swingPointsHigh: MidaSwingPoint[] = calculateSwingPointsV1(periods, MidaSwingPointType.HIGH);
+        const swingPointsLow: MidaSwingPoint[] = calcSwingPointsV1(periods, MidaSwingPointType.LOW);
+        const swingPointsHigh: MidaSwingPoint[] = calcSwingPointsV1(periods, MidaSwingPointType.HIGH);
         let violatedLowSwingPoints: number = 0;
         let violatedHighSwingPoints: number = 0;
 
@@ -189,7 +189,25 @@ export module MidaAnalysis {
         return MidaForexPairTrendType.NEUTRAL;
     }
 
-    export function calculateSwingPointsV1 (periods: MidaForexPairPeriod[], type: MidaSwingPointType, minLength: number = 2): MidaSwingPoint[] {
+    export function calculateVolumeTrendV1 (periods: MidaForexPairPeriod[]): void {
+
+    }
+
+    export function calculateTicksVolatilityV1 (ticks: MidaForexPairExchangeRate[]): number {
+        if (ticks.length < 2) {
+            throw new Error();
+        }
+
+        let tickTimes: number = 0;
+
+        for (let i: number = 0; i < ticks.length - 1; ++i) {
+            tickTimes += ticks[i].time.valueOf() - ticks[i + 1].time.valueOf();
+        }
+
+        return tickTimes / ticks.length;
+    }
+
+    export function calcSwingPointsV1 (periods: MidaForexPairPeriod[], type: MidaSwingPointType, minLength: number = 2): MidaSwingPoint[] {
         const swingPoints: MidaSwingPoint[] = [];
 
         for (let i: number = 0, length: number = periods.length - 1; i < length; ++i) {
@@ -289,7 +307,7 @@ export module MidaAnalysis {
         return rejectionAreas;
     }*/
 
-    export function calculateHorizontalRejectionAreas (swingPoints: MidaSwingPoint[], maxDistance: number = 0.05): MidaHorizontalRejectionArea[]  {
+    export function calcHorizontalRejectionAreas (swingPoints: MidaSwingPoint[], type: MidaRejectionAreaType, maxDistance: number = 0.05): MidaHorizontalRejectionArea[]  {
         if (swingPoints.length < 2) {
             return [];
         }
@@ -308,10 +326,12 @@ export module MidaAnalysis {
             }
 
             if (rejectedSwingPoints.length > 1) {
-                rejectionAreas.push(new MidaHorizontalRejectionArea(rejectedSwingPoints, priceRange, MidaRejectionAreaType.RESISTANCE));
+                rejectionAreas.push(new MidaHorizontalRejectionArea(rejectedSwingPoints, priceRange, type));
             }
         }
 
         return rejectionAreas;
     }
+
+    // Create signals based on VOLUME!
 }

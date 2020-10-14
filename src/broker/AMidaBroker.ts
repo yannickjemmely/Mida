@@ -1,5 +1,6 @@
 import { MidaBrokerAccountType } from "#broker/MidaBrokerAccountType";
 import { MidaBrokerEventType } from "#broker/MidaBrokerEventType";
+import { MidaBrokerForexLeverageType } from "#broker/MidaBrokerForexLeverageType";
 import { MidaCurrency } from "#currency/MidaCurrency";
 import { MidaForexPair } from "#forex/MidaForexPair";
 import { MidaForexPairExchangeRate } from "#forex/MidaForexPairExchangeRate";
@@ -36,6 +37,9 @@ export abstract class AMidaBroker extends AMidaObservable<MidaBrokerEventType> {
     // Used to get a position by its uuid.
     public abstract getPositionByUuid (uuid: string): Promise<MidaPosition | null>;
 
+    // Used to get the broker positions.
+    // public abstract getPositions (): Promise<MidaPosition[]>;
+
     // Used to get positions by their status.
     public abstract getPositionsByStatus (status: MidaPositionStatusType): Promise<MidaPosition[]>;
 
@@ -54,8 +58,14 @@ export abstract class AMidaBroker extends AMidaObservable<MidaBrokerEventType> {
     // Used to get the actual free margin.
     public abstract getFreeMargin (): Promise<number>;
 
+    // Used to get the margin level.
+    // public abstract getMarginLevel (): Promise<number>;
+
     // Used to get the account currency.
     public abstract getCurrency (): Promise<MidaCurrency>;
+
+    // Used to get the account forex leverage.
+    // public abstract getForexLeverageType (): Promise<MidaBrokerForexLeverageType>;
 
     // Used to listen the ticks of a forex pair.
     public abstract addForexPairTickListener (forexPair: MidaForexPair, listener: (exchangeRate: MidaForexPairExchangeRate) => void): string;

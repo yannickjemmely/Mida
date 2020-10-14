@@ -30,7 +30,11 @@ export class MidaSwingPoint {
         return this.lastPeriod.close / this._periods[0].close;
     }
 
+    public get volumeMomentum (): number {
+        return -1;
+    }
+
     public get importance (): number {
-        return Math.abs(1 - Math.abs(this.priceMomentum)) * this.lastPeriod.type * this._periods.length;
+        return Math.log(Math.abs(1 - Math.abs(this.priceMomentum)) * this.lastPeriod.type * this._periods.length);
     }
 }

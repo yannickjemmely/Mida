@@ -12,7 +12,7 @@ npm install midafx
 ```
 
 ## API
-The MidaFX API documentation.
+Please refer to API.md.
 
 ### Broker
 WIP.

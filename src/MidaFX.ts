@@ -33,9 +33,14 @@ void (async (): Promise<void> => {
 
     console.log("GBP/USD trend => " + MidaAnalysis.calculateTrendV1(lastPeriods));
 
-    const swingPointsLow: MidaSwingPoint[] = MidaAnalysis.calculateSwingPointsV1(lastPeriods, MidaSwingPointType.LOW);
-    const swingPointsHigh: MidaSwingPoint[] = MidaAnalysis.calculateSwingPointsV1(lastPeriods, MidaSwingPointType.HIGH);
+    const swingPointsLow: MidaSwingPoint[] = MidaAnalysis.calcSwingPointsV1(lastPeriods, MidaSwingPointType.LOW);
+    const swingPointsHigh: MidaSwingPoint[] = MidaAnalysis.calcSwingPointsV1(lastPeriods, MidaSwingPointType.HIGH);
 
+    for (const swingPointHigh of swingPointsHigh) {
+        console.log(swingPointHigh.lastPeriod);
+    }
+
+/*
     const horizontalRejections: MidaHorizontalRejectionArea[] = MidaAnalysis.calculateHorizontalRejectionAreas([ ...swingPointsHigh, ], 0.08);
 
     for (const rejection of horizontalRejections) {
@@ -46,7 +51,7 @@ void (async (): Promise<void> => {
         }
 
         console.log("\n\n");
-    }
+    }*/
 
     /*
 
