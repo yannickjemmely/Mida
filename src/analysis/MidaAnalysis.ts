@@ -9,100 +9,102 @@ import {MidaRejectionAreaType} from "#analysis/rejection/MidaRejectionAreaType";
 
 const Tulind: any = require("tulind");
 
-// Very Important Points:
-// 1. All periods and prices passed as parameters must be ordered from oldest to newest.
-// 2. All returned periods and prices are ordered from oldest to newest.
 export module MidaAnalysis {
-    export async function calculateRSI (closePrices: number[], length: number): Promise<number[]> {
-        return new Promise((resolve: (...parameters: any[]) => void, reject: (...parameters: any[]) => void): void => {
-            Tulind.indicators.rsi.indicator([ closePrices, ], [ length, ], (error: any, results: any): void => {
-                if (error) {
-                    reject(error);
-                }
-                else {
-                    resolve(results[0]);
-                }
+    // Very Important Points:
+    // 1. All prices passed as parameter must be ordered from oldest to newest.
+    // 2. All returned prices are ordered from oldest to newest.
+    export module Indicators {
+        export async function calculateRSI (closePrices: number[], length: number): Promise<number[]> {
+            return new Promise((resolve: (...parameters: any[]) => void, reject: (...parameters: any[]) => void): void => {
+                Tulind.indicators.rsi.indicator([ closePrices, ], [ length, ], (error: any, results: any): void => {
+                    if (error) {
+                        reject(error);
+                    }
+                    else {
+                        resolve(results[0]);
+                    }
+                });
             });
-        });
-    }
+        }
 
-    export async function calculateSMA (prices: number[], length: number): Promise<number[]> {
-        return new Promise((resolve: (...parameters: any[]) => void, reject: (...parameters: any[]) => void): void => {
-            Tulind.indicators.sma.indicator([ prices, ], [ length, ], (error: any, results: any): void => {
-                if (error) {
-                    reject(error);
-                }
-                else {
-                    resolve(results[0]);
-                }
+        export async function calculateSMA (prices: number[], length: number): Promise<number[]> {
+            return new Promise((resolve: (...parameters: any[]) => void, reject: (...parameters: any[]) => void): void => {
+                Tulind.indicators.sma.indicator([ prices, ], [ length, ], (error: any, results: any): void => {
+                    if (error) {
+                        reject(error);
+                    }
+                    else {
+                        resolve(results[0]);
+                    }
+                });
             });
-        });
-    }
+        }
 
-    export async function calculateEMA (prices: number[], length: number): Promise<number[]> {
-        return new Promise((resolve: (...parameters: any[]) => void, reject: (...parameters: any[]) => void): void => {
-            Tulind.indicators.ema.indicator([ prices, ], [ length, ], (error: any, results: any): void => {
-                if (error) {
-                    reject(error);
-                }
-                else {
-                    resolve(results[0]);
-                }
+        export async function calculateEMA (prices: number[], length: number): Promise<number[]> {
+            return new Promise((resolve: (...parameters: any[]) => void, reject: (...parameters: any[]) => void): void => {
+                Tulind.indicators.ema.indicator([ prices, ], [ length, ], (error: any, results: any): void => {
+                    if (error) {
+                        reject(error);
+                    }
+                    else {
+                        resolve(results[0]);
+                    }
+                });
             });
-        });
-    }
+        }
 
-    export async function calculateBB (prices: number[], length: number, multiplier: number): Promise<number[][]> {
-        return new Promise((resolve: (...parameters: any[]) => void, reject: (...parameters: any[]) => void): void => {
-            Tulind.indicators.bbands.indicator([ prices, ], [ length, multiplier, ], (error: any, results: any): void => {
-                if (error) {
-                    reject(error);
-                }
-                else {
-                    resolve([
-                        // Represents the lower band.
-                        results[0],
-
-                        // Represents the middle band.
-                        results[1],
-
-                        // Represents the upper band.
-                        results[2],
-                    ]);
-                }
-            });
-        });
-    }
-
-    export async function calculateSTOCH (prices: number[][], length: number, k: number, d: number): Promise<number[][]> {
-        return new Promise((resolve: (...parameters: any[]) => void, reject: (...parameters: any[]) => void): void => {
-            Tulind.indicators.stoch.indicator([
-                    // Represents the high prices.
-                    prices[0],
-
-                    // Represents the low prices.
-                    prices[1],
-
-                    // Represents the close prices.
-                    prices[2],
-                ],
-                [ length, k, d, ],
-                (error: any, results: any): void => {
+        export async function calculateBB (prices: number[], length: number, multiplier: number): Promise<number[][]> {
+            return new Promise((resolve: (...parameters: any[]) => void, reject: (...parameters: any[]) => void): void => {
+                Tulind.indicators.bbands.indicator([ prices, ], [ length, multiplier, ], (error: any, results: any): void => {
                     if (error) {
                         reject(error);
                     }
                     else {
                         resolve([
-                            // Represents k.
+                            // Represents the lower band.
                             results[0],
 
-                            // Represents d.
+                            // Represents the middle band.
                             results[1],
+
+                            // Represents the upper band.
+                            results[2],
                         ]);
                     }
-                }
-            );
-        });
+                });
+            });
+        }
+
+        export async function calculateSTOCH (prices: number[][], length: number, k: number, d: number): Promise<number[][]> {
+            return new Promise((resolve: (...parameters: any[]) => void, reject: (...parameters: any[]) => void): void => {
+                Tulind.indicators.stoch.indicator([
+                        // Represents the high prices.
+                        prices[0],
+
+                        // Represents the low prices.
+                        prices[1],
+
+                        // Represents the close prices.
+                        prices[2],
+                    ],
+                    [ length, k, d, ],
+                    (error: any, results: any): void => {
+                        if (error) {
+                            reject(error);
+                        }
+                        else {
+                            resolve([
+                                // Represents k.
+                                results[0],
+
+                                // Represents d.
+                                results[1],
+                            ]);
+                        }
+                    }
+                );
+            });
+        }
     }
 
     // Try using momentum of swing points.
@@ -307,30 +309,32 @@ export module MidaAnalysis {
         return rejectionAreas;
     }*/
 
-    export function calcHorizontalRejectionAreas (swingPoints: MidaSwingPoint[], type: MidaRejectionAreaType, maxDistance: number = 0.05): MidaHorizontalRejectionArea[]  {
-        if (swingPoints.length < 2) {
-            return [];
-        }
+    export module Rejections {
+        export function calcHorizontalRejectionAreas (swingPoints: MidaSwingPoint[], type: MidaRejectionAreaType, maxDistance: number = 0.05): MidaHorizontalRejectionArea[]  {
+            if (swingPoints.length < 2) {
+                return [];
+            }
 
-        const rejectionAreas: MidaHorizontalRejectionArea[] = [];
+            const rejectionAreas: MidaHorizontalRejectionArea[] = [];
 
-        for (const swingPoint of swingPoints) {
-            const closePrice: number = swingPoint.lastPeriod.close;
-            const priceRange: number[] = [ closePrice - closePrice * maxDistance, closePrice + closePrice * maxDistance, ];
-            const rejectedSwingPoints: MidaSwingPoint[] = [];
+            for (const swingPoint of swingPoints) {
+                const closePrice: number = swingPoint.lastPeriod.close;
+                const priceRange: number[] = [ closePrice - closePrice * maxDistance, closePrice + closePrice * maxDistance, ];
+                const rejectedSwingPoints: MidaSwingPoint[] = [];
 
-            for (const swingPoint2 of swingPoints) {
-                if (swingPoint2.lastPeriod.close >= priceRange[0] && swingPoint2.lastPeriod.close <= priceRange[1]) {
-                    rejectedSwingPoints.push(swingPoint2);
+                for (const swingPoint2 of swingPoints) {
+                    if (swingPoint2.lastPeriod.close >= priceRange[0] && swingPoint2.lastPeriod.close <= priceRange[1]) {
+                        rejectedSwingPoints.push(swingPoint2);
+                    }
+                }
+
+                if (rejectedSwingPoints.length > 1) {
+                    rejectionAreas.push(new MidaHorizontalRejectionArea(rejectedSwingPoints, priceRange, type));
                 }
             }
 
-            if (rejectedSwingPoints.length > 1) {
-                rejectionAreas.push(new MidaHorizontalRejectionArea(rejectedSwingPoints, priceRange, type));
-            }
+            return rejectionAreas;
         }
-
-        return rejectionAreas;
     }
 
     // Create signals based on VOLUME!

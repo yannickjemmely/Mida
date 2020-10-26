@@ -1,6 +1,7 @@
 import { MidaChargeType } from "#analysis/charge/MidaChargeType";
 import { MidaForexPairExchangeRate } from "#forex/MidaForexPairExchangeRate";
 
+// Represents a set of consecutive quotations pushing in the same direction.
 export class MidaCharge {
     // Represents the charge quotations.
     private readonly _quotations: MidaForexPairExchangeRate[];
@@ -17,15 +18,19 @@ export class MidaCharge {
         return this._quotations;
     }
 
+    public get startTime (): Date {
+        return new Date(this._quotations[0].time);
+    }
+
+    public get endTime (): Date {
+        return new Date(this._quotations[this._quotations.length - 1].time);
+    }
+
     public get length (): number {
         return this._quotations.length;
     }
 
     public get type (): MidaChargeType {
         return this._type;
-    }
-
-    public static calculate (quotations: MidaForexPairExchangeRate[], minDistance: number, threshold: number = 0): MidaCharge[] {
-        return [];
     }
 }

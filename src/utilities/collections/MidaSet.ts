@@ -1,18 +1,16 @@
 // Represents a set of elements.
 export class MidaSet<T> {
-    private readonly _getHash: (element: T) => string;
+    private readonly _calcHash: (element: T) => string;
     private readonly _elements: {
         [hash: string]: T;
     };
 
-    public constructor (getHash: (element: T) => string, elements?: any[]) {
-        this._getHash = getHash;
+    public constructor (calcHash: (element: T) => string, elements: T[] = []) {
+        this._calcHash = calcHash;
         this._elements = {};
 
-        if (elements) {
-            for (const element of elements) {
-                this.add(element);
-            }
+        for (const element of elements) {
+            this.add(element);
         }
     }
 
@@ -21,7 +19,7 @@ export class MidaSet<T> {
     }
 
     public add (element: T): void {
-        this._elements[this._getHash(element)] = element;
+        this._elements[this._calcHash(element)] = element;
     }
 
     public get (hash: string): T | null {
@@ -37,9 +35,7 @@ export class MidaSet<T> {
     }
 
     public clear (): void {
-        Object.keys(this._elements).forEach((hash: string): void => {
-            this.remove(hash);
-        });
+        Object.keys(this._elements).forEach((hash: string): void => this.remove(hash));
     }
 
     public toArray (): T[] {
