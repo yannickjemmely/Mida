@@ -33,8 +33,8 @@ void (async (): Promise<void> => {
 
     console.log("GBP/USD trend => " + MidaAnalysis.calculateTrendV1(lastPeriods));
 
-    const swingPointsLow: MidaSwingPoint[] = MidaAnalysis.calcSwingPointsV1(lastPeriods, MidaSwingPointType.LOW);
-    const swingPointsHigh: MidaSwingPoint[] = MidaAnalysis.calcSwingPointsV1(lastPeriods, MidaSwingPointType.HIGH);
+    const swingPointsLow: MidaSwingPoint[] = MidaAnalysis.calcSwingPoints(lastPeriods, MidaSwingPointType.LOW);
+    const swingPointsHigh: MidaSwingPoint[] = MidaAnalysis.calcSwingPoints(lastPeriods, MidaSwingPointType.HIGH);
 
     for (const swingPointHigh of swingPointsHigh) {
         console.log(swingPointHigh.lastPeriod);

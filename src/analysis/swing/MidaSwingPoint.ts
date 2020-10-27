@@ -10,6 +10,10 @@ export class MidaSwingPoint {
     private readonly _type: MidaSwingPointType;
 
     public constructor (periods: MidaForexPairPeriod[], type: MidaSwingPointType) {
+        if (periods.length < 1) {
+            throw new Error();
+        }
+
         this._periods = periods;
         this._type = type;
     }
@@ -22,6 +26,10 @@ export class MidaSwingPoint {
         return this._type;
     }
 
+    public get firstPeriod (): MidaForexPairPeriod {
+        return this._periods[0];
+    }
+
     public get lastPeriod (): MidaForexPairPeriod {
         return this._periods[this._periods.length - 1];
     }
@@ -31,7 +39,7 @@ export class MidaSwingPoint {
     }
 
     public get volumeMomentum (): number {
-        return -1;
+        throw new Error();
     }
 
     public get importance (): number {

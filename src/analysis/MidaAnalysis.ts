@@ -130,8 +130,8 @@ export module MidaAnalysis {
     // TODO: Ragionare per rette e coefficienti angolari.
     // TODO: Take into account also rejections.
     export function calculateTrendV1 (periods: MidaForexPairPeriod[]): MidaForexPairTrendType {
-        const swingPointsLow: MidaSwingPoint[] = calcSwingPointsV1(periods, MidaSwingPointType.LOW);
-        const swingPointsHigh: MidaSwingPoint[] = calcSwingPointsV1(periods, MidaSwingPointType.HIGH);
+        const swingPointsLow: MidaSwingPoint[] = calcSwingPoints(periods, MidaSwingPointType.LOW);
+        const swingPointsHigh: MidaSwingPoint[] = calcSwingPoints(periods, MidaSwingPointType.HIGH);
         let violatedLowSwingPoints: number = 0;
         let violatedHighSwingPoints: number = 0;
 
@@ -209,11 +209,11 @@ export module MidaAnalysis {
         return tickTimes / ticks.length;
     }
 
-    export function calcSwingPointsV1 (periods: MidaForexPairPeriod[], type: MidaSwingPointType, minLength: number = 2): MidaSwingPoint[] {
+    export function calcSwingPoints (periods: MidaForexPairPeriod[], type: MidaSwingPointType): MidaSwingPoint[] {
         const swingPoints: MidaSwingPoint[] = [];
 
         for (let i: number = 0, length: number = periods.length - 1; i < length; ++i) {
-            const swingPointPeriods: MidaForexPairPeriod[] = [];
+            const swingPointPeriods: MidaForexPairPeriod[] = [ periods[i], ];
 
             while (
                 periods[i + 1] && (
@@ -226,9 +226,7 @@ export module MidaAnalysis {
                 ++i;
             }
 
-            if (swingPointPeriods.length >= minLength) {
-                swingPoints.push(new MidaSwingPoint(swingPointPeriods, type));
-            }
+            swingPoints.push(new MidaSwingPoint(swingPointPeriods, type));
         }
 
         return swingPoints;
