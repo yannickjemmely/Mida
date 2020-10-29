@@ -17,6 +17,9 @@
             "#analysis/*": [
                 "src/analysis/*"
             ],
+            "#asset/*": [
+                "src/asset/*"
+            ],
             "#broker/*": [
                 "src/broker/*"
             ],

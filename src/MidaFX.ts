@@ -31,8 +31,6 @@ void (async (): Promise<void> => {
     const periods: MidaForexPairPeriod[] = await myAccount.getForexPairPeriods(GBP_USD, H4);
     const lastPeriods: MidaForexPairPeriod[] = periods.slice(periods.length - 200, periods.length);
 
-    console.log("GBP/USD trend => " + MidaAnalysis.calculateTrendV1(lastPeriods));
-
     const swingPointsLow: MidaSwingPoint[] = MidaAnalysis.calcSwingPoints(lastPeriods, MidaSwingPointType.LOW);
     const swingPointsHigh: MidaSwingPoint[] = MidaAnalysis.calcSwingPoints(lastPeriods, MidaSwingPointType.HIGH);
 

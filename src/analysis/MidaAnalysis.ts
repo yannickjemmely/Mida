@@ -6,6 +6,8 @@ import {MidaForexPairTrendType} from "#forex/MidaForexPairTrendType";
 import {MidaForexPairExchangeRate} from "#forex/MidaForexPairExchangeRate";
 import {MidaHorizontalRejectionArea} from "#analysis/rejection/MidaHorizontalRejectionArea";
 import {MidaRejectionAreaType} from "#analysis/rejection/MidaRejectionAreaType";
+import {MidaChargeType} from "#analysis/charge/MidaChargeType";
+import {MidaCharge} from "#analysis/charge/MidaCharge";
 
 const Tulind: any = require("tulind");
 
@@ -14,7 +16,7 @@ export module MidaAnalysis {
     // 1. All prices passed as parameter must be ordered from oldest to newest.
     // 2. All returned prices are ordered from oldest to newest.
     export module Indicators {
-        export async function calculateRSI (closePrices: number[], length: number): Promise<number[]> {
+        export async function calcRelativeStrengthIndex (closePrices: number[], length: number): Promise<number[]> {
             return new Promise((resolve: (...parameters: any[]) => void, reject: (...parameters: any[]) => void): void => {
                 Tulind.indicators.rsi.indicator([ closePrices, ], [ length, ], (error: any, results: any): void => {
                     if (error) {
@@ -27,7 +29,7 @@ export module MidaAnalysis {
             });
         }
 
-        export async function calculateSMA (prices: number[], length: number): Promise<number[]> {
+        export async function calcMovingAverage (prices: number[], length: number): Promise<number[]> {
             return new Promise((resolve: (...parameters: any[]) => void, reject: (...parameters: any[]) => void): void => {
                 Tulind.indicators.sma.indicator([ prices, ], [ length, ], (error: any, results: any): void => {
                     if (error) {
@@ -40,7 +42,7 @@ export module MidaAnalysis {
             });
         }
 
-        export async function calculateEMA (prices: number[], length: number): Promise<number[]> {
+        export async function calcExpMovingAverage (prices: number[], length: number): Promise<number[]> {
             return new Promise((resolve: (...parameters: any[]) => void, reject: (...parameters: any[]) => void): void => {
                 Tulind.indicators.ema.indicator([ prices, ], [ length, ], (error: any, results: any): void => {
                     if (error) {
@@ -53,7 +55,7 @@ export module MidaAnalysis {
             });
         }
 
-        export async function calculateBB (prices: number[], length: number, multiplier: number): Promise<number[][]> {
+        export async function calcBollingerBands (prices: number[], length: number, multiplier: number): Promise<number[][]> {
             return new Promise((resolve: (...parameters: any[]) => void, reject: (...parameters: any[]) => void): void => {
                 Tulind.indicators.bbands.indicator([ prices, ], [ length, multiplier, ], (error: any, results: any): void => {
                     if (error) {
@@ -75,7 +77,7 @@ export module MidaAnalysis {
             });
         }
 
-        export async function calculateSTOCH (prices: number[][], length: number, k: number, d: number): Promise<number[][]> {
+        export async function calcStoch (prices: number[][], length: number, k: number, d: number): Promise<number[][]> {
             return new Promise((resolve: (...parameters: any[]) => void, reject: (...parameters: any[]) => void): void => {
                 Tulind.indicators.stoch.indicator([
                         // Represents the high prices.
@@ -213,7 +215,7 @@ export module MidaAnalysis {
         const swingPoints: MidaSwingPoint[] = [];
 
         for (let i: number = 0, length: number = periods.length - 1; i < length; ++i) {
-            const swingPointPeriods: MidaForexPairPeriod[] = [ periods[i], ];
+            const swingPointPeriods: MidaForexPairPeriod[] = [];
 
             while (
                 periods[i + 1] && (
@@ -226,10 +228,84 @@ export module MidaAnalysis {
                 ++i;
             }
 
-            swingPoints.push(new MidaSwingPoint(swingPointPeriods, type));
+            if (swingPointPeriods.length > 1) {
+                swingPoints.push(new MidaSwingPoint(swingPointPeriods, type));
+            }
         }
 
         return swingPoints;
+    }
+
+    export function calcCharges (quotations: MidaForexPairExchangeRate[], type: MidaChargeType): MidaCharge[] {
+        const charges: MidaCharge[] = [];
+
+        for (let i: number = 0, length: number = quotations.length - 1; i < length; ++i) {
+            const chargeQuotations: MidaForexPairExchangeRate[] = [];
+
+            while (
+                quotations[i + 1] && (
+                    (type === MidaChargeType.BEARISH && quotations[i + 1].bid < quotations[i].bid) ||
+                    (type === MidaChargeType.BULLISH && quotations[i + 1].bid > quotations[i].bid)
+                )
+            ) {
+                chargeQuotations.push(quotations[i + 1]);
+
+                ++i;
+            }
+
+            if (chargeQuotations.length > 1) {
+                charges.push(new MidaCharge(chargeQuotations, type));
+            }
+        }
+
+        return charges;
+    }
+
+    export function calcChargesDirection (charges: MidaCharge[]): number {
+        let direction: number = 0;
+
+        for (const charge of charges) {
+            const importance: number = charge.length;
+
+            switch (charge.type) {
+                case MidaChargeType.BEARISH: {
+                    direction -= importance;
+
+                    break;
+                }
+                case MidaChargeType.BULLISH: {
+                    direction += importance;
+
+                    break;
+                }
+            }
+        }
+
+        return direction;
+    }
+
+    export function calcChargesExpDirection (charges: MidaCharge[], time: Date): number {
+        let direction: number = 0;
+
+        for (const charge of charges) {
+            const timeWeight: number = (1 / (1 + Math.abs(time.valueOf() - charge.endTime.valueOf())));
+            const importance: number = charge.length * timeWeight;
+
+            switch (charge.type) {
+                case MidaChargeType.BEARISH: {
+                    direction -= importance;
+
+                    break;
+                }
+                case MidaChargeType.BULLISH: {
+                    direction += importance;
+
+                    break;
+                }
+            }
+        }
+
+        return direction;
     }
 
     /*
