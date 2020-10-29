@@ -15,3 +15,6 @@ Through MidaFX you can:
 ```console
 npm install midafx
 ```
+
+## Contributors
+The author and maintainer of the project is [Vasile Pește](https://github.com/Vasile-Peste).
