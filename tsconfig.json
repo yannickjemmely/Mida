@@ -32,6 +32,9 @@
             "#errors/*": [
                 "src/errors/*"
             ],
+            "#events/*": [
+                "src/events/*"
+            ],
             "#factors/*": [
                 "src/factors/*"
             ],

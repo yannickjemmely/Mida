@@ -36,6 +36,7 @@
         "#browser": "build/src/browser",
         "#currency": "build/src/currency",
         "#errors": "build/src/errors",
+        "#events": "build/src/events",
         "#factors": "build/src/factors",
         "#forex": "build/src/forex",
         "#position": "build/src/position",
