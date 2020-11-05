@@ -1,8 +1,8 @@
-import { MidaAsset } from "#asset/MidaAsset";
+import { MidaAsset } from "#assets/MidaAsset";
 import { IMidaEquatable } from "#utilities/IMidaEquatable";
 import { IMidaClonable } from "#utilities/IMidaClonable";
 
-// Represents the quotation of an asset.
+// Represents an asset quotation.
 export class MidaAssetQuotation implements IMidaEquatable<MidaAssetQuotation>, IMidaClonable<MidaAssetQuotation> {
     // Represents the quotation asset.
     private readonly _asset: MidaAsset;

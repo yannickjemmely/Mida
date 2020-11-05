@@ -8,7 +8,7 @@ import { MidaCurrency } from "#currency/MidaCurrency";
 import { MidaCurrencyType } from "#currency/MidaCurrencyType";
 import { MidaForexPair } from "#forex/MidaForexPair";
 import { MidaForexPairExchangeRate } from "#forex/MidaForexPairExchangeRate";
-import { MidaForexPairPeriod } from "#forex/MidaForexPairPeriod";
+import { MidaAssetPeriod } from "#forex/MidaAssetPeriod";
 import { MidaForexPairPeriodType } from "#forex/MidaForexPairPeriodType";
 import { MidaForexPairType } from "#forex/MidaForexPairType";
 import { MidaPosition, generatePositionUuid } from "#position/MidaPosition";
@@ -331,7 +331,7 @@ export class BDSwissBroker extends AMidaBroker {
         return this._forexPairTickListeners.removeEventListener(listenerUUID);
     }
 
-    public addForexPairPeriodListener (forexPair: MidaForexPair, listener: (forexPairPeriod: MidaForexPairPeriod) => void): string {
+    public addForexPairPeriodListener (forexPair: MidaForexPair, listener: (forexPairPeriod: MidaAssetPeriod) => void): string {
         return this._forexPairPeriodListeners.addEventListener(forexPair.id, listener);
     }
 
@@ -339,7 +339,7 @@ export class BDSwissBroker extends AMidaBroker {
         return this._forexPairPeriodListeners.removeEventListener(listenerUUID);
     }
 
-    public async getForexPairPeriods (forexPair: MidaForexPair, periodsType: MidaForexPairPeriodType): Promise<MidaForexPairPeriod[]> {
+    public async getForexPairPeriods (forexPair: MidaForexPair, periodsType: MidaForexPairPeriodType): Promise<MidaAssetPeriod[]> {
         if (this._isForexPairPeriodsBusy) {
             await new Promise((resolve: (...parameters: any[]) => void): void => {
                 this._forexPairPeriodsRequests.push(resolve);
@@ -349,7 +349,7 @@ export class BDSwissBroker extends AMidaBroker {
             this._isForexPairPeriodsBusy = true;
         }
 
-        const periods: MidaForexPairPeriod[] = [];
+        const periods: MidaAssetPeriod[] = [];
         const plainPeriods: any[] = await this._browserTabs.tradeTab.evaluate(`((w) => {
             const socket = w._MidaBroker.socket;
             

@@ -6,7 +6,7 @@ import {MidaPositionSet} from "#position/MidaPositionSet";
 import {MidaPositionStatusType} from "#position/MidaPositionStatusType";
 import {MidaProtectedObservable} from "#utilities/observable/AMidaObservable";
 import {MidaForexPair} from "#forex/MidaForexPair";
-import {MidaForexPairPeriod} from "#forex/MidaForexPairPeriod";
+import {MidaAssetPeriod} from "#forex/MidaAssetPeriod";
 import {MidaForexPairPeriodType} from "#forex/MidaForexPairPeriodType";
 import {MidaPlaygroundBrokerOptions} from "#broker/playground/MidaPlaygroundBrokerOptions";
 import {MidaCurrency} from "#currency/MidaCurrency";
@@ -171,7 +171,7 @@ export class MidaPlaygroundBroker extends AMidaBroker {
         return this._forexPairTickListeners.removeEventListener(UUID);
     }
 
-    public addForexPairPeriodListener (forexPair: MidaForexPair, listener: (period: MidaForexPairPeriod) => void): string {
+    public addForexPairPeriodListener (forexPair: MidaForexPair, listener: (period: MidaAssetPeriod) => void): string {
         return this._forexPairPeriodListeners.addEventListener(forexPair.id, listener);
     }
 
@@ -191,8 +191,8 @@ export class MidaPlaygroundBroker extends AMidaBroker {
         throw new Error();
     }
 
-    public async getForexPairPeriods (forexPair: MidaForexPair, periodsType: MidaForexPairPeriodType): Promise<MidaForexPairPeriod[]> {
-        const m1Periods: MidaForexPairPeriod[] = await this._getForexPairM1Periods(forexPair);
+    public async getForexPairPeriods (forexPair: MidaForexPair, periodsType: MidaForexPairPeriodType): Promise<MidaAssetPeriod[]> {
+        const m1Periods: MidaAssetPeriod[] = await this._getForexPairM1Periods(forexPair);
 
         if (m1Periods.length === 0) {
             return [];
@@ -208,9 +208,9 @@ export class MidaPlaygroundBroker extends AMidaBroker {
         firstPeriodTime.setSeconds(0);
         firstPeriodTime.setMinutes(0);
 
-        const composedPeriods: MidaForexPairPeriod[] = [];
+        const composedPeriods: MidaAssetPeriod[] = [];
         let actualPeriodTime: Date = new Date(firstPeriodTime.valueOf());
-        let m1PeriodsToCompose: MidaForexPairPeriod[] = [];
+        let m1PeriodsToCompose: MidaAssetPeriod[] = [];
 
         for (const m1Period of m1Periods) {
             if (m1Period.time > actualPeriodTime) {
@@ -221,9 +221,9 @@ export class MidaPlaygroundBroker extends AMidaBroker {
                         time: actualPeriodTime,
                         open: m1PeriodsToCompose[0].open,
                         close: m1PeriodsToCompose[m1PeriodsToCompose.length - 1].close,
-                        low: Math.min(...(m1PeriodsToCompose.map((period: MidaForexPairPeriod): number => period.low))),
-                        high: Math.max(...(m1PeriodsToCompose.map((period: MidaForexPairPeriod): number => period.high))),
-                        volume: m1PeriodsToCompose.reduce((total: number, period: MidaForexPairPeriod): number => total + period.volume, 0),
+                        low: Math.min(...(m1PeriodsToCompose.map((period: MidaAssetPeriod): number => period.low))),
+                        high: Math.max(...(m1PeriodsToCompose.map((period: MidaAssetPeriod): number => period.high))),
+                        volume: m1PeriodsToCompose.reduce((total: number, period: MidaAssetPeriod): number => total + period.volume, 0),
                     });
 
                     m1PeriodsToCompose = [];
@@ -244,9 +244,9 @@ export class MidaPlaygroundBroker extends AMidaBroker {
                 time: actualPeriodTime,
                 open: m1PeriodsToCompose[0].open,
                 close: m1PeriodsToCompose[m1PeriodsToCompose.length - 1].close,
-                low: Math.min(...(m1PeriodsToCompose.map((period: MidaForexPairPeriod): number => period.low))),
-                high: Math.max(...(m1PeriodsToCompose.map((period: MidaForexPairPeriod): number => period.high))),
-                volume: m1PeriodsToCompose.reduce((total: number, period: MidaForexPairPeriod): number => total + period.volume, 0),
+                low: Math.min(...(m1PeriodsToCompose.map((period: MidaAssetPeriod): number => period.low))),
+                high: Math.max(...(m1PeriodsToCompose.map((period: MidaAssetPeriod): number => period.high))),
+                volume: m1PeriodsToCompose.reduce((total: number, period: MidaAssetPeriod): number => total + period.volume, 0),
             });
 
             m1PeriodsToCompose = [];
@@ -355,11 +355,11 @@ export class MidaPlaygroundBroker extends AMidaBroker {
         return profit - commision;
     }
 
-    private async _getForexPairM1Periods (forexPair: MidaForexPair): Promise<MidaForexPairPeriod[]> {
+    private async _getForexPairM1Periods (forexPair: MidaForexPair): Promise<MidaAssetPeriod[]> {
         const m1Ticks: {
             [time: string]: MidaForexPairExchangeRate[];
         } = this._m1Ticks[forexPair.id] || {};
-        const periods: MidaForexPairPeriod[] = [];
+        const periods: MidaAssetPeriod[] = [];
 
         for (const time in m1Ticks) {
             const timeTicks: MidaForexPairExchangeRate[] = m1Ticks[time];

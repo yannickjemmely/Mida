@@ -2,7 +2,6 @@ import { MidaChargeType } from "#analysis/charge/MidaChargeType";
 import { MidaForexPairExchangeRate } from "#forex/MidaForexPairExchangeRate";
 
 // Represents a charge.
-// A charge is a set of consecutive quotations going in the same direction.
 export class MidaCharge {
     // Represents the charge quotations.
     private readonly _quotations: MidaForexPairExchangeRate[];

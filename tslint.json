@@ -6,6 +6,7 @@
         "curly": true,
         "no-duplicate-variable": true,
         "space-before-function-paren": true,
+        "no-parameter-reassignment": true,
         "no-return-await": true,
         "eofline": true,
         "semicolon": [

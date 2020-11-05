@@ -4,7 +4,7 @@ import { MidaBrokerForexLeverageType } from "#broker/MidaBrokerForexLeverageType
 import { MidaCurrency } from "#currency/MidaCurrency";
 import { MidaForexPair } from "#forex/MidaForexPair";
 import { MidaForexPairExchangeRate } from "#forex/MidaForexPairExchangeRate";
-import { MidaForexPairPeriod } from "#forex/MidaForexPairPeriod";
+import { MidaAssetPeriod } from "#forex/MidaAssetPeriod";
 import { MidaForexPairPeriodType } from "#forex/MidaForexPairPeriodType";
 import { MidaPosition } from "#position/MidaPosition";
 import { MidaPositionDirectives } from "#position/MidaPositionDirectives";
@@ -74,7 +74,7 @@ export abstract class AMidaBroker extends AMidaObservable<MidaBrokerEventType> {
     public abstract removeForexPairTickListener (UUID: string): boolean;
 
     // Used to listen the periods of a forex pair.
-    public abstract addForexPairPeriodListener (forexPair: MidaForexPair, listener: (period: MidaForexPairPeriod) => void): string;
+    public abstract addForexPairPeriodListener (forexPair: MidaForexPair, listener: (period: MidaAssetPeriod) => void): string;
 
     // Used to unlisten the periods of a forex pair.
     public abstract removeForexPairPeriodListener (UUID: string): boolean;
@@ -84,7 +84,7 @@ export abstract class AMidaBroker extends AMidaObservable<MidaBrokerEventType> {
 
     // Used to get the periods of a forex pair.
     // The returned periods must be from oldest to newest: periods[0] = oldest period.
-    public abstract getForexPairPeriods (forexPair: MidaForexPair, periodsType: MidaForexPairPeriodType): Promise<MidaForexPairPeriod[]>;
+    public abstract getForexPairPeriods (forexPair: MidaForexPair, periodsType: MidaForexPairPeriodType): Promise<MidaAssetPeriod[]>;
 
     // Used to logout.
     public abstract logout (): Promise<void>;

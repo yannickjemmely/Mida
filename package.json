@@ -31,7 +31,7 @@
         "#": "build/src",
         "#advisors": "build/src/advisors",
         "#analysis": "build/src/analysis",
-        "#asset": "build/src/asset",
+        "#assets": "build/src/assets",
         "#broker": "build/src/broker",
         "#browser": "build/src/browser",
         "#currency": "build/src/currency",

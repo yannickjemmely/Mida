@@ -3,7 +3,7 @@ import {EUR_USD, GBP_USD, MidaForexPairType} from "#forex/MidaForexPairType";
 import {MidaForexPairExchangeRate} from "#forex/MidaForexPairExchangeRate";
 import {MidaPlaygroundBroker} from "#broker/playground/MidaPlaygroundBroker";
 import {MidaPositionStatusType} from "#position/MidaPositionStatusType";
-import {MidaForexPairPeriod} from "#forex/MidaForexPairPeriod";
+import {MidaAssetPeriod} from "#forex/MidaAssetPeriod";
 import {MidaAnalysis} from "#analysis/MidaAnalysis";
 import {MidaSwingPoint} from "#analysis/swing/MidaSwingPoint";
 import {D1, H4, M30} from "#forex/MidaForexPairPeriodType";
@@ -28,8 +28,8 @@ void (async (): Promise<void> => {
 
     console.log("Logged in.\n\n");
 
-    const periods: MidaForexPairPeriod[] = await myAccount.getForexPairPeriods(GBP_USD, H4);
-    const lastPeriods: MidaForexPairPeriod[] = periods.slice(periods.length - 200, periods.length);
+    const periods: MidaAssetPeriod[] = await myAccount.getForexPairPeriods(GBP_USD, H4);
+    const lastPeriods: MidaAssetPeriod[] = periods.slice(periods.length - 200, periods.length);
 
     const swingPointsLow: MidaSwingPoint[] = MidaAnalysis.calcSwingPoints(lastPeriods, MidaSwingPointType.LOW);
     const swingPointsHigh: MidaSwingPoint[] = MidaAnalysis.calcSwingPoints(lastPeriods, MidaSwingPointType.HIGH);

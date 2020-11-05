@@ -2,7 +2,7 @@ import { MidaForexPair } from "#forex/MidaForexPair";
 import { MidaForexPairPeriodType } from "#forex/MidaForexPairPeriodType";
 
 // Represents the period of a forex pair exchange rate.
-export type MidaForexPairPeriod = {
+export type MidaAssetPeriod = {
     // Represents the period forex pair.
     forexPair: MidaForexPair;
 

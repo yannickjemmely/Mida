@@ -1,7 +1,7 @@
 import {MidaCongestionArea} from "#analysis/congestion/MidaCongestionArea";
 import {MidaSwingPoint} from "#analysis/swing/MidaSwingPoint";
 import {MidaSwingPointType} from "#analysis/swing/MidaSwingPointType";
-import {MidaForexPairPeriod} from "#forex/MidaForexPairPeriod";
+import {MidaAssetPeriod} from "#assets/MidaAssetPeriod";
 import {MidaForexPairTrendType} from "#forex/MidaForexPairTrendType";
 import {MidaForexPairExchangeRate} from "#forex/MidaForexPairExchangeRate";
 import {MidaHorizontalRejectionArea} from "#analysis/rejection/MidaHorizontalRejectionArea";
@@ -110,8 +110,8 @@ export module MidaAnalysis {
     }
 
     // Try using momentum of swing points.
-    export function calculateCongestionAreaV1 (periods: MidaForexPairPeriod[], maxDistance: number = 0.05): MidaCongestionArea | null {
-        const closePrices: number[] = periods.map((period: MidaForexPairPeriod): number => period.close);
+    export function calculateCongestionAreaV1 (periods: MidaAssetPeriod[], maxDistance: number = 0.05): MidaCongestionArea | null {
+        const closePrices: number[] = periods.map((period: MidaAssetPeriod): number => period.close);
         const minPrice: number = Math.min(...closePrices);
         const maxPrice: number = Math.max(...closePrices);
         const averagePrice: number = closePrices.reduce((leftPrice: number, rightPrice: number): number => leftPrice + rightPrice, 0) / closePrices.length;
@@ -124,14 +124,14 @@ export module MidaAnalysis {
         return {
             periods,
             averagePrice,
-            supportPrice: Math.min(...periods.map((period: MidaForexPairPeriod): number => period.low)),
-            resistancePrice: Math.max(...periods.map((period: MidaForexPairPeriod): number => period.high)),
+            supportPrice: Math.min(...periods.map((period: MidaAssetPeriod): number => period.low)),
+            resistancePrice: Math.max(...periods.map((period: MidaAssetPeriod): number => period.high)),
         };
     }
 
     // TODO: Ragionare per rette e coefficienti angolari.
     // TODO: Take into account also rejections.
-    export function calculateTrendV1 (periods: MidaForexPairPeriod[]): MidaForexPairTrendType {
+    export function calculateTrendV1 (periods: MidaAssetPeriod[]): MidaForexPairTrendType {
         const swingPointsLow: MidaSwingPoint[] = calcSwingPoints(periods, MidaSwingPointType.LOW);
         const swingPointsHigh: MidaSwingPoint[] = calcSwingPoints(periods, MidaSwingPointType.HIGH);
         let violatedLowSwingPoints: number = 0;
@@ -193,7 +193,7 @@ export module MidaAnalysis {
         return MidaForexPairTrendType.NEUTRAL;
     }
 
-    export function calculateVolumeTrendV1 (periods: MidaForexPairPeriod[]): void {
+    export function calculateVolumeTrendV1 (periods: MidaAssetPeriod[]): void {
 
     }
 
@@ -211,11 +211,11 @@ export module MidaAnalysis {
         return tickTimes / ticks.length;
     }
 
-    export function calcSwingPoints (periods: MidaForexPairPeriod[], type: MidaSwingPointType): MidaSwingPoint[] {
+    export function calcSwingPoints (periods: MidaAssetPeriod[], type: MidaSwingPointType): MidaSwingPoint[] {
         const swingPoints: MidaSwingPoint[] = [];
 
         for (let i: number = 0, length: number = periods.length - 1; i < length; ++i) {
-            const swingPointPeriods: MidaForexPairPeriod[] = [];
+            const swingPointPeriods: MidaAssetPeriod[] = [];
 
             while (
                 periods[i + 1] && (

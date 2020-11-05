@@ -4,7 +4,7 @@ import { AMidaBroker } from "#broker/AMidaBroker";
 import { MidaBrokerEventType } from "#broker/MidaBrokerEventType";
 import { MidaForexPair } from "#forex/MidaForexPair";
 import { MidaForexPairExchangeRate } from "#forex/MidaForexPairExchangeRate";
-import { MidaForexPairPeriod } from "#forex/MidaForexPairPeriod";
+import { MidaAssetPeriod } from "#forex/MidaAssetPeriod";
 import { MidaPosition } from "#position/MidaPosition";
 import { MidaPositionDirectives } from "#position/MidaPositionDirectives";
 import { MidaPositionSet } from "#position/MidaPositionSet";
@@ -119,11 +119,11 @@ export abstract class AMidaAdvisor extends AMidaObservable<MidaAdvisorEventType>
 
     protected abstract async onTickAsync (exchangeRate: MidaForexPairExchangeRate): Promise<void>;
 
-    protected onPeriod (period: MidaForexPairPeriod): void {
+    protected onPeriod (period: MidaAssetPeriod): void {
         // Silence is golden.
     }
 
-    protected async onPeriodAsync (period: MidaForexPairPeriod): Promise<void> {
+    protected async onPeriodAsync (period: MidaAssetPeriod): Promise<void> {
         // Silence is golden.
     }
 

@@ -1,9 +1,9 @@
-import { MidaForexPairPeriod } from "#forex/MidaForexPairPeriod";
+import { MidaAssetPeriod } from "#forex/MidaAssetPeriod";
 
 // Represents a congestion area.
 export type MidaCongestionArea = {
     // Represents the periods.
-    periods: MidaForexPairPeriod[];
+    periods: MidaAssetPeriod[];
 
     // Represents the average price.
     averagePrice: number;
