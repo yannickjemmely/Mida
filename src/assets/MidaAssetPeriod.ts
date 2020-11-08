@@ -102,4 +102,54 @@ export class MidaAssetPeriod implements IMidaEquatable<MidaAssetPeriod> {
     public equals (period: MidaAssetPeriod): boolean {
         return this.startTime.valueOf() === period.startTime.valueOf() && this.endTime.valueOf() === period.endTime.valueOf();
     }
+
+    /**
+     * Groups a list of quotations into periods.
+     *
+     * @param quotations - The quotations which must be grouped into periods. Must be ordered from oldest to newest.
+     * @param startTime - The start time of the first period.
+     * @param type - The periods type.
+     * @param limit - The periods limit.
+     */
+    public static fromQuotations (quotations: MidaAssetQuotation[], startTime: Date, type: MidaAssetPeriodType, limit: number = -1): MidaAssetPeriod[] {
+        const periods: MidaAssetPeriod[] = [];
+        let periodStartTime: Date = new Date(startTime);
+        let periodEndTime: Date = new Date(periodStartTime.valueOf() + type * 1000);
+        let periodQuotations: MidaAssetQuotation[] = [];
+
+        for (const quotation of quotations) {
+            if (limit > -1 && periods.length === limit) {
+                break;
+            }
+
+            if (quotation.time < periodStartTime) {
+                continue;
+            }
+
+            while (quotation.time > periodEndTime) {
+                periodStartTime = new Date(periodEndTime);
+                periodEndTime = new Date(periodStartTime.valueOf() + type * 1000);
+
+                if (periodQuotations.length > 0) {
+                    periods.push(new MidaAssetPeriod(
+                        quotations[0].asset,
+                        periodStartTime,
+                        -1,
+                        -1,
+                        -1,
+                        -1,
+                        -1,
+                        type,
+                        [ ...periodQuotations ]
+                    ));
+
+                    periodQuotations = [];
+                }
+            }
+
+            periodQuotations.push(quotation);
+        }
+
+        return periods;
+    }
 }
