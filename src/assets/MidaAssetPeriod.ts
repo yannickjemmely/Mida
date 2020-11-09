@@ -114,7 +114,7 @@ export class MidaAssetPeriod implements IMidaEquatable<MidaAssetPeriod> {
         let periodQuotations: MidaAssetQuotation[] = [];
         let periodEndTime: Date = getNextPeriodEndTime();
 
-        function composePeriod (): void {
+        function tryComposePeriod (): void {
             if (periodQuotations.length < 1) {
                 return;
             }
@@ -157,13 +157,13 @@ export class MidaAssetPeriod implements IMidaEquatable<MidaAssetPeriod> {
             }
 
             if (periodHasEnded) {
-                composePeriod();
+                tryComposePeriod();
             }
 
             periodQuotations.push(quotation);
         }
 
-        composePeriod();
+        tryComposePeriod();
 
         return periods;
     }

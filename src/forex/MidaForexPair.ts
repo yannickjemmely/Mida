@@ -1,21 +1,24 @@
-import { MidaCurrency } from "#currency/MidaCurrency";
-import { MidaCurrencyType } from "#currency/MidaCurrencyType";
+import { MidaAsset } from "#assets/MidaAsset";
+import { MidaCurrency } from "#currencies/MidaCurrency";
+import { MidaCurrencyType } from "#currencies/MidaCurrencyType";
 
 // Represents a forex pair.
-export class MidaForexPair {
-    // Represents the base currency.
+export class MidaForexPair extends MidaAsset {
+    // Represents the forex pair base currency.
     private readonly _baseCurrency: MidaCurrency;
 
-    // Represents the quote currency.
+    // Represents the forex pair quote currency.
     private readonly _quoteCurrency: MidaCurrency;
 
-    // Represents the pip position in the forex pair price.
+    // Represents the forex pair pip position.
     private readonly _pipPosition: number;
 
     // Represents the value of ten raised to the pip position.
     private readonly _tenRaisedToPipPosition: number;
 
     public constructor (baseCurrency: MidaCurrency, quoteCurrency: MidaCurrency) {
+        super(`${baseCurrency.id}/${quoteCurrency.id}`);
+
         this._baseCurrency = baseCurrency;
         this._quoteCurrency = quoteCurrency;
 
@@ -32,14 +35,6 @@ export class MidaForexPair {
         this._tenRaisedToPipPosition = 10 ** this._pipPosition;
     }
 
-    public pipsToPrice (pips: number): number {
-        return pips / this._tenRaisedToPipPosition;
-    }
-
-    public countPips (price: number): number {
-        return price * this._tenRaisedToPipPosition;
-    }
-
     public get baseCurrency (): MidaCurrency {
         return this._baseCurrency;
     }
@@ -52,13 +47,15 @@ export class MidaForexPair {
         return this._pipPosition;
     }
 
-    // Represents the forex pair id as "baseCurrencyId/quoteCurrencyId".
-    public get id (): string {
-        return `${this._baseCurrency.id}/${this._quoteCurrency.id}`;
-    }
-
-    // Represents the forex pair id as "baseCurrencyIdquoteCurrencyId".
     public get id2 (): string {
         return `${this._baseCurrency.id}${this._quoteCurrency.id}`;
+    }
+
+    public normalizePips (pips: number): number {
+        return pips / this._tenRaisedToPipPosition;
+    }
+
+    public countPips (price: number): number {
+        return price * this._tenRaisedToPipPosition;
     }
 }

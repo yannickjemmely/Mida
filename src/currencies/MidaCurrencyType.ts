@@ -1,43 +1,25 @@
-import { MidaCurrency } from "#currency/MidaCurrency";
-import { MidaCurrencySet } from "#currency/MidaCurrencySet";
-import { MidaUndefinedCurrencyError } from "#currency/MidaUndefinedCurrencyError";
+import { MidaCurrency } from "#currencies/MidaCurrency";
+import { MidaUndefinedCurrencyError } from "#currencies/MidaUndefinedCurrencyError";
 
 export class MidaCurrencyType {
-    // Represents the set of currencies integrated by default.
-    private static readonly _currencies: MidaCurrencySet = new MidaCurrencySet(require("!/currencies.json"));
+    // Represents the set of currencies.
+    private static readonly _currencies: Map<string, MidaCurrency> = require("!/currencies.json").reduce(
+        (currencies: Map<string, MidaCurrency>, currency: MidaCurrency): Map<string, MidaCurrency> => currencies.set(currency.id, currency),
+        new Map()
+    );
 
     private constructor () {
         // Silence is golden.
     }
 
-    /*
-    public static define (currency: MidaCurrency): void {
-        if (this._currencies.has(currency.id)) {
-            throw new Error();
-        }
-
-        this._currencies.add(currency);
-    }
-    */
-
     public static getById (id: string): MidaCurrency {
-        const currency: MidaCurrency | null = MidaCurrencyType._currencies.get(id);
+        const currency: MidaCurrency | undefined = MidaCurrencyType._currencies.get(id);
 
         if (!currency) {
             throw new MidaUndefinedCurrencyError(id);
         }
 
         return currency;
-    }
-
-    public static getBySymbol (symbol: string): MidaCurrency {
-        for (const currency of MidaCurrencyType._currencies.toArray()) {
-            if (currency.symbol === symbol) {
-                return currency;
-            }
-        }
-
-        throw new MidaUndefinedCurrencyError(symbol);
     }
 
     // Represents the EUR currency.

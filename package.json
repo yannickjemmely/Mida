@@ -6,9 +6,7 @@
     "scripts": {
         "lint": "tslint --project .",
         "build": "npm run lint && tsc",
-        "start": "npm run build && node ./build/main.js",
-        "start-dev": "nodemon npm start",
-        "start-prod": "npm run build && forever start ./build/main.js"
+        "start": "npm run build && node ./build/main.js"
     },
     "dependencies": {
         "module-alias": "2.2.2",
@@ -18,10 +16,8 @@
         "tulind": "0.8.18"
     },
     "devDependencies": {
-        "nodemon": "2.0.3",
         "typescript": "3.7.2",
         "tslint": "5.18.0",
-        "forever": "3.0.0",
         "@types/node": "12.7.2",
         "@types/puppeteer": "1.19.1",
         "@types/uuid": "7.0.3"
@@ -37,7 +33,6 @@
         "#currency": "build/src/currency",
         "#errors": "build/src/errors",
         "#events": "build/src/events",
-        "#factors": "build/src/factors",
         "#forex": "build/src/forex",
         "#position": "build/src/position",
         "#utilities": "build/src/utilities"

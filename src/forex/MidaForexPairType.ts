@@ -1,35 +1,34 @@
-import { MidaCurrencyType } from "#currency/MidaCurrencyType";
+import { MidaCurrencyType } from "#currencies/MidaCurrencyType";
 import { MidaForexPair } from "#forex/MidaForexPair";
-import { MidaForexPairSet } from "#forex/MidaForexPairSet";
 
 export class MidaForexPairType {
-    // Represents the set of forex pairs integrated by default.
-    private static readonly _forexPairs: MidaForexPairSet = new MidaForexPairSet();
+    // Represents the set of forex pairs.
+    private static readonly _forexPairs: Map<string, MidaForexPair> = new Map();
 
     private constructor () {
         // Silence is golden.
     }
 
     public static getById (id: string): MidaForexPair {
-        const sanitizedId: string = id.toUpperCase();
+        const normalizedId: string = id.toUpperCase();
         let baseCurrencyId: string;
         let quoteCurrencyId: string;
 
-        if (sanitizedId.indexOf("/") === -1) {
-            baseCurrencyId = sanitizedId.substr(0, 3);
-            quoteCurrencyId = sanitizedId.substr(3);
+        if (normalizedId.indexOf("/") === -1) {
+            baseCurrencyId = normalizedId.substr(0, 3);
+            quoteCurrencyId = normalizedId.substr(3);
         }
         else {
-            baseCurrencyId = sanitizedId.split("/")[0];
-            quoteCurrencyId = sanitizedId.split("/")[1];
+            baseCurrencyId = normalizedId.split("/")[0];
+            quoteCurrencyId = normalizedId.split("/")[1];
         }
 
-        let forexPair: MidaForexPair | null = this._forexPairs.get(`${baseCurrencyId}/${quoteCurrencyId}`);
+        let forexPair: MidaForexPair | undefined = this._forexPairs.get(`${baseCurrencyId}/${quoteCurrencyId}`);
 
         if (!forexPair) {
             forexPair = new MidaForexPair(MidaCurrencyType.getById(baseCurrencyId), MidaCurrencyType.getById(quoteCurrencyId));
 
-            this._forexPairs.add(forexPair);
+            this._forexPairs.set(forexPair.id, forexPair);
         }
 
         return forexPair;
