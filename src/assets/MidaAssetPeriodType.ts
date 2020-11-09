@@ -26,3 +26,4 @@ export enum MidaAssetPeriodType {
     // 604800 seconds = 1 week.
     W1 = 604800,
 }
+

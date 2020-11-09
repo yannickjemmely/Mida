@@ -4,7 +4,7 @@ import { MidaAssetQuotation } from "#assets/MidaAssetQuotation";
 import { IMidaEquatable } from "#utilities/IMidaEquatable";
 // import { IMidaClonable } from "#utilities/IMidaClonable";
 
-// Represents an asset period.
+// Represents an asset period (or commonly an asset candlestick).
 export class MidaAssetPeriod implements IMidaEquatable<MidaAssetPeriod> {
     // Represents the period asset.
     private readonly _asset: MidaAsset;
@@ -103,21 +103,40 @@ export class MidaAssetPeriod implements IMidaEquatable<MidaAssetPeriod> {
         return this.startTime.valueOf() === period.startTime.valueOf() && this.endTime.valueOf() === period.endTime.valueOf();
     }
 
-    /**
-     * Groups a list of quotations into periods.
-     *
-     * @param quotations - The quotations which must be grouped into periods. Must be ordered from oldest to newest.
-     * @param startTime - The start time of the first period.
-     * @param type - The periods type.
-     * @param limit - The periods limit.
-     */
     public static fromQuotations (quotations: MidaAssetQuotation[], startTime: Date, type: MidaAssetPeriodType, limit: number = -1): MidaAssetPeriod[] {
-        const periods: MidaAssetPeriod[] = [];
         let periodStartTime: Date = new Date(startTime);
-        let periodEndTime: Date = new Date(periodStartTime.valueOf() + type * 1000);
-        let periodQuotations: MidaAssetQuotation[] = [];
 
-        for (const quotation of quotations) {
+        function getNextPeriodEndTime (): Date {
+            return new Date(periodStartTime.valueOf() + type * 1000);
+        }
+
+        const periods: MidaAssetPeriod[] = [];
+        let periodQuotations: MidaAssetQuotation[] = [];
+        let periodEndTime: Date = getNextPeriodEndTime();
+
+        function composePeriod (): void {
+            if (periodQuotations.length < 1) {
+                return;
+            }
+
+            periods.push(new MidaAssetPeriod(
+                quotations[0].asset,
+                periodStartTime,
+                MidaAssetQuotation.getQuotationsOpenBid(periodQuotations),
+                MidaAssetQuotation.getQuotationsCloseBid(periodQuotations),
+                MidaAssetQuotation.getQuotationsLowestBid(periodQuotations),
+                MidaAssetQuotation.getQuotationsHighestBid(periodQuotations),
+                periodQuotations.length,
+                type,
+                [ ...periodQuotations ]
+            ));
+
+            periodQuotations = [];
+        }
+
+        for (let i: number = 0; i < quotations.length; ++i) {
+            const quotation: MidaAssetQuotation = quotations[i];
+
             if (limit > -1 && periods.length === limit) {
                 break;
             }
@@ -126,29 +145,25 @@ export class MidaAssetPeriod implements IMidaEquatable<MidaAssetPeriod> {
                 continue;
             }
 
+            let periodHasEnded: boolean = false;
+
             while (quotation.time > periodEndTime) {
                 periodStartTime = new Date(periodEndTime);
-                periodEndTime = new Date(periodStartTime.valueOf() + type * 1000);
+                periodEndTime = getNextPeriodEndTime();
 
-                if (periodQuotations.length > 0) {
-                    periods.push(new MidaAssetPeriod(
-                        quotations[0].asset,
-                        periodStartTime,
-                        -1,
-                        -1,
-                        -1,
-                        -1,
-                        -1,
-                        type,
-                        [ ...periodQuotations ]
-                    ));
-
-                    periodQuotations = [];
+                if (!periodHasEnded) {
+                    periodHasEnded = true;
                 }
+            }
+
+            if (periodHasEnded) {
+                composePeriod();
             }
 
             periodQuotations.push(quotation);
         }
+
+        composePeriod();
 
         return periods;
     }

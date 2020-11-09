@@ -17,7 +17,7 @@ export module MidaFX {
 }
 
 void (async (): Promise<void> => {
-
+/*
     const myAccount: AMidaBroker = new BDSwissBroker();
 
     await myAccount.login({

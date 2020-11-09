@@ -1,5 +1,61 @@
 require("module-alias/register");
-require("#/MidaFX");
+//require("#/MidaFX");
+
+import { MidaAsset } from "#assets/MidaAsset";
+import { MidaAssetPeriod } from "#assets/MidaAssetPeriod";
+import { MidaAssetQuotation } from "#assets/MidaAssetQuotation";
+import { MidaAssetPeriodType } from "#assets/MidaAssetPeriodType";
+
+const asset: MidaAsset = new MidaAsset("NGAS");
+
+const periods: any = MidaAssetPeriod.fromQuotations([
+        new MidaAssetQuotation(
+            asset,
+            new Date("2020-11-08T20:07:02.000Z"),
+            0,
+            0,
+        ),
+        new MidaAssetQuotation(
+            asset,
+            new Date("2020-11-08T20:07:03.000Z"),
+            0,
+            0,
+        ),
+        new MidaAssetQuotation(
+            asset,
+            new Date("2020-11-08T20:07:08.000Z"),
+            0,
+            0,
+        ),
+            new MidaAssetQuotation(
+                asset,
+                new Date("2020-11-08T20:20:08.000Z"),
+                0,
+                0,
+            ),
+            new MidaAssetQuotation(
+                asset,
+                new Date("2020-11-08T20:22:08.000Z"),
+                0,
+                0,
+            ),
+            new MidaAssetQuotation(
+                asset,
+                new Date("2020-11-08T20:36:08.000Z"),
+                0,
+                0,
+            ),
+            new MidaAssetQuotation(
+                asset,
+                new Date("2020-11-08T21:07:08.000Z"),
+                0,
+                0,
+            ),
+],
+    new Date("2020-11-08T20:00:00.000Z"),
+    MidaAssetPeriodType.W1);
+
+console.log(periods.length);
 
 /*
 const fs: any = require("fs");

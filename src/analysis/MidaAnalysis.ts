@@ -108,7 +108,7 @@ export module MidaAnalysis {
             });
         }
     }
-
+/*
     // Try using momentum of swing points.
     export function calculateCongestionAreaV1 (periods: MidaAssetPeriod[], maxDistance: number = 0.05): MidaCongestionArea | null {
         const closePrices: number[] = periods.map((period: MidaAssetPeriod): number => period.close);
@@ -127,7 +127,7 @@ export module MidaAnalysis {
             supportPrice: Math.min(...periods.map((period: MidaAssetPeriod): number => period.low)),
             resistancePrice: Math.max(...periods.map((period: MidaAssetPeriod): number => period.high)),
         };
-    }
+    }*/
 
     // TODO: Ragionare per rette e coefficienti angolari.
     // TODO: Take into account also rejections.

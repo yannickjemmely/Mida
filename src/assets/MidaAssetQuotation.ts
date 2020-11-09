@@ -50,4 +50,68 @@ export class MidaAssetQuotation implements IMidaEquatable<MidaAssetQuotation>, I
     public clone (): MidaAssetQuotation {
         return new MidaAssetQuotation(this._asset.clone(), new Date(this._time), this._bid, this._ask);
     }
+
+    public static getQuotationsOpenBid (quotations: MidaAssetQuotation[]): number {
+        return quotations[0].bid;
+    }
+
+    public static getQuotationsOpenAsk (quotations: MidaAssetQuotation[]): number {
+        return quotations[0].ask;
+    }
+
+    public static getQuotationsCloseBid (quotations: MidaAssetQuotation[]): number {
+        return quotations[quotations.length - 1].bid;
+    }
+
+    public static getQuotationsCloseAsk (quotations: MidaAssetQuotation[]): number {
+        return quotations[quotations.length - 1].ask;
+    }
+
+    public static getQuotationsHighestBid (quotations: MidaAssetQuotation[]): number {
+        let highestBid: number = quotations[0].bid;
+
+        for (let i: number = 1; i < quotations.length; ++i) {
+            if (quotations[i].bid > highestBid) {
+                highestBid = quotations[i].bid;
+            }
+        }
+
+        return highestBid;
+    }
+
+    public static getQuotationsHighestAsk (quotations: MidaAssetQuotation[]): number {
+        let highestAsk: number = quotations[0].ask;
+
+        for (let i: number = 1; i < quotations.length; ++i) {
+            if (quotations[i].ask > highestAsk) {
+                highestAsk = quotations[i].ask;
+            }
+        }
+
+        return highestAsk;
+    }
+
+    public static getQuotationsLowestBid (quotations: MidaAssetQuotation[]): number {
+        let lowestBid: number = quotations[0].bid;
+
+        for (let i: number = 1; i < quotations.length; ++i) {
+            if (quotations[i].bid < lowestBid) {
+                lowestBid = quotations[i].bid;
+            }
+        }
+
+        return lowestBid;
+    }
+
+    public static getQuotationsLowestAsk (quotations: MidaAssetQuotation[]): number {
+        let lowestAsk: number = quotations[0].ask;
+
+        for (let i: number = 1; i < quotations.length; ++i) {
+            if (quotations[i].ask < lowestAsk) {
+                lowestAsk = quotations[i].ask;
+            }
+        }
+
+        return lowestAsk;
+    }
 }
