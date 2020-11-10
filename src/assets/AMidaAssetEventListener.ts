@@ -27,11 +27,6 @@ export abstract class AMidaAssetEventListener {
         return this._ticks;
     }
 
-    public update (tick: MidaAssetTick): void {
-        this._ticks.push(tick);
-        this.onTick(tick);
-    }
-
     protected notifyHandler (event: MidaAssetEvent): void {
         this._handler(event);
     }
