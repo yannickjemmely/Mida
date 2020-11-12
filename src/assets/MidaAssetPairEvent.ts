@@ -1,6 +1,6 @@
-import { MidaAssetPairQuotation } from "#assets/MidaAssetPairQuotation";
 import { AMidaEvent } from "#events/AMidaEvent";
 import { MidaAssetPair } from "#assets/MidaAssetPair";
+import { MidaAssetPairQuotation } from "#assets/MidaAssetPairQuotation";
 
 // Represents an asset pair event.
 export class MidaAssetPairEvent extends AMidaEvent {

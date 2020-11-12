@@ -1,3 +1,3 @@
-export interface IMidaEquatable<T> {
-    equals (equatable: T): boolean;
+export interface IMidaEquatable {
+    equals (object: any): boolean;
 }

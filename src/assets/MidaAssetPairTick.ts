@@ -1,9 +1,10 @@
 import { MidaAssetPair } from "#assets/MidaAssetPair";
 import { MidaAssetPairQuotation } from "#assets/MidaAssetPairQuotation";
 import { IMidaClonable } from "#utilities/IMidaClonable";
+import { IMidaEquatable } from "#utilities/IMidaEquatable";
 
 // Represents an asset pair tick.
-export class MidaAssetPairTick implements IMidaClonable<MidaAssetPairTick> {
+export class MidaAssetPairTick implements IMidaEquatable, IMidaClonable<MidaAssetPairTick> {
     // Represents the tick quotation.
     private readonly _quotation: MidaAssetPairQuotation;
 
@@ -33,6 +34,14 @@ export class MidaAssetPairTick implements IMidaClonable<MidaAssetPairTick> {
 
     public get ask (): number {
         return this._quotation.ask;
+    }
+
+    public equals (object: any): boolean {
+        return (
+            object instanceof MidaAssetPairTick
+            && this._quotation.equals(object._quotation)
+            && this._time.valueOf() === object._time.valueOf()
+        );
     }
 
     public clone (): MidaAssetPairTick {

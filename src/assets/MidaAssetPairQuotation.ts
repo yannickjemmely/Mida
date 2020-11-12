@@ -3,7 +3,7 @@ import { IMidaEquatable } from "#utilities/IMidaEquatable";
 import { IMidaClonable } from "#utilities/IMidaClonable";
 
 // Represents an asset pair quotation.
-export class MidaAssetPairQuotation implements IMidaEquatable<MidaAssetPairQuotation>, IMidaClonable<MidaAssetPairQuotation> {
+export class MidaAssetPairQuotation implements IMidaEquatable, IMidaClonable<MidaAssetPairQuotation> {
     // Represents the quotation asset pair.
     private readonly _assetPair: MidaAssetPair;
 
@@ -43,8 +43,12 @@ export class MidaAssetPairQuotation implements IMidaEquatable<MidaAssetPairQuota
         return this._ask - this._bid;
     }
 
-    public equals (quotation: MidaAssetPairQuotation): boolean {
-        return this._time.valueOf() === quotation._time.valueOf() && this._assetPair.equals(quotation._assetPair);
+    public equals (object: any): boolean {
+        return (
+            object instanceof MidaAssetPairQuotation
+            && this._time.valueOf() === object._time.valueOf()
+            && this._assetPair.equals(object._assetPair)
+        );
     }
 
     public clone (): MidaAssetPairQuotation {
@@ -119,5 +123,17 @@ export class MidaAssetPairQuotation implements IMidaEquatable<MidaAssetPairQuota
         }
 
         return lowestAsk;
+    }
+
+    public static quotationsHaveSameAssetPair (quotations: MidaAssetPairQuotation[]): boolean {
+        const firstAssetPair: MidaAssetPair = quotations[0].assetPair;
+
+        for (let i: number = 1; i < quotations.length; ++i) {
+            if (!quotations[i].assetPair.equals(firstAssetPair)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

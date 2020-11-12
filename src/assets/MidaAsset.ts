@@ -2,7 +2,7 @@ import { IMidaEquatable } from "#utilities/IMidaEquatable";
 import { IMidaClonable } from "#utilities/IMidaClonable";
 
 // Represents an asset.
-export class MidaAsset implements IMidaEquatable<MidaAsset>, IMidaClonable<MidaAsset> {
+export class MidaAsset implements IMidaEquatable, IMidaClonable<MidaAsset> {
     // Represents the asset id.
     private readonly _id: string;
 
@@ -38,8 +38,11 @@ export class MidaAsset implements IMidaEquatable<MidaAsset>, IMidaClonable<MidaA
         return this._unitName;
     }
 
-    public equals (asset: MidaAsset): boolean {
-        return this._id === asset._id;
+    public equals (object: any): boolean {
+        return (
+            object instanceof MidaAsset
+            && this._id === object._id
+        );
     }
 
     public clone (): MidaAsset {

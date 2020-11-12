@@ -4,7 +4,7 @@ import { MidaAssetPairQuotation } from "#assets/MidaAssetPairQuotation";
 import { IMidaEquatable } from "#utilities/IMidaEquatable";
 
 // Represents an asset pair period (or commonly a candlestick).
-export class MidaAssetPairPeriod implements IMidaEquatable<MidaAssetPairPeriod> {
+export class MidaAssetPairPeriod implements IMidaEquatable {
     // Represents the period asset pair.
     private readonly _assetPair: MidaAssetPair;
 
@@ -98,9 +98,19 @@ export class MidaAssetPairPeriod implements IMidaEquatable<MidaAssetPairPeriod> 
         return this.time;
     }
 
-    public equals (period: MidaAssetPairPeriod): boolean {
-        return this.startTime.valueOf() === period.startTime.valueOf() && this.endTime.valueOf() === period.endTime.valueOf();
+    public equals (object: any): boolean {
+        return (
+            object instanceof MidaAssetPairPeriod
+            && this.startTime.valueOf() === object.startTime.valueOf()
+            && this.endTime.valueOf() === object.endTime.valueOf()
+        );
     }
+
+    /*
+     **
+     *** Static Utilities
+     **
+    */
 
     public static fromQuotations (quotations: MidaAssetPairQuotation[], startTime: Date, type: MidaAssetPairPeriodType, limit: number = -1): MidaAssetPairPeriod[] {
         let periodStartTime: Date = new Date(startTime);
