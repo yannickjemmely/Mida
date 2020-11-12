@@ -1,7 +1,7 @@
 import {MidaCongestionArea} from "#analysis/congestion/MidaCongestionArea";
 import {MidaSwingPoint} from "#analysis/swing/MidaSwingPoint";
 import {MidaSwingPointType} from "#analysis/swing/MidaSwingPointType";
-import {MidaAssetPeriod} from "#assets/MidaAssetPeriod";
+import {MidaAssetPairPeriod} from "#assets/MidaAssetPairPeriod";
 import {MidaForexPairTrendType} from "#forex/MidaForexPairTrendType";
 import {MidaForexPairExchangeRate} from "#forex/MidaForexPairExchangeRate";
 import {MidaHorizontalRejectionArea} from "#analysis/rejection/MidaHorizontalRejectionArea";
@@ -131,7 +131,7 @@ export module MidaAnalysis {
 
     // TODO: Ragionare per rette e coefficienti angolari.
     // TODO: Take into account also rejections.
-    export function calculateTrendV1 (periods: MidaAssetPeriod[]): MidaForexPairTrendType {
+    export function calculateTrendV1 (periods: MidaAssetPairPeriod[]): MidaForexPairTrendType {
         const swingPointsLow: MidaSwingPoint[] = calcSwingPoints(periods, MidaSwingPointType.LOW);
         const swingPointsHigh: MidaSwingPoint[] = calcSwingPoints(periods, MidaSwingPointType.HIGH);
         let violatedLowSwingPoints: number = 0;
@@ -193,7 +193,7 @@ export module MidaAnalysis {
         return MidaForexPairTrendType.NEUTRAL;
     }
 
-    export function calculateVolumeTrendV1 (periods: MidaAssetPeriod[]): void {
+    export function calculateVolumeTrendV1 (periods: MidaAssetPairPeriod[]): void {
 
     }
 
@@ -211,11 +211,11 @@ export module MidaAnalysis {
         return tickTimes / ticks.length;
     }
 
-    export function calcSwingPoints (periods: MidaAssetPeriod[], type: MidaSwingPointType): MidaSwingPoint[] {
+    export function calcSwingPoints (periods: MidaAssetPairPeriod[], type: MidaSwingPointType): MidaSwingPoint[] {
         const swingPoints: MidaSwingPoint[] = [];
 
         for (let i: number = 0, length: number = periods.length - 1; i < length; ++i) {
-            const swingPointPeriods: MidaAssetPeriod[] = [];
+            const swingPointPeriods: MidaAssetPairPeriod[] = [];
 
             while (
                 periods[i + 1] && (

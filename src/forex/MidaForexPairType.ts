@@ -26,7 +26,7 @@ export class MidaForexPairType {
         let forexPair: MidaForexPair | undefined = this._forexPairs.get(`${baseCurrencyId}/${quoteCurrencyId}`);
 
         if (!forexPair) {
-            forexPair = new MidaForexPair(MidaCurrencyType.getById(baseCurrencyId), MidaCurrencyType.getById(quoteCurrencyId));
+            forexPair = new MidaForexPair(MidaCurrencyType.getByIso(baseCurrencyId), MidaCurrencyType.getByIso(quoteCurrencyId));
 
             this._forexPairs.set(forexPair.id, forexPair);
         }

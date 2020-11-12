@@ -7,7 +7,7 @@ export abstract class AMidaEvent {
     private readonly _type: string;
 
     protected constructor (time: Date, type: string) {
-        this._time = time;
+        this._time = new Date(time);
         this._type = type;
     }
 

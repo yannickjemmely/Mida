@@ -1,13 +1,12 @@
-import { MidaAsset } from "#assets/MidaAsset";
-import { MidaAssetPeriodType } from "#assets/MidaAssetPeriodType";
-import { MidaAssetQuotation } from "#assets/MidaAssetQuotation";
+import { MidaAssetPair } from "#assets/MidaAssetPair";
+import { MidaAssetPairPeriodType } from "#assets/MidaAssetPairPeriodType";
+import { MidaAssetPairQuotation } from "#assets/MidaAssetPairQuotation";
 import { IMidaEquatable } from "#utilities/IMidaEquatable";
-// import { IMidaClonable } from "#utilities/IMidaClonable";
 
-// Represents an asset period (or commonly an asset candlestick).
-export class MidaAssetPeriod implements IMidaEquatable<MidaAssetPeriod> {
-    // Represents the period asset.
-    private readonly _asset: MidaAsset;
+// Represents an asset pair period (or commonly a candlestick).
+export class MidaAssetPairPeriod implements IMidaEquatable<MidaAssetPairPeriod> {
+    // Represents the period asset pair.
+    private readonly _assetPair: MidaAssetPair;
 
     // Represents the period time.
     private readonly _time: Date;
@@ -28,24 +27,24 @@ export class MidaAssetPeriod implements IMidaEquatable<MidaAssetPeriod> {
     private readonly _volume: number;
 
     // Represents the period type.
-    private readonly _type: MidaAssetPeriodType;
+    private readonly _type: MidaAssetPairPeriodType;
 
     // Represents the period quotations.
-    private readonly _quotations: MidaAssetQuotation[];
+    private readonly _quotations: MidaAssetPairQuotation[];
 
     public constructor (
-        asset: MidaAsset,
+        assetPair: MidaAssetPair,
         time: Date,
         open: number,
         close: number,
         low: number,
         high: number,
         volume: number,
-        type: MidaAssetPeriodType,
-        quotations: MidaAssetQuotation[] = [],
+        type: MidaAssetPairPeriodType,
+        quotations: MidaAssetPairQuotation[] = [],
     ) {
-        this._asset = asset;
-        this._time = time;
+        this._assetPair = assetPair;
+        this._time = new Date(time);
         this._open = open;
         this._close = close;
         this._low = low;
@@ -55,8 +54,8 @@ export class MidaAssetPeriod implements IMidaEquatable<MidaAssetPeriod> {
         this._quotations = quotations;
     }
 
-    public get asset (): MidaAsset {
-        return this._asset;
+    public get assetPair (): MidaAssetPair {
+        return this._assetPair;
     }
 
     public get time (): Date {
@@ -83,11 +82,11 @@ export class MidaAssetPeriod implements IMidaEquatable<MidaAssetPeriod> {
         return this._volume;
     }
 
-    public get type (): MidaAssetPeriodType {
+    public get type (): MidaAssetPairPeriodType {
         return this._type;
     }
 
-    public get quotations (): readonly MidaAssetQuotation[] {
+    public get quotations (): readonly MidaAssetPairQuotation[] {
         return this._quotations;
     }
 
@@ -99,19 +98,19 @@ export class MidaAssetPeriod implements IMidaEquatable<MidaAssetPeriod> {
         return this.time;
     }
 
-    public equals (period: MidaAssetPeriod): boolean {
+    public equals (period: MidaAssetPairPeriod): boolean {
         return this.startTime.valueOf() === period.startTime.valueOf() && this.endTime.valueOf() === period.endTime.valueOf();
     }
 
-    public static fromQuotations (quotations: MidaAssetQuotation[], startTime: Date, type: MidaAssetPeriodType, limit: number = -1): MidaAssetPeriod[] {
+    public static fromQuotations (quotations: MidaAssetPairQuotation[], startTime: Date, type: MidaAssetPairPeriodType, limit: number = -1): MidaAssetPairPeriod[] {
         let periodStartTime: Date = new Date(startTime);
 
         function getNextPeriodEndTime (): Date {
             return new Date(periodStartTime.valueOf() + type * 1000);
         }
 
-        const periods: MidaAssetPeriod[] = [];
-        let periodQuotations: MidaAssetQuotation[] = [];
+        const periods: MidaAssetPairPeriod[] = [];
+        let periodQuotations: MidaAssetPairQuotation[] = [];
         let periodEndTime: Date = getNextPeriodEndTime();
 
         function tryComposePeriod (): void {
@@ -119,13 +118,13 @@ export class MidaAssetPeriod implements IMidaEquatable<MidaAssetPeriod> {
                 return;
             }
 
-            periods.push(new MidaAssetPeriod(
-                quotations[0].asset,
+            periods.push(new MidaAssetPairPeriod(
+                quotations[0].assetPair,
                 periodStartTime,
-                MidaAssetQuotation.getQuotationsOpenBid(periodQuotations),
-                MidaAssetQuotation.getQuotationsCloseBid(periodQuotations),
-                MidaAssetQuotation.getQuotationsLowestBid(periodQuotations),
-                MidaAssetQuotation.getQuotationsHighestBid(periodQuotations),
+                MidaAssetPairQuotation.getQuotationsOpenBid(periodQuotations),
+                MidaAssetPairQuotation.getQuotationsCloseBid(periodQuotations),
+                MidaAssetPairQuotation.getQuotationsLowestBid(periodQuotations),
+                MidaAssetPairQuotation.getQuotationsHighestBid(periodQuotations),
                 periodQuotations.length,
                 type,
                 [ ...periodQuotations ]
@@ -135,7 +134,7 @@ export class MidaAssetPeriod implements IMidaEquatable<MidaAssetPeriod> {
         }
 
         for (let i: number = 0; i < quotations.length; ++i) {
-            const quotation: MidaAssetQuotation = quotations[i];
+            const quotation: MidaAssetPairQuotation = quotations[i];
 
             if (limit > -1 && periods.length === limit) {
                 break;

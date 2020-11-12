@@ -6,20 +6,36 @@ export class MidaAsset implements IMidaEquatable<MidaAsset>, IMidaClonable<MidaA
     // Represents the asset id.
     private readonly _id: string;
 
+    // Represents the asset name.
+    private readonly _name: string;
+
     // Represents the asset description.
     private readonly _description: string;
 
-    public constructor (id: string, description: string = "") {
+    // Represents the asset unit name.
+    private readonly _unitName: string;
+
+    public constructor (id: string, name: string = "", description: string = "", unitName: string = "") {
         this._id = id;
+        this._name = name;
         this._description = description;
+        this._unitName = unitName;
     }
 
     public get id (): string {
         return this._id;
     }
 
+    public get name (): string {
+        return this._name;
+    }
+
     public get description (): string {
         return this._description;
+    }
+
+    public get unitName (): string {
+        return this._unitName;
     }
 
     public equals (asset: MidaAsset): boolean {
@@ -27,6 +43,6 @@ export class MidaAsset implements IMidaEquatable<MidaAsset>, IMidaClonable<MidaA
     }
 
     public clone (): MidaAsset {
-        return new MidaAsset(this._id, this._description);
+        return new MidaAsset(this._id, this._name, this._description);
     }
 }

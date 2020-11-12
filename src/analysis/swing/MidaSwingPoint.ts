@@ -1,16 +1,16 @@
 import { MidaSwingPointType } from "#analysis/swing/MidaSwingPointType";
 import { MidaAsset } from "#assets/MidaAsset";
-import { MidaAssetPeriod } from "#assets/MidaAssetPeriod";
+import { MidaAssetPairPeriod } from "#assets/MidaAssetPairPeriod";
 
 // Represents a swing point.
 export class MidaSwingPoint {
     // Represents the swing point periods.
-    private readonly _periods: MidaAssetPeriod[];
+    private readonly _periods: MidaAssetPairPeriod[];
 
     // Represents the swing point type.
     private readonly _type: MidaSwingPointType;
 
-    public constructor (periods: MidaAssetPeriod[], type: MidaSwingPointType) {
+    public constructor (periods: MidaAssetPairPeriod[], type: MidaSwingPointType) {
         if (periods.length < 1) {
             throw new Error();
         }
@@ -19,7 +19,7 @@ export class MidaSwingPoint {
         this._type = type;
     }
 
-    public get periods (): readonly MidaAssetPeriod[] {
+    public get periods (): readonly MidaAssetPairPeriod[] {
         return this._periods;
     }
 
@@ -31,7 +31,7 @@ export class MidaSwingPoint {
         return this.firstPeriod.asset;
     }
 
-    public get firstPeriod (): MidaAssetPeriod {
+    public get firstPeriod (): MidaAssetPairPeriod {
         return this._periods[0];
     }
 
@@ -39,7 +39,7 @@ export class MidaSwingPoint {
         return this.firstPeriod.startTime;
     }
 
-    public get lastPeriod (): MidaAssetPeriod {
+    public get lastPeriod (): MidaAssetPairPeriod {
         return this._periods[this._periods.length - 1];
     }
 

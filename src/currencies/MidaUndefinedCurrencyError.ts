@@ -1,15 +1,17 @@
 import { MidaError } from "#errors/MidaError";
 
 export class MidaUndefinedCurrencyError extends MidaError {
-    private readonly _currencyId: string;
+    private readonly _iso: string;
 
-    public constructor (currencyId: string) {
-        super(`Currency ${currencyId} is undefined.`);
+    public constructor (iso: string) {
+        const normalizedIso: string = iso.toUpperCase();
 
-        this._currencyId = currencyId;
+        super(`Currency ${normalizedIso} is undefined.`);
+
+        this._iso = normalizedIso;
     }
 
-    public get currencyId (): string {
-        return this._currencyId;
+    public get iso (): string {
+        return this._iso;
     }
 }

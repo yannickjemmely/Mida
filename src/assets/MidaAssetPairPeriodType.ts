@@ -1,4 +1,4 @@
-export enum MidaAssetPeriodType {
+export enum MidaAssetPairPeriodType {
     // 1 second.
     S1 = 1,
 

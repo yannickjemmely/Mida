@@ -1,41 +1,41 @@
 [
     {
-        "id": "EUR",
+        "iso": "EUR",
         "name": "Euro",
         "symbol": "€"
     },
     {
-        "id": "GBP",
+        "iso": "GBP",
         "name": "Great British Pound",
         "symbol": "£"
     },
     {
-        "id": "USD",
+        "iso": "USD",
         "name": "United States Dollar",
         "symbol": "$"
     },
     {
-        "id": "NZD",
+        "iso": "NZD",
         "name": "New Zealand Dollar",
         "symbol": "$"
     },
     {
-        "id": "AUD",
+        "iso": "AUD",
         "name": "Australian Dollar",
         "symbol": "$"
     },
     {
-        "id": "CAD",
+        "iso": "CAD",
         "name": "Canadian Dollar",
         "symbol": "$"
     },
     {
-        "id": "JPY",
+        "iso": "JPY",
         "name": "Japanese Yen",
         "symbol": "¥"
     },
     {
-        "id": "CHF",
+        "iso": "CHF",
         "name": "Swiss Franc",
         "symbol": "₣"
     }
