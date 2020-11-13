@@ -32,7 +32,10 @@ export class MidaAssetPair implements IMidaEquatable, IMidaClonable<MidaAssetPai
     }
 
     public equals (object: any): boolean {
-        return object instanceof MidaAssetPair && this._symbol === object._symbol;
+        return (
+            object instanceof MidaAssetPair
+            && this._symbol === object._symbol
+        );
     }
 
     public clone (): MidaAssetPair {

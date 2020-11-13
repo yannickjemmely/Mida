@@ -1,5 +1,5 @@
-import { MidaSwingPointType } from "#analysis/swing/MidaSwingPointType";
-import { MidaAsset } from "#assets/MidaAsset";
+import { MidaSwingPointType } from "#analysis/swings/MidaSwingPointType";
+import { MidaAssetPair } from "#assets/MidaAssetPair";
 import { MidaAssetPairPeriod } from "#assets/MidaAssetPairPeriod";
 
 // Represents a swing point.
@@ -27,8 +27,8 @@ export class MidaSwingPoint {
         return this._type;
     }
 
-    public get asset (): MidaAsset {
-        return this.firstPeriod.asset;
+    public get assetPair (): MidaAssetPair {
+        return this.firstPeriod.assetPair;
     }
 
     public get firstPeriod (): MidaAssetPairPeriod {
@@ -49,10 +49,6 @@ export class MidaSwingPoint {
 
     public get priceMomentum (): number {
         return this.lastPeriod.close / this.firstPeriod.close;
-    }
-
-    public get volumeMomentum (): number {
-        throw new Error();
     }
 
     public get vasileImportance (): number {
