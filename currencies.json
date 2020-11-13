@@ -1,25 +1,5 @@
 [
     {
-        "iso": "EUR",
-        "name": "Euro",
-        "symbol": "€"
-    },
-    {
-        "iso": "GBP",
-        "name": "Great British Pound",
-        "symbol": "£"
-    },
-    {
-        "iso": "USD",
-        "name": "United States Dollar",
-        "symbol": "$"
-    },
-    {
-        "iso": "NZD",
-        "name": "New Zealand Dollar",
-        "symbol": "$"
-    },
-    {
         "iso": "AUD",
         "name": "Australian Dollar",
         "symbol": "$"
@@ -30,13 +10,33 @@
         "symbol": "$"
     },
     {
+        "iso": "CHF",
+        "name": "Swiss Franc",
+        "symbol": "₣"
+    },
+    {
+        "iso": "EUR",
+        "name": "Euro",
+        "symbol": "€"
+    },
+    {
+        "iso": "GBP",
+        "name": "Great British Pound",
+        "symbol": "£"
+    },
+    {
         "iso": "JPY",
         "name": "Japanese Yen",
         "symbol": "¥"
     },
     {
-        "iso": "CHF",
-        "name": "Swiss Franc",
-        "symbol": "₣"
+        "iso": "NZD",
+        "name": "New Zealand Dollar",
+        "symbol": "$"
+    },
+    {
+        "iso": "USD",
+        "name": "United States Dollar",
+        "symbol": "$"
     }
 ]

@@ -25,6 +25,13 @@ export class MidaCurrency extends MidaAsset {
         return this._symbol;
     }
 
+    public equals (object: any): boolean {
+        return (
+            object instanceof MidaCurrency
+            && super.equals(object)
+        );
+    }
+
     public clone (): MidaCurrency {
         return new MidaCurrency(this._iso, this._symbol, this.name, this.description);
     }
