@@ -547,7 +547,7 @@ export class BDSwissBroker extends AMidaBroker {
 
     private _onTick (plainTick: any): void {
         const forexPairExchangeRate: MidaForexPairExchangeRate = {
-            forexPair: MidaForexPairType.getById(plainTick.s),
+            forexPair: MidaForexPairType.getBySymbol(plainTick.s),
             time: new Date(),
             bid: plainTick.b,
             ask: plainTick.a,

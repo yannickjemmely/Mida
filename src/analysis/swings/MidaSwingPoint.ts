@@ -47,11 +47,43 @@ export class MidaSwingPoint {
         return this.lastPeriod.endTime;
     }
 
-    public get priceMomentum (): number {
+    public get momentum (): number {
         return this.lastPeriod.close / this.firstPeriod.close;
     }
 
     public get vasileImportance (): number {
-        return Math.log(Math.abs(1 - Math.abs(this.priceMomentum)) * this.lastPeriod.type * this._periods.length);
+        return Math.log(Math.abs(1 - Math.abs(this.momentum)) * this.lastPeriod.type * this._periods.length);
+    }
+
+    /*
+     **
+     *** Static Utilities
+     **
+    */
+
+    public static fromPeriods (periods: MidaAssetPairPeriod[], type: MidaSwingPointType): MidaSwingPoint[] {
+        const swingPoints: MidaSwingPoint[] = [];
+
+        for (let i: number = 0, length: number = periods.length - 1; i < length; ++i) {
+            const swingPointPeriods: MidaAssetPairPeriod[] = [];
+
+            while (
+                periods[i + 1]
+                && (
+                    (type === MidaSwingPointType.LOW && periods[i + 1].close < periods[i].close)
+                    || (type === MidaSwingPointType.HIGH && periods[i + 1].close > periods[i].close)
+                )
+            ) {
+                swingPointPeriods.push(periods[i + 1]);
+
+                ++i;
+            }
+
+            if (swingPointPeriods.length > 0) {
+                swingPoints.push(new MidaSwingPoint(swingPointPeriods, type));
+            }
+        }
+
+        return swingPoints;
     }
 }

@@ -9,60 +9,60 @@ export class MidaForexPairType {
         // Silence is golden.
     }
 
-    public static getById (id: string): MidaForexPair {
-        const normalizedId: string = id.toUpperCase();
-        let baseCurrencyId: string;
-        let quoteCurrencyId: string;
+    public static getBySymbol (symbol: string): MidaForexPair {
+        const normalizedSymbol: string = symbol.toUpperCase();
+        let baseCurrencyIso: string;
+        let quoteCurrencyIso: string;
 
-        if (normalizedId.indexOf("/") === -1) {
-            baseCurrencyId = normalizedId.substr(0, 3);
-            quoteCurrencyId = normalizedId.substr(3);
+        if (normalizedSymbol.indexOf("/") === -1) {
+            baseCurrencyIso = normalizedSymbol.substr(0, 3);
+            quoteCurrencyIso = normalizedSymbol.substr(3);
         }
         else {
-            baseCurrencyId = normalizedId.split("/")[0];
-            quoteCurrencyId = normalizedId.split("/")[1];
+            baseCurrencyIso = normalizedSymbol.split("/")[0];
+            quoteCurrencyIso = normalizedSymbol.split("/")[1];
         }
 
-        let forexPair: MidaForexPair | undefined = this._forexPairs.get(`${baseCurrencyId}/${quoteCurrencyId}`);
+        let forexPair: MidaForexPair | undefined = MidaForexPairType._forexPairs.get(`${baseCurrencyIso}/${quoteCurrencyIso}`);
 
         if (!forexPair) {
-            forexPair = new MidaForexPair(MidaCurrencyType.getByIso(baseCurrencyId), MidaCurrencyType.getByIso(quoteCurrencyId));
+            forexPair = new MidaForexPair(MidaCurrencyType.getByIso(baseCurrencyIso), MidaCurrencyType.getByIso(quoteCurrencyIso));
 
-            this._forexPairs.set(forexPair.id, forexPair);
+            MidaForexPairType._forexPairs.set(forexPair.symbol, forexPair);
         }
 
         return forexPair;
     }
 
     // Represents the EUR/USD forex pair.
-    public static readonly EUR_USD: MidaForexPair = MidaForexPairType.getById("EUR/USD");
+    public static readonly EUR_USD: MidaForexPair = MidaForexPairType.getBySymbol("EUR/USD");
 
     // Represents the EUR/AUD forex pair.
-    public static readonly EUR_AUD: MidaForexPair = MidaForexPairType.getById("EUR/AUD");
+    public static readonly EUR_AUD: MidaForexPair = MidaForexPairType.getBySymbol("EUR/AUD");
 
     // Represents the EUR/CAD forex pair.
-    public static readonly EUR_CAD: MidaForexPair = MidaForexPairType.getById("EUR/CAD");
+    public static readonly EUR_CAD: MidaForexPair = MidaForexPairType.getBySymbol("EUR/CAD");
 
     // Represents the EUR/GBP forex pair.
-    public static readonly EUR_GBP: MidaForexPair = MidaForexPairType.getById("EUR/GBP");
+    public static readonly EUR_GBP: MidaForexPair = MidaForexPairType.getBySymbol("EUR/GBP");
 
     // Represents the GBP/USD forex pair.
-    public static readonly GBP_USD: MidaForexPair = MidaForexPairType.getById("GBP/USD");
+    public static readonly GBP_USD: MidaForexPair = MidaForexPairType.getBySymbol("GBP/USD");
 
     // Represents the GBP/AUD forex pair.
-    public static readonly GBP_AUD: MidaForexPair = MidaForexPairType.getById("GBP/AUD");
+    public static readonly GBP_AUD: MidaForexPair = MidaForexPairType.getBySymbol("GBP/AUD");
 
     // Represents the GBP/CAD forex pair.
-    public static readonly GBP_CAD: MidaForexPair = MidaForexPairType.getById("GBP/CAD");
+    public static readonly GBP_CAD: MidaForexPair = MidaForexPairType.getBySymbol("GBP/CAD");
 
     // Represents the GBP/CHF forex pair.
-    public static readonly GBP_CHF: MidaForexPair = MidaForexPairType.getById("GBP/CHF");
+    public static readonly GBP_CHF: MidaForexPair = MidaForexPairType.getBySymbol("GBP/CHF");
 
     // Represents the USD/CAD forex pair.
-    public static readonly USD_CAD: MidaForexPair = MidaForexPairType.getById("USD/CAD");
+    public static readonly USD_CAD: MidaForexPair = MidaForexPairType.getBySymbol("USD/CAD");
 
     // Represents the USD/JPY forex pair.
-    public static readonly USD_JPY: MidaForexPair = MidaForexPairType.getById("USD/JPY");
+    public static readonly USD_JPY: MidaForexPair = MidaForexPairType.getBySymbol("USD/JPY");
 }
 
 export const EUR_USD: MidaForexPair = MidaForexPairType.EUR_USD;

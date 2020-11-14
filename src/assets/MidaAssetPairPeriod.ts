@@ -41,7 +41,7 @@ export class MidaAssetPairPeriod implements IMidaEquatable {
         high: number,
         volume: number,
         type: MidaAssetPairPeriodType,
-        quotations: MidaAssetPairQuotation[] = [],
+        quotations: MidaAssetPairQuotation[] = []
     ) {
         this._assetPair = assetPair;
         this._time = new Date(time);
@@ -96,6 +96,10 @@ export class MidaAssetPairPeriod implements IMidaEquatable {
 
     public get endTime (): Date {
         return this.time;
+    }
+
+    public get momentum (): number {
+        return this._close / this._open;
     }
 
     public equals (object: any): boolean {

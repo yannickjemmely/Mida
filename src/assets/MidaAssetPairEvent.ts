@@ -10,8 +10,8 @@ export class MidaAssetPairEvent extends AMidaEvent {
     // Represents the asset pair quotation when the event occurred.
     private readonly _quotation: MidaAssetPairQuotation;
 
-    public constructor (assetPair: MidaAssetPair, quotation: MidaAssetPairQuotation, time: Date, type: string) {
-        super(time, type);
+    public constructor (assetPair: MidaAssetPair, quotation: MidaAssetPairQuotation, time: Date, type: string, details: { [name: string]: any; } = {}) {
+        super(time, type, details);
 
         this._assetPair = assetPair;
         this._quotation = quotation;

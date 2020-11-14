@@ -1,9 +1,9 @@
-import { MidaAsset } from "#assets/MidaAsset";
+import { MidaAssetPair } from "#assets/MidaAssetPair";
 import { MidaCurrency } from "#currencies/MidaCurrency";
 import { MidaCurrencyType } from "#currencies/MidaCurrencyType";
 
 // Represents a forex pair.
-export class MidaForexPair extends MidaAsset {
+export class MidaForexPair extends MidaAssetPair {
     // Represents the forex pair base currency.
     private readonly _baseCurrency: MidaCurrency;
 
@@ -13,11 +13,11 @@ export class MidaForexPair extends MidaAsset {
     // Represents the forex pair pip position.
     private readonly _pipPosition: number;
 
-    // Represents the value of ten raised to the pip position.
+    // Represents the value of ten raised to pip position.
     private readonly _tenRaisedToPipPosition: number;
 
-    public constructor (baseCurrency: MidaCurrency, quoteCurrency: MidaCurrency) {
-        super(`${baseCurrency.id}/${quoteCurrency.id}`);
+    public constructor (baseCurrency: MidaCurrency, quoteCurrency: MidaCurrency, symbol?: string) {
+        super(baseCurrency, quoteCurrency, symbol || `${baseCurrency.iso}/${quoteCurrency.iso}`);
 
         this._baseCurrency = baseCurrency;
         this._quoteCurrency = quoteCurrency;
@@ -47,8 +47,8 @@ export class MidaForexPair extends MidaAsset {
         return this._pipPosition;
     }
 
-    public get id2 (): string {
-        return `${this._baseCurrency.id}${this._quoteCurrency.id}`;
+    public get symbol2 (): string {
+        return `${this._baseCurrency.iso}${this._quoteCurrency.iso}`;
     }
 
     public normalizePips (pips: number): number {

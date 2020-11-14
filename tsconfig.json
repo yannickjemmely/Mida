@@ -23,8 +23,8 @@
             "#assets/*": [
                 "src/assets/*"
             ],
-            "#broker/*": [
-                "src/broker/*"
+            "#brokers/*": [
+                "src/brokers/*"
             ],
             "#browser/*": [
                 "src/browser/*"
@@ -41,8 +41,8 @@
             "#forex/*": [
                 "src/forex/*"
             ],
-            "#position/*": [
-                "src/position/*"
+            "#positions/*": [
+                "src/positions/*"
             ],
             "#utilities/*": [
                 "src/utilities/*"

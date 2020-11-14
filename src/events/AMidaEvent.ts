@@ -6,9 +6,13 @@ export abstract class AMidaEvent {
     // Represents the event type.
     private readonly _type: string;
 
-    protected constructor (time: Date, type: string) {
+    // Represents the event details.
+    private readonly _details: { [name: string]: any; };
+
+    protected constructor (time: Date, type: string, details: { [name: string]: any; } = {}) {
         this._time = new Date(time);
         this._type = type;
+        this._details = JSON.parse(JSON.stringify(details));
     }
 
     public get time (): Date {
@@ -17,5 +21,9 @@ export abstract class AMidaEvent {
 
     public get type (): string {
         return this._type;
+    }
+
+    public get details (): { [name: string]: any; } {
+        return JSON.parse(JSON.stringify(this._details));
     }
 }
