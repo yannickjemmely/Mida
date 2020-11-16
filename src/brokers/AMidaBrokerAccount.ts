@@ -1,5 +1,7 @@
 import { MidaAssetPair } from "#assets/MidaAssetPair";
 import { MidaAssetPairPeriod } from "#assets/MidaAssetPairPeriod";
+import { MidaAssetPairPeriodType } from "#assets/MidaAssetPairPeriodType";
+import { MidaAssetPairQuotation } from "#assets/MidaAssetPairQuotation";
 import { AMidaBroker } from "#brokers/AMidaBroker";
 import { MidaBrokerAccountType } from "#brokers/MidaBrokerAccountType";
 import { AMidaPosition } from "#positions/AMidaPosition";
@@ -64,15 +66,9 @@ export abstract class AMidaBrokerAccount {
 
     public abstract async getLeverage (symbol: string): Promise<any>;
 
-    public abstract async getSymbolPeriods (symbol: string): Promise<MidaAssetPairPeriod[]>;
+    public abstract async getSymbolQuotation (symbol: string): Promise<MidaAssetPairQuotation>;
 
-    public abstract async getPositionStopLossById (id: string): Promise<number>;
-
-    public abstract async setPositionStopLossById (id: string): Promise<number>;
-
-    public abstract async getPositionTakeProfitById (id: string): Promise<number>;
-
-    public abstract async setPositionTakeProfitById (id: string): Promise<number>;
+    public abstract async getSymbolPeriods (symbol: string, type: MidaAssetPairPeriodType | number): Promise<MidaAssetPairPeriod[]>;
 
     public async getOpenPositions (): Promise<AMidaPosition[]> {
         const positions: AMidaPosition[] = await this.getPositions();
@@ -89,7 +85,7 @@ export abstract class AMidaBrokerAccount {
         return openPositions;
     }
 
-    public async getAssetPairPeriods (assetPair: MidaAssetPair): Promise<MidaAssetPairPeriod[]> {
-        return this.getSymbolPeriods(assetPair.symbol);
+    public async getAssetPairPeriods (assetPair: MidaAssetPair, type: MidaAssetPairPeriodType | number): Promise<MidaAssetPairPeriod[]> {
+        return this.getSymbolPeriods(assetPair.symbol, type);
     }
 }

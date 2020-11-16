@@ -10,17 +10,29 @@ export abstract class AMidaAssetPairEventListener {
     // Represents the event handler.
     private readonly _handler: (event: MidaAssetPairEvent) => void;
 
+    // Indicates if the listener is enabled.
+    private _enabled: boolean;
+
     // Represents the captured ticks.
     private readonly _ticks: MidaAssetPairTick[];
 
     protected constructor (assetPair: MidaAssetPair, handler: (event: MidaAssetPairEvent) => void) {
         this._assetPair = assetPair;
         this._handler = handler;
+        this._enabled = true;
         this._ticks = [];
     }
 
     public get assetPair (): MidaAssetPair {
         return this._assetPair;
+    }
+
+    public get enabled (): boolean {
+        return this._enabled;
+    }
+
+    public set enabled (value: boolean) {
+        this._enabled = value;
     }
 
     protected get ticks (): readonly MidaAssetPairTick[] {
@@ -29,7 +41,10 @@ export abstract class AMidaAssetPairEventListener {
 
     public update (tick: MidaAssetPairTick): void {
         this._ticks.push(tick);
-        this.onTick(tick);
+
+        if (this._enabled) {
+            this.onTick(tick);
+        }
     }
 
     protected abstract onTick (tick: MidaAssetPairTick): void;
