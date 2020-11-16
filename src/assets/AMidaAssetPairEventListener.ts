@@ -32,9 +32,9 @@ export abstract class AMidaAssetPairEventListener {
         this.onTick(tick);
     }
 
+    protected abstract onTick (tick: MidaAssetPairTick): void;
+
     protected notifyHandler (event: MidaAssetPairEvent): void {
         this._handler(event);
     }
-
-    protected abstract onTick (tick: MidaAssetPairTick): void;
 }

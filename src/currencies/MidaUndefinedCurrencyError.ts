@@ -6,7 +6,7 @@ export class MidaUndefinedCurrencyError extends MidaError {
     public constructor (iso: string) {
         const normalizedIso: string = iso.toUpperCase();
 
-        super(`Currency ${normalizedIso} is undefined.`);
+        super(`Currency "${normalizedIso}" is undefined.`);
 
         this._iso = normalizedIso;
     }

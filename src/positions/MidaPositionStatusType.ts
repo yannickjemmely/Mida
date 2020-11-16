@@ -1,5 +1,6 @@
 export enum MidaPositionStatusType {
     PENDING_OPEN = "pending-open",
+    CANCELED = "canceled",
     OPEN = "open",
-    CLOSE = "close",
+    CLOSED = "closed",
 }
