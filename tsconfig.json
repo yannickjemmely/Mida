@@ -29,6 +29,9 @@
             "#browser/*": [
                 "src/browser/*"
             ],
+            "#commodities/*": [
+                "src/commodities/*"
+            ],
             "#currencies/*": [
                 "src/currencies/*"
             ],
