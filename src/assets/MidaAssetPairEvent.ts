@@ -1,5 +1,4 @@
 import { AMidaEvent } from "#events/AMidaEvent";
-import { MidaEventDetails } from "#events/MidaEventDetails";
 import { MidaAssetPair } from "#assets/MidaAssetPair";
 import { MidaAssetPairQuotation } from "#assets/MidaAssetPairQuotation";
 
@@ -11,7 +10,7 @@ export class MidaAssetPairEvent extends AMidaEvent {
     // Represents the asset pair quotation when the event occurred.
     private readonly _quotation: MidaAssetPairQuotation;
 
-    public constructor (assetPair: MidaAssetPair, quotation: MidaAssetPairQuotation, type: string, time: Date, details: MidaEventDetails = {}) {
+    public constructor (assetPair: MidaAssetPair, quotation: MidaAssetPairQuotation, type: string, time: Date, details: any = {}) {
         super(type, time, details);
 
         this._assetPair = assetPair;

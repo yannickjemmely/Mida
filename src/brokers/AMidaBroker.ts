@@ -9,7 +9,11 @@ export abstract class AMidaBroker {
         this._name = name;
     }
 
+    public get name (): string {
+        return this._name;
+    }
+
     public abstract async isAlive (): Promise<boolean>;
 
-    public abstract async login (account: { [name: string]: any; }): Promise<AMidaBrokerAccount>;
+    public abstract async login (account: any): Promise<AMidaBrokerAccount>;
 }

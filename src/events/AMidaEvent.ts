@@ -1,5 +1,3 @@
-import { MidaEventDetails } from "#events/MidaEventDetails";
-
 // Represents an event.
 export abstract class AMidaEvent {
     // Represents the event type.
@@ -9,9 +7,9 @@ export abstract class AMidaEvent {
     private readonly _time: Date;
 
     // Represents the event details.
-    private readonly _details: MidaEventDetails;
+    private readonly _details: any;
 
-    protected constructor (type: string, time: Date, details: MidaEventDetails = {}) {
+    protected constructor (type: string, time: Date, details: any = {}) {
         this._type = type;
         this._time = new Date(time);
         this._details = { ...details, };
@@ -25,7 +23,7 @@ export abstract class AMidaEvent {
         return new Date(this._time);
     }
 
-    public get details (): MidaEventDetails {
+    public get details (): any {
         return { ...this._details, };
     }
 }
