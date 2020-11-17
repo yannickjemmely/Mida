@@ -236,31 +236,6 @@ export module MidaAnalysis {
         return swingPoints;
     }
 
-    export function calcCharges (quotations: MidaForexPairExchangeRate[], type: MidaChargeType): MidaCharge[] {
-        const charges: MidaCharge[] = [];
-
-        for (let i: number = 0, length: number = quotations.length - 1; i < length; ++i) {
-            const chargeQuotations: MidaForexPairExchangeRate[] = [];
-
-            while (
-                quotations[i + 1] && (
-                    (type === MidaChargeType.BEARISH && quotations[i + 1].bid < quotations[i].bid) ||
-                    (type === MidaChargeType.BULLISH && quotations[i + 1].bid > quotations[i].bid)
-                )
-            ) {
-                chargeQuotations.push(quotations[i + 1]);
-
-                ++i;
-            }
-
-            if (chargeQuotations.length > 1) {
-                charges.push(new MidaCharge(chargeQuotations, type));
-            }
-        }
-
-        return charges;
-    }
-
     export function calcChargesDirection (charges: MidaCharge[]): number {
         let direction: number = 0;
 

@@ -1,21 +1,20 @@
 import { MidaChargeType } from "#analysis/charge/MidaChargeType";
-import { MidaForexPairExchangeRate } from "#forex/MidaForexPairExchangeRate";
+import { MidaAssetPairQuotation  } from "#assets/MidaAssetPairQuotation";
 
 // Represents a charge.
 export class MidaCharge {
     // Represents the charge quotations.
-    private readonly _quotations: MidaForexPairExchangeRate[];
+    private readonly _quotations: MidaAssetPairQuotation[];
 
     // Represents the charge type.
-    // A charge may be bullish or bearish, the type indicates the quotations direction.
     private readonly _type: MidaChargeType;
 
-    public constructor (quotations: MidaForexPairExchangeRate[], type: MidaChargeType) {
+    public constructor (quotations: MidaAssetPairQuotation[], type: MidaChargeType) {
         this._quotations = quotations;
         this._type = type;
     }
 
-    public get quotations (): readonly MidaForexPairExchangeRate[] {
+    public get quotations (): readonly MidaAssetPairQuotation[] {
         return this._quotations;
     }
 
@@ -33,5 +32,36 @@ export class MidaCharge {
 
     public get length (): number {
         return this._quotations.length;
+    }
+
+    /*
+     **
+     *** Static Utilities
+     **
+    */
+
+    public static fromQuotations (quotations: MidaAssetPairQuotation[], type: MidaChargeType): MidaCharge[] {
+        const charges: MidaCharge[] = [];
+
+        for (let i: number = 0, length: number = quotations.length - 1; i < length; ++i) {
+            const chargeQuotations: MidaAssetPairQuotation[] = [];
+
+            while (
+                quotations[i + 1] && (
+                    (type === MidaChargeType.BEARISH && quotations[i + 1].bid < quotations[i].bid) ||
+                    (type === MidaChargeType.BULLISH && quotations[i + 1].bid > quotations[i].bid)
+                )
+            ) {
+                chargeQuotations.push(quotations[i + 1]);
+
+                ++i;
+            }
+
+            if (chargeQuotations.length > 0) {
+                charges.push(new MidaCharge(chargeQuotations, type));
+            }
+        }
+
+        return charges;
     }
 }

@@ -47,4 +47,24 @@ export class MidaAssetPairTick implements IMidaEquatable, IMidaClonable<MidaAsse
     public clone (): MidaAssetPairTick {
         return new MidaAssetPairTick(this._quotation.clone(), new Date(this._time));
     }
+
+    /*
+     **
+     *** Static Utilities
+     **
+    */
+
+    public static getTicksInTimeRange (ticks: MidaAssetPairTick[], fromTime: Date, toTime: Date): MidaAssetPairTick[] {
+        const ticksInTimeRange: MidaAssetPairTick[] = [];
+        
+        for (const tick of ticks) {
+            const time: Date = tick.time;
+
+            if (time >= fromTime && time <= toTime) {
+                ticksInTimeRange.push(tick);
+            }
+        }
+
+        return ticksInTimeRange;
+    }
 }
