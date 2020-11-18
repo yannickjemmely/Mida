@@ -9,7 +9,7 @@ with your servers though `HTTP`, `WebSocket` or anything you consider adapt.
 
 ## What do we need to do?
 For making your broker available in this framework you need to implement 3 abstract classes,
-`AMidaBroker`, `AMidaBrokerAccount` and `AMidaPosition`.
+`MidaBroker`, `MidaBrokerAccount` and `MidaPosition`.
 
 You decide the method of authentication and communication with your servers inside the classes implementation.
 The only requirement is to implement the classes above and their methods with their relative signatures

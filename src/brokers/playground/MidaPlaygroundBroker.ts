@@ -4,7 +4,7 @@ import {MidaForexPairExchangeRate} from "#forex/MidaForexPairExchangeRate";
 import {MidaPositionDirectionType} from "#position/MidaPositionType";
 import {MidaPositionSet} from "#position/MidaPositionSet";
 import {MidaPositionStatusType} from "#position/MidaPositionStatusType";
-import {MidaProtectedObservable} from "#utilities/observable/AMidaObservable";
+import {MidaProtectedObservable} from "#utilities/observable/MidaObservable";
 import {MidaForexPair} from "#forex/MidaForexPair";
 import {MidaAssetPeriod} from "#forex/MidaAssetPeriod";
 import {MidaForexPairPeriodType} from "#forex/MidaForexPairPeriodType";

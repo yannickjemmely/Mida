@@ -3,7 +3,7 @@ import { MidaAssetPairEvent } from "#assets/MidaAssetPairEvent";
 import { MidaAssetPairTick } from "#assets/MidaAssetPairTick";
 
 // Represents an asset pair event listener.
-export abstract class AMidaAssetPairEventListener {
+export abstract class MidaAssetPairEventListener {
     // Represents the event listener asset pair.
     private readonly _assetPair: MidaAssetPair;
 

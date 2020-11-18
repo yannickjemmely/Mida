@@ -23,15 +23,16 @@ npm install midafx
 
 ## Examples
 
-## Broker Authentication
+## Opening Positions
+Opening a long position for Bitcoin against USD.
 ```typescript
 async function buyBitcoin () {
-    const myAccount: AMidaBrokerAccount = await MidaBrokers.login("BDSwiss", {
-        email: "foo@bar.com",
-        password: "*********",
+    const myAccount: MidaBrokerAccount = await MidaBrokers.login("BDSwiss", {
+        id: "123456789",
+        password: "",
     });
 
-    const myPosition: AMidaPosition = await myAccount.openPosition({
+    const myPosition: MidaPosition = await myAccount.openPosition({
         symbol: "BTCUSD",
         type: MidaPositionType.LONG,
         lots: 1,
@@ -41,14 +42,15 @@ async function buyBitcoin () {
 }
 ```
 
+Opening a short position for Gold against EUR, with a stop loss and take profit.
 ```typescript
 async function sellGold () {
-    const myAccount: AMidaBrokerAccount = await MidaBrokers.login("BDSwiss", {
-        email: "foo@bar.com",
-        password: "*********",
+    const myAccount: MidaBrokerAccount = await MidaBrokers.login("BDSwiss", {
+        id: "123456789",
+        password: "",
     });
 
-    const myPosition: AMidaPosition = await myAccount.openPosition({
+    const myPosition: MidaPosition = await myAccount.openPosition({
         symbol: "XAUEUR",
         type: MidaPositionType.SHORT,
         lots: 1,

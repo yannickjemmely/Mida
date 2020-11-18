@@ -1,5 +1,5 @@
 // Represents an event.
-export abstract class AMidaEvent {
+export abstract class MidaEvent {
     // Represents the event type.
     private readonly _type: string;
 

@@ -1,7 +1,7 @@
-import { AMidaBrokerAccount } from "#brokers/AMidaBrokerAccount";
+import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 
 // Represents a broker.
-export abstract class AMidaBroker {
+export abstract class MidaBroker {
     // Represents the broker name.
     private readonly _name: string;
 
@@ -13,5 +13,5 @@ export abstract class AMidaBroker {
         return this._name;
     }
 
-    public abstract async login (account: any): Promise<AMidaBrokerAccount>;
+    public abstract async login (account: any): Promise<MidaBrokerAccount>;
 }

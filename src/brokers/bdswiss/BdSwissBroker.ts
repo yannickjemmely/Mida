@@ -1,4 +1,4 @@
-import { AMidaBroker } from "#brokers/AMidaBroker";
+import { MidaBroker } from "#brokers/MidaBroker";
 import { MidaBrokerAccountType } from "#brokers/MidaBrokerAccountType";
 import { MidaBrokerEventType } from "#brokers/MidaBrokerEventType";
 import { IMidaBrowser } from "#browser/IMidaBrowser";
@@ -15,9 +15,9 @@ import { MidaPosition, generatePositionUuid } from "#position/MidaPosition";
 import { MidaPositionDirectives } from "#position/MidaPositionDirectives";
 import { MidaPositionSet } from "#position/MidaPositionSet";
 import { MidaPositionStatusType } from "#position/MidaPositionStatusType";
-import { MidaProtectedObservable } from "#utilities/observable/AMidaObservable";
+import { MidaProtectedObservable } from "#utilities/observable/MidaObservable";
 
-export class BdSwissBroker extends AMidaBroker {
+export class BdSwissBroker extends MidaBroker {
     // Represents the broker name.
     public static readonly NAME: string = "BDSwiss";
 

@@ -2,13 +2,13 @@ import { MidaAssetPair } from "#assets/MidaAssetPair";
 import { MidaAssetPairPeriod } from "#assets/MidaAssetPairPeriod";
 import { MidaAssetPairPeriodType } from "#assets/MidaAssetPairPeriodType";
 import { MidaAssetPairQuotation } from "#assets/MidaAssetPairQuotation";
-import { AMidaBroker } from "#brokers/AMidaBroker";
+import { MidaBroker } from "#brokers/MidaBroker";
 import { MidaBrokerAccountType } from "#brokers/MidaBrokerAccountType";
-import { AMidaPosition } from "#positions/AMidaPosition";
+import { MidaPosition } from "#positions/MidaPosition";
 import { MidaPositionStatusType } from "#positions/MidaPositionStatusType";
 
 // Represents the account of a broker.
-export abstract class AMidaBrokerAccount {
+export abstract class MidaBrokerAccount {
     // Represents the account id.
     private readonly _id: string;
 
@@ -19,9 +19,9 @@ export abstract class AMidaBrokerAccount {
     private readonly _type: MidaBrokerAccountType;
 
     // Represents the account broker.
-    private readonly _broker: AMidaBroker;
+    private readonly _broker: MidaBroker;
 
-    protected constructor (id: string, name: string, type: MidaBrokerAccountType, broker: AMidaBroker) {
+    protected constructor (id: string, name: string, type: MidaBrokerAccountType, broker: MidaBroker) {
         this._id = id;
         this._name = name;
         this._type = type;
@@ -40,7 +40,7 @@ export abstract class AMidaBrokerAccount {
         return this._type;
     }
 
-    public get broker (): AMidaBroker {
+    public get broker (): MidaBroker {
         return this._broker;
     }
 
@@ -54,9 +54,9 @@ export abstract class AMidaBrokerAccount {
 
     public abstract async getFreeMargin (): Promise<number>;
 
-    public abstract async openPosition (): Promise<AMidaPosition>;
+    public abstract async openPosition (): Promise<MidaPosition>;
 
-    public abstract async getPositions (): Promise<AMidaPosition[]>;
+    public abstract async getPositions (): Promise<MidaPosition[]>;
 
     public abstract async supportsMarket (symbol: string): Promise<boolean>;
 
@@ -68,11 +68,11 @@ export abstract class AMidaBrokerAccount {
 
     public abstract async getSymbolPeriods (symbol: string, type: MidaAssetPairPeriodType | number): Promise<MidaAssetPairPeriod[]>;
 
-    public async getOpenPositions (): Promise<AMidaPosition[]> {
-        const positions: AMidaPosition[] = await this.getPositions();
-        const openPositions: AMidaPosition[] = [];
+    public async getOpenPositions (): Promise<MidaPosition[]> {
+        const positions: MidaPosition[] = await this.getPositions();
+        const openPositions: MidaPosition[] = [];
 
-        await Promise.all(positions.map(async (position: AMidaPosition): Promise<void> => {
+        await Promise.all(positions.map(async (position: MidaPosition): Promise<void> => {
             const status: MidaPositionStatusType = await position.getStatus();
 
             if (status === MidaPositionStatusType.OPEN) {

@@ -1,11 +1,11 @@
 import { MidaAssetPair } from "#assets/MidaAssetPair";
-import { AMidaBrokerAccount } from "#brokers/AMidaBrokerAccount";
+import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 import { MidaCurrency } from "#currencies/MidaCurrency";
 import { MidaPositionStatusType } from "#positions/MidaPositionStatusType";
 import { MidaPositionType } from "#positions/MidaPositionType";
 
 // Represents a position.
-export abstract class AMidaPosition {
+export abstract class MidaPosition {
     // Represents the position id.
     private readonly _id: string;
 
@@ -19,9 +19,9 @@ export abstract class AMidaPosition {
     private readonly _lots: number;
 
     // Represents the position account.
-    private readonly _account: AMidaBrokerAccount;
+    private readonly _account: MidaBrokerAccount;
 
-    protected constructor (id: string, assetPair: MidaAssetPair, type: MidaPositionType, lots: number, account: AMidaBrokerAccount) {
+    protected constructor (id: string, assetPair: MidaAssetPair, type: MidaPositionType, lots: number, account: MidaBrokerAccount) {
         this._id = id;
         this._assetPair = assetPair;
         this._type = type;
@@ -45,7 +45,7 @@ export abstract class AMidaPosition {
         return this._lots;
     }
 
-    public get account (): AMidaBrokerAccount {
+    public get account (): MidaBrokerAccount {
         return this._account;
     }
 

@@ -1,23 +1,23 @@
 import { MidaAdvisorEventType } from "#advisors/MidaAdvisorEventType";
 import { MidaAdvisorOptions } from "#advisors/MidaAdvisorOptions";
-import { AMidaPosition } from "#positions/AMidaPosition";
+import { MidaPosition } from "#positions/MidaPosition";
 import { MidaPositionDirectives } from "#positions/MidaPositionDirectives";
-import { AMidaBrokerAccount } from "#brokers/AMidaBrokerAccount";
+import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 import { MidaAssetPair } from "#assets/MidaAssetPair";
 import { MidaAssetPairTick } from "#assets/MidaAssetPairTick";
 
-export abstract class AMidaAdvisor {
+export abstract class MidaAdvisor {
     // Represents the advisor options.
     private readonly _options: MidaAdvisorOptions;
 
     // Represents the broker account used to operate.
-    private readonly _brokerAccount: AMidaBrokerAccount;
+    private readonly _brokerAccount: MidaBrokerAccount;
 
     // Represents the operated asset pair.
     private readonly _assetPair: MidaAssetPair;
 
     // Represents the created positions.
-    private readonly _positions: AMidaPosition[];
+    private readonly _positions: MidaPosition[];
 
     // Indicates if the advisor is operative.
     private _operative: boolean;
@@ -52,7 +52,7 @@ export abstract class AMidaAdvisor {
         return this._options;
     }
 
-    public get brokerAccount (): AMidaBrokerAccount {
+    public get brokerAccount (): MidaBrokerAccount {
         return this._brokerAccount;
     }
 
@@ -64,7 +64,7 @@ export abstract class AMidaAdvisor {
         return this._operative;
     }
 
-    public get positions (): readonly AMidaPosition[] {
+    public get positions (): readonly MidaPosition[] {
         return this._positions;
     }
 

@@ -1,6 +1,6 @@
 import { v1 as generateUuidV1 } from "uuid";
 
-export abstract class AMidaObservable<T extends string> {
+export abstract class MidaObservable<T extends string> {
     // Represents a set of events listeners.
     private readonly _listeners: {
         [eventType: string]: {
@@ -45,7 +45,7 @@ export abstract class AMidaObservable<T extends string> {
     }
 }
 
-export class MidaProtectedObservable<T extends string> extends AMidaObservable<T> {
+export class MidaProtectedObservable<T extends string> extends MidaObservable<T> {
     public constructor () {
         super();
     }

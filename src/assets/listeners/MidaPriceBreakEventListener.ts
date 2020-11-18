@@ -1,10 +1,10 @@
-import { AMidaAssetPairEventListener } from "#assets/AMidaAssetPairEventListener";
+import { MidaAssetPairEventListener } from "#assets/MidaAssetPairEventListener";
 import { MidaAssetPair } from "#assets/MidaAssetPair";
 import { MidaAssetPairEvent } from "#assets/MidaAssetPairEvent";
 import { MidaAssetPairTick } from "#assets/MidaAssetPairTick";
 
 // Represents the listener of an asset pair quotation price break.
-export class MidaPriceBreakEventListener extends AMidaAssetPairEventListener {
+export class MidaPriceBreakEventListener extends MidaAssetPairEventListener {
     // Represents the price to break.
     private readonly _priceToBreak: number;
 

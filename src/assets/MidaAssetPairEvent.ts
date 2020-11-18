@@ -1,9 +1,9 @@
-import { AMidaEvent } from "#events/AMidaEvent";
+import { MidaEvent } from "#events/MidaEvent";
 import { MidaAssetPair } from "#assets/MidaAssetPair";
 import { MidaAssetPairQuotation } from "#assets/MidaAssetPairQuotation";
 
 // Represents an asset pair event.
-export class MidaAssetPairEvent extends AMidaEvent {
+export class MidaAssetPairEvent extends MidaEvent {
     // Represents the event asset pair.
     private readonly _assetPair: MidaAssetPair;
 
