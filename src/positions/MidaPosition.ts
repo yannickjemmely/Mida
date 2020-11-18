@@ -21,12 +21,16 @@ export abstract class MidaPosition {
     // Represents the position account.
     private readonly _account: MidaBrokerAccount;
 
-    protected constructor (id: string, assetPair: MidaAssetPair, type: MidaPositionType, lots: number, account: MidaBrokerAccount) {
+    // Represents the position tags.
+    private readonly _tags: Set<string>;
+
+    protected constructor (id: string, assetPair: MidaAssetPair, type: MidaPositionType, lots: number, account: MidaBrokerAccount, tags: string[] = []) {
         this._id = id;
         this._assetPair = assetPair;
         this._type = type;
         this._lots = lots;
         this._account = account;
+        this._tags = new Set<string>(tags);
     }
 
     public get id (): string {
@@ -47,6 +51,10 @@ export abstract class MidaPosition {
 
     public get account (): MidaBrokerAccount {
         return this._account;
+    }
+
+    public get tags (): readonly string[] {
+        return [ ...this._tags, ];
     }
 
     public get symbol (): string {
@@ -102,6 +110,18 @@ export abstract class MidaPosition {
     public abstract async cancel (): Promise<void>;
     
     public abstract async close (): Promise<void>;
+
+    public addTag (tag: string): void {
+        this._tags.add(tag);
+    }
+
+    public hasTag (tag: string): boolean {
+        return this._tags.has(tag);
+    }
+
+    public removeTag (tag: string): void {
+        this._tags.delete(tag);
+    }
 
     public async isMarketOpen (): Promise<boolean> {
         return this._account.isMarketOpen(this.symbol);
