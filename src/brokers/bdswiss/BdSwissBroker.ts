@@ -1,6 +1,6 @@
-import { AMidaBroker } from "#broker/AMidaBroker";
-import { MidaBrokerAccountType } from "#broker/MidaBrokerAccountType";
-import { MidaBrokerEventType } from "#broker/MidaBrokerEventType";
+import { AMidaBroker } from "#brokers/AMidaBroker";
+import { MidaBrokerAccountType } from "#brokers/MidaBrokerAccountType";
+import { MidaBrokerEventType } from "#brokers/MidaBrokerEventType";
 import { IMidaBrowser } from "#browser/IMidaBrowser";
 import { IMidaBrowserTab } from "#browser/IMidaBrowserTab";
 import { ChromiumBrowser } from "#browser/ChromiumBrowser";
@@ -17,7 +17,7 @@ import { MidaPositionSet } from "#position/MidaPositionSet";
 import { MidaPositionStatusType } from "#position/MidaPositionStatusType";
 import { MidaProtectedObservable } from "#utilities/observable/AMidaObservable";
 
-export class BDSwissBroker extends AMidaBroker {
+export class BdSwissBroker extends AMidaBroker {
     // Represents the broker name.
     public static readonly NAME: string = "BDSwiss";
 
@@ -28,13 +28,7 @@ export class BDSwissBroker extends AMidaBroker {
     private _browserTabs: {
         [name: string]: IMidaBrowserTab;
     };
-
-    // Represents the meta of the logged in account.
-    private _account: any;
-
-    // Represents the account type.
-    private _accountType: MidaBrokerAccountType;
-
+    
     // Indicates if an account is logged in.
     private _isLoggedIn: boolean;
 
@@ -49,7 +43,7 @@ export class BDSwissBroker extends AMidaBroker {
 
     // Represents the last ticks.
     private readonly _lastTicks: {
-        [forexPairID: string]: MidaForexPairExchangeRate;
+        [symbol: string]: MidaForexPairExchangeRate;
     };
 
     // Indicates if the periods of a forex pair are being requested.
@@ -63,8 +57,6 @@ export class BDSwissBroker extends AMidaBroker {
 
         this._browser = new ChromiumBrowser();
         this._browserTabs = {};
-        this._account = null;
-        this._accountType = MidaBrokerAccountType.ANONYMOUS;
         this._isLoggedIn = false;
         this._positions = new MidaPositionSet();
         this._forexPairTickListeners = new MidaProtectedObservable();
@@ -87,7 +79,7 @@ export class BDSwissBroker extends AMidaBroker {
     }
 
     public get name (): string {
-        return BDSwissBroker.NAME;
+        return BdSwissBroker.NAME;
     }
 
     public async login (account: any): Promise<void> {

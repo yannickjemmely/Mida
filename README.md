@@ -11,6 +11,11 @@ Through MidaFX you can:
 - Execute, test and automate investment and trading strategies by implementing custom expert advisors;
 - Backtest and access time series covering the last decades.
 
+## Supported Brokers
+At this time the following brokers are supported through official and unofficial integrations.
+
+- BDSwiss
+
 ## Installation
 ```console
 npm install midafx

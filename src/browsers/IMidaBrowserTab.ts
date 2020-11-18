@@ -1,7 +1,7 @@
-import { IMidaBrowser } from "#browser/IMidaBrowser";
+import { IMidaBrowser } from "#browsers/IMidaBrowser";
 import { MidaHTTPResponse } from "#utilities/http/MidaHTTPResponse";
 
-// Represents a browser tab (used by Mida to load and manipulate webpages).
+// Represents a browser tab (used to load and manipulate webpages).
 export interface IMidaBrowserTab {
     // Represents the browser that created the window.
     readonly browser: IMidaBrowser;

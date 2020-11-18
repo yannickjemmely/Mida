@@ -1,4 +1,4 @@
-import { IMidaBrowserTab } from "#browser/IMidaBrowserTab";
+import { IMidaBrowserTab } from "#browsers/IMidaBrowserTab";
 
 // Represents a web browser.
 export interface IMidaBrowser {

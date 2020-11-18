@@ -1,7 +1,7 @@
 import * as Puppeteer from "puppeteer";
-import { IMidaBrowser } from "#browser/IMidaBrowser";
-import { IMidaBrowserTab } from "#browser/IMidaBrowserTab";
-import { ChromiumBrowser } from "#browser/ChromiumBrowser";
+import { IMidaBrowser } from "#browsers/IMidaBrowser";
+import { IMidaBrowserTab } from "#browsers/IMidaBrowserTab";
+import { ChromiumBrowser } from "#browsers/chromium/ChromiumBrowser";
 import { MidaHTTPResponse } from "#utilities/http/MidaHTTPResponse";
 
 export class ChromiumBrowserTab implements IMidaBrowserTab {

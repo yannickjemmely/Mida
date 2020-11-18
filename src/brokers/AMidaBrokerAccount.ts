@@ -44,8 +44,6 @@ export abstract class AMidaBrokerAccount {
         return this._broker;
     }
 
-    public abstract async isAlive (): Promise<boolean>;
-
     public abstract async getBalance (): Promise<number>;
 
     public abstract async getEquity (): Promise<number>;

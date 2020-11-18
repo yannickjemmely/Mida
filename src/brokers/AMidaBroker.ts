@@ -13,7 +13,5 @@ export abstract class AMidaBroker {
         return this._name;
     }
 
-    public abstract async isAlive (): Promise<boolean>;
-
     public abstract async login (account: any): Promise<AMidaBrokerAccount>;
 }

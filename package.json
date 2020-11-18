@@ -2,7 +2,6 @@
     "name": "midafx",
     "version": "1.0.0",
     "description": "",
-    "private": true,
     "scripts": {
         "lint": "tslint --project .",
         "build": "npm run lint && tsc",
@@ -11,7 +10,6 @@
     "dependencies": {
         "module-alias": "2.2.2",
         "puppeteer": "2.1.1",
-        "uuid": "8.0.0",
         "axios": "0.19.2",
         "tulind": "0.8.18"
     },
@@ -29,7 +27,7 @@
         "#analysis": "build/src/analysis",
         "#assets": "build/src/assets",
         "#brokers": "build/src/brokers",
-        "#browser": "build/src/browser",
+        "#browsers": "build/src/browsers",
         "#commodities": "build/src/commodities",
         "#currencies": "build/src/currencies",
         "#errors": "build/src/errors",

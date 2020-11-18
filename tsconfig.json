@@ -26,8 +26,8 @@
             "#brokers/*": [
                 "src/brokers/*"
             ],
-            "#browser/*": [
-                "src/browser/*"
+            "#browsers/*": [
+                "src/browsers/*"
             ],
             "#commodities/*": [
                 "src/commodities/*"
