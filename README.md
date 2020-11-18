@@ -21,5 +21,44 @@ At this time the following brokers are supported through official and unofficial
 npm install midafx
 ```
 
+## Examples
+
+## Broker Authentication
+```typescript
+async function buyBitcoin () {
+    const myAccount: AMidaBrokerAccount = await MidaBrokers.login("BDSwiss", {
+        email: "foo@bar.com",
+        password: "*********",
+    });
+
+    const myPosition: AMidaPosition = await myAccount.openPosition({
+        symbol: "BTCUSD",
+        type: MidaPositionType.LONG,
+        lots: 1,
+    });
+    
+    console.log(await myFirstTrade.getOpenPrice());
+}
+```
+
+```typescript
+async function sellGold () {
+    const myAccount: AMidaBrokerAccount = await MidaBrokers.login("BDSwiss", {
+        email: "foo@bar.com",
+        password: "*********",
+    });
+
+    const myPosition: AMidaPosition = await myAccount.openPosition({
+        symbol: "XAUEUR",
+        type: MidaPositionType.SHORT,
+        lots: 1,
+        stopLoss: 1610.00,
+        takeProfit: 1587.00,
+    });
+    
+    console.log(await myFirstTrade.getOpenPrice());
+}
+```
+
 ## Contributors
 The author and maintainer of the project is [Vasile Pește](https://github.com/Vasile-Peste).
