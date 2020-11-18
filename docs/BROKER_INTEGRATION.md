@@ -1,8 +1,8 @@
-# How to integrate a Broker
+# How to integrate a broker
 MidaFX offers dedicated interfaces for integrating your broker organization in this framework
 and make it available to all its users.
 
-## Do I need to offer a specific back-end API?
+## Do I need to implement a specific back-end API?
 No, MidaFX is not requiring brokers to offer any specific backend API.
 For integrating your broker you can just use your actual API. You can communicate
 with your servers though `HTTP`, `WebSocket` or anything you consider adapt.

@@ -1,56 +1,43 @@
-import { v1 as generateUuidV1 } from "uuid";
+import { v1 as uuidV1 } from "uuid";
+import { MidaEvent } from "#events/MidaEvent";
 
-export abstract class MidaObservable<T extends string> {
-    // Represents a set of events listeners.
-    private readonly _listeners: {
-        [eventType: string]: {
-            [listenerUuid: string]: (...parameters: any[]) => void;
-        };
-    };
+export class MidaObservable {
+    // Represents the event listeners.
+    private readonly _listeners: Map<string, Map<string, (event: MidaEvent) => void>>;
 
     protected constructor () {
-        this._listeners = {};
+        this._listeners = new Map();
     }
 
-    public addEventListener (eventType: T, listener: (...parameters: any[]) => void): string {
-        const eventListeners: any = this._listeners[eventType] || {};
-        const uuid: string = generateUuidV1();
+    public addEventListener (type: string, listener: (event: MidaEvent) => void): string {
+        const eventListeners: any = this._listeners.get(type) || new Map();
+        const uuid: string = uuidV1();
 
-        eventListeners[uuid] = listener;
-        this._listeners[eventType] = eventListeners;
+        eventListeners.set(uuid, listener);
+        this._listeners.set(type, eventListeners);
 
         return uuid;
     }
 
-    public removeEventListener (uuid: string): boolean {
-        for (const eventType in this._listeners) {
-            if (this._listeners[eventType].hasOwnProperty(uuid)) {
-                delete this._listeners[eventType][uuid];
+    public removeEventListener (uuid: string): void {/*
+        for (const event in this._listeners) {
+            if (this._listeners[event].hasOwnProperty(uuid)) {
+                delete this._listeners[event][uuid];
 
-                if (Object.keys(this._listeners[eventType]).length === 0) {
-                    delete this._listeners[eventType];
+                if (Object.keys(this._listeners[event]).length === 0) {
+                    delete this._listeners[event];
                 }
 
                 return true;
             }
         }
 
-        return false;
+        return false;*/
     }
 
-    protected notifyEvent (eventType: T, ...parameters: any[]): void {
+    public notifyEvent (eventType: string, event: MidaEvent): void {/*
         for (const uuid in this._listeners[eventType]) {
             this._listeners[eventType][uuid](...parameters);
-        }
-    }
-}
-
-export class MidaProtectedObservable<T extends string> extends MidaObservable<T> {
-    public constructor () {
-        super();
-    }
-
-    public notifyEvent (eventType: T, ...parameters: any[]): void {
-        super.notifyEvent(eventType, ...parameters);
+        }*/
     }
 }
