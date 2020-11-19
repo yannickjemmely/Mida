@@ -62,5 +62,29 @@ async function sellGold () {
 }
 ```
 
+Opening a long position for Apple stock, with a tick handler (called each time there is a new tick).
+```typescript
+async function buyAppleShares () {
+    const myAccount: MidaBrokerAccount = await MidaBrokers.login("BDSwiss", {
+        id: "123456789",
+        password: "",
+    });
+
+    const myPosition: MidaPosition = await myAccount.openPosition({
+        symbol: "#AAPL",
+        type: MidaPositionType.LONG,
+        lots: 3,
+        handlers: {
+            tick: async (position: MidaPosition, tick: MidaAssetPairTick) => {
+                // Print the position profit each time there is a movement in the market.
+                console.log(await position.getProfit());
+            },
+        },
+    });
+    
+    console.log(await myFirstTrade.getOpenPrice());
+}
+```
+
 ## Contributors
 The author and maintainer of the project is [Vasile Pește](https://github.com/Vasile-Peste).
