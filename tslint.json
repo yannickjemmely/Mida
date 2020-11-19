@@ -7,7 +7,6 @@
         "deprecation": true,
         "encoding": true,
         "eofline": true,
-        "file-name-casing": [ true, "pascal-case" ],
         "interface-name": [ true, "always-prefix" ],
         "max-classes-per-file": [ true, 10 ],
         "member-access": true,

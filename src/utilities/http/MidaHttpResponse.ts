@@ -1,5 +1,5 @@
 // Represents an HTTP response.
-export type MidaHTTPResponse = {
+export type MidaHttpResponse = {
     // Represents the response status.
     status: number;
 

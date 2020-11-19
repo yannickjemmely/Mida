@@ -1,62 +1,6 @@
 require("module-alias/register");
 //require("#/MidaFX");
 
-import { MidaAsset } from "#assets/MidaAsset";
-import { MidaAssetPairPeriod } from "#assets/MidaAssetPairPeriod";
-import { MidaAssetPairQuotation } from "#assets/MidaAssetPairQuotation";
-import { MidaAssetPairPeriodType } from "#assets/MidaAssetPairPeriodType";
-
-const asset: MidaAsset = new MidaAsset("NGAS");
-
-const periods: any = MidaAssetPairPeriod.fromQuotations([
-        new MidaAssetPairQuotation(
-            asset,
-            new Date("2020-11-08T20:07:02.000Z"),
-            0,
-            0,
-        ),
-        new MidaAssetPairQuotation(
-            asset,
-            new Date("2020-11-08T20:07:03.000Z"),
-            0,
-            0,
-        ),
-        new MidaAssetPairQuotation(
-            asset,
-            new Date("2020-11-08T20:07:08.000Z"),
-            0,
-            0,
-        ),
-            new MidaAssetPairQuotation(
-                asset,
-                new Date("2020-11-08T20:20:08.000Z"),
-                0,
-                0,
-            ),
-            new MidaAssetPairQuotation(
-                asset,
-                new Date("2020-11-08T20:22:08.000Z"),
-                0,
-                0,
-            ),
-            new MidaAssetPairQuotation(
-                asset,
-                new Date("2020-11-08T20:36:08.000Z"),
-                0,
-                0,
-            ),
-            new MidaAssetPairQuotation(
-                asset,
-                new Date("2020-11-08T21:07:08.000Z"),
-                0,
-                0,
-            ),
-],
-    new Date("2020-11-08T20:00:00.000Z"),
-    MidaAssetPairPeriodType.W1);
-
-console.log(periods.length);
-
 /*
 const fs: any = require("fs");
 const path: string = "series/EURUSD/ticks/2019/01.csv";

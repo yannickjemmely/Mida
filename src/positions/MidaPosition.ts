@@ -30,7 +30,7 @@ export abstract class MidaPosition {
         this._type = type;
         this._lots = lots;
         this._account = account;
-        this._tags = new Set<string>(tags);
+        this._tags = new Set(tags);
     }
 
     public get id (): string {

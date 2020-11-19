@@ -2,7 +2,7 @@ import * as Puppeteer from "puppeteer";
 import { IMidaBrowser } from "#browsers/IMidaBrowser";
 import { IMidaBrowserTab } from "#browsers/IMidaBrowserTab";
 import { ChromiumBrowser } from "#browsers/chromium/ChromiumBrowser";
-import { MidaHTTPResponse } from "#utilities/http/MidaHTTPResponse";
+import { MidaHttpResponse } from "#utilities/http/MidaHttpResponse";
 
 export class ChromiumBrowserTab implements IMidaBrowserTab {
     private readonly _chromiumBrowser: ChromiumBrowser;
@@ -26,7 +26,7 @@ export class ChromiumBrowserTab implements IMidaBrowserTab {
         return this._puppeteerPage.setUserAgent(userAgent);
     }
 
-    public async goto (uri: string): Promise<MidaHTTPResponse> {
+    public async goto (uri: string): Promise<MidaHttpResponse> {
         const response: Puppeteer.Response | null = await this._puppeteerPage.goto(uri, {
             timeout: 60000 * 2,
         });

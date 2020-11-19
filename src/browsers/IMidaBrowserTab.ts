@@ -1,5 +1,5 @@
 import { IMidaBrowser } from "#browsers/IMidaBrowser";
-import { MidaHTTPResponse } from "#utilities/http/MidaHTTPResponse";
+import { MidaHttpResponse } from "#utilities/http/MidaHttpResponse";
 
 // Represents a browser tab (used to load and manipulate webpages).
 export interface IMidaBrowserTab {
@@ -10,7 +10,7 @@ export interface IMidaBrowserTab {
     setUserAgent (userAgent: string): Promise<void>;
 
     // Used to request and load a webpage.
-    goto (uri: string): Promise<MidaHTTPResponse>;
+    goto (uri: string): Promise<MidaHttpResponse>;
 
     // Used to evaluate JavaScript code in the current document.
     evaluate (text: string): Promise<any>;
