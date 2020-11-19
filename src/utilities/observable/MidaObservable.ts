@@ -5,7 +5,7 @@ export class MidaObservable {
     // Represents the event listeners.
     private readonly _listeners: Map<string, Map<string, (event: MidaEvent) => void>>;
 
-    protected constructor () {
+    public constructor () {
         this._listeners = new Map();
     }
 
@@ -35,7 +35,7 @@ export class MidaObservable {
         return false;*/
     }
 
-    public notifyEvent (eventType: string, event: MidaEvent): void {/*
+    public notifyEvent (type: string, event: MidaEvent): void {/*
         for (const uuid in this._listeners[eventType]) {
             this._listeners[eventType][uuid](...parameters);
         }*/
