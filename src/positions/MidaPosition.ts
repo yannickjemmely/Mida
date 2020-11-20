@@ -3,6 +3,15 @@ import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 import { MidaCurrency } from "#currencies/MidaCurrency";
 import { MidaPositionStatusType } from "#positions/MidaPositionStatusType";
 import { MidaPositionType } from "#positions/MidaPositionType";
+import { MidaObservable } from "#utilities/observable/MidaObservable";
+import { MidaEvent } from "#events/MidaEvent";
+
+// Note: an implementation to be considered valid must:
+// 1. Have each method implemented with the expected results as output.
+// 2. Have each method with an average response time of at least 5500ms.
+// 3. Support the following events: "cancel", "open", "tick" and "close".
+
+// Implementations are free to add new events and events as long they are mentioned/documented for its users.
 
 // Represents a position.
 export abstract class MidaPosition {
@@ -24,6 +33,9 @@ export abstract class MidaPosition {
     // Represents the position tags.
     private readonly _tags: Set<string>;
 
+    // Represents the position event listeners.
+    private readonly _eventListeners: MidaObservable;
+
     protected constructor (id: string, assetPair: MidaAssetPair, type: MidaPositionType, lots: number, account: MidaBrokerAccount, tags: string[] = []) {
         this._id = id;
         this._assetPair = assetPair;
@@ -31,6 +43,7 @@ export abstract class MidaPosition {
         this._lots = lots;
         this._account = account;
         this._tags = new Set(tags);
+        this._eventListeners = new MidaObservable();
     }
 
     public get id (): string {
@@ -123,7 +136,19 @@ export abstract class MidaPosition {
         this._tags.delete(tag);
     }
 
+    public addEventListener (type: string, listener: (event: MidaEvent) => void): string {
+        return this._eventListeners.addEventListener(type, listener);
+    }
+
+    public removeEventListener (uuid: string): void {
+        this._eventListeners.removeEventListener(uuid);
+    }
+
     public async isMarketOpen (): Promise<boolean> {
         return this._account.isMarketOpen(this.symbol);
+    }
+
+    protected notifyEvent (type: string, event: MidaEvent): void {
+        this._eventListeners.notifyEvent(type, event);
     }
 }

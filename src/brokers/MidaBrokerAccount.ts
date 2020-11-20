@@ -24,15 +24,15 @@ export abstract class MidaBrokerAccount {
     // Represents the account broker.
     private readonly _broker: MidaBroker;
 
-    // Represents the account symbols listeners.
-    private readonly _symbolListeners: MidaObservable;
+    // Represents the account event listeners.
+    private readonly _eventListeners: MidaObservable;
 
     protected constructor (id: string, name: string, type: MidaBrokerAccountType, broker: MidaBroker) {
         this._id = id;
         this._name = name;
         this._type = type;
         this._broker = broker;
-        this._symbolListeners = new MidaObservable();
+        this._eventListeners = new MidaObservable();
     }
 
     public get id (): string {
@@ -65,6 +65,8 @@ export abstract class MidaBrokerAccount {
 
     public abstract async getPositions (): Promise<MidaPosition[]>;
 
+    public abstract async searchSymbols (text: string): Promise<string[]>;
+
     public abstract async supportsMarket (symbol: string): Promise<boolean>;
 
     public abstract async isMarketOpen (symbol: string): Promise<boolean>;
@@ -77,12 +79,12 @@ export abstract class MidaBrokerAccount {
 
     public abstract async getSymbolPeriods (symbol: string, type: MidaAssetPairPeriodType | number): Promise<MidaAssetPairPeriod[]>;
 
-    public addSymbolEventListener (symbol: string, type: string, listener: (event: MidaEvent) => void): string {
-        return this._symbolListeners.addEventListener(symbol + type, listener);
+    public addEventListener (type: string, listener: (event: MidaEvent) => void): string {
+        return this._eventListeners.addEventListener(type, listener);
     }
 
-    public removeSymbolEventListener (uuid: string): void {
-        this._symbolListeners.removeEventListener(uuid);
+    public removeEventListener (uuid: string): void {
+        this._eventListeners.removeEventListener(uuid);
     }
 
     public async getOpenPositions (): Promise<MidaPosition[]> {
@@ -104,7 +106,7 @@ export abstract class MidaBrokerAccount {
         return this.getSymbolPeriods(assetPair.symbol, type);
     }
 
-    protected notifySymbolEvent (symbol: string, type: string, event: MidaEvent): void {
-        this._symbolListeners.notifyEvent(symbol + type, event);
+    protected notifyEvent (type: string, event: MidaEvent): void {
+        this._eventListeners.notifyEvent(type, event);
     }
 }

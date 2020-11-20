@@ -2,42 +2,50 @@ import { v1 as uuidV1 } from "uuid";
 import { MidaEvent } from "#events/MidaEvent";
 
 export class MidaObservable {
-    // Represents the event listeners.
-    private readonly _listeners: Map<string, Map<string, (event: MidaEvent) => void>>;
+    // Represents the events and the respective listeners.
+    private readonly _events: Map<string, Map<string, (event: MidaEvent) => void>>;
 
     public constructor () {
-        this._listeners = new Map();
+        this._events = new Map();
     }
 
     public addEventListener (type: string, listener: (event: MidaEvent) => void): string {
-        const eventListeners: any = this._listeners.get(type) || new Map();
+        const eventListeners: Map<string, (event: MidaEvent) => void> = this._events.get(type) || new Map();
         const uuid: string = uuidV1();
 
         eventListeners.set(uuid, listener);
-        this._listeners.set(type, eventListeners);
+
+        if (eventListeners.size === 1) {
+            this._events.set(type, eventListeners);
+        }
 
         return uuid;
     }
 
-    public removeEventListener (uuid: string): void {/*
-        for (const event in this._listeners) {
-            if (this._listeners[event].hasOwnProperty(uuid)) {
-                delete this._listeners[event][uuid];
+    public removeEventListener (uuid: string): void {
+        for (const type of this._events.keys()) {
+            const eventListeners: Map<string, (event: MidaEvent) => void> | undefined = this._events.get(type);
 
-                if (Object.keys(this._listeners[event]).length === 0) {
-                    delete this._listeners[event];
+            if (eventListeners && eventListeners.has(uuid)) {
+                eventListeners.delete(uuid);
+
+                if (eventListeners.size === 0) {
+                    this._events.delete(type);
                 }
-
-                return true;
             }
         }
-
-        return false;*/
     }
 
-    public notifyEvent (type: string, event: MidaEvent): void {/*
-        for (const uuid in this._listeners[eventType]) {
-            this._listeners[eventType][uuid](...parameters);
-        }*/
+    // TODO: pass uuid to each respective event listener.
+    public notifyEvent (type: string, event: MidaEvent): void {
+        const eventListeners: Map<string, (event: MidaEvent) => void> | undefined = this._events.get(type);
+
+        if (!eventListeners) {
+            return;
+        }
+
+        for (const listener of eventListeners.values()) {
+            listener(event);
+        }
     }
 }

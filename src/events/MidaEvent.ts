@@ -1,5 +1,7 @@
+import { IMidaClonable } from "#utilities/IMidaClonable";
+
 // Represents an event.
-export abstract class MidaEvent {
+export class MidaEvent implements IMidaClonable<MidaEvent> {
     // Represents the event type.
     private readonly _type: string;
 
@@ -25,5 +27,9 @@ export abstract class MidaEvent {
 
     public get details (): any {
         return { ...this._details, };
+    }
+
+    public clone (): MidaEvent {
+        return new MidaEvent(this._type, this._time, this._details);
     }
 }

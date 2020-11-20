@@ -45,7 +45,7 @@ export class MidaAssetPairTick implements IMidaEquatable, IMidaClonable<MidaAsse
     }
 
     public clone (): MidaAssetPairTick {
-        return new MidaAssetPairTick(this._quotation.clone(), new Date(this._time));
+        return new MidaAssetPairTick(this._quotation.clone(), this._time);
     }
 
     /*

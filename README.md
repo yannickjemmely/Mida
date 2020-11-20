@@ -23,7 +23,7 @@ npm install midafx
 
 ## Examples
 
-## Opening Positions
+### Opening Positions
 Opening a long position for Bitcoin against USD.
 ```typescript
 async function buyBitcoin () {
@@ -83,6 +83,29 @@ async function buyAppleShares () {
     });
     
     console.log(await myFirstTrade.getOpenPrice());
+}
+```
+
+### Events
+Opening a long position for Bitcoin against USD.
+```typescript
+async function example () {
+    const myAccount: MidaBrokerAccount = await MidaBrokers.login("BDSwiss", {
+        id: "123456789",
+        password: "",
+    });
+
+    myAccount.addEventListener("XAUUSD tick", (event: MidaEvent) => {
+        const tick: MidaAssetPairTick = event.details.tick;
+        
+        console.log(tick.bid);
+    });
+
+    myAccount.addEventListener("position close", async (event: MidaEvent) => {
+        const position: MidaPosition = event.details.position;
+        
+        console.log(await position.getProfit());
+    });
 }
 ```
 

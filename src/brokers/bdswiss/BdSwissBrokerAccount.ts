@@ -50,74 +50,17 @@ export class BdSwissBrokerAccount extends MidaBrokerAccount {
     // Represents the forex pair periods requests queue.
     private readonly _forexPairPeriodsRequests: ((...parameters: any[]) => void)[];
 
-    public constructor () {
-        super();
+    public constructor (id: string, name: string, type: MidaBrokerAccountType, broker: MidaBroker) {
+        super(id, name, type, broker);
 
         this._browser = new ChromiumBrowser();
         this._browserTabs = {};
-        this._isLoggedIn = false;
         this._positions = new MidaPositionSet();
         this._forexPairTickListeners = new MidaProtectedObservable();
         this._forexPairPeriodListeners = new MidaProtectedObservable();
         this._lastTicks = {};
         this._isForexPairPeriodsBusy = false;
         this._forexPairPeriodsRequests = [];
-    }
-
-    public get isLoggedIn (): boolean {
-        return this._isLoggedIn;
-    }
-
-    public get accountId (): string {
-        return this._account.ID;
-    }
-
-    public get accountType (): MidaBrokerAccountType {
-        return this._accountType;
-    }
-
-    public get name (): string {
-        return BdSwissBroker.NAME;
-    }
-
-    public async login (account: any): Promise<void> {
-        if (this._isLoggedIn) {
-            throw new Error();
-        }
-
-        await this._browser.open();
-
-        // TODO: Close the login tab in a safe way and delete the password after using it.
-        const loginTab: IMidaBrowserTab = await this._browser.openTab();
-        const loginURI: string = "https://dashboard.bdswiss.com/login";
-        const emailInputSelector: string = "#email";
-        const passwordInputSelector: string = "#password";
-        const loginButtonSelector: string = "header + div > div:last-child > div:last-child button:last-child";
-        const accountSidebarSelector: string = ".sidebar";
-
-        await loginTab.goto(loginURI);
-        await loginTab.waitForSelector(`${emailInputSelector},${passwordInputSelector}`);
-        await loginTab.type(emailInputSelector, account.email);
-        await loginTab.type(passwordInputSelector, account.password);
-        await loginTab.click(loginButtonSelector);
-        await loginTab.waitForSelector(accountSidebarSelector);
-
-        const isLoggedIn: boolean = await loginTab.evaluate(`((w) => {
-            return w.location.href === "https://dashboard.bdswiss.com/accounts";
-        })(window);`);
-
-        if (!isLoggedIn) {
-            throw new Error();
-        }
-
-        this._account = account;
-        this._isLoggedIn = true;
-        this._browserTabs.tradeTab = await this._openTradeTab();
-        this._accountType = await this._getAccountType();
-
-        loginTab.close();
-
-        this.notifyEvent(MidaBrokerEventType.LOGIN, this);
     }
 
     public async openPosition (positionDirectives: MidaPositionDirectives): Promise<MidaPosition> {
@@ -442,14 +385,9 @@ export class BdSwissBrokerAccount extends MidaBrokerAccount {
         return profit;
     }
 
-    private async _openTradeTab (): Promise<IMidaBrowserTab> {
-        if (!this.isLoggedIn) {
-            throw new Error();
-        }
+    private async _setupTradeTab (): Promise<void> {
+        const tradeTab: IMidaBrowserTab = this._browserTabs.tradeTab;
 
-        const tradeTab: IMidaBrowserTab = await this._browser.openTab();
-
-        await tradeTab.goto(`https://trade.bdswiss.com/?embedded=true&login=${this._account.ID}`);
         await tradeTab.exposeProcedure("_onTick", (plainTick: any): void => {
             this._onTick(plainTick);
         });
@@ -459,7 +397,7 @@ export class BdSwissBrokerAccount extends MidaBrokerAccount {
         await tradeTab.evaluate(`((w) => {
             const socket = new WebSocket("wss://mt4-api-demo.bdswiss.com/socket.io/?server=demo&EIO=3&transport=websocket");
             const loginDirectives = {
-                login: "${this._account.ID}",
+                login: "${this._id}",
                 version: 3,
                 platform: "web",
             };
@@ -519,20 +457,6 @@ export class BdSwissBrokerAccount extends MidaBrokerAccount {
         })(window);`);
 
         return tradeTab;
-    }
-
-    private async _getAccountType (): Promise<MidaBrokerAccountType> {
-        await this._browserTabs.tradeTab.waitForSelector(".account__name");
-
-        const plainAccountType: string = await this._browserTabs.tradeTab.evaluate(`((w) => {
-            return w.document.querySelectorAll(".account__name")[0].innerText.trim();
-        })(window);`);
-
-        if (plainAccountType === "Practice Account") {
-            return MidaBrokerAccountType.DEMO;
-        }
-
-        return MidaBrokerAccountType.REAL;
     }
 
     private _onTick (plainTick: any): void {
