@@ -1,6 +1,7 @@
 import { MidaAssetPair } from "#assets/MidaAssetPair";
 import { MidaAssetPairEvent } from "#assets/MidaAssetPairEvent";
 import { MidaAssetPairTick } from "#assets/MidaAssetPairTick";
+import { MidaEventListener } from "#events/MidaEventListener";
 
 // Represents an asset pair event listener.
 export abstract class MidaAssetPairEventListener {
@@ -8,7 +9,7 @@ export abstract class MidaAssetPairEventListener {
     private readonly _assetPair: MidaAssetPair;
 
     // Represents the event handler.
-    private readonly _handler: (event: MidaAssetPairEvent) => void;
+    private readonly _handler: MidaEventListener;
 
     // Indicates if the listener is enabled.
     private _enabled: boolean;
@@ -16,7 +17,7 @@ export abstract class MidaAssetPairEventListener {
     // Represents the captured ticks.
     private readonly _ticks: MidaAssetPairTick[];
 
-    protected constructor (assetPair: MidaAssetPair, handler: (event: MidaAssetPairEvent) => void) {
+    protected constructor (assetPair: MidaAssetPair, handler: MidaEventListener) {
         this._assetPair = assetPair;
         this._handler = handler;
         this._enabled = true;

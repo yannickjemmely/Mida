@@ -7,6 +7,7 @@ import { MidaBrokerAccountType } from "#brokers/MidaBrokerAccountType";
 import { MidaCurrency } from "#currencies/MidaCurrency";
 import { MidaEvent } from "#events/MidaEvent";
 import { MidaPosition } from "#positions/MidaPosition";
+import { MidaPositionDirectives } from "#positions/MidaPositionDirectives";
 import { MidaPositionStatusType } from "#positions/MidaPositionStatusType";
 import { MidaObservable } from "#utilities/observable/MidaObservable";
 
@@ -61,7 +62,7 @@ export abstract class MidaBrokerAccount {
 
     public abstract async getFreeMargin (): Promise<number>;
 
-    public abstract async openPosition (): Promise<MidaPosition>;
+    public abstract async openPosition (directives: MidaPositionDirectives): Promise<MidaPosition>;
 
     public abstract async getPositions (): Promise<MidaPosition[]>;
 

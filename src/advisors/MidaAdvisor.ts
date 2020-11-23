@@ -1,4 +1,3 @@
-import { MidaAdvisorEventType } from "#advisors/MidaAdvisorEventType";
 import { MidaAdvisorOptions } from "#advisors/MidaAdvisorOptions";
 import { MidaPosition } from "#positions/MidaPosition";
 import { MidaPositionDirectives } from "#positions/MidaPositionDirectives";
@@ -17,7 +16,7 @@ export abstract class MidaAdvisor {
     private readonly _assetPair: MidaAssetPair;
 
     // Represents the created positions.
-    private readonly _positions: MidaPosition[];
+    private readonly _positions: Map<string, MidaPosition>;
 
     // Indicates if the advisor is operative.
     private _operative: boolean;
@@ -35,7 +34,7 @@ export abstract class MidaAdvisor {
         this._options = options;
         this._brokerAccount = options.brokerAccount;
         this._assetPair = options.assetPair;
-        this._positions = [];
+        this._positions = new Map();
         this._operative = false;
         this._capturedTicks = [];
         this._asyncTickPromise = undefined;
@@ -65,7 +64,7 @@ export abstract class MidaAdvisor {
     }
 
     public get positions (): readonly MidaPosition[] {
-        return this._positions;
+        return [ ...this._positions.values(), ];
     }
 
     protected get capturedTicks (): readonly MidaAssetPairTick[] {
@@ -75,10 +74,6 @@ export abstract class MidaAdvisor {
     public async start (): Promise<void> {
         if (this._operative) {
             return;
-        }
-
-        if (!(await this._brokerAccount.isAlive())) {
-            throw new Error();
         }
 
         this._operative = true;
@@ -101,16 +96,15 @@ export abstract class MidaAdvisor {
     }
 
     protected async openPosition (directives: MidaPositionDirectives): Promise<MidaPosition> {
-        const position: MidaPosition = await this._broker.openPosition(directives);
+        const position: MidaPosition = await this._brokerAccount.openPosition(directives);
 
-        this._positions.add(position);
-        this.notifyEvent(MidaAdvisorEventType.POSITION_OPEN, position, this);
+        this._positions.set(position.id, position);
 
         return position;
     }
 
     private _construct (): void {
-
+        
     }
 
     private _onTick (tick: MidaAssetPairTick): void {

@@ -28,6 +28,10 @@ export class MidaAssetPairTick implements IMidaEquatable, IMidaClonable<MidaAsse
         return this._quotation.assetPair;
     }
 
+    public get symbol (): string {
+        return this._quotation.assetPair.symbol;
+    }
+
     public get bid (): number {
         return this._quotation.bid;
     }

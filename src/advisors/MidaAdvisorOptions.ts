@@ -1,5 +1,5 @@
-import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 import { MidaAssetPair } from "#assets/MidaAssetPair";
+import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 
 export type MidaAdvisorOptions = {
     // Represents the broker account used to operate.
@@ -8,7 +8,7 @@ export type MidaAdvisorOptions = {
     // Represents the operated asset pair.
     assetPair: MidaAssetPair;
 
-    // Indicates if the advisors must be operative immediately after being instantiated.
+    // Indicates if the advisors must be operative after being instantiated.
     operative?: boolean;
 
     // Indicates if the advisor is being backtested.
