@@ -40,6 +40,10 @@ export class MidaAssetPairTick implements IMidaEquatable, IMidaClonable<MidaAsse
         return this._quotation.ask;
     }
 
+    public get spread (): number {
+        return this._quotation.spread;
+    }
+
     public equals (object: any): boolean {
         return (
             object instanceof MidaAssetPairTick

@@ -1,86 +1,60 @@
+import { MidaAssetPairPeriod } from "#assets/MidaAssetPairPeriod";
+import { MidaAssetPairPeriodType } from "#assets/MidaAssetPairPeriodType";
+import { MidaAssetPairTick } from "#assets/MidaAssetPairTick";
 import { MidaBroker } from "#brokers/MidaBroker";
-import { MidaBrokerAccountType } from "#brokers/MidaBrokerAccountType";
-import { MidaBrokerEventType } from "#brokers/MidaBrokerEventType";
-import { IMidaBrowser } from "#browser/IMidaBrowser";
-import { IMidaBrowserTab } from "#browser/IMidaBrowserTab";
-import { ChromiumBrowser } from "#browser/ChromiumBrowser";
-import { MidaCurrency } from "#currency/MidaCurrency";
-import { MidaCurrencyType } from "#currency/MidaCurrencyType";
-import { MidaForexPair } from "#forex/MidaForexPair";
-import { MidaForexPairExchangeRate } from "#forex/MidaForexPairExchangeRate";
-import { MidaAssetPeriod } from "#forex/MidaAssetPeriod";
-import { MidaForexPairPeriodType } from "#forex/MidaForexPairPeriodType";
-import { MidaForexPairType } from "#forex/MidaForexPairType";
-import { MidaPosition, generatePositionUuid } from "#position/MidaPosition";
-import { MidaPositionDirectives } from "#position/MidaPositionDirectives";
-import { MidaPositionSet } from "#position/MidaPositionSet";
-import { MidaPositionStatusType } from "#position/MidaPositionStatusType";
-import { MidaProtectedObservable } from "#utilities/observable/MidaObservable";
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
+import { MidaBrokerAccountType } from "#brokers/MidaBrokerAccountType";
+import { IMidaBrowser } from "#browsers/IMidaBrowser";
+import { IMidaBrowserTab } from "#browsers/IMidaBrowserTab";
+import { MidaPosition } from "#positions/MidaPosition";
+import { MidaPositionDirectives } from "#positions/MidaPositionDirectives";
 
 export class BdSwissBrokerAccount extends MidaBrokerAccount {
-    // Represents the broker name.
-    public static readonly NAME: string = "BDSwiss";
+    // Represents the broker browser used internally to navigate the website.
+    private readonly _browser: IMidaBrowser;
 
-    // Represents the browser used internally to navigate the website of the broker.
-    private _browser: IMidaBrowser;
-
-    // Represents the browser tabs used to perform actions on the website of the broker.
-    private _browserTabs: {
+    // Represents the broker browser tabs used to perform actions on the website.
+    private readonly _browserTabs: {
         [name: string]: IMidaBrowserTab;
     };
 
-    // Represents the positions created through this broker.
-    private readonly _positions: MidaPositionSet;
+    // Represents the broker account last ticks.
+    private readonly _lastTicks: Map<string, MidaAssetPairTick>;
 
-    // Represents the forex pair tick listeners.
-    private readonly _forexPairTickListeners: MidaProtectedObservable<string>;
+    // Indicates if the periods of an asset pair are being requested.
+    private _isAssetPairPeriodsBusy: boolean;
 
-    // Represents the forex pair period listeners.
-    private readonly _forexPairPeriodListeners: MidaProtectedObservable<string>;
+    // Represents the broker asset pair periods requests queue.
+    private readonly _assetPairPeriodsRequests: ((...parameters: any[]) => void)[];
 
-    // Represents the last ticks.
-    private readonly _lastTicks: {
-        [symbol: string]: MidaForexPairExchangeRate;
-    };
-
-    // Indicates if the periods of a forex pair are being requested.
-    private _isForexPairPeriodsBusy: boolean;
-
-    // Represents the forex pair periods requests queue.
-    private readonly _forexPairPeriodsRequests: ((...parameters: any[]) => void)[];
-
-    public constructor (id: string, name: string, type: MidaBrokerAccountType, broker: MidaBroker) {
+    public constructor (id: string, name: string, type: MidaBrokerAccountType, broker: MidaBroker, browserTabs: any) {
         super(id, name, type, broker);
 
-        this._browser = new ChromiumBrowser();
-        this._browserTabs = {};
-        this._positions = new MidaPositionSet();
-        this._forexPairTickListeners = new MidaProtectedObservable();
-        this._forexPairPeriodListeners = new MidaProtectedObservable();
-        this._lastTicks = {};
-        this._isForexPairPeriodsBusy = false;
-        this._forexPairPeriodsRequests = [];
+        this._browser = browserTabs.tradeTab.browser;
+        this._browserTabs = browserTabs;
+        this._lastTicks = new Map();
+        this._isAssetPairPeriodsBusy = false;
+        this._assetPairPeriodsRequests = [];
     }
 
-    public async openPosition (positionDirectives: MidaPositionDirectives): Promise<MidaPosition> {
+    public async openPosition (directives: MidaPositionDirectives): Promise<MidaPosition> {
         const positionUUID: string = generatePositionUuid();
         const openDescriptor: any = await this._browserTabs.tradeTab.evaluate(`((w) => {
             const socket = w._MidaBroker.socket;
             const openDirectives = {
-                symbol: "${positionDirectives.forexPair.id2}",
-                volume: ${positionDirectives.lots},
+                symbol: "${directives.forexPair.id2}",
+                volume: ${directives.lots},
                 uuid: "${positionUUID}",
                 platform: "BDS.WT",
-                cmd: "${positionDirectives.direction}",
+                cmd: "${directives.direction}",
             };
             
-            if (${positionDirectives.takeProfit !== undefined}) {
-                openDirectives.tp = ${positionDirectives.takeProfit};
+            if (${directives.takeProfit !== undefined}) {
+                openDirectives.tp = ${directives.takeProfit};
             }
             
-            if (${positionDirectives.stopLoss !== undefined}) {
-                openDirectives.sl = ${positionDirectives.stopLoss};
+            if (${directives.stopLoss !== undefined}) {
+                openDirectives.sl = ${directives.stopLoss};
             }
             
             return new Promise((resolve, reject) => {
@@ -131,7 +105,7 @@ export class BdSwissBrokerAccount extends MidaBrokerAccount {
                 accountId: this.accountId,
                 positionId: openDescriptor.orderID,
             },
-            directives: positionDirectives,
+            directives: directives,
             status: MidaPositionStatusType.OPEN,
             openDate: new Date(),
             openPrice: openDescriptor.openPrice,
@@ -229,6 +203,7 @@ export class BdSwissBrokerAccount extends MidaBrokerAccount {
         return plainFreeMargin;
     }
 
+    /*
     public async getCurrency (): Promise<MidaCurrency> {
         const currencySymbol: string = await this._browserTabs.tradeTab.evaluate(`(() => {
             return window.document.querySelector("[data-cy=equity]").innerText.trim().split(" ")[0];
@@ -236,10 +211,13 @@ export class BdSwissBrokerAccount extends MidaBrokerAccount {
 
         return MidaCurrencyType.getBySymbol(currencySymbol);
     }
+    */
 
-    public async getForexPairExchangeRate (forexPair: MidaForexPair): Promise<MidaForexPairExchangeRate> {
-        if (this._lastTicks[forexPair.id]) {
-            return this._lastTicks[forexPair.id];
+    public async getSymbolLastTick (symbol: string): Promise<MidaAssetPairTick> {
+        const lastTick: MidaAssetPairTick | undefined = this._lastTicks.get(symbol);
+
+        if (lastTick) {
+            return lastTick;
         }
 
         return new Promise((resolve: any): void => {
@@ -272,17 +250,17 @@ export class BdSwissBrokerAccount extends MidaBrokerAccount {
         return this._forexPairPeriodListeners.removeEventListener(listenerUUID);
     }
 
-    public async getForexPairPeriods (forexPair: MidaForexPair, periodsType: MidaForexPairPeriodType): Promise<MidaAssetPeriod[]> {
-        if (this._isForexPairPeriodsBusy) {
+    public async getSymbolPeriods (symbol: string, type: MidaAssetPairPeriodType): Promise<MidaAssetPairPeriod[]> {
+        if (this._isAssetPairPeriodsBusy) {
             await new Promise((resolve: (...parameters: any[]) => void): void => {
-                this._forexPairPeriodsRequests.push(resolve);
+                this._assetPairPeriodsRequests.push(resolve);
             });
         }
         else {
-            this._isForexPairPeriodsBusy = true;
+            this._isAssetPairPeriodsBusy = true;
         }
 
-        const periods: MidaAssetPeriod[] = [];
+        const periods: MidaAssetPairPeriod[] = [];
         const plainPeriods: any[] = await this._browserTabs.tradeTab.evaluate(`((w) => {
             const socket = w._MidaBroker.socket;
             
@@ -306,21 +284,21 @@ export class BdSwissBrokerAccount extends MidaBrokerAccount {
                 };
                 const timeout = setTimeout(() => {
                     socket.removeEventListener("message", listener);
-                    resolve(null);
+                    resolve();
                 }, 20000);
                 
                 socket.addEventListener("message", listener);
-                socket.send('42["GET_CHART",{"resolution":${periodsType},"symbol":"${forexPair.id2}"}]');
+                socket.send('42["GET_CHART",{"resolution":${type},"symbol":"${symbol}"}]');
             });
         })(window);`);
 
-        const nextRequest: ((...parameters: any[]) => void) | undefined = this._forexPairPeriodsRequests.shift();
+        const nextRequest: ((...parameters: any[]) => void) | undefined = this._assetPairPeriodsRequests.shift();
 
         if (nextRequest) {
             nextRequest();
         }
         else {
-            this._isForexPairPeriodsBusy = false;
+            this._isAssetPairPeriodsBusy = false;
         }
 
         if (!plainPeriods) {
@@ -331,8 +309,8 @@ export class BdSwissBrokerAccount extends MidaBrokerAccount {
 
         for (const plainPeriod of plainPeriods) {
             periods.push({
-                forexPair,
-                type: periodsType,
+                undefined,
+                type: type,
                 time: new Date((new Date(plainPeriod.t.replace(/-/g, "/"))).valueOf() - 60 * 60 * 1000 * 2),
                 open: plainPeriod.o,
                 close: plainPeriod.c,
@@ -345,26 +323,10 @@ export class BdSwissBrokerAccount extends MidaBrokerAccount {
         return periods;
     }
 
-    public async logout (): Promise<void> {
-        if (!this._isLoggedIn) {
-            throw new Error();
-        }
-
-        await this._browser.close();
-
-        this._browserTabs = {};
-        this._account = null;
-        this._isLoggedIn = false;
-
-        this._positions.clear();
-
-        this.notifyEvent(MidaBrokerEventType.LOGOUT, this);
-    }
-
-    private async _getPositionProfitByOrderID (orderID: string): Promise<number> {
+    private async _getOrderProfit (orderId: string): Promise<number> {
         const profit: number = parseFloat(await this._browserTabs.positionsTab.evaluate(`(() => {
             try {
-                const rowSelector = ".rt-td > [title='${orderID}']";
+                const rowSelector = ".rt-td > [title='${orderId}']";
                 const column = window.document.querySelector(rowSelector);
                 
                 if (!column) {
@@ -397,7 +359,7 @@ export class BdSwissBrokerAccount extends MidaBrokerAccount {
         await tradeTab.evaluate(`((w) => {
             const socket = new WebSocket("wss://mt4-api-demo.bdswiss.com/socket.io/?server=demo&EIO=3&transport=websocket");
             const loginDirectives = {
-                login: "${this._id}",
+                login: "${this.id}",
                 version: 3,
                 platform: "web",
             };
@@ -455,8 +417,6 @@ export class BdSwissBrokerAccount extends MidaBrokerAccount {
                 });
             });
         })(window);`);
-
-        return tradeTab;
     }
 
     private _onTick (plainTick: any): void {
@@ -490,7 +450,5 @@ export class BdSwissBrokerAccount extends MidaBrokerAccount {
         position.profit = async (): Promise<number> => closeDescriptor.profit;
         position.commission = async (): Promise<number> => closeDescriptor.commission;
         position.swaps = async (): Promise<number> => closeDescriptor.swaps;
-
-        this.notifyEvent(MidaBrokerEventType.POSITION_CLOSE, position);
     }
 }

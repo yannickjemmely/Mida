@@ -1,7 +1,8 @@
-import { MidaAssetPairEventListener } from "#assets/MidaAssetPairEventListener";
 import { MidaAssetPair } from "#assets/MidaAssetPair";
 import { MidaAssetPairEvent } from "#assets/MidaAssetPairEvent";
+import { MidaAssetPairEventListener } from "#assets/MidaAssetPairEventListener";
 import { MidaAssetPairTick } from "#assets/MidaAssetPairTick";
+import { MidaEventListener } from "#events/MidaEventListener";
 
 // Represents the listener of an asset pair quotation price break.
 export class MidaPriceBreakEventListener extends MidaAssetPairEventListener {
@@ -9,9 +10,9 @@ export class MidaPriceBreakEventListener extends MidaAssetPairEventListener {
     private readonly _priceToBreak: number;
 
     // Represents the initial price.
-    private _initialPrice: number | undefined;
+    private _initialPrice?: number;
 
-    public constructor (assetPair: MidaAssetPair, priceToBreak: number, handler: (event: MidaAssetPairEvent) => void) {
+    public constructor (assetPair: MidaAssetPair, priceToBreak: number, handler: MidaEventListener) {
         super(assetPair, handler);
 
         this._priceToBreak = priceToBreak;

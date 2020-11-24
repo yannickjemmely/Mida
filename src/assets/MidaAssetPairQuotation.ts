@@ -39,6 +39,10 @@ export class MidaAssetPairQuotation implements IMidaEquatable, IMidaClonable<Mid
         return this._ask;
     }
 
+    public get symbol (): string {
+        return this._assetPair.symbol;
+    }
+
     public get spread (): number {
         return this._ask - this._bid;
     }
@@ -52,7 +56,7 @@ export class MidaAssetPairQuotation implements IMidaEquatable, IMidaClonable<Mid
     }
 
     public clone (): MidaAssetPairQuotation {
-        return new MidaAssetPairQuotation(this._assetPair.clone(), new Date(this._time), this._bid, this._ask);
+        return new MidaAssetPairQuotation(this._assetPair.clone(), this._time, this._bid, this._ask);
     }
 
     /*

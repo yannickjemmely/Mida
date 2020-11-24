@@ -43,7 +43,7 @@ export class BdSwissBroker extends MidaBroker {
         await loginTab.waitForSelector(accountSidebarSelector);
 
         const isLoggedIn: boolean = await loginTab.evaluate(`window.location.href === "https://dashboard.bdswiss.com/accounts`);
-        const name: string = await loginTab.evaluate(`window.document.querySelector(".sidebar > div:first-child > p:first-child").innerText.trim();`);
+        const name: string = await loginTab.evaluate(`window.document.querySelector(".sidebar > div:first-child > p:first-child").innerText.trim()`);
 
         if (!isLoggedIn) {
             throw new Error();
@@ -55,7 +55,7 @@ export class BdSwissBroker extends MidaBroker {
 
         const accountType: MidaBrokerAccountType = await this._getAccountType();
 
-        return new BdSwissBrokerAccount(account.id, name, accountType, this);
+        return new BdSwissBrokerAccount(account.id, name, accountType, this, this._browserTabs);
     }
 
     private async _openTradeTab (accountId: string): Promise<IMidaBrowserTab> {

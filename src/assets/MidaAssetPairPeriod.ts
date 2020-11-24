@@ -90,6 +90,10 @@ export class MidaAssetPairPeriod implements IMidaEquatable {
         return this._quotations;
     }
 
+    public get symbol (): string {
+        return this._assetPair.symbol;
+    }
+
     public get startTime (): Date {
         return new Date(this._time.valueOf() - this._type * 1000);
     }

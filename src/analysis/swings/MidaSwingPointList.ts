@@ -1,3 +1,4 @@
+/*
 import { MidaSwingPoint } from "#analysis/swing/MidaSwingPoint";
 import { MidaSwingPointType } from "#analysis/swing/MidaSwingPointType";
 import { MidaList } from "#utilities/collections/MidaList";
@@ -82,3 +83,4 @@ export class MidaSwingPointList extends MidaList<MidaSwingPoint> {
         return farthestClose;
     }
 }
+*/

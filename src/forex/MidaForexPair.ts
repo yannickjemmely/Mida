@@ -17,7 +17,7 @@ export class MidaForexPair extends MidaAssetPair {
     private readonly _tenRaisedToPipPosition: number;
 
     public constructor (baseCurrency: MidaCurrency, quoteCurrency: MidaCurrency, symbol?: string) {
-        super(baseCurrency, quoteCurrency, symbol || `${baseCurrency.iso}/${quoteCurrency.iso}`);
+        super(baseCurrency, quoteCurrency, symbol);
 
         this._baseCurrency = baseCurrency;
         this._quoteCurrency = quoteCurrency;
@@ -45,10 +45,6 @@ export class MidaForexPair extends MidaAssetPair {
 
     public get pipPosition (): number {
         return this._pipPosition;
-    }
-
-    public get symbol2 (): string {
-        return `${this._baseCurrency.iso}${this._quoteCurrency.iso}`;
     }
 
     public normalizePips (pips: number): number {

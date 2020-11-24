@@ -78,7 +78,7 @@ export abstract class MidaBrokerAccount {
 
     public abstract async getSymbolLastTick (symbol: string): Promise<MidaAssetPairTick>;
 
-    public abstract async getSymbolPeriods (symbol: string, type: MidaAssetPairPeriodType | number): Promise<MidaAssetPairPeriod[]>;
+    public abstract async getSymbolPeriods (symbol: string, type: MidaAssetPairPeriodType): Promise<MidaAssetPairPeriod[]>;
 
     public addEventListener (type: string, listener: (event: MidaEvent) => void): string {
         return this._eventListeners.addEventListener(type, listener);
@@ -103,7 +103,7 @@ export abstract class MidaBrokerAccount {
         return openPositions;
     }
 
-    public async getAssetPairPeriods (assetPair: MidaAssetPair, type: MidaAssetPairPeriodType | number): Promise<MidaAssetPairPeriod[]> {
+    public async getAssetPairPeriods (assetPair: MidaAssetPair, type: MidaAssetPairPeriodType): Promise<MidaAssetPairPeriod[]> {
         return this.getSymbolPeriods(assetPair.symbol, type);
     }
 
