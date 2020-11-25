@@ -1,7 +1,7 @@
-import { IMidaClonable } from "#utilities/IMidaClonable";
+import { IMidaCloneable } from "#utilities/IMidaCloneable";
 
 // Represents an event.
-export class MidaEvent implements IMidaClonable<MidaEvent> {
+export class MidaEvent implements IMidaCloneable {
     // Represents the event type.
     private readonly _type: string;
 
@@ -29,7 +29,7 @@ export class MidaEvent implements IMidaClonable<MidaEvent> {
         return { ...this._details, };
     }
 
-    public clone (): MidaEvent {
+    public clone (): any {
         return new MidaEvent(this._type, this._time, this._details);
     }
 }

@@ -5,10 +5,6 @@ export class MidaFX {
         // Silence is golden.
     }
 
-    public static get moduleName (): string {
-        return MidaFX._midaPackage.name;
-    }
-
     public static get version (): string {
         return MidaFX._midaPackage.version;
     }

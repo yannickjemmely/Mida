@@ -1,9 +1,9 @@
 import { MidaAsset } from "#assets/MidaAsset";
 import { IMidaEquatable } from "#utilities/IMidaEquatable";
-import { IMidaClonable } from "#utilities/IMidaClonable";
+import { IMidaCloneable } from "#utilities/IMidaCloneable";
 
 // Represents an asset pair.
-export class MidaAssetPair implements IMidaEquatable, IMidaClonable<MidaAssetPair> {
+export class MidaAssetPair implements IMidaEquatable, IMidaCloneable {
     // Represents the asset pair base asset.
     private readonly _baseAsset: MidaAsset;
 
@@ -38,7 +38,7 @@ export class MidaAssetPair implements IMidaEquatable, IMidaClonable<MidaAssetPai
         );
     }
 
-    public clone (): MidaAssetPair {
+    public clone (): any {
         return new MidaAssetPair(this._baseAsset.clone(), this._quoteAsset.clone(), this._symbol);
     }
 }

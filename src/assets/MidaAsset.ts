@@ -1,8 +1,8 @@
 import { IMidaEquatable } from "#utilities/IMidaEquatable";
-import { IMidaClonable } from "#utilities/IMidaClonable";
+import { IMidaCloneable } from "#utilities/IMidaCloneable";
 
 // Represents an asset.
-export class MidaAsset implements IMidaEquatable, IMidaClonable<MidaAsset> {
+export class MidaAsset implements IMidaEquatable, IMidaCloneable {
     // Represents the asset id.
     private readonly _id: string;
 
@@ -45,7 +45,7 @@ export class MidaAsset implements IMidaEquatable, IMidaClonable<MidaAsset> {
         );
     }
 
-    public clone (): MidaAsset {
+    public clone (): any {
         return new MidaAsset(this._id, this._name, this._description);
     }
 }

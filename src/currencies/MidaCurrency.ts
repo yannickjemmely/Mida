@@ -32,7 +32,7 @@ export class MidaCurrency extends MidaAsset {
         );
     }
 
-    public clone (): MidaCurrency {
+    public clone (): any {
         return new MidaCurrency(this._iso, this._symbol, this.name, this.description);
     }
 }
