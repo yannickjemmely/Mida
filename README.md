@@ -4,11 +4,12 @@
 <br>
 
 MidaFX is an open source trading engine designed to operate in assets markets like stocks, forex, crypto or commodities.
-The term trading engine is introduced for the first time with this project to indicate not a simple sofware able to
-create and close positions but an entire infrastructure and plugin system dedicated to the creation of expert advisors,
-market analysis and investment backtesting.
 
-In fact, through MidaFX you can:
+The term trading engine is here introduced for the first time to indicate not a simple library able to
+create and close positions but an entire infrastructure/framework dedicated to the creation of expert advisors,
+market analysis and backtesting of investment strategies.
+
+Through MidaFX you can:
 - Real time operate in any supported market;
 - Analyze markets and prices movements through dedicated analysis interfaces;
 - Execute, test and automate investment and trading strategies by implementing custom expert advisors;
