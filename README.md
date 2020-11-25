@@ -3,11 +3,7 @@
 </p>
 <br>
 
-MidaFX is an open source trading engine designed to operate in assets markets like stocks, forex, crypto or commodities.
-
-The term trading engine is here introduced for the first time to indicate not a simple library able to
-create and close positions but an entire infrastructure/framework dedicated to the creation of expert advisors,
-market analysis and backtesting of investment strategies.
+MidaFX is an open source framework designed to operate in assets markets like stocks, forex, crypto or commodities.
 
 Through MidaFX you can:
 - Real time operate in any supported market;
@@ -30,7 +26,7 @@ npm install midafx
 ### Opening Positions
 Opening a long position for Bitcoin against USD.
 ```typescript
-async function buyBitcoin () {
+async function buyBitcoin (): Promise<void> {
     const myAccount: MidaBrokerAccount = await MidaBrokers.login("BDSwiss", {
         id: "123456789",
         password: "",
@@ -48,7 +44,7 @@ async function buyBitcoin () {
 
 Opening a short position for Gold against EUR, with a stop loss and take profit.
 ```typescript
-async function sellGold () {
+async function sellGold (): Promise<void> {
     const myAccount: MidaBrokerAccount = await MidaBrokers.login("BDSwiss", {
         id: "123456789",
         password: "",
@@ -66,9 +62,9 @@ async function sellGold () {
 }
 ```
 
-Opening a long position for Apple stock, with a tick handler (called each time there is a new tick).
+Opening a long position for Apple stock.
 ```typescript
-async function buyAppleShares () {
+async function buyAppleShares (): Promise<void> {
     const myAccount: MidaBrokerAccount = await MidaBrokers.login("BDSwiss", {
         id: "123456789",
         password: "",
@@ -78,10 +74,17 @@ async function buyAppleShares () {
         symbol: "#AAPL",
         type: MidaPositionType.LONG,
         lots: 3,
-        handlers: {
-            tick: async (position: MidaPosition, tick: MidaAssetPairTick) => {
+        takeProfit: 67.90,
+        events: {
+            async open (event: MidaEvent): Promise<void> {
+                console.log("The position is now open!");
+                console.log("Open price: " + await myPosition.getOpenPrice());
+            },
+            async tick (event: MidaEvent): Promise<void> {
+                const tick: MidaAssetPairTick = event.details.tick;
+                
                 // Print the position profit each time there is a movement in the market.
-                console.log(await position.getProfit());
+                console.log(await myPosition.getProfit());
             },
         },
     });
@@ -91,21 +94,15 @@ async function buyAppleShares () {
 ```
 
 ### Events
-Opening a long position for Bitcoin against USD.
+Listening the close event of a position.
 ```typescript
-async function example () {
+async function listenPositionCloseEvent (): Promise<void> {
     const myAccount: MidaBrokerAccount = await MidaBrokers.login("BDSwiss", {
         id: "123456789",
         password: "",
     });
 
-    myAccount.addEventListener("XAUUSD tick", (event: MidaEvent) => {
-        const tick: MidaAssetPairTick = event.details.tick;
-        
-        console.log(tick.bid);
-    });
-
-    myAccount.addEventListener("position close", async (event: MidaEvent) => {
+    myAccount.addEventListener("position close", async (event: MidaEvent): Promise<void> => {
         const position: MidaPosition = event.details.position;
         
         console.log(await position.getProfit());
