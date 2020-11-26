@@ -5,7 +5,11 @@ import { MidaPositionType } from "#positions/MidaPositionType";
 // Represents the directives of a position.
 export type MidaPositionDirectives = {
     // Represents the position asset pair.
-    assetPair: MidaAssetPair;
+    assetPair?: MidaAssetPair;
+
+    // Represents the position asset pair symbol.
+    // This must have priority over the asset pair above.
+    symbol?: string;
 
     // Represents the position type.
     type: MidaPositionType;

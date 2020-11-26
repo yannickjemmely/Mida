@@ -1,6 +1,6 @@
 import { MidaAssetPair } from "#assets/MidaAssetPair";
 import { MidaCurrency } from "#currencies/MidaCurrency";
-import { MidaCurrencyType } from "#currencies/MidaCurrencyType";
+import { MidaCurrencyManager } from "#currencies/MidaCurrencyManager";
 
 // Represents a forex pair.
 export class MidaForexPair extends MidaAssetPair {
@@ -22,14 +22,11 @@ export class MidaForexPair extends MidaAssetPair {
         this._baseCurrency = baseCurrency;
         this._quoteCurrency = quoteCurrency;
 
-        switch (quoteCurrency) {
-            case MidaCurrencyType.JPY:
-                this._pipPosition = 2;
-
-                break;
-
-            default:
-                this._pipPosition = 4;
+        if (quoteCurrency.equals(MidaCurrencyManager.JPY)) {
+            this._pipPosition = 2;
+        }
+        else {
+            this._pipPosition = 4;
         }
 
         this._tenRaisedToPipPosition = 10 ** this._pipPosition;

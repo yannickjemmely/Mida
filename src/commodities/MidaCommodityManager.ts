@@ -1,7 +1,7 @@
 import { MidaCommodity } from "#commodities/MidaCommodity";
-import { MidaUndefinedCommodityError } from "#commodities/MidaUndefinedCommodityError";
+import { MidaUndefinedCommoditySymbolError } from "#commodities/MidaUndefinedCommoditySymbolError";
 
-export class MidaCommodityType {
+export class MidaCommodityManager {
     private static readonly _commodities: Map<string, MidaCommodity> = require("!/commodities.json").reduce(
         (commodities: Map<string, MidaCommodity>, commodity: MidaCommodity): Map<string, MidaCommodity> => commodities.set(commodity.symbol, commodity),
         new Map()
@@ -12,10 +12,10 @@ export class MidaCommodityType {
     }
 
     public static getBySymbol (symbol: string): MidaCommodity {
-        const commodity: MidaCommodity | undefined = MidaCommodityType._commodities.get(symbol);
+        const commodity: MidaCommodity | undefined = MidaCommodityManager._commodities.get(symbol);
 
         if (!commodity) {
-            throw new MidaUndefinedCommodityError(symbol);
+            throw new MidaUndefinedCommoditySymbolError(symbol);
         }
 
         return commodity;

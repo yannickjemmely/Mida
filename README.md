@@ -27,12 +27,12 @@ npm install midafx
 Opening a long position for Bitcoin against USD.
 ```typescript
 async function buyBitcoin (): Promise<void> {
-    const myAccount: MidaBrokerAccount = await MidaBrokers.login("BDSwiss", {
+    const myAccount: MidaBrokerAccount = await MidaBrokerManager.login("BDSwiss", {
         id: "123456789",
         password: "",
     });
 
-    const myPosition: MidaPosition = await myAccount.openPosition({
+    const myFirstTrade: MidaPosition = await myAccount.createPosition({
         symbol: "BTCUSD",
         type: MidaPositionType.LONG,
         lots: 1,
@@ -42,15 +42,39 @@ async function buyBitcoin (): Promise<void> {
 }
 ```
 
-Opening a short position for Gold against EUR, with a stop loss and take profit.
+Opening a forex short position for EUR against USD, with a take profit of 20 pips.
 ```typescript
-async function sellGold (): Promise<void> {
-    const myAccount: MidaBrokerAccount = await MidaBrokers.login("BDSwiss", {
+import { EUR_USD } from "midafx/forex/MidaForexPairManager";
+
+async function sellEurUsd (): Promise<void> {
+    const myAccount: MidaBrokerAccount = await MidaBrokerManager.login("BDSwiss", {
         id: "123456789",
         password: "",
     });
 
-    const myPosition: MidaPosition = await myAccount.openPosition({
+    const lastTick: MidaAssetPairTick = await myAccount.getAssetPairLastTick(EUR_USD);
+    const takeProfit: number = lastTick.ask - EUR_USD.normalizePips(20);
+    
+    const myPosition: MidaPosition = await myAccount.createPosition({
+        assetPair: EUR_USD, // A position can be created using the symbol as string or directly the predefined asset pair type like in this case.
+        type: MidaPositionType.SHORT,
+        lots: 1,
+        takeProfit,
+    });
+}
+```
+
+<details><summary>Show more examples</summary>
+
+Opening a short position for Gold against EUR, with a stop loss and take profit.
+```typescript
+async function sellGold (): Promise<void> {
+    const myAccount: MidaBrokerAccount = await MidaBrokerManager.login("BDSwiss", {
+        id: "123456789",
+        password: "",
+    });
+
+    const myPosition: MidaPosition = await myAccount.createPosition({
         symbol: "XAUEUR",
         type: MidaPositionType.SHORT,
         lots: 1,
@@ -62,15 +86,15 @@ async function sellGold (): Promise<void> {
 }
 ```
 
-Opening a long position for Apple stock.
+Opening a long position for Apple stock, with a take profit and event listeners.
 ```typescript
 async function buyAppleShares (): Promise<void> {
-    const myAccount: MidaBrokerAccount = await MidaBrokers.login("BDSwiss", {
+    const myAccount: MidaBrokerAccount = await MidaBrokerManager.login("BDSwiss", {
         id: "123456789",
         password: "",
     });
 
-    const myPosition: MidaPosition = await myAccount.openPosition({
+    const myPosition: MidaPosition = await myAccount.createPosition({
         symbol: "#AAPL",
         type: MidaPositionType.LONG,
         lots: 3,
@@ -93,11 +117,13 @@ async function buyAppleShares (): Promise<void> {
 }
 ```
 
+</details>
+
 ### Events
-Listening the close event of a position.
+Listening the close event of an account position.
 ```typescript
 async function listenPositionCloseEvent (): Promise<void> {
-    const myAccount: MidaBrokerAccount = await MidaBrokers.login("BDSwiss", {
+    const myAccount: MidaBrokerAccount = await MidaBrokerManager.login("BDSwiss", {
         id: "123456789",
         password: "",
     });

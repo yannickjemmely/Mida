@@ -1,10 +1,10 @@
 import { MidaError } from "#errors/MidaError";
 
-export class MidaUndefinedCommodityError extends MidaError {
+export class MidaUndefinedCurrencySymbolError extends MidaError {
     private readonly _symbol: string;
 
     public constructor (symbol: string) {
-        super(`Currency "${symbol}" is undefined.`);
+        super(`Currency with symbol "${symbol}" is undefined.`);
 
         this._symbol = symbol;
     }
