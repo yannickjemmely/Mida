@@ -19,6 +19,15 @@ export class MidaBrokerManager {
         return broker;
     }
 
+    public static add (broker: MidaBroker): void {
+        if (MidaBrokerManager._brokers.has(broker.name)) {
+            // TODO: create custom error.
+            throw new Error();
+        }
+
+        MidaBrokerManager._brokers.set(broker.name, broker);
+    }
+
     public static async login (name: string, ...parameters: any[]): Promise<MidaBrokerAccount> {
         return MidaBrokerManager.getByName(name).login(...parameters);
     }
