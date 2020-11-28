@@ -14,12 +14,26 @@ Through MidaFX you can:
 ## Supported Brokers
 At this time the following brokers are supported through official and unofficial integrations.
 
+- Mida Playground
 - BDSwiss
+
+In case your broker is not supported and you want to operate with it through MidaFX, you have to integrate it.
+This is a free and open source project and contributions are part of it,
+to integrate a broker you can refer to [BROKER_INTEGRATION_API.md](docs/BROKER_INTEGRATION_API.md).
+
+In case you are a broker or a bank and you want assistance on integrating your system in MidaFX, contact
+[Vasile Pește](https://github.com/Vasile-Peste), the maintainer of this project.
 
 ## Installation
 ```console
 npm install midafx
 ```
+
+## Disclaimer
+Operating in CFDs/Forex or other assets is highly speculative and carries a high level of risk.
+It is possible to lose all your capital. These products may not be suitable for everyone and
+you should ensure that you understand the risks involved. Furthermore MidaFX is not responsible for commissions,
+swaps and taxes applied to your operations.
 
 ## Examples
 

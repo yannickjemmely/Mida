@@ -31,6 +31,10 @@ export class MidaSwingPoint {
         return this.firstPeriod.assetPair;
     }
 
+    public get symbol (): string {
+        return this.assetPair.symbol;
+    }
+
     public get firstPeriod (): MidaAssetPairPeriod {
         return this._periods[0];
     }
