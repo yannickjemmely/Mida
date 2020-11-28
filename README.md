@@ -3,7 +3,8 @@
 </p>
 <br>
 
-MidaFX is an open source framework designed to operate in markets like stocks, forex, crypto or commodities.
+MidaFX is an open source framework designed to operate in financial markets
+like stocks, forex, crypto or commodities.
 
 Through MidaFX you can:
 - Operate in any supported market and manage portfolios in real time;
