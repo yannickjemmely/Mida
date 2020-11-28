@@ -86,29 +86,65 @@ export abstract class MidaPosition {
 
     public abstract async getClosePrice (): Promise<number | undefined>;
 
+    /*
+     * Stop Loss Management
+     */
+
     public abstract async getStopLoss (): Promise<number | undefined>;
 
     public abstract async setStopLoss (stopLoss: number): Promise<void>;
+
+    public abstract async clearStopLoss (): Promise<void>;
+
+    /*
+     * Take Profit Management
+     */
     
     public abstract async getTakeProfit (): Promise<number | undefined>;
 
     public abstract async setTakeProfit (takeProfit: number): Promise<void>;
 
+    public abstract async clearTakeProfit (): Promise<void>;
+
+    /*
+     * Sell Stop Management
+     */
+
     public abstract async getSellStop (): Promise<number | undefined>;
 
     public abstract async setSellStop (sellStop: number): Promise<void>;
+
+    public abstract async clearSellStop (): Promise<void>;
+
+    /*
+     * Sell Limit Management
+     */
 
     public abstract async getSellLimit (): Promise<number | undefined>;
 
     public abstract async setSellLimit (sellLimit: number): Promise<void>;
 
+    public abstract async clearSellLimit (): Promise<void>;
+
+    /*
+     * Buy Stop Management
+     */
+
     public abstract async getBuyStop (): Promise<number | undefined>;
 
     public abstract async setBuyStop (buyStop: number): Promise<void>;
 
+    public abstract async clearBuyStop (): Promise<void>;
+
+    /*
+     * Buy Limit Management
+     */
+
     public abstract async getBuyLimit (): Promise<number | undefined>;
 
     public abstract async setBuyLimit (buyLimit: number): Promise<void>;
+
+    public abstract async clearBuyLimit (): Promise<void>;
 
     public abstract async getProfit (): Promise<number>;
 
