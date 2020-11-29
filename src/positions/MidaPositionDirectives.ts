@@ -8,7 +8,7 @@ export type MidaPositionDirectives = {
     assetPair?: MidaAssetPair;
 
     // Represents the position asset pair symbol.
-    // This must have priority over the asset pair above.
+    // This has priority over the asset pair above.
     symbol?: string;
 
     // Represents the position type.

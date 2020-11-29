@@ -4,18 +4,18 @@ import { MidaAssetPairTick } from "#assets/MidaAssetPairTick";
 import { MidaBroker } from "#brokers/MidaBroker";
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 import { MidaBrokerAccountType } from "#brokers/MidaBrokerAccountType";
-import { IMidaBrowser } from "#browsers/IMidaBrowser";
-import { IMidaBrowserTab } from "#browsers/IMidaBrowserTab";
+import { MidaBrowser } from "#browsers/MidaBrowser";
+import { MidaBrowserTab } from "#browsers/MidaBrowserTab";
 import { MidaPosition } from "#positions/MidaPosition";
 import { MidaPositionDirectives } from "#positions/MidaPositionDirectives";
 
 export class BdSwissBrokerAccount extends MidaBrokerAccount {
     // Represents the broker browser used internally to navigate the website.
-    private readonly _browser: IMidaBrowser;
+    private readonly _browser: MidaBrowser;
 
     // Represents the broker browser tabs used to perform actions on the website.
     private readonly _browserTabs: {
-        [name: string]: IMidaBrowserTab;
+        [name: string]: MidaBrowserTab;
     };
 
     // Represents the broker account last ticks.
@@ -348,7 +348,7 @@ export class BdSwissBrokerAccount extends MidaBrokerAccount {
     }
 
     private async _setupTradeTab (): Promise<void> {
-        const tradeTab: IMidaBrowserTab = this._browserTabs.tradeTab;
+        const tradeTab: MidaBrowserTab = this._browserTabs.tradeTab;
 
         await tradeTab.exposeProcedure("_onTick", (plainTick: any): void => {
             this._onTick(plainTick);

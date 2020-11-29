@@ -1,15 +1,17 @@
 import * as Path from "path";
 import * as Puppeteer from "puppeteer";
-import { IMidaBrowser } from "#browsers/IMidaBrowser";
+import { MidaBrowser } from "#browsers/MidaBrowser";
 import { ChromiumBrowserTab } from "#browsers/chromium/ChromiumBrowserTab";
 
-export class ChromiumBrowser implements IMidaBrowser {
+export class ChromiumBrowser extends MidaBrowser {
     private static readonly _shared: ChromiumBrowser = new ChromiumBrowser();
 
     private _puppeteerBrowser: Puppeteer.Browser | undefined;
     private _pid: number;
 
     public constructor () {
+        super();
+
         this._puppeteerBrowser = undefined;
         this._pid = -1;
     }
@@ -22,7 +24,7 @@ export class ChromiumBrowser implements IMidaBrowser {
         return this.pid !== -1;
     }
 
-    public async open (id?: string): Promise<void> {
+    public async open (username?: string): Promise<void> {
         if (!this._puppeteerBrowser) {
             const browserArguments: string[] = [
                 "--no-sandbox",
@@ -36,8 +38,8 @@ export class ChromiumBrowser implements IMidaBrowser {
                 "--disable-features=site-per-process",
             ];
 
-            if (id) {
-                browserArguments.push(`--user-data-dir=${Path.resolve(__dirname, id)}`);
+            if (username) {
+                browserArguments.push(`--user-data-dir=${Path.resolve(__dirname, username)}`);
             }
 
             this._puppeteerBrowser = await Puppeteer.launch({
@@ -76,11 +78,21 @@ export class ChromiumBrowser implements IMidaBrowser {
         }
     }
 
+    /*
+     **
+     *** Static Utilities
+     **
+    */
+
     public static async openTab (): Promise<ChromiumBrowserTab> {
         if (!ChromiumBrowser._shared.isOpen) {
             await ChromiumBrowser._shared.open();
         }
 
         return ChromiumBrowser._shared.openTab();
+    }
+
+    public static async close (): Promise<void> {
+        ChromiumBrowser._shared.close();
     }
 }

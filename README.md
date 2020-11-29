@@ -15,15 +15,12 @@ Through MidaFX you can:
 ## Supported Brokers
 At this time the following brokers are supported through official and unofficial integrations.
 
-- Mida Playground
 - BDSwiss
+- Mida Playground
 
 In case your broker is not supported and you want to operate with it through MidaFX, you have to integrate it.
 This is a free and open source project and contributions are part of it,
 to integrate a broker you can refer to [BROKER_INTEGRATION_API.md](docs/BROKER_INTEGRATION_API.md).
-
-In case you are a broker or a bank and you want assistance on integrating your system in MidaFX, contact
-[Vasile Pește](https://github.com/Vasile-Peste), the maintainer of this project.
 
 ## Installation
 ```console
@@ -36,13 +33,13 @@ It is possible to lose all your capital. These products may not be suitable for 
 you should ensure that you understand the risks involved. Furthermore MidaFX is not responsible for commissions,
 swaps and taxes applied to your operations.
 
-## Examples
+## Usage Examples
 
 ### Opening Positions
 Opening a long position for Bitcoin against USD.
 ```typescript
 async function buyBitcoin (): Promise<void> {
-    const myAccount: MidaBrokerAccount = await MidaBrokerManager.login("BDSwiss", {
+    const myAccount: MidaBrokerAccount = await MidaBrokerMapper.login("BDSwiss", {
         id: "123456789",
         password: "",
     });
@@ -53,25 +50,30 @@ async function buyBitcoin (): Promise<void> {
         lots: 1,
     });
     
+    // Print the open price.
     console.log(await myFirstTrade.getOpenPrice());
+    
+    // Print the actual profit.
+    console.log(await myFirstTrade.getProfit());
 }
 ```
 
 Opening a forex short position for EUR against USD, with a take profit of 20 pips.
 ```typescript
-import { EUR_USD } from "midafx/forex/MidaForexPairManager";
+import { MidaForexPairMapper } from "midafx/forex/MidaForexPairMapper";
 
 async function sellEurUsd (): Promise<void> {
-    const myAccount: MidaBrokerAccount = await MidaBrokerManager.login("BDSwiss", {
+    const myAccount: MidaBrokerAccount = await MidaBrokerMapper.login("BDSwiss", {
         id: "123456789",
         password: "",
     });
 
-    const lastTick: MidaAssetPairTick = await myAccount.getAssetPairLastTick(EUR_USD);
-    const takeProfit: number = lastTick.ask - EUR_USD.normalizePips(20);
-    
+    const forexPair: MidaForexPair = MidaForexPairMapper.getBySymbol("EUR/USD");
+    const lastTick: MidaAssetPairTick = await myAccount.getSymbolLastTick(forexPair.symbol);
+    const takeProfit: number = lastTick.ask - forexPair.normalizePips(20);
+
     const myPosition: MidaPosition = await myAccount.createPosition({
-        assetPair: EUR_USD, // A position can be created using the symbol as string or directly the predefined asset pair type like in this case.
+        symbol: forexPair.symbol,
         type: MidaPositionType.SHORT,
         lots: 1,
         takeProfit,
@@ -84,7 +86,7 @@ async function sellEurUsd (): Promise<void> {
 Opening a short position for Gold against EUR, with a stop loss and take profit.
 ```typescript
 async function sellGold (): Promise<void> {
-    const myAccount: MidaBrokerAccount = await MidaBrokerManager.login("BDSwiss", {
+    const myAccount: MidaBrokerAccount = await MidaBrokerMapper.login("BDSwiss", {
         id: "123456789",
         password: "",
     });
@@ -104,7 +106,7 @@ async function sellGold (): Promise<void> {
 Opening a long position for Apple stock, with a take profit and event listeners.
 ```typescript
 async function buyAppleShares (): Promise<void> {
-    const myAccount: MidaBrokerAccount = await MidaBrokerManager.login("BDSwiss", {
+    const myAccount: MidaBrokerAccount = await MidaBrokerMapper.login("BDSwiss", {
         id: "123456789",
         password: "",
     });
@@ -138,7 +140,7 @@ async function buyAppleShares (): Promise<void> {
 Listening the close event of an account position.
 ```typescript
 async function listenPositionCloseEvent (): Promise<void> {
-    const myAccount: MidaBrokerAccount = await MidaBrokerManager.login("BDSwiss", {
+    const myAccount: MidaBrokerAccount = await MidaBrokerMapper.login("BDSwiss", {
         id: "123456789",
         password: "",
     });

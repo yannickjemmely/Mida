@@ -1,6 +1,6 @@
 import { MidaAssetPair } from "#assets/MidaAssetPair";
 import { MidaCurrency } from "#currencies/MidaCurrency";
-import { MidaCurrencyManager } from "#currencies/MidaCurrencyManager";
+import { MidaCurrencyMapper } from "#currencies/MidaCurrencyMapper";
 
 // Represents a forex pair.
 export class MidaForexPair extends MidaAssetPair {
@@ -22,7 +22,7 @@ export class MidaForexPair extends MidaAssetPair {
         this._baseCurrency = baseCurrency;
         this._quoteCurrency = quoteCurrency;
 
-        if (quoteCurrency.equals(MidaCurrencyManager.JPY)) {
+        if (quoteCurrency.equals(MidaCurrencyMapper.getByIso("JPY"))) {
             this._pipPosition = 2;
         }
         else {

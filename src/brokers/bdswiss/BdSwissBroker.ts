@@ -1,7 +1,7 @@
 import { MidaBroker } from "#brokers/MidaBroker";
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
-import { IMidaBrowser } from "#browsers/IMidaBrowser";
-import { IMidaBrowserTab } from "#browsers/IMidaBrowserTab";
+import { MidaBrowser } from "#browsers/MidaBrowser";
+import { MidaBrowserTab } from "#browsers/MidaBrowserTab";
 import { ChromiumBrowser } from "#browsers/chromium/ChromiumBrowser";
 import { MidaBrokerAccountType } from "#brokers/MidaBrokerAccountType";
 import { BdSwissBrokerAccount } from "#brokers/bdswiss/BdSwissBrokerAccount";
@@ -11,11 +11,11 @@ export class BdSwissBroker extends MidaBroker {
     public static readonly NAME: string = "BDSwiss";
 
     // Represents the broker browser used internally to navigate the website.
-    private readonly _browser: IMidaBrowser;
+    private readonly _browser: MidaBrowser;
 
     // Represents the broker browser tabs used to perform actions on the website.
     private readonly _browserTabs: {
-        [name: string]: IMidaBrowserTab;
+        [name: string]: MidaBrowserTab;
     };
 
     public constructor () {
@@ -28,7 +28,7 @@ export class BdSwissBroker extends MidaBroker {
     public async login (account: any): Promise<MidaBrokerAccount> {
         await this._browser.open();
 
-        const loginTab: IMidaBrowserTab = await this._browser.openTab();
+        const loginTab: MidaBrowserTab = await this._browser.openTab();
         const loginUri: string = "https://dashboard.bdswiss.com/login";
         const emailInputSelector: string = "#email";
         const passwordInputSelector: string = "#password";
@@ -58,8 +58,8 @@ export class BdSwissBroker extends MidaBroker {
         return new BdSwissBrokerAccount(account.id, name, accountType, this, this._browserTabs);
     }
 
-    private async _openTradeTab (accountId: string): Promise<IMidaBrowserTab> {
-        const tradeTab: IMidaBrowserTab = await this._browser.openTab();
+    private async _openTradeTab (accountId: string): Promise<MidaBrowserTab> {
+        const tradeTab: MidaBrowserTab = await this._browser.openTab();
 
         await tradeTab.goto(`https://trade.bdswiss.com/?embedded=true&login=${accountId}`);
 
