@@ -2,7 +2,7 @@ import { MidaCurrency } from "#currencies/MidaCurrency";
 import { MidaUndefinedCurrencyIsoError } from "#currencies/MidaUndefinedCurrencyIsoError";
 import { MidaUndefinedCurrencySymbolError } from "#currencies/MidaUndefinedCurrencySymbolError";
 
-const CURRENCIES_FILE_PATH: string = "!/assets/currencies.json";
+const CURRENCIES_FILE_PATH: string = "!/src/currencies/currencies.json";
 
 export class MidaCurrencyMapper {
     private static readonly _currencies: Map<string, MidaCurrency> = require(CURRENCIES_FILE_PATH).reduce(

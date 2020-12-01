@@ -8,6 +8,9 @@ export type MidaAdvisorOptions = {
     // Represents the operated asset pair.
     assetPair: MidaAssetPair;
 
+    // Represents the advisor name.
+    name?: string;
+
     // Indicates if the advisors must be operative after being instantiated.
     operative?: boolean;
 

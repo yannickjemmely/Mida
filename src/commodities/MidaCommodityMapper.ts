@@ -1,7 +1,7 @@
 import { MidaCommodity } from "#commodities/MidaCommodity";
 import { MidaUndefinedCommodityError } from "#commodities/MidaUndefinedCommodityError";
 
-const COMMODITIES_FILE_PATH: string = "!/assets/commodities.json";
+const COMMODITIES_FILE_PATH: string = "!/src/commodities/commodities.json";
 
 export class MidaCommodityMapper {
     private static readonly _commodities: Map<string, MidaCommodity> = require(COMMODITIES_FILE_PATH).reduce(

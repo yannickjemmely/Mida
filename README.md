@@ -20,7 +20,7 @@ At this time the following brokers are supported through official and unofficial
 
 In case your broker is not supported and you want to operate with it through MidaFX, you have to integrate it.
 This is a free and open source project and contributions are part of it,
-to integrate a broker you can refer to [BROKER_INTEGRATION_API.md](docs/BROKER_INTEGRATION_API.md).
+to integrate a broker you can refer to [BROKER_INTEGRATION_API.md](docs/BROKER_INTEGRATION_API.md) or create an issue.
 
 ## Installation
 ```console
