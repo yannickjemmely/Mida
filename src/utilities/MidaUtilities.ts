@@ -16,11 +16,9 @@ export class MidaUtilities {
         return Math.floor(Math.abs((sanitizedLeftDate - sanitizedRightDate) / (1000 * 60 * 60 * 24)));
     }
 
-    // Used to create a Promise that is resolved after a given number of milliseconds.
+    // Used to create a Promise, resolved after a given number of milliseconds.
     public static async wait (milliseconds: number): Promise<void> {
-        await new Promise((resolve: (value?: any) => void): void => {
-            setTimeout(resolve, milliseconds);
-        });
+        await new Promise((resolve: (value?: any) => void): any => setTimeout(resolve, milliseconds));
     }
 
     // Used to shuffle an array.

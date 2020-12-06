@@ -1,25 +1,19 @@
-import { MidaAssetPair } from "#assets/MidaAssetPair";
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
-import { MidaCurrency } from "#currencies/MidaCurrency";
+import { MidaPositionParameters } from "#positions/MidaPositionParameters";
 import { MidaPositionStatusType } from "#positions/MidaPositionStatusType";
 import { MidaPositionType } from "#positions/MidaPositionType";
-import { MidaObservable } from "#utilities/observable/MidaObservable";
-import { MidaEvent } from "#events/MidaEvent";
-
-// Note: an implementation to be considered valid must:
-// 1. Have each method implemented with the expected results as output.
-// 2. Have each method with an average response time of at least 5500ms.
-// 3. Support the following events: "cancel", "open", "tick" and "close".
-
-// Implementations are free to add new events and events as long they are mentioned/documented for its users.
+import { IMidaEquatable } from "#utilities/equatable/IMidaEquatable";
 
 // Represents a position.
-export abstract class MidaPosition {
-    // Represents the position id.
-    private readonly _id: string;
+export abstract class MidaPosition implements IMidaEquatable {
+    // Represents the position ticket.
+    private readonly _ticket: number;
 
-    // Represents the position asset pair.
-    private readonly _assetPair: MidaAssetPair;
+    // Represents the position creation time.
+    private readonly _creationTime: Date;
+
+    // Represents the position symbol.
+    private readonly _symbol: string;
 
     // Represents the position type.
     private readonly _type: MidaPositionType;
@@ -33,25 +27,26 @@ export abstract class MidaPosition {
     // Represents the position tags.
     private readonly _tags: Set<string>;
 
-    // Represents the position event listeners.
-    private readonly _eventListeners: MidaObservable;
-
-    protected constructor (id: string, assetPair: MidaAssetPair, type: MidaPositionType, lots: number, account: MidaBrokerAccount, tags: string[] = []) {
-        this._id = id;
-        this._assetPair = assetPair;
+    protected constructor ({ ticket, creationTime, symbol, type, lots, account, tags = [], }: MidaPositionParameters) {
+        this._ticket = ticket;
+        this._creationTime = new Date(creationTime);
+        this._symbol = symbol;
         this._type = type;
         this._lots = lots;
         this._account = account;
         this._tags = new Set(tags);
-        this._eventListeners = new MidaObservable();
     }
 
-    public get id (): string {
-        return this._id;
+    public get ticket (): number {
+        return this._ticket;
     }
 
-    public get assetPair (): MidaAssetPair {
-        return this._assetPair;
+    public get creationTime (): Date {
+        return new Date(this._creationTime);
+    }
+
+    public get symbol (): string {
+        return this._symbol;
     }
 
     public get type (): MidaPositionType {
@@ -66,17 +61,13 @@ export abstract class MidaPosition {
         return this._account;
     }
 
-    public get tags (): readonly string[] {
+    public get tags (): string[] {
         return [ ...this._tags, ];
-    }
-
-    public get symbol (): string {
-        return this.assetPair.symbol;
     }
 
     public abstract async getStatus (): Promise<MidaPositionStatusType>;
 
-    public abstract async getLots (): Promise<number>;
+    public abstract async getCancelTime (): Promise<Date | undefined>;
 
     public abstract async getOpenTime (): Promise<Date | undefined>;
 
@@ -86,65 +77,53 @@ export abstract class MidaPosition {
 
     public abstract async getClosePrice (): Promise<number | undefined>;
 
-    /*
-     * Stop Loss Management
-     */
-
+    // <stop-loss-management>
     public abstract async getStopLoss (): Promise<number | undefined>;
 
     public abstract async setStopLoss (stopLoss: number): Promise<void>;
 
     public abstract async clearStopLoss (): Promise<void>;
+    // </stop-loss-management>
 
-    /*
-     * Take Profit Management
-     */
-    
+    // <take-profit-management>
     public abstract async getTakeProfit (): Promise<number | undefined>;
 
     public abstract async setTakeProfit (takeProfit: number): Promise<void>;
 
     public abstract async clearTakeProfit (): Promise<void>;
+    // </take-profit-management>
 
-    /*
-     * Sell Stop Management
-     */
-
+    // <sell-stop-management>
     public abstract async getSellStop (): Promise<number | undefined>;
 
     public abstract async setSellStop (sellStop: number): Promise<void>;
 
     public abstract async clearSellStop (): Promise<void>;
+    // </sell-stop-management>
 
-    /*
-     * Sell Limit Management
-     */
-
+    // <sell-limit-management>
     public abstract async getSellLimit (): Promise<number | undefined>;
 
     public abstract async setSellLimit (sellLimit: number): Promise<void>;
 
     public abstract async clearSellLimit (): Promise<void>;
+    // </sell-limit-management>
 
-    /*
-     * Buy Stop Management
-     */
-
+    // <buy-stop-management>
     public abstract async getBuyStop (): Promise<number | undefined>;
 
     public abstract async setBuyStop (buyStop: number): Promise<void>;
 
     public abstract async clearBuyStop (): Promise<void>;
+    // </buy-stop-management>
 
-    /*
-     * Buy Limit Management
-     */
-
+    // <buy-limit-management>
     public abstract async getBuyLimit (): Promise<number | undefined>;
 
     public abstract async setBuyLimit (buyLimit: number): Promise<void>;
 
     public abstract async clearBuyLimit (): Promise<void>;
+    // </buy-limit-management>
 
     public abstract async getProfit (): Promise<number>;
 
@@ -152,7 +131,7 @@ export abstract class MidaPosition {
 
     public abstract async getSwap (): Promise<number>;
 
-    public abstract async getCurrency (): Promise<MidaCurrency>;
+    public abstract async getCurrency (): Promise<string>;
 
     public abstract async getLeverage (): Promise<undefined>;
 
@@ -172,19 +151,27 @@ export abstract class MidaPosition {
         this._tags.delete(tag);
     }
 
-    public addEventListener (type: string, listener: (event: MidaEvent) => void): string {
-        return this._eventListeners.addEventListener(type, listener);
-    }
-
-    public removeEventListener (uuid: string): void {
-        this._eventListeners.removeEventListener(uuid);
-    }
-
     public async isMarketOpen (): Promise<boolean> {
         return this._account.isMarketOpen(this.symbol);
     }
 
-    protected notifyEvent (type: string, event: MidaEvent): void {
-        this._eventListeners.notifyEvent(type, event);
+    public async isPending (): Promise<boolean> {
+        return (await this.getStatus()) === MidaPositionStatusType.PENDING_OPEN;
+    }
+
+    public async isCanceled (): Promise<boolean> {
+        return (await this.getStatus()) === MidaPositionStatusType.CANCELED;
+    }
+
+    public async isOpen (): Promise<boolean> {
+        return (await this.getStatus()) === MidaPositionStatusType.OPEN;
+    }
+
+    public async isClosed (): Promise<boolean> {
+        return (await this.getStatus()) === MidaPositionStatusType.CLOSED;
+    }
+
+    public equals (object: any): boolean {
+        return object instanceof MidaPosition && object._ticket === this._ticket;
     }
 }

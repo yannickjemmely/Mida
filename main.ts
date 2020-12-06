@@ -2,6 +2,8 @@ require("module-alias/register");
 //require("#/MidaFX");
 
 /*
+
+ */
 const fs: any = require("fs");
 const path: string = "series/EURUSD/ticks/2019/01.csv";
 

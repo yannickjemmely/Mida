@@ -1,14 +1,26 @@
 {
     "rules": {
-        "array-type": [ true, "array" ],
+        "array-type": [
+            true,
+            "array"
+        ],
         "class-name": true,
         "curly": true,
-        "cyclomatic-complexity": [ true, 10 ],
+        "cyclomatic-complexity": [
+            true,
+            10
+        ],
         "deprecation": true,
         "encoding": true,
         "eofline": true,
-        "interface-name": [ true, "always-prefix" ],
-        "max-classes-per-file": [ true, 10 ],
+        "interface-name": [
+            true,
+            "always-prefix"
+        ],
+        "max-classes-per-file": [
+            true,
+            10
+        ],
         "member-access": true,
         "no-default-export": true,
         "no-duplicate-variable": true,
@@ -18,10 +30,16 @@
         "no-string-literal": true,
         "no-switch-case-fall-through": true,
         "no-var-keyword": true,
-        "one-variable-per-declaration": [ true, "ignore-for-loop" ],
+        "one-variable-per-declaration": [
+            true,
+            "ignore-for-loop"
+        ],
         "prefer-const": true,
         "restrict-plus-operands": true,
-        "semicolon": [ true, "always" ],
+        "semicolon": [
+            true,
+            "always"
+        ],
         "space-before-function-paren": true,
         "static-this": true,
         "trailing-comma": [

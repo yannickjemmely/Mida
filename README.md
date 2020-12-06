@@ -3,24 +3,14 @@
 </p>
 <br>
 
-MidaFX is an open source framework designed to operate in financial markets
+MidaFX is an open source framework designed for trading in financial markets
 like stocks, forex, crypto or commodities.
 
 Through MidaFX you can:
-- Operate in any supported market and manage portfolios in real time;
-- Execute, test and automate investment and trading strategies by implementing custom expert advisors;
+- Trade in any supported market;
+- Execute and automate investment and trading strategies by creating custom expert advisors;
 - Analyze markets and prices movements through dedicated analysis interfaces;
 - Backtest and access time series covering the last decades.
-
-## Supported Brokers
-At this time the following brokers are supported through official and unofficial integrations.
-
-- BDSwiss
-- Mida Playground
-
-In case your broker is not supported and you want to operate with it through MidaFX, you have to integrate it.
-This is a free and open source project and contributions are part of it,
-to integrate a broker you can refer to [BROKER_INTEGRATION_API.md](docs/BROKER_INTEGRATION_API.md) or create an issue.
 
 ## Installation
 ```console
@@ -29,8 +19,8 @@ npm install midafx
 
 ## Disclaimer
 Operating in CFDs/Forex or other assets is highly speculative and carries a high level of risk.
-It is possible to lose all your capital. These products may not be suitable for everyone and
-you should ensure that you understand the risks involved. Furthermore MidaFX is not responsible for commissions,
+It is possible to lose all your capital. These products may not be suitable for everyone,
+you should ensure that you understand the risks involved. Furthermore, MidaFX is not responsible for commissions,
 swaps and taxes applied to your operations.
 
 ## Usage Examples

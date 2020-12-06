@@ -8,18 +8,12 @@
         "start": "npm run build && node ./build/main.js"
     },
     "dependencies": {
-        "module-alias": "2.2.2",
-        "puppeteer": "2.1.1",
-        "uuid": "8.0.0",
-        "axios": "0.19.2",
-        "tulind": "0.8.18"
+        "module-alias": "2.2.2"
     },
     "devDependencies": {
         "typescript": "3.7.2",
         "tslint": "5.18.0",
-        "@types/node": "12.7.2",
-        "@types/puppeteer": "1.19.1",
-        "@types/uuid": "7.0.3"
+        "@types/node": "12.7.2"
     },
     "_moduleAliases": {
         "!": ".",

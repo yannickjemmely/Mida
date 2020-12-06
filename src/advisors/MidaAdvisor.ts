@@ -1,4 +1,4 @@
-import { MidaAdvisorOptions } from "#advisors/MidaAdvisorOptions";
+import { MidaAdvisorParameters } from "#advisors/MidaAdvisorParameters";
 import { MidaPosition } from "#positions/MidaPosition";
 import { MidaPositionDirectives } from "#positions/MidaPositionDirectives";
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
@@ -7,7 +7,7 @@ import { MidaAssetPairTick } from "#assets/MidaAssetPairTick";
 
 export abstract class MidaAdvisor {
     // Represents the advisor options.
-    private readonly _options: MidaAdvisorOptions;
+    private readonly _options: MidaAdvisorParameters;
 
     // Represents the broker account used to operate.
     private readonly _brokerAccount: MidaBrokerAccount;
@@ -30,7 +30,7 @@ export abstract class MidaAdvisor {
     // Represents the queue of the async captured ticks.
     private readonly _asyncTicks: MidaAssetPairTick[];
 
-    protected constructor (options: MidaAdvisorOptions) {
+    protected constructor (options: MidaAdvisorParameters) {
         this._options = options;
         this._brokerAccount = options.brokerAccount;
         this._assetPair = options.assetPair;
@@ -47,7 +47,7 @@ export abstract class MidaAdvisor {
         }
     }
 
-    public get options (): MidaAdvisorOptions {
+    public get options (): MidaAdvisorParameters {
         return this._options;
     }
 

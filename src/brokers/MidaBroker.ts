@@ -1,5 +1,4 @@
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
-import { MidaBrokerMapper } from "#brokers/MidaBrokerMapper";
 import { GenericObject } from "#utilities/GenericObject";
 
 // Represents a broker.
@@ -15,15 +14,5 @@ export abstract class MidaBroker {
         return this._name;
     }
 
-    public abstract async login (descriptor: GenericObject): Promise<MidaBrokerAccount>;
-
-    /*
-     **
-     *** Static Utilities
-     **
-    */
-
-    public static async login (name: string, descriptor: GenericObject): Promise<MidaBrokerAccount> {
-        return MidaBrokerMapper.getByName(name).login(descriptor);
-    }
+    public abstract async login (credentials: GenericObject): Promise<MidaBrokerAccount>;
 }

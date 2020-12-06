@@ -8,20 +8,51 @@
         "module": "commonjs",
         "outDir": "build",
         "paths": {
-            "!/*": [ "*" ],
-            "#/*": [ "src/*" ],
-            "#advisors/*": [ "src/advisors/*" ],
-            "#analysis/*": [ "src/analysis/*" ],
-            "#assets/*": [ "src/assets/*" ],
-            "#brokers/*": [ "src/brokers/*" ],
-            "#browsers/*": [ "src/browsers/*" ],
-            "#commodities/*": [ "src/commodities/*" ],
-            "#currencies/*": [ "src/currencies/*" ],
-            "#errors/*": [ "src/errors/*" ],
-            "#events/*": [ "src/events/*" ],
-            "#forex/*": [ "src/forex/*" ],
-            "#positions/*": [ "src/positions/*" ],
-            "#utilities/*": [ "src/utilities/*" ]
+            "!/*": [
+                "*"
+            ],
+            "#/*": [
+                "src/*"
+            ],
+            "#advisors/*": [
+                "src/advisors/*"
+            ],
+            "#analysis/*": [
+                "src/analysis/*"
+            ],
+            "#assets/*": [
+                "src/assets/*"
+            ],
+            "#brokers/*": [
+                "src/brokers/*"
+            ],
+            "#browsers/*": [
+                "src/browsers/*"
+            ],
+            "#commodities/*": [
+                "src/commodities/*"
+            ],
+            "#currencies/*": [
+                "src/currencies/*"
+            ],
+            "#errors/*": [
+                "src/errors/*"
+            ],
+            "#events/*": [
+                "src/events/*"
+            ],
+            "#forex/*": [
+                "src/forex/*"
+            ],
+            "#positions/*": [
+                "src/positions/*"
+            ],
+            "#symbols/*": [
+                "src/symbols/*"
+            ],
+            "#utilities/*": [
+                "src/utilities/*"
+            ]
         },
         "removeComments": true,
         "sourceMap": true,
