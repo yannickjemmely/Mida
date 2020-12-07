@@ -3,9 +3,10 @@ import { MidaBrokerAccountType } from "#brokers/MidaBrokerAccountType";
 import { MidaPosition } from "#positions/MidaPosition";
 import { MidaPositionDirectives } from "#positions/MidaPositionDirectives";
 import { MidaPositionStatusType } from "#positions/MidaPositionStatusType";
-import { MidaQuotationPriceType } from "#/quotations/MidaQuotationPriceType";
-import { MidaCandlestick } from "#/charts/candlesticks/MidaCandlestick";
-import { MidaTick } from "#/ticks/MidaTick";
+import { MidaSymbolQuotationPriceType } from "#/quotations/MidaSymbolQuotationPriceType";
+import { MidaFinancialCandle } from "#/charts/candlesticks/MidaFinancialCandle";
+import { MidaSymbolTick } from "#/ticks/MidaSymbolTick";
+import { MidaSymbolDescriptor } from "#symbols/MidaSymbolDescriptor";
 
 // Represents the account of a broker.
 export abstract class MidaBrokerAccount {
@@ -56,6 +57,8 @@ export abstract class MidaBrokerAccount {
 
     public abstract async getPositions (): Promise<MidaPosition[]>;
 
+    public abstract async getAvailableSymbols (): Promise<MidaSymbolDescriptor[]>;
+
     public abstract async supportsSymbol (symbol: string): Promise<boolean>;
 
     public abstract async isMarketOpen (symbol: string): Promise<boolean>;
@@ -64,20 +67,18 @@ export abstract class MidaBrokerAccount {
 
     public abstract async getLeverage (symbol: string): Promise<any>;
 
-    public abstract async getCandlesticks (symbol: string, priceType: MidaQuotationPriceType): Promise<MidaCandlestick[]>;
+    public abstract async getCandlesticks (symbol: string, priceType: MidaSymbolQuotationPriceType): Promise<MidaFinancialCandle[]>;
 
-    public abstract async getTicks (symbol: string): Promise<MidaTick[]>;
+    public abstract async getTicks (symbol: string): Promise<MidaSymbolTick[]>;
 
-    public abstract async getLastTick (symbol: string): Promise<MidaTick>;
+    public abstract async getLastTick (symbol: string): Promise<MidaSymbolTick>;
 
-    public async getOpenPositions (): Promise<MidaPosition[]> {
+    public async getPositionsByStatus (status: MidaPositionStatusType): Promise<MidaPosition[]> {
         const positions: MidaPosition[] = await this.getPositions();
         const openPositions: MidaPosition[] = [];
 
         await Promise.all(positions.map(async (position: MidaPosition): Promise<void> => {
-            const status: MidaPositionStatusType = await position.getStatus();
-
-            if (status === MidaPositionStatusType.OPEN) {
+            if ((await position.getStatus()) === status) {
                 openPositions.push(position);
             }
         }));
@@ -85,11 +86,21 @@ export abstract class MidaBrokerAccount {
         return openPositions;
     }
 
+    public async getOpenPositions (): Promise<MidaPosition[]> {
+        return this.getPositionsByStatus(MidaPositionStatusType.OPEN);
+    }
+
     public async getUsedMargin (): Promise<number> {
         return (await this.getMargin()) - (await this.getFreeMargin());
     }
 
     public async getMarginLevel (): Promise<number> {
-        return (await this.getEquity()) / (await this.getUsedMargin());
+        const usedMargin: number = await this.getUsedMargin();
+
+        if (usedMargin === 0) {
+            return NaN;
+        }
+
+        return (await this.getEquity()) / usedMargin;
     }
 }

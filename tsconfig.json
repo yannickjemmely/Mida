@@ -38,8 +38,8 @@
             "#errors/*": [
                 "src/errors/*"
             ],
-            "#events/*": [
-                "src/events/*"
+            "#quotations/*": [
+                "src/quotations/*"
             ],
             "#forex/*": [
                 "src/forex/*"

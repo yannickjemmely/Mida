@@ -1,21 +1,22 @@
-import { MidaQuotation } from "#/quotations/MidaQuotation";
+import { MidaSymbolQuotation } from "#/quotations/MidaSymbolQuotation";
 import { IMidaEquatable } from "#utilities/equatable/IMidaEquatable";
+import { IMidaCloneable } from "#utilities/cloneable/IMidaCloneable";
 
-// Represents a tick.
-export class MidaTick implements IMidaEquatable {
+// Represents the tick of a symbol.
+export class MidaSymbolTick implements IMidaEquatable, IMidaCloneable {
     // Represents the tick symbol.
-    private readonly _quotation: MidaQuotation;
+    private readonly _quotation: MidaSymbolQuotation;
 
     // Represents the tick time.
     private readonly _time: Date;
 
-    public constructor (quotation: MidaQuotation, time: Date) {
-        this._quotation = quotation;
+    public constructor (quotation: MidaSymbolQuotation, time: Date) {
+        this._quotation = quotation.clone();
         this._time = new Date(time);
     }
 
-    public get quotation (): MidaQuotation {
-        return this._quotation;
+    public get quotation (): MidaSymbolQuotation {
+        return this._quotation.clone();
     }
 
     public get time (): Date {
@@ -40,10 +41,14 @@ export class MidaTick implements IMidaEquatable {
 
     public equals (object: any): boolean {
         return (
-            object instanceof MidaTick
+            object instanceof MidaSymbolTick
             && this._quotation.equals(object._quotation)
             && this._time.valueOf() === object._time.valueOf()
         );
+    }
+
+    public clone (): any {
+        return new MidaSymbolTick(this._quotation, this._time);
     }
 
     /*
@@ -52,8 +57,8 @@ export class MidaTick implements IMidaEquatable {
      **
     */
 
-    public static getTicksInTimeRange (ticks: MidaTick[], from: Date, to: Date): MidaTick[] {
-        const ticksInTimeRange: MidaTick[] = [];
+    public static getTicksInTimeRange (ticks: MidaSymbolTick[], from: Date, to: Date): MidaSymbolTick[] {
+        const ticksInTimeRange: MidaSymbolTick[] = [];
 
         for (const tick of ticks) {
             const time: Date = tick.time;

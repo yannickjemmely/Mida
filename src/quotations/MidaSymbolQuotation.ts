@@ -1,9 +1,9 @@
-import { MidaQuotationPriceType } from "#/quotations/MidaQuotationPriceType";
+import { MidaSymbolQuotationPriceType } from "#quotations/MidaSymbolQuotationPriceType";
 import { IMidaEquatable } from "#utilities/equatable/IMidaEquatable";
 import { IMidaCloneable } from "#utilities/cloneable/IMidaCloneable";
 
-// Represents a quotation.
-export class MidaQuotation implements IMidaEquatable, IMidaCloneable {
+// Represents the quotation of a symbol.
+export class MidaSymbolQuotation implements IMidaEquatable, IMidaCloneable {
     // Represents the quotation symbol.
     private readonly _symbol: string;
 
@@ -45,14 +45,14 @@ export class MidaQuotation implements IMidaEquatable, IMidaCloneable {
 
     public equals (object: any): boolean {
         return (
-            object instanceof MidaQuotation
-            && this._symbol === object.symbol
+            object instanceof MidaSymbolQuotation
+            && this._symbol === object._symbol
             && this._time.valueOf() === object._time.valueOf()
         );
     }
 
     public clone (): any {
-        return new MidaQuotation(this._symbol, this._time, this._bid, this._ask);
+        return new MidaSymbolQuotation(this._symbol, this._time, this._bid, this._ask);
     }
 
     /*
@@ -61,15 +61,29 @@ export class MidaQuotation implements IMidaEquatable, IMidaCloneable {
      **
     */
 
-    public static getQuotationsOpenPrice (quotations: MidaQuotation[], priceType: MidaQuotationPriceType): number {
+    public static getQuotationsInTimeRange (quotations: MidaSymbolQuotation[], from: Date, to: Date): MidaSymbolQuotation[] {
+        const quotationsInTimeRange: MidaSymbolQuotation[] = [];
+
+        for (const quotation of quotations) {
+            const time: Date = quotation.time;
+
+            if (time >= from && time <= to) {
+                quotationsInTimeRange.push(quotation);
+            }
+        }
+
+        return quotationsInTimeRange;
+    }
+
+    public static getQuotationsOpenPrice (quotations: MidaSymbolQuotation[], priceType: MidaSymbolQuotationPriceType): number {
         return quotations[0][priceType];
     }
 
-    public static getQuotationsClosePrice (quotations: MidaQuotation[], priceType: MidaQuotationPriceType): number {
+    public static getQuotationsClosePrice (quotations: MidaSymbolQuotation[], priceType: MidaSymbolQuotationPriceType): number {
         return quotations[quotations.length - 1][priceType];
     }
 
-    public static getQuotationsHighestPrice (quotations: MidaQuotation[], priceType: MidaQuotationPriceType): number {
+    public static getQuotationsHighestPrice (quotations: MidaSymbolQuotation[], priceType: MidaSymbolQuotationPriceType): number {
         let highestPrice: number = quotations[0][priceType];
 
         for (let i: number = 1; i < quotations.length; ++i) {
@@ -81,7 +95,7 @@ export class MidaQuotation implements IMidaEquatable, IMidaCloneable {
         return highestPrice;
     }
 
-    public static getQuotationsLowestPrice (quotations: MidaQuotation[], priceType: MidaQuotationPriceType): number {
+    public static getQuotationsLowestPrice (quotations: MidaSymbolQuotation[], priceType: MidaSymbolQuotationPriceType): number {
         let lowestPrice: number = quotations[0][priceType];
 
         for (let i: number = 1; i < quotations.length; ++i) {
@@ -93,7 +107,7 @@ export class MidaQuotation implements IMidaEquatable, IMidaCloneable {
         return lowestPrice;
     }
 
-    public static quotationsHaveSameSymbol (quotations: MidaQuotation[]): boolean {
+    public static quotationsHaveSameSymbol (quotations: MidaSymbolQuotation[]): boolean {
         const firstSymbol: string = quotations[0].symbol;
 
         for (let i: number = 1; i < quotations.length; ++i) {

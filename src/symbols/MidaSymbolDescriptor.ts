@@ -1,4 +1,4 @@
-// Represents a symbol descriptor.
+// Represents the descriptor of a symbol.
 export class MidaSymbolDescriptor {
     // Represents the descriptor symbol.
     private readonly _symbol: string;
