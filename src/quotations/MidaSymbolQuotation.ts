@@ -1,3 +1,4 @@
+import { MidaSymbolQuotationParameters } from "#quotations/MidaSymbolQuotationParameters";
 import { MidaSymbolQuotationPriceType } from "#quotations/MidaSymbolQuotationPriceType";
 import { IMidaEquatable } from "#utilities/equatable/IMidaEquatable";
 import { IMidaCloneable } from "#utilities/cloneable/IMidaCloneable";
@@ -16,7 +17,7 @@ export class MidaSymbolQuotation implements IMidaEquatable, IMidaCloneable {
     // Represents the quotation ask price.
     private readonly _ask: number;
 
-    public constructor (symbol: string, time: Date, bid: number, ask: number) {
+    public constructor ({ symbol, time, bid, ask }: MidaSymbolQuotationParameters) {
         this._symbol = symbol;
         this._time = new Date(time);
         this._bid = bid;
@@ -52,7 +53,12 @@ export class MidaSymbolQuotation implements IMidaEquatable, IMidaCloneable {
     }
 
     public clone (): any {
-        return new MidaSymbolQuotation(this._symbol, this._time, this._bid, this._ask);
+        return new MidaSymbolQuotation({
+            symbol: this._symbol,
+            time: this._time,
+            bid: this._bid,
+            ask: this._ask,
+        });
     }
 
     /*

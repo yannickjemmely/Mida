@@ -1,3 +1,5 @@
+import { MidaSymbolPeriod } from "#quotations/MidaSymbolPeriod";
+
 require("module-alias/register");
 //require("#/MidaFX");
 
@@ -23,3 +25,6 @@ for (let i: number = 0; i < lines.length - 1; ++i) {
 
 fs.writeFileSync("series/EURUSD/ticks/2019/01a.csv", sanitized);
 //*/
+
+const a: any = {};
+const period: MidaSymbolPeriod = new MidaSymbolPeriod({...a});

@@ -6,7 +6,9 @@ import { MidaPositionStatusType } from "#positions/MidaPositionStatusType";
 import { MidaSymbolQuotationPriceType } from "#/quotations/MidaSymbolQuotationPriceType";
 import { MidaFinancialCandle } from "#/charts/candlesticks/MidaFinancialCandle";
 import { MidaSymbolTick } from "#/ticks/MidaSymbolTick";
-import { MidaSymbolDescriptor } from "#symbols/MidaSymbolDescriptor";
+import { MidaSymbol } from "#symbols/MidaSymbol";
+import { MidaSymbolPeriodType } from "#quotations/MidaSymbolPeriodType";
+import { MidaSymbolPeriod } from "#quotations/MidaSymbolPeriod";
 
 // Represents the account of a broker.
 export abstract class MidaBrokerAccount {
@@ -57,23 +59,25 @@ export abstract class MidaBrokerAccount {
 
     public abstract async getPositions (): Promise<MidaPosition[]>;
 
-    public abstract async getAvailableSymbols (): Promise<MidaSymbolDescriptor[]>;
+    public abstract async getAvailableSymbols (): Promise<MidaSymbol[]>;
 
-    public abstract async supportsSymbol (symbol: string): Promise<boolean>;
-
-    public abstract async isMarketOpen (symbol: string): Promise<boolean>;
+    public abstract async isSymbolMarketOpen (symbol: string): Promise<boolean>;
 
     public abstract async getCurrency (): Promise<string>;
 
-    public abstract async getLeverage (symbol: string): Promise<any>;
+    public abstract async getSymbolLeverage (symbol: string): Promise<any>;
 
-    public abstract async getCandlesticks (symbol: string, priceType: MidaSymbolQuotationPriceType): Promise<MidaFinancialCandle[]>;
+    public abstract async getSymbolQuotationPeriods (
+        symbol: string,
+        timeframe: MidaSymbolPeriodType,
+        priceType?: MidaSymbolQuotationPriceType,
+        from?: Date,
+        to?: Date,
+    ): Promise<MidaSymbolPeriod[]>;
 
-    public abstract async getTicks (symbol: string): Promise<MidaSymbolTick[]>;
+    public abstract async getSymbolLastTick (symbol: string): Promise<MidaSymbolTick[]>;
 
-    public abstract async getLastTick (symbol: string): Promise<MidaSymbolTick>;
-
-    public async getPositionsByStatus (status: MidaPositionStatusType): Promise<MidaPosition[]> {
+    public async getTradesByStatus (status: MidaPositionStatusType): Promise<MidaPosition[]> {
         const positions: MidaPosition[] = await this.getPositions();
         const openPositions: MidaPosition[] = [];
 
@@ -86,8 +90,8 @@ export abstract class MidaBrokerAccount {
         return openPositions;
     }
 
-    public async getOpenPositions (): Promise<MidaPosition[]> {
-        return this.getPositionsByStatus(MidaPositionStatusType.OPEN);
+    public async getOpenTrades (): Promise<MidaPosition[]> {
+        return this.getTradesByStatus(MidaPositionStatusType.OPEN);
     }
 
     public async getUsedMargin (): Promise<number> {

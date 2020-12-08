@@ -1,8 +1,8 @@
 import { MidaSymbolQuotation } from "#quotations/MidaSymbolQuotation";
 import { MidaSymbolQuotationPriceType } from "#quotations/MidaSymbolQuotationPriceType";
 
-// Represents the parameters of the symbol quotation period constructor.
-export type MidaSymbolQuotationPeriodParameters = {
+// Represents the parameters of the symbol period constructor.
+export type MidaSymbolPeriodParameters = {
     symbol: string;
     startTime: Date;
     priceType: MidaSymbolQuotationPriceType;
@@ -11,6 +11,6 @@ export type MidaSymbolQuotationPeriodParameters = {
     low: number;
     high: number;
     volume: number;
-    timeframe: number;
+    type: number;
     quotations?: MidaSymbolQuotation[];
 };

@@ -1,12 +1,12 @@
-// Represents the descriptor of a symbol.
-export class MidaSymbolDescriptor {
-    // Represents the descriptor symbol.
+// Represents a symbol.
+export class MidaSymbol {
+    // Represents the symbol as string.
     private readonly _symbol: string;
 
-    // Represents the descriptor symbol description.
+    // Represents the symbol description.
     private readonly _description: string;
 
-    // Represents the descriptor symbol digits.
+    // Represents the symbol digits.
     private readonly _digits: number;
 
     public constructor (symbol: string, description: string, digits: number) {
@@ -15,15 +15,15 @@ export class MidaSymbolDescriptor {
         this._digits = digits;
     }
 
-    public get symbol (): string {
-        return this._symbol;
-    }
-
     public get description (): string {
         return this._description;
     }
 
     public get digits (): number {
         return this._digits;
+    }
+
+    public toString (): string {
+        return this._symbol;
     }
 }
