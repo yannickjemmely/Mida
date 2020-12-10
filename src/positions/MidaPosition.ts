@@ -142,23 +142,7 @@ export abstract class MidaPosition implements IMidaEquatable {
     }
 
     public async isMarketOpen (): Promise<boolean> {
-        return this._account.isMarketOpen(this.symbol);
-    }
-
-    public async isPending (): Promise<boolean> {
-        return (await this.getStatus()) === MidaPositionStatusType.PENDING;
-    }
-
-    public async isCanceled (): Promise<boolean> {
-        return (await this.getStatus()) === MidaPositionStatusType.CANCELED;
-    }
-
-    public async isOpen (): Promise<boolean> {
-        return (await this.getStatus()) === MidaPositionStatusType.OPEN;
-    }
-
-    public async isClosed (): Promise<boolean> {
-        return (await this.getStatus()) === MidaPositionStatusType.CLOSED;
+        return this._account.isSymbolMarketOpen(this.symbol);
     }
 
     public equals (object: any): boolean {
