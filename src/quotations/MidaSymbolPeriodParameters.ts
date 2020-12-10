@@ -11,6 +11,6 @@ export type MidaSymbolPeriodParameters = {
     low: number;
     high: number;
     volume: number;
-    type: number;
+    timeframe: number;
     quotations?: MidaSymbolQuotation[];
 };

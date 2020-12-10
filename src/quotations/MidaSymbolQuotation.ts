@@ -3,7 +3,7 @@ import { MidaSymbolQuotationPriceType } from "#quotations/MidaSymbolQuotationPri
 import { IMidaEquatable } from "#utilities/equatable/IMidaEquatable";
 import { IMidaCloneable } from "#utilities/cloneable/IMidaCloneable";
 
-// Represents the quotation of a symbol.
+// Represents a symbol quotation.
 export class MidaSymbolQuotation implements IMidaEquatable, IMidaCloneable {
     // Represents the quotation symbol.
     private readonly _symbol: string;
@@ -40,8 +40,12 @@ export class MidaSymbolQuotation implements IMidaEquatable, IMidaCloneable {
         return this._ask;
     }
 
+    public get mid (): number {
+        return (this._bid + this._ask) / 2;
+    }
+
     public get spread (): number {
-        return this._ask - this._bid;
+        return Math.abs(this._ask - this._bid);
     }
 
     public equals (object: any): boolean {

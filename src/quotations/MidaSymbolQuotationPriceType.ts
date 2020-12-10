@@ -1,4 +1,3 @@
-// Represents the price types of a quotation.
 export enum MidaSymbolQuotationPriceType {
     // Represents the bid price type.
     BID = "bid",

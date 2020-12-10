@@ -1,8 +1,9 @@
-import { MidaSymbolQuotation } from "#/quotations/MidaSymbolQuotation";
+import { MidaSymbolQuotation } from "#quotations/MidaSymbolQuotation";
 import { IMidaEquatable } from "#utilities/equatable/IMidaEquatable";
 import { IMidaCloneable } from "#utilities/cloneable/IMidaCloneable";
+import { MidaSymbolTickParameters } from "#ticks/MidaSymbolTickParameters";
 
-// Represents the tick of a symbol.
+// Represents a symbol tick.
 export class MidaSymbolTick implements IMidaEquatable, IMidaCloneable {
     // Represents the tick symbol.
     private readonly _quotation: MidaSymbolQuotation;
@@ -10,9 +11,17 @@ export class MidaSymbolTick implements IMidaEquatable, IMidaCloneable {
     // Represents the tick time.
     private readonly _time: Date;
 
-    public constructor (quotation: MidaSymbolQuotation, time: Date) {
-        this._quotation = quotation.clone();
+    // Represents the tick previous to this.
+    private readonly _previousTick?: MidaSymbolTick;
+
+    // Represents the tick next to this.
+    private readonly _nextTick?: MidaSymbolTick;
+
+    public constructor ({ quotation, time, previousTick = undefined, nextTick = undefined, }: MidaSymbolTickParameters) {
+        this._quotation = quotation;
         this._time = new Date(time);
+        this._previousTick = previousTick;
+        this._nextTick = nextTick;
     }
 
     public get quotation (): MidaSymbolQuotation {
@@ -21,6 +30,14 @@ export class MidaSymbolTick implements IMidaEquatable, IMidaCloneable {
 
     public get time (): Date {
         return new Date(this._time);
+    }
+
+    public get previousTick (): MidaSymbolTick | undefined {
+        return this._previousTick;
+    }
+
+    public get nextTick (): MidaSymbolTick | undefined {
+        return this._nextTick;
     }
 
     public get symbol (): string {
@@ -48,7 +65,11 @@ export class MidaSymbolTick implements IMidaEquatable, IMidaCloneable {
     }
 
     public clone (): any {
-        return new MidaSymbolTick(this._quotation, this._time);
+        return new MidaSymbolTick({
+            quotation: this._quotation.clone(),
+            time: new Date(this._time),
+            previousTick: this._previousTick?.clone(),
+        });
     }
 
     /*

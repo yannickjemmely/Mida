@@ -1,3 +1,5 @@
+import { MidaSymbolParameters } from "#symbols/MidaSymbolParameters";
+
 // Represents a symbol.
 export class MidaSymbol {
     // Represents the symbol as string.
@@ -9,7 +11,7 @@ export class MidaSymbol {
     // Represents the symbol digits.
     private readonly _digits: number;
 
-    public constructor (symbol: string, description: string, digits: number) {
+    public constructor ({ symbol, description, digits }: MidaSymbolParameters) {
         this._symbol = symbol;
         this._description = description;
         this._digits = digits;

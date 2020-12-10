@@ -6,10 +6,10 @@
 MidaFX is an open source framework designed for trading financial assets like stocks, forex, crypto or commodities.
 
 Through MidaFX you can:
-- Trade in any supported market;
+- Real time trade financial assets;
 - Execute and automate investment and trading strategies by creating custom expert advisors;
-- Analyze markets and prices movements through dedicated analysis interfaces;
-- Backtest and access time series covering the last decades.
+- Backtest expert advisors on time series covering the last decades;
+- Analyze markets and prices movements through dedicated analysis interfaces.
 
 ## Installation
 ```console
@@ -35,7 +35,7 @@ async function buyBitcoin (): Promise<void> {
 
     const myFirstTrade: MidaPosition = await myAccount.createPosition({
         symbol: "BTCUSD",
-        type: MidaPositionType.LONG,
+        type: MidaPositionDirectionType.LONG,
         lots: 1,
     });
     
@@ -63,7 +63,7 @@ async function sellEurUsd (): Promise<void> {
 
     const myPosition: MidaPosition = await myAccount.createPosition({
         symbol: forexPair.symbol,
-        type: MidaPositionType.SHORT,
+        type: MidaPositionDirectionType.SHORT,
         lots: 1,
         takeProfit,
     });
@@ -82,7 +82,7 @@ async function sellGold (): Promise<void> {
 
     const myPosition: MidaPosition = await myAccount.createPosition({
         symbol: "XAUEUR",
-        type: MidaPositionType.SHORT,
+        type: MidaPositionDirectionType.SHORT,
         lots: 1,
         stopLoss: 1610.00,
         takeProfit: 1587.00,
@@ -102,7 +102,7 @@ async function buyAppleShares (): Promise<void> {
 
     const myPosition: MidaPosition = await myAccount.createPosition({
         symbol: "#AAPL",
-        type: MidaPositionType.LONG,
+        type: MidaPositionDirectionType.LONG,
         lots: 3,
         takeProfit: 67.90,
         events: {

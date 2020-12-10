@@ -50,6 +50,9 @@
             "#symbols/*": [
                 "src/symbols/*"
             ],
+            "#ticks/*": [
+                "src/ticks/*"
+            ],
             "#utilities/*": [
                 "src/utilities/*"
             ]

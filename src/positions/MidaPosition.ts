@@ -15,24 +15,16 @@ export abstract class MidaPosition implements IMidaEquatable {
     // Represents the position symbol.
     private readonly _symbol: string;
 
-    // Represents the position type.
-    private readonly _type: MidaPositionType;
-
-    // Represents the position lots.
-    private readonly _lots: number;
-
     // Represents the position account.
     private readonly _account: MidaBrokerAccount;
 
     // Represents the position tags.
     private readonly _tags: Set<string>;
 
-    protected constructor ({ ticket, creationTime, symbol, type, lots, account, tags = [], }: MidaPositionParameters) {
+    protected constructor ({ ticket, creationTime, symbol, account, tags = [], }: MidaPositionParameters) {
         this._ticket = ticket;
         this._creationTime = new Date(creationTime);
         this._symbol = symbol;
-        this._type = type;
-        this._lots = lots;
         this._account = account;
         this._tags = new Set(tags);
     }
@@ -49,14 +41,6 @@ export abstract class MidaPosition implements IMidaEquatable {
         return this._symbol;
     }
 
-    public get type (): MidaPositionType {
-        return this._type;
-    }
-
-    public get lots (): number {
-        return this._lots;
-    }
-
     public get account (): MidaBrokerAccount {
         return this._account;
     }
@@ -64,6 +48,12 @@ export abstract class MidaPosition implements IMidaEquatable {
     public get tags (): string[] {
         return [ ...this._tags, ];
     }
+
+    public abstract async getType (): Promise<MidaPositionType>;
+
+    public abstract async getLots (): Promise<number>;
+
+    public abstract async setLots (lots: number): Promise<void>;
 
     public abstract async getStatus (): Promise<MidaPositionStatusType>;
 
@@ -156,7 +146,7 @@ export abstract class MidaPosition implements IMidaEquatable {
     }
 
     public async isPending (): Promise<boolean> {
-        return (await this.getStatus()) === MidaPositionStatusType.PENDING_OPEN;
+        return (await this.getStatus()) === MidaPositionStatusType.PENDING;
     }
 
     public async isCanceled (): Promise<boolean> {
