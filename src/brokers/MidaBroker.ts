@@ -1,4 +1,5 @@
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
+import { MidaBrokerParameters } from "#brokers/MidaBrokerParameters";
 import { GenericObject } from "#utilities/GenericObject";
 
 // Represents a broker.
@@ -6,7 +7,7 @@ export abstract class MidaBroker {
     // Represents the broker name.
     private readonly _name: string;
 
-    protected constructor (name: string) {
+    protected constructor ({ name, }: MidaBrokerParameters) {
         this._name = name;
     }
 
@@ -14,5 +15,9 @@ export abstract class MidaBroker {
         return this._name;
     }
 
-    public abstract async login (credentials: GenericObject): Promise<MidaBrokerAccount>;
+    public async login (credentials: GenericObject): Promise<MidaBrokerAccount> {
+        return this._login(credentials);
+    }
+
+    protected abstract async _login (credentials: GenericObject): Promise<MidaBrokerAccount>;
 }

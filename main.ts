@@ -1,4 +1,4 @@
-import { MidaSymbolPeriod } from "#quotations/MidaSymbolPeriod";
+import { MidaSymbolPeriod } from "#/periods/MidaSymbolPeriod";
 
 require("module-alias/register");
 //require("#/MidaFX");

@@ -72,28 +72,40 @@ export class MidaSymbolQuotation implements IMidaEquatable, IMidaCloneable {
     */
 
     public static getQuotationsInTimeRange (quotations: MidaSymbolQuotation[], from: Date, to: Date): MidaSymbolQuotation[] {
-        const quotationsInTimeRange: MidaSymbolQuotation[] = [];
+        const foundQuotations: MidaSymbolQuotation[] = [];
 
         for (const quotation of quotations) {
             const time: Date = quotation.time;
 
             if (time >= from && time <= to) {
-                quotationsInTimeRange.push(quotation);
+                foundQuotations.push(quotation);
             }
         }
 
-        return quotationsInTimeRange;
+        return foundQuotations;
     }
 
     public static getQuotationsOpenPrice (quotations: MidaSymbolQuotation[], priceType: MidaSymbolQuotationPriceType): number {
+        if (quotations.length < 1) {
+            return NaN;
+        }
+
         return quotations[0][priceType];
     }
 
     public static getQuotationsClosePrice (quotations: MidaSymbolQuotation[], priceType: MidaSymbolQuotationPriceType): number {
+        if (quotations.length < 1) {
+            return NaN;
+        }
+
         return quotations[quotations.length - 1][priceType];
     }
 
     public static getQuotationsHighestPrice (quotations: MidaSymbolQuotation[], priceType: MidaSymbolQuotationPriceType): number {
+        if (quotations.length < 1) {
+            return NaN;
+        }
+
         let highestPrice: number = quotations[0][priceType];
 
         for (let i: number = 1; i < quotations.length; ++i) {
@@ -106,6 +118,10 @@ export class MidaSymbolQuotation implements IMidaEquatable, IMidaCloneable {
     }
 
     public static getQuotationsLowestPrice (quotations: MidaSymbolQuotation[], priceType: MidaSymbolQuotationPriceType): number {
+        if (quotations.length < 1) {
+            return NaN;
+        }
+
         let lowestPrice: number = quotations[0][priceType];
 
         for (let i: number = 1; i < quotations.length; ++i) {
@@ -118,6 +134,10 @@ export class MidaSymbolQuotation implements IMidaEquatable, IMidaCloneable {
     }
 
     public static quotationsHaveSameSymbol (quotations: MidaSymbolQuotation[]): boolean {
+        if (quotations.length < 1) {
+            throw new Error();
+        }
+
         const firstSymbol: string = quotations[0].symbol;
 
         for (let i: number = 1; i < quotations.length; ++i) {

@@ -1,10 +1,10 @@
-import { MidaSymbolPeriodParameters } from "#quotations/MidaSymbolPeriodParameters";
+import { MidaSymbolPeriodParameters } from "#/periods/MidaSymbolPeriodParameters";
 import { MidaSymbolQuotation } from "#quotations/MidaSymbolQuotation";
 import { MidaSymbolQuotationPriceType } from "#quotations/MidaSymbolQuotationPriceType";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { IMidaEquatable } from "#utilities/equatable/IMidaEquatable";
 
-// Represents a symbol period (the quotations of a symbol in a certain timeframe).
+// Represents a symbol period (the quotations of a symbol in a timeframe).
 export class MidaSymbolPeriod implements IMidaEquatable {
     // Represents the period symbol.
     private readonly _symbol: string;
@@ -31,14 +31,14 @@ export class MidaSymbolPeriod implements IMidaEquatable {
     // Represents the period volume.
     private readonly _volume: number;
 
-    // Represents the period timeframe (expressed in seconds).
+    // Represents the period timeframe (in seconds).
     private readonly _timeframe: number;
 
     // Represents the quotations composing the period.
     // Note: this is optional as quotations are not always registered, therefore it may result in an empty array.
-    private readonly _quotations: MidaSymbolQuotation[];
+    private readonly _quotations?: MidaSymbolQuotation[];
 
-    public constructor ({ symbol, startTime, priceType, open, high, low, close, volume, timeframe, quotations = [], }: MidaSymbolPeriodParameters) {
+    public constructor ({ symbol, startTime, priceType, open, high, low, close, volume, timeframe, quotations, }: MidaSymbolPeriodParameters) {
         this._symbol = symbol;
         this._startTime = new Date(startTime);
         this._priceType = priceType;
@@ -87,7 +87,7 @@ export class MidaSymbolPeriod implements IMidaEquatable {
         return this._timeframe;
     }
 
-    public get quotations (): readonly MidaSymbolQuotation[] {
+    public get quotations (): readonly MidaSymbolQuotation[] | undefined {
         return this._quotations;
     }
 
@@ -99,12 +99,12 @@ export class MidaSymbolPeriod implements IMidaEquatable {
         return this._close / this._open;
     }
 
-    public get realBody (): number {
+    public get body (): number {
         return this._close - this._open;
     }
 
-    public get absRealBody (): number {
-        return Math.abs(this.realBody);
+    public get absBody (): number {
+        return Math.abs(this.body);
     }
 
     public get lowerShadow (): number {
@@ -120,15 +120,15 @@ export class MidaSymbolPeriod implements IMidaEquatable {
     }
 
     public get isBearish (): boolean {
-        return this.realBody < 0;
+        return this.body < 0;
     }
 
     public get isNeutral (): boolean {
-        return this.realBody === 0;
+        return this.body === 0;
     }
 
     public get isBullish (): boolean {
-        return this.realBody > 0;
+        return this.body > 0;
     }
 
     public equals (object: any): boolean {
@@ -152,6 +152,10 @@ export class MidaSymbolPeriod implements IMidaEquatable {
         priceType: MidaSymbolQuotationPriceType = MidaSymbolQuotationPriceType.BID,
         limit: number = -1
     ): MidaSymbolPeriod[] {
+        if (quotations.length < 1 || timeframe <= 0) {
+            return [];
+        }
+
         let periodStartTime: Date = new Date(startTime);
 
         function getNextPeriodEndTime (): Date {
@@ -161,10 +165,6 @@ export class MidaSymbolPeriod implements IMidaEquatable {
         const periods: MidaSymbolPeriod[] = [];
         let periodQuotations: MidaSymbolQuotation[] = [];
         let periodEndTime: Date = getNextPeriodEndTime();
-
-        if (timeframe <= 0) {
-            return periods;
-        }
 
         function tryComposePeriod (): void {
             if (periodQuotations.length < 1) {
