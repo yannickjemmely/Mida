@@ -4,7 +4,9 @@ import { GenericObject } from "#utilities/GenericObject";
 
 export class PlaygroundBroker extends MidaBroker {
     public constructor () {
-        super("Playground");
+        super({
+            name: PlaygroundBroker.name,
+        });
     }
 
     public async login (credentials: GenericObject): Promise<MidaBrokerAccount> {

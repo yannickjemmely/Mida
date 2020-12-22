@@ -27,13 +27,35 @@ swaps and other taxes applied to your operations, they depend on your broker.
 
 ### Opening Positions
 Opening a long position for Bitcoin against USD.
-```typescript
 
+```typescript
+const myAccount: MidaBrokerAccount = await MidaBroker.login("BDSwiss", {
+    login: "root",
+    password: "root",
+});
+
+const myOrder: MidaBrokerOrder = await myAccount.placeOrder({
+    symbol: "BTCUSD",
+    type: MidaBrokerPositionType.LONG,
+    lots: 0.1,
+});
+const myPosition: MidaBrokerPosition = await myOrder.getPosition();
+
+// Print the open price.
+console.log(await myPosition.getOpenPrice());
 ```
 
 Opening a forex short position for EUR against USD, with a take profit of 20 pips.
-```typescript
 
+```typescript
+const forexPair: string = "EURUSD";
+const lastTick: MidaSymbolTick = await myAccount.getSymbolLastTick(forexPair);
+const myPosition: MidaBrokerPosition = await myAccount.placeOrder({
+    symbol: forexPair,
+    type: MidaBrokerPositionType.SHORT,
+    lots: 0.1,
+    takeProfit: lastTick.ask - MidaSymbol.normalizePips(forexPair, 20),
+});
 ```
 
 <details><summary>Show more examples</summary>

@@ -56,14 +56,6 @@ export class MidaSymbolTick implements IMidaEquatable, IMidaCloneable {
         return this._quotation.spread;
     }
 
-    public hasPreviousTick (): boolean {
-        return this._previousTick !== undefined;
-    }
-
-    public hasNextTick (): boolean {
-        return this._nextTick !== undefined;
-    }
-
     public equals (object: any): boolean {
         return (
             object instanceof MidaSymbolTick

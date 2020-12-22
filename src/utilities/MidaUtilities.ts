@@ -73,4 +73,8 @@ export class MidaUtilities {
     public static getWhatPercentageOf (subject: number, whatPercentage: number): number {
         return whatPercentage / subject * 100;
     }
+
+    public static async assertPromiseDuration (task: Promise<any>, timeout: number): Promise<any> {
+        
+    }
 }

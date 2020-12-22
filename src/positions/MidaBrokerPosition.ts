@@ -1,11 +1,11 @@
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
-import { MidaPositionParameters } from "#positions/MidaPositionParameters";
-import { MidaPositionStatusType } from "#positions/MidaPositionStatusType";
-import { MidaPositionType } from "#positions/MidaPositionType";
+import { MidaBrokerPositionParameters } from "#positions/MidaBrokerPositionParameters";
+import { MidaBrokerPositionStatusType } from "#positions/MidaBrokerPositionStatusType";
+import { MidaBrokerPositionType } from "#positions/MidaBrokerPositionType";
 import { IMidaEquatable } from "#utilities/equatable/IMidaEquatable";
 
 // Represents a position.
-export abstract class MidaPosition implements IMidaEquatable {
+export abstract class MidaBrokerPosition implements IMidaEquatable {
     // Represents the position ticket.
     private readonly _ticket: number;
 
@@ -21,7 +21,10 @@ export abstract class MidaPosition implements IMidaEquatable {
     // Represents the position tags.
     private readonly _tags: Set<string>;
 
-    protected constructor ({ ticket, creationTime, symbol, account, tags = [], }: MidaPositionParameters) {
+    // Represents the position order type.
+    private readonly _orderType:
+
+    protected constructor ({ ticket, creationTime, symbol, account, tags = [], }: MidaBrokerPositionParameters) {
         this._ticket = ticket;
         this._creationTime = new Date(creationTime);
         this._symbol = symbol;
@@ -49,13 +52,13 @@ export abstract class MidaPosition implements IMidaEquatable {
         return [ ...this._tags, ];
     }
 
-    public abstract async getType (): Promise<MidaPositionType>;
+    public abstract async getType (): Promise<MidaBrokerPositionType>;
 
     public abstract async getLots (): Promise<number>;
 
     public abstract async setLots (lots: number): Promise<void>;
 
-    public abstract async getStatus (): Promise<MidaPositionStatusType>;
+    public abstract async getStatus (): Promise<MidaBrokerPositionStatusType>;
 
     public abstract async getCancelTime (): Promise<Date | undefined>;
 
@@ -146,6 +149,6 @@ export abstract class MidaPosition implements IMidaEquatable {
     }
 
     public equals (object: any): boolean {
-        return object instanceof MidaPosition && object._ticket === this._ticket;
+        return object instanceof MidaBrokerPosition && object._ticket === this._ticket;
     }
 }

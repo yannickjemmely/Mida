@@ -1,6 +1,6 @@
 import { MidaAdvisorParameters } from "#advisors/MidaAdvisorParameters";
-import { MidaPosition } from "#positions/MidaPosition";
-import { MidaPositionDirectives } from "#positions/MidaPositionDirectives";
+import { MidaBrokerPosition } from "#positions/MidaBrokerPosition";
+import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 import { MidaAssetPair } from "#assets/MidaAssetPair";
 import { MidaAssetPairTick } from "#assets/MidaAssetPairTick";
@@ -16,7 +16,7 @@ export abstract class MidaAdvisor {
     private readonly _assetPair: MidaAssetPair;
 
     // Represents the created positions.
-    private readonly _positions: Map<string, MidaPosition>;
+    private readonly _positions: Map<string, MidaBrokerPosition>;
 
     // Indicates if the advisor is operative.
     private _operative: boolean;
@@ -63,7 +63,7 @@ export abstract class MidaAdvisor {
         return this._operative;
     }
 
-    public get positions (): readonly MidaPosition[] {
+    public get positions (): readonly MidaBrokerPosition[] {
         return [ ...this._positions.values(), ];
     }
 
@@ -95,8 +95,8 @@ export abstract class MidaAdvisor {
         return MidaAssetPairTick.getTicksInTimeRange(this._capturedTicks, fromTime, toTime);
     }
 
-    protected async openPosition (directives: MidaPositionDirectives): Promise<MidaPosition> {
-        const position: MidaPosition = await this._brokerAccount.openPosition(directives);
+    protected async openPosition (directives: MidaBrokerOrderDirectives): Promise<MidaBrokerPosition> {
+        const position: MidaBrokerPosition = await this._brokerAccount.openPosition(directives);
 
         this._positions.set(position.id, position);
 

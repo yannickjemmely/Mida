@@ -1,8 +1,8 @@
 import { MidaBroker } from "#brokers/MidaBroker";
 import { MidaBrokerAccountType } from "#brokers/MidaBrokerAccountType";
-import { MidaPosition } from "#positions/MidaPosition";
-import { MidaPositionDirectives } from "#positions/MidaPositionDirectives";
-import { MidaPositionStatusType } from "#positions/MidaPositionStatusType";
+import { MidaBrokerPosition } from "#positions/MidaBrokerPosition";
+import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
+import { MidaBrokerPositionStatusType } from "#positions/MidaBrokerPositionStatusType";
 import { MidaSymbolQuotationPriceType } from "#/quotations/MidaSymbolQuotationPriceType";
 import { MidaSymbolTick } from "#/ticks/MidaSymbolTick";
 import { MidaSymbol } from "#symbols/MidaSymbol";
@@ -74,9 +74,9 @@ export abstract class MidaBrokerAccount {
 
     public abstract async getFreeMargin (): Promise<number>;
 
-    public abstract async createPosition (directives: MidaPositionDirectives): Promise<MidaPosition>;
+    public abstract async createPosition (directives: MidaBrokerOrderDirectives): Promise<MidaBrokerPosition>;
 
-    public abstract async getPositions (): Promise<MidaPosition[]>;
+    public abstract async getPositions (): Promise<MidaBrokerPosition[]>;
 
     public abstract async getSupportedSymbols (): Promise<MidaSymbol[]>;
 
@@ -97,11 +97,11 @@ export abstract class MidaBrokerAccount {
 
     public abstract async getSymbolLastTick (symbol: string): Promise<MidaSymbolTick[]>;
 
-    public async getPositionsByStatus (status: MidaPositionStatusType): Promise<MidaPosition[]> {
-        const positions: MidaPosition[] = await this.getPositions();
-        const foundPositions: MidaPosition[] = [];
+    public async getPositionsByStatus (status: MidaBrokerPositionStatusType): Promise<MidaBrokerPosition[]> {
+        const positions: MidaBrokerPosition[] = await this.getPositions();
+        const foundPositions: MidaBrokerPosition[] = [];
 
-        await Promise.all(positions.map(async (position: MidaPosition): Promise<void> => {
+        await Promise.all(positions.map(async (position: MidaBrokerPosition): Promise<void> => {
             if ((await position.getStatus()) === status) {
                 foundPositions.push(position);
             }

@@ -1,12 +1,12 @@
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
-import { MidaPositionType } from "#positions/MidaPositionType";
+import { MidaBrokerPositionType } from "#positions/MidaBrokerPositionType";
 
 // Represents the parameters of the position constructor.
-export type MidaPositionParameters = {
+export type MidaBrokerPositionParameters = {
     ticket: number;
     creationTime: Date;
     symbol: string;
-    type: MidaPositionType;
+    type: MidaBrokerPositionType;
     lots: number;
     account: MidaBrokerAccount;
     tags?: string[];
