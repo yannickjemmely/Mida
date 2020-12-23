@@ -3,7 +3,7 @@
 </p>
 <br>
 
-MidaFX is an open source TypeScript framework designed to operate in financial markets and trade
+MidaFX is an open source TypeScript framework designed to operate in financial markets by trading
 assets like stocks, forex, crypto or commodities.
 
 Through MidaFX you can:
@@ -37,7 +37,7 @@ const myAccount: MidaBrokerAccount = await MidaBroker.login("BDSwiss", {
 const myOrder: MidaBrokerOrder = await myAccount.placeOrder({
     symbol: "BTCUSD",
     type: MidaBrokerPositionType.LONG,
-    lots: 0.1,
+    size: 0.1,
 });
 const myPosition: MidaBrokerPosition = await myOrder.getPosition();
 

@@ -21,9 +21,6 @@ export abstract class MidaBrokerPosition implements IMidaEquatable {
     // Represents the position tags.
     private readonly _tags: Set<string>;
 
-    // Represents the position order type.
-    private readonly _orderType:
-
     protected constructor ({ ticket, creationTime, symbol, account, tags = [], }: MidaBrokerPositionParameters) {
         this._ticket = ticket;
         this._creationTime = new Date(creationTime);
@@ -86,38 +83,6 @@ export abstract class MidaBrokerPosition implements IMidaEquatable {
     public abstract async clearTakeProfit (): Promise<void>;
     // </take-profit-management>
 
-    // <sell-stop-management>
-    public abstract async getSellStop (): Promise<number | undefined>;
-
-    public abstract async setSellStop (sellStop: number): Promise<void>;
-
-    public abstract async clearSellStop (): Promise<void>;
-    // </sell-stop-management>
-
-    // <sell-limit-management>
-    public abstract async getSellLimit (): Promise<number | undefined>;
-
-    public abstract async setSellLimit (sellLimit: number): Promise<void>;
-
-    public abstract async clearSellLimit (): Promise<void>;
-    // </sell-limit-management>
-
-    // <buy-stop-management>
-    public abstract async getBuyStop (): Promise<number | undefined>;
-
-    public abstract async setBuyStop (buyStop: number): Promise<void>;
-
-    public abstract async clearBuyStop (): Promise<void>;
-    // </buy-stop-management>
-
-    // <buy-limit-management>
-    public abstract async getBuyLimit (): Promise<number | undefined>;
-
-    public abstract async setBuyLimit (buyLimit: number): Promise<void>;
-
-    public abstract async clearBuyLimit (): Promise<void>;
-    // </buy-limit-management>
-
     public abstract async getProfit (): Promise<number>;
 
     public abstract async getCommision (): Promise<number>;
@@ -127,8 +92,6 @@ export abstract class MidaBrokerPosition implements IMidaEquatable {
     public abstract async getCurrency (): Promise<string>;
 
     public abstract async getLeverage (): Promise<undefined>;
-
-    public abstract async cancel (): Promise<void>;
     
     public abstract async close (): Promise<void>;
 

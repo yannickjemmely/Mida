@@ -3,5 +3,4 @@ export enum MidaBrokerPositionType {
     LONG = "long",
 }
 
-export const SHORT: MidaBrokerPositionType = MidaBrokerPositionType.SHORT;
-export const LONG: MidaBrokerPositionType = MidaBrokerPositionType.LONG;
+export const { SHORT, LONG, } = MidaBrokerPositionType;

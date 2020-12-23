@@ -1,4 +1,4 @@
-// Represents a cloneable entity.
+// Represents a cloneable object.
 export interface IMidaCloneable {
     clone (): any;
 }

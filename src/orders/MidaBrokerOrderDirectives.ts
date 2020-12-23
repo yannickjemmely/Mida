@@ -4,11 +4,13 @@ import { MidaBrokerPositionType } from "#positions/MidaBrokerPositionType";
 export type MidaBrokerOrderDirectives = {
     symbol: string;
     type: MidaBrokerPositionType;
-    lots: number;
+    size: number;
     stopLoss?: number;
     takeProfit?: number;
     sellLimit?: number;
     sellStop?: number;
     buyLimit?: number;
     buyStop?: number;
+    cancelTime?: Date;
+    closeTime?: Date;
 };
