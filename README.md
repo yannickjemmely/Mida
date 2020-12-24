@@ -3,11 +3,10 @@
 </p>
 <br>
 
-MidaFX is an open source TypeScript framework designed to operate in financial markets by trading
-assets like stocks, forex, crypto or commodities.
+MidaFX is an open source TypeScript framework designed to operate in financial markets.
 
 Through MidaFX you can:
-- Trade financial assets and manage portfolios with your broker;
+- Trade financial assets like stocks, forex, crypto or commodities;
 - Execute and automate investment and trading strategies by creating expert advisors and indicators;
 - Backtest expert advisors on time series covering the last decades;
 - Analyze markets and prices movements through dedicated analysis interfaces.

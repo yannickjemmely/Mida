@@ -6,4 +6,6 @@ export type MidaBrokerOrderParameters = {
     ticket: number;
     brokerAccount: MidaBrokerAccount;
     directives: MidaBrokerOrderDirectives;
+    requestDate: Date;
+    openDate: Date;
 };

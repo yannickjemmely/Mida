@@ -11,6 +11,6 @@ export type MidaBrokerOrderDirectives = {
     sellStop?: number;
     buyLimit?: number;
     buyStop?: number;
-    cancelTime?: Date;
-    closeTime?: Date;
+    cancelDate?: Date;
+    closeDate?: Date;
 };

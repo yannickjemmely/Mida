@@ -1,3 +1,4 @@
+// Represents the price type of a quotation.
 export enum MidaSymbolQuotationPriceType {
     // Represents the bid price type.
     BID = "bid",
@@ -6,5 +7,4 @@ export enum MidaSymbolQuotationPriceType {
     ASK = "ask",
 }
 
-export const BID: MidaSymbolQuotationPriceType = MidaSymbolQuotationPriceType.BID;
-export const ASK: MidaSymbolQuotationPriceType = MidaSymbolQuotationPriceType.ASK;
+export const { BID, ASK, } = MidaSymbolQuotationPriceType;

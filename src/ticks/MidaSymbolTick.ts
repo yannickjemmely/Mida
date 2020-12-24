@@ -1,3 +1,4 @@
+import { MidaBroker } from "#brokers/MidaBroker";
 import { MidaSymbolQuotation } from "#quotations/MidaSymbolQuotation";
 import { MidaSymbolTickParameters } from "#ticks/MidaSymbolTickParameters";
 import { IMidaEquatable } from "#utilities/equatable/IMidaEquatable";
@@ -8,8 +9,8 @@ export class MidaSymbolTick implements IMidaEquatable, IMidaCloneable {
     // Represents the tick quotation.
     private readonly _quotation: MidaSymbolQuotation;
 
-    // Represents the tick time.
-    private readonly _time: Date;
+    // Represents the tick date.
+    private readonly _date: Date;
 
     // Represents the tick previous to this.
     private readonly _previousTick?: MidaSymbolTick;
@@ -17,19 +18,23 @@ export class MidaSymbolTick implements IMidaEquatable, IMidaCloneable {
     // Represents the tick next to this.
     private readonly _nextTick?: MidaSymbolTick;
 
-    public constructor ({ quotation, time, previousTick, nextTick, }: MidaSymbolTickParameters) {
+    // Represents the broker that issued this tick.
+    private readonly _broker?: MidaBroker;
+
+    public constructor ({ quotation, date, previousTick, nextTick, broker, }: MidaSymbolTickParameters) {
         this._quotation = quotation;
-        this._time = new Date(time || quotation.time);
+        this._date = new Date(date || quotation.date);
         this._previousTick = previousTick;
         this._nextTick = nextTick;
+        this._broker = broker;
     }
 
     public get quotation (): MidaSymbolQuotation {
         return this._quotation;
     }
 
-    public get time (): Date {
-        return new Date(this._time);
+    public get date (): Date {
+        return new Date(this._date);
     }
 
     public get previousTick (): MidaSymbolTick | undefined {
@@ -38,6 +43,10 @@ export class MidaSymbolTick implements IMidaEquatable, IMidaCloneable {
 
     public get nextTick (): MidaSymbolTick | undefined {
         return this._nextTick;
+    }
+
+    public get broker (): MidaBroker | undefined {
+        return this._broker;
     }
 
     public get symbol (): string {
@@ -60,16 +69,17 @@ export class MidaSymbolTick implements IMidaEquatable, IMidaCloneable {
         return (
             object instanceof MidaSymbolTick
             && this._quotation.equals(object._quotation)
-            && this._time.valueOf() === object._time.valueOf()
+            && this._date.valueOf() === object._date.valueOf()
         );
     }
 
     public clone (): any {
         return new MidaSymbolTick({
             quotation: this._quotation.clone(),
-            time: new Date(this._time),
+            date: new Date(this._date),
             previousTick: this._previousTick?.clone(),
             nextTick: this._nextTick?.clone(),
+            broker: this._broker,
         });
     }
 
@@ -79,13 +89,13 @@ export class MidaSymbolTick implements IMidaEquatable, IMidaCloneable {
      **
     */
 
-    public static getTicksInTimeRange (ticks: MidaSymbolTick[], from: Date, to: Date): MidaSymbolTick[] {
+    public static getTicksInDateRange (ticks: MidaSymbolTick[], from: Date, to: Date): MidaSymbolTick[] {
         const foundTicks: MidaSymbolTick[] = [];
 
         for (const tick of ticks) {
-            const time: Date = tick.time;
+            const date: Date = tick.date;
 
-            if (time >= from && time <= to) {
+            if (date >= from && date <= to) {
                 foundTicks.push(tick);
             }
         }

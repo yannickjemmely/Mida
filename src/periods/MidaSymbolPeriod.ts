@@ -194,13 +194,13 @@ export class MidaSymbolPeriod implements IMidaEquatable {
                 return periods;
             }
 
-            if (quotation.time < periodStartTime) {
+            if (quotation.date < periodStartTime) {
                 continue;
             }
 
             let periodHasEnded: boolean = false;
 
-            while (quotation.time > periodEndTime) {
+            while (quotation.date > periodEndTime) {
                 periodStartTime = new Date(periodEndTime);
                 periodEndTime = getNextPeriodEndTime();
 

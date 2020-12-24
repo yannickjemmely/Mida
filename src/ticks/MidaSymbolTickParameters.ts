@@ -1,10 +1,12 @@
+import { MidaBroker } from "#brokers/MidaBroker";
 import { MidaSymbolQuotation } from "#quotations/MidaSymbolQuotation";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 
 // Represents the parameters of the symbol tick constructor.
 export type MidaSymbolTickParameters = {
     quotation: MidaSymbolQuotation;
-    time?: Date;
+    date?: Date;
     previousTick?: MidaSymbolTick;
     nextTick?: MidaSymbolTick;
+    broker?: MidaBroker;
 };

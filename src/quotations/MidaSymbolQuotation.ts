@@ -8,8 +8,8 @@ export class MidaSymbolQuotation implements IMidaEquatable, IMidaCloneable {
     // Represents the quotation symbol.
     private readonly _symbol: string;
 
-    // Represents the quotation time.
-    private readonly _time: Date;
+    // Represents the quotation date.
+    private readonly _date: Date;
 
     // Represents the quotation bid price.
     private readonly _bid: number;
@@ -17,9 +17,9 @@ export class MidaSymbolQuotation implements IMidaEquatable, IMidaCloneable {
     // Represents the quotation ask price.
     private readonly _ask: number;
 
-    public constructor ({ symbol, time, bid, ask }: MidaSymbolQuotationParameters) {
+    public constructor ({ symbol, date, bid, ask }: MidaSymbolQuotationParameters) {
         this._symbol = symbol;
-        this._time = new Date(time);
+        this._date = new Date(date);
         this._bid = bid;
         this._ask = ask;
     }
@@ -28,8 +28,8 @@ export class MidaSymbolQuotation implements IMidaEquatable, IMidaCloneable {
         return this._symbol;
     }
 
-    public get time (): Date {
-        return new Date(this._time);
+    public get date (): Date {
+        return new Date(this._date);
     }
 
     public get bid (): number {
@@ -52,14 +52,14 @@ export class MidaSymbolQuotation implements IMidaEquatable, IMidaCloneable {
         return (
             object instanceof MidaSymbolQuotation
             && this._symbol === object._symbol
-            && this._time.valueOf() === object._time.valueOf()
+            && this._date.valueOf() === object._date.valueOf()
         );
     }
 
     public clone (): any {
         return new MidaSymbolQuotation({
             symbol: this._symbol,
-            time: this._time,
+            date: this._date,
             bid: this._bid,
             ask: this._ask,
         });
@@ -71,13 +71,13 @@ export class MidaSymbolQuotation implements IMidaEquatable, IMidaCloneable {
      **
     */
 
-    public static getQuotationsInTimeRange (quotations: MidaSymbolQuotation[], from: Date, to: Date): MidaSymbolQuotation[] {
+    public static getQuotationsInDateRange (quotations: MidaSymbolQuotation[], from: Date, to: Date): MidaSymbolQuotation[] {
         const foundQuotations: MidaSymbolQuotation[] = [];
 
         for (const quotation of quotations) {
-            const time: Date = quotation.time;
+            const date: Date = quotation.date;
 
-            if (time >= from && time <= to) {
+            if (date >= from && date <= to) {
                 foundQuotations.push(quotation);
             }
         }
@@ -87,7 +87,7 @@ export class MidaSymbolQuotation implements IMidaEquatable, IMidaCloneable {
 
     public static getQuotationsOpenPrice (quotations: MidaSymbolQuotation[], priceType: MidaSymbolQuotationPriceType): number {
         if (quotations.length < 1) {
-            return NaN;
+            throw new Error();
         }
 
         return quotations[0][priceType];
@@ -95,7 +95,7 @@ export class MidaSymbolQuotation implements IMidaEquatable, IMidaCloneable {
 
     public static getQuotationsClosePrice (quotations: MidaSymbolQuotation[], priceType: MidaSymbolQuotationPriceType): number {
         if (quotations.length < 1) {
-            return NaN;
+            throw new Error();
         }
 
         return quotations[quotations.length - 1][priceType];
@@ -103,7 +103,7 @@ export class MidaSymbolQuotation implements IMidaEquatable, IMidaCloneable {
 
     public static getQuotationsHighestPrice (quotations: MidaSymbolQuotation[], priceType: MidaSymbolQuotationPriceType): number {
         if (quotations.length < 1) {
-            return NaN;
+            throw new Error();
         }
 
         let highestPrice: number = quotations[0][priceType];
@@ -119,7 +119,7 @@ export class MidaSymbolQuotation implements IMidaEquatable, IMidaCloneable {
 
     public static getQuotationsLowestPrice (quotations: MidaSymbolQuotation[], priceType: MidaSymbolQuotationPriceType): number {
         if (quotations.length < 1) {
-            return NaN;
+            throw new Error();
         }
 
         let lowestPrice: number = quotations[0][priceType];
