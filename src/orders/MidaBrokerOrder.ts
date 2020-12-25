@@ -16,15 +16,15 @@ export class MidaBrokerOrder {
     // Represents the order request date.
     private readonly _requestDate: Date;
 
-    // Represents the order open date.
-    private readonly _openDate: Date;
+    // Represents the order release date.
+    private readonly _releaseDate: Date;
 
-    public constructor ({ ticket, brokerAccount, directives, requestDate, openDate, }: MidaBrokerOrderParameters) {
+    public constructor ({ ticket, brokerAccount, directives, requestDate, releaseDate, }: MidaBrokerOrderParameters) {
         this._ticket = ticket;
         this._brokerAccount = brokerAccount;
         this._directives = { ...directives, };
         this._requestDate = new Date(requestDate);
-        this._openDate = new Date(openDate);
+        this._releaseDate = new Date(releaseDate);
     }
 
     public get ticket (): number {
@@ -43,7 +43,7 @@ export class MidaBrokerOrder {
         return new Date(this._requestDate);
     }
 
-    public get openDate (): Date {
-        return new Date(this._openDate);
+    public get releaseDate (): Date {
+        return new Date(this._releaseDate);
     }
 }

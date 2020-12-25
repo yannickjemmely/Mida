@@ -4,14 +4,14 @@ export class MidaUtilities {
     }
 
     // Used to get the minutes difference between two dates.
-    public static getMinutesBetweenDates (leftDate: Date, rightDate: Date): number {
-        return Math.round(Math.abs(leftDate.getTime() - rightDate.getTime()) / 60000);
+    public static getMinutesBetweenDates (a: Date, b: Date): number {
+        return Math.round(Math.abs(a.getTime() - b.getTime()) / 60000);
     }
 
     // Used to get the days difference between two dates.
-    public static getDaysBetweenDates (leftDate: Date, rightDate: Date): number {
-        const sanitizedLeftDate: number = Date.UTC(leftDate.getFullYear(), leftDate.getMonth(), leftDate.getDate());
-        const sanitizedRightDate: number = Date.UTC(rightDate.getFullYear(), rightDate.getMonth(), rightDate.getDate());
+    public static getDaysBetweenDates (a: Date, b: Date): number {
+        const sanitizedLeftDate: number = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
+        const sanitizedRightDate: number = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
 
         return Math.floor(Math.abs((sanitizedLeftDate - sanitizedRightDate) / (1000 * 60 * 60 * 24)));
     }
@@ -49,6 +49,10 @@ export class MidaUtilities {
         };
 
         for (const name in initial) {
+            if (!initial.hasOwnProperty(name) || !primary.hasOwnProperty(name)) {
+                continue;
+            }
+            
             const initialValue: any = initial[name];
             const userValue: any = primary[name];
 

@@ -5,7 +5,8 @@
     "scripts": {
         "lint": "tslint --project .",
         "build": "npm run lint && tsc",
-        "start": "npm run build && node ./build/main.js"
+        "start": "npm run build && node ./build/main.js",
+        "test": "npm run build && jest"
     },
     "dependencies": {
         "module-alias": "2.2.2"

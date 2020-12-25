@@ -2,7 +2,8 @@
 export enum MidaBrokerOrderStatusType {
     PENDING = "pending",
     CANCELED = "canceled",
-    COMPLETED = "completed",
+    OPEN = "open",
+    CLOSED = "closed",
 }
 
-export const { PENDING, CANCELED, COMPLETED, } = MidaBrokerOrderStatusType;
+export const { PENDING, CANCELED, OPEN, CLOSED, } = MidaBrokerOrderStatusType;
