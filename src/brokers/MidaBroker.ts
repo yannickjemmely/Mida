@@ -7,17 +7,21 @@ export abstract class MidaBroker {
     // Represents the broker name.
     private readonly _name: string;
 
-    protected constructor ({ name, }: MidaBrokerParameters) {
+    // Represents the broker website address.
+    private readonly _websiteUri: string;
+
+    protected constructor ({ name, websiteUri, }: MidaBrokerParameters) {
         this._name = name;
+        this._websiteUri = websiteUri;
     }
 
     public get name (): string {
         return this._name;
     }
 
-    public async login (credentials: GenericObject): Promise<MidaBrokerAccount> {
-        return this._login(credentials);
+    public get websiteUri (): string {
+        return this._websiteUri;
     }
 
-    protected abstract async _login (credentials: GenericObject): Promise<MidaBrokerAccount>;
+    protected abstract async login (credentials: GenericObject): Promise<MidaBrokerAccount>;
 }

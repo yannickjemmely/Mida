@@ -1,10 +1,9 @@
 import { MidaBroker } from "#brokers/MidaBroker";
 import { MidaBrokerAccountType } from "#brokers/MidaBrokerAccountType";
 import { MidaBrokerPosition } from "#positions/MidaBrokerPosition";
-import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
 import { MidaBrokerPositionStatusType } from "#positions/MidaBrokerPositionStatusType";
 import { MidaSymbolQuotationPriceType } from "#/quotations/MidaSymbolQuotationPriceType";
-import { MidaSymbolTick } from "#/ticks/MidaSymbolTick";
+import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { MidaSymbol } from "#symbols/MidaSymbol";
 import { MidaSymbolPeriod } from "#/periods/MidaSymbolPeriod";
 

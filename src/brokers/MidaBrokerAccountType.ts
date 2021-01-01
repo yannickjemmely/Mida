@@ -3,5 +3,4 @@ export enum MidaBrokerAccountType {
     REAL = "real",
 }
 
-export const DEMO: MidaBrokerAccountType = MidaBrokerAccountType.DEMO;
-export const REAL: MidaBrokerAccountType = MidaBrokerAccountType.REAL;
+export const { DEMO, REAL, } = MidaBrokerAccountType;

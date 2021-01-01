@@ -18,7 +18,7 @@ export class MidaSymbolTick implements IMidaEquatable, IMidaCloneable {
     // Represents the tick next to this.
     private readonly _nextTick?: MidaSymbolTick;
 
-    // Represents the broker that issued this tick.
+    // Represents the broker that shared this tick.
     private readonly _broker?: MidaBroker;
 
     public constructor ({ quotation, date, previousTick, nextTick, broker, }: MidaSymbolTickParameters) {

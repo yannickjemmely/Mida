@@ -27,12 +27,4 @@ export enum MidaSymbolPeriodTimeframeType {
     W1 = 604800,
 }
 
-export const S1: MidaSymbolPeriodTimeframeType = MidaSymbolPeriodTimeframeType.S1;
-export const M1: MidaSymbolPeriodTimeframeType = MidaSymbolPeriodTimeframeType.M1;
-export const M5: MidaSymbolPeriodTimeframeType = MidaSymbolPeriodTimeframeType.M5;
-export const M15: MidaSymbolPeriodTimeframeType = MidaSymbolPeriodTimeframeType.M15;
-export const M30: MidaSymbolPeriodTimeframeType = MidaSymbolPeriodTimeframeType.M30;
-export const H1: MidaSymbolPeriodTimeframeType = MidaSymbolPeriodTimeframeType.H1;
-export const H4: MidaSymbolPeriodTimeframeType = MidaSymbolPeriodTimeframeType.H4;
-export const D1: MidaSymbolPeriodTimeframeType = MidaSymbolPeriodTimeframeType.D1;
-export const W1: MidaSymbolPeriodTimeframeType = MidaSymbolPeriodTimeframeType.W1;
+export const { S1, M1, M5, M15, M30, H1, H4, D1, W1, } = MidaSymbolPeriodTimeframeType;

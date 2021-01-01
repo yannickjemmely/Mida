@@ -59,7 +59,7 @@ export class MidaSymbolQuotation implements IMidaEquatable, IMidaCloneable {
     public clone (): any {
         return new MidaSymbolQuotation({
             symbol: this._symbol,
-            date: this._date,
+            date: new Date(this._date),
             bid: this._bid,
             ask: this._ask,
         });

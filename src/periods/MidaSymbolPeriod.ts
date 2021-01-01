@@ -35,7 +35,7 @@ export class MidaSymbolPeriod implements IMidaEquatable {
     private readonly _timeframe: number;
 
     // Represents the quotations composing the period.
-    // Note: this is optional as quotations are not always registered, therefore it may result in an empty array.
+    // This is optional as quotations are not always registered, therefore it may result in an empty array.
     private readonly _quotations?: MidaSymbolQuotation[];
 
     public constructor ({ symbol, startTime, priceType, open, high, low, close, volume, timeframe, quotations, }: MidaSymbolPeriodParameters) {
