@@ -1,4 +1,3 @@
-import { MidaBroker } from "#brokers/MidaBroker";
 import { MidaSymbolQuotation } from "#quotations/MidaSymbolQuotation";
 import { MidaSymbolTickParameters } from "#ticks/MidaSymbolTickParameters";
 import { IMidaEquatable } from "#utilities/equatable/IMidaEquatable";
@@ -18,15 +17,11 @@ export class MidaSymbolTick implements IMidaEquatable, IMidaCloneable {
     // Represents the tick next to this.
     private readonly _nextTick?: MidaSymbolTick;
 
-    // Represents the broker that shared this tick.
-    private readonly _broker?: MidaBroker;
-
-    public constructor ({ quotation, date, previousTick, nextTick, broker, }: MidaSymbolTickParameters) {
+    public constructor ({ quotation, date, previousTick, nextTick, }: MidaSymbolTickParameters) {
         this._quotation = quotation;
         this._date = new Date(date || quotation.date);
         this._previousTick = previousTick;
         this._nextTick = nextTick;
-        this._broker = broker;
     }
 
     public get quotation (): MidaSymbolQuotation {
@@ -43,10 +38,6 @@ export class MidaSymbolTick implements IMidaEquatable, IMidaCloneable {
 
     public get nextTick (): MidaSymbolTick | undefined {
         return this._nextTick;
-    }
-
-    public get broker (): MidaBroker | undefined {
-        return this._broker;
     }
 
     public get symbol (): string {
@@ -79,7 +70,6 @@ export class MidaSymbolTick implements IMidaEquatable, IMidaCloneable {
             date: new Date(this._date),
             previousTick: this._previousTick?.clone(),
             nextTick: this._nextTick?.clone(),
-            broker: this._broker,
         });
     }
 

@@ -17,7 +17,7 @@ export class MidaSymbolQuotation implements IMidaEquatable, IMidaCloneable {
     // Represents the quotation ask price.
     private readonly _ask: number;
 
-    public constructor ({ symbol, date, bid, ask }: MidaSymbolQuotationParameters) {
+    public constructor ({ symbol, date, bid, ask, }: MidaSymbolQuotationParameters) {
         this._symbol = symbol;
         this._date = new Date(date);
         this._bid = bid;
