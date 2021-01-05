@@ -1,6 +1,5 @@
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 import { MidaBrokerParameters } from "#brokers/MidaBrokerParameters";
-import { GenericObject } from "#utilities/GenericObject";
 
 // Represents a broker.
 export abstract class MidaBroker {
@@ -23,5 +22,5 @@ export abstract class MidaBroker {
         return this._websiteUri;
     }
 
-    protected abstract async login (credentials: GenericObject): Promise<MidaBrokerAccount>;
+    protected abstract async login (...parameters: any[]): Promise<MidaBrokerAccount>;
 }

@@ -6,6 +6,7 @@ import { MidaSymbolQuotationPriceType } from "#/quotations/MidaSymbolQuotationPr
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { MidaSymbol } from "#symbols/MidaSymbol";
 import { MidaSymbolPeriod } from "#/periods/MidaSymbolPeriod";
+import { MidaSymbolType } from "#symbols/MidaSymbolType";
 
 // Represents the account of a broker.
 export abstract class MidaBrokerAccount {
@@ -77,7 +78,7 @@ export abstract class MidaBrokerAccount {
 
     public abstract async getPositions (): Promise<MidaBrokerPosition[]>;
 
-    public abstract async getSupportedSymbols (): Promise<MidaSymbol[]>;
+    public abstract async getSymbols (): Promise<MidaSymbol[]>;
 
     public abstract async isSymbolMarketOpen (symbol: string): Promise<boolean>;
 
@@ -123,6 +124,10 @@ export abstract class MidaBrokerAccount {
         }
 
         return (await this.getEquity()) / usedMargin * 100;
+    }
+
+    public async getSymbolsByType (type: MidaSymbolType): Promise<MidaSymbol[]> {
+        return [];
     }
 
     private _assertConnection (): void {
