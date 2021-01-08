@@ -1,5 +1,5 @@
 <p align="center"> 
-    <img src="images/logo.svg" alt="" width="390px">
+    <img src="images/logo.svg" alt="MidaFX" width="390px">
 </p>
 <br>
 
@@ -7,7 +7,7 @@ MidaFX is an open source TypeScript framework designed to operate in financial m
 
 Through MidaFX you can:
 - Trade financial assets like stocks, forex, crypto or commodities;
-- Execute and automate investment and trading strategies by creating expert advisors and indicators;
+- Execute and automate trading strategies by creating expert advisors and indicators;
 - Backtest expert advisors on time series covering the last decades;
 - Analyze markets and prices movements through dedicated analysis interfaces.
 

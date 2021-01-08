@@ -1,10 +1,9 @@
 import { MidaSymbolPeriodParameters } from "#/periods/MidaSymbolPeriodParameters";
-import { MidaSymbolQuotation } from "#quotations/MidaSymbolQuotation";
 import { MidaSymbolQuotationPriceType } from "#quotations/MidaSymbolQuotationPriceType";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { IMidaEquatable } from "#utilities/equatable/IMidaEquatable";
 
-// Represents a symbol period (the quotations of a symbol in a timeframe).
+// Represents a symbol period (the ticks of a symbol in a timeframe).
 export class MidaSymbolPeriod implements IMidaEquatable {
     // Represents the period symbol.
     private readonly _symbol: string;
@@ -34,11 +33,11 @@ export class MidaSymbolPeriod implements IMidaEquatable {
     // Represents the period timeframe (in seconds).
     private readonly _timeframe: number;
 
-    // Represents the quotations composing the period.
-    // This is optional as quotations are not always registered, therefore it may result in an empty array.
-    private readonly _quotations?: MidaSymbolQuotation[];
+    // Represents the ticks composing the period.
+    // This is optional as ticks are not always stored: it may result in an empty array.
+    private readonly _ticks?: MidaSymbolTick[];
 
-    public constructor ({ symbol, startTime, priceType, open, high, low, close, volume, timeframe, quotations, }: MidaSymbolPeriodParameters) {
+    public constructor ({ symbol, startTime, priceType, open, high, low, close, volume, timeframe, ticks, }: MidaSymbolPeriodParameters) {
         this._symbol = symbol;
         this._startTime = new Date(startTime);
         this._priceType = priceType;
@@ -48,7 +47,7 @@ export class MidaSymbolPeriod implements IMidaEquatable {
         this._close = close;
         this._volume = volume;
         this._timeframe = timeframe;
-        this._quotations = quotations;
+        this._ticks = ticks;
     }
 
     public get symbol (): string {
@@ -87,8 +86,8 @@ export class MidaSymbolPeriod implements IMidaEquatable {
         return this._timeframe;
     }
 
-    public get quotations (): readonly MidaSymbolQuotation[] | undefined {
-        return this._quotations;
+    public get ticks (): readonly MidaSymbolTick[] | undefined {
+        return this._ticks;
     }
 
     public get endTime (): Date {
@@ -145,14 +144,14 @@ export class MidaSymbolPeriod implements IMidaEquatable {
      **
     */
 
-    public static fromQuotations (
-        quotations: MidaSymbolQuotation[],
+    public static fromTicks (
+        ticks: MidaSymbolTick[],
         startTime: Date,
         timeframe: number,
         priceType: MidaSymbolQuotationPriceType = MidaSymbolQuotationPriceType.BID,
         limit: number = -1
     ): MidaSymbolPeriod[] {
-        if (quotations.length < 1 || timeframe <= 0) {
+        if (ticks.length < 1 || timeframe <= 0) {
             return [];
         }
 
@@ -163,44 +162,44 @@ export class MidaSymbolPeriod implements IMidaEquatable {
         }
 
         const periods: MidaSymbolPeriod[] = [];
-        let periodQuotations: MidaSymbolQuotation[] = [];
+        let periodTicks: MidaSymbolTick[] = [];
         let periodEndTime: Date = getNextPeriodEndTime();
 
         function tryComposePeriod (): void {
-            if (periodQuotations.length < 1) {
+            if (periodTicks.length < 1) {
                 return;
             }
 
             periods.push(new MidaSymbolPeriod({
-                symbol: quotations[0].symbol,
+                symbol: ticks[0].symbol,
                 startTime: periodStartTime,
                 priceType,
-                open: MidaSymbolQuotation.getQuotationsOpenPrice(periodQuotations, priceType),
-                high: MidaSymbolQuotation.getQuotationsClosePrice(periodQuotations, priceType),
-                low: MidaSymbolQuotation.getQuotationsLowestPrice(periodQuotations, priceType),
-                close: MidaSymbolQuotation.getQuotationsHighestPrice(periodQuotations, priceType),
-                volume: periodQuotations.length,
+                open: MidaSymbolTick.getTicksOpenPrice(periodTicks, priceType),
+                high: MidaSymbolTick.getTicksClosePrice(periodTicks, priceType),
+                low: MidaSymbolTick.getTicksLowestPrice(periodTicks, priceType),
+                close: MidaSymbolTick.getTicksHighestPrice(periodTicks, priceType),
+                volume: periodTicks.length,
                 timeframe,
-                quotations: [ ...periodQuotations, ],
+                ticks: [ ...periodTicks, ],
             }));
 
-            periodQuotations = [];
+            periodTicks = [];
         }
 
-        for (let i: number = 0; i < quotations.length; ++i) {
-            const quotation: MidaSymbolQuotation = quotations[i];
+        for (let i: number = 0; i < ticks.length; ++i) {
+            const tick: MidaSymbolTick = ticks[i];
 
             if (limit > -1 && periods.length === limit) {
                 return periods;
             }
 
-            if (quotation.date < periodStartTime) {
+            if (tick.date < periodStartTime) {
                 continue;
             }
 
             let periodHasEnded: boolean = false;
 
-            while (quotation.date > periodEndTime) {
+            while (tick.date > periodEndTime) {
                 periodStartTime = new Date(periodEndTime);
                 periodEndTime = getNextPeriodEndTime();
 
@@ -213,27 +212,11 @@ export class MidaSymbolPeriod implements IMidaEquatable {
                 tryComposePeriod();
             }
 
-            periodQuotations.push(quotation);
+            periodTicks.push(tick);
         }
 
         tryComposePeriod();
 
         return periods;
-    }
-
-    public static fromTicks (
-        ticks: MidaSymbolTick[],
-        startTime: Date,
-        timeframe: number,
-        priceType: MidaSymbolQuotationPriceType = MidaSymbolQuotationPriceType.BID,
-        limit: number = -1
-    ): MidaSymbolPeriod[] {
-        return MidaSymbolPeriod.fromQuotations(
-            ticks.map((tick: MidaSymbolTick): MidaSymbolQuotation => tick.quotation),
-            startTime,
-            timeframe,
-            priceType,
-            limit,
-        );
     }
 }
