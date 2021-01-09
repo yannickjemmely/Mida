@@ -130,6 +130,10 @@ export abstract class MidaBrokerAccount {
         return [];
     }
 
+    public async canTradeSymbol (symbol: string): Promise<boolean> {
+        return false;
+    }
+
     private _assertConnection (): void {
         if (this._isDisconnected) {
             throw new Error();

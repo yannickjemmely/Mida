@@ -5,7 +5,7 @@
 
 MidaFX is an open source TypeScript framework designed to operate in financial markets.
 
-Through MidaFX you can:
+Specifically MidaFX allows to:
 - Trade financial assets like stocks, forex, crypto or commodities;
 - Execute and automate trading strategies by creating expert advisors and indicators;
 - Backtest expert advisors on time series covering the last decades;
@@ -20,7 +20,7 @@ npm install midafx
 Operating in CFDs/Forex is highly speculative and carries a high level of risk.
 It is possible to lose all your capital. These products may not be suitable for everyone,
 you should ensure that you understand the risks involved. Furthermore, MidaFX is not responsible for commissions,
-swaps and other taxes applied to your operations, they depend on your broker.
+swaps and other taxes applied to your account and its operations, they depend on your broker.
 
 ## Usage Examples
 
