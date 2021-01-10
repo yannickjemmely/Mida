@@ -20,7 +20,7 @@ npm install midafx
 Operating in CFDs/Forex is highly speculative and carries a high level of risk.
 It is possible to lose all your capital. These products may not be suitable for everyone,
 you should ensure that you understand the risks involved. Furthermore, MidaFX is not responsible for commissions,
-swaps and other taxes applied to your account and its operations, they depend on your broker.
+swaps and other taxes applied to your operations, they depend on your broker.
 
 ## Usage Examples
 

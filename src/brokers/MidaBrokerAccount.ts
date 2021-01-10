@@ -1,5 +1,7 @@
 import { MidaBroker } from "#brokers/MidaBroker";
+import { MidaBrokerAccountParameters } from "#brokers/MidaBrokerAccountParameters";
 import { MidaBrokerAccountType } from "#brokers/MidaBrokerAccountType";
+import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
 import { MidaBrokerPosition } from "#positions/MidaBrokerPosition";
 import { MidaBrokerPositionStatusType } from "#positions/MidaBrokerPositionStatusType";
 import { MidaSymbolQuotationPriceType } from "#/quotations/MidaSymbolQuotationPriceType";
@@ -8,37 +10,33 @@ import { MidaSymbol } from "#symbols/MidaSymbol";
 import { MidaSymbolPeriod } from "#/periods/MidaSymbolPeriod";
 import { MidaSymbolType } from "#symbols/MidaSymbolType";
 
-// Represents the account of a broker.
+// Represents a broker account.
 export abstract class MidaBrokerAccount {
     // Represents the account id.
     private readonly _id: string;
 
-    // Represents the account name.
-    private readonly _name: string;
+    // Represents the account broker.
+    private readonly _broker: MidaBroker;
 
     // Represents the account type.
     private readonly _type: MidaBrokerAccountType;
 
-    // Represents the account broker.
-    private readonly _broker: MidaBroker;
+    // Represents the account full name.
+    private readonly _fullName: string;
 
-    // Indicates if the account is disconnected.
-    private _isDisconnected: boolean;
+    // Indicates if the account is connected to the broker.
+    private _isConnected: boolean;
 
-    protected constructor (id: string, name: string, type: MidaBrokerAccountType, broker: MidaBroker) {
+    protected constructor ({ id, fullName, type, broker, }: MidaBrokerAccountParameters) {
         this._id = id;
-        this._name = name;
+        this._fullName = fullName;
         this._type = type;
         this._broker = broker;
-        this._isDisconnected = false;
+        this._isConnected = false;
     }
 
     public get id (): string {
         return this._id;
-    }
-
-    public get name (): string {
-        return this._name;
     }
 
     public get type (): MidaBrokerAccountType {
@@ -47,6 +45,10 @@ export abstract class MidaBrokerAccount {
 
     public get broker (): MidaBroker {
         return this._broker;
+    }
+
+    public get fullName (): string {
+        return this._fullName;
     }
 
     public async getPing (): Promise<number> {
@@ -59,7 +61,7 @@ export abstract class MidaBrokerAccount {
         this._assertConnection();
         await this._disconnect();
 
-        this._isDisconnected = true;
+        this._isConnected = true;
     }
 
     protected abstract async _getPing (): Promise<number>;
@@ -74,7 +76,7 @@ export abstract class MidaBrokerAccount {
 
     public abstract async getFreeMargin (): Promise<number>;
 
-    public abstract async createPosition (directives: MidaBrokerOrderDirectives): Promise<MidaBrokerPosition>;
+    public abstract async placeOrder (directives: MidaBrokerOrderDirectives): Promise<MidaBrokerPosition>;
 
     public abstract async getPositions (): Promise<MidaBrokerPosition[]>;
 
@@ -130,17 +132,9 @@ export abstract class MidaBrokerAccount {
         return [];
     }
 
-    public async canTradeSymbol (symbol: string): Promise<boolean> {
-        return false;
-    }
-
     private _assertConnection (): void {
-        if (this._isDisconnected) {
+        if (!this._isConnected) {
             throw new Error();
         }
-    }
-
-    private async _assertPromiseDuration (promise: Promise<any>, timeout: number): Promise<any> {
-
     }
 }

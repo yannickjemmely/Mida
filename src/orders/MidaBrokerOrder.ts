@@ -1,6 +1,6 @@
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
-import { MidaBrokerOrderParameters } from "#orders/MidaBrokerOrderParameters";
 import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
+import { MidaBrokerOrderParameters } from "#orders/MidaBrokerOrderParameters";
 
 // Represents an order.
 export class MidaBrokerOrder {
@@ -10,23 +10,21 @@ export class MidaBrokerOrder {
     // Represents the order broker account.
     private readonly _brokerAccount: MidaBrokerAccount;
 
-    // Represents the order directives.
-    private readonly _directives: MidaBrokerOrderDirectives;
+    // Represents the order creation directives.
+    private readonly _creationDirectives: MidaBrokerOrderDirectives;
 
     // Represents the order request date.
     private readonly _requestDate: Date;
 
-    // request date, creation date, fill date, cancel date.
+    // Represents the order creation date.
+    private readonly _creationDate: Date;
 
-    // Represents the order release date.
-    private readonly _releaseDate: Date;
-
-    public constructor ({ ticket, brokerAccount, directives, requestDate, releaseDate, }: MidaBrokerOrderParameters) {
+    public constructor ({ ticket, brokerAccount, creationDirectives, requestDate, creationDate, }: MidaBrokerOrderParameters) {
         this._ticket = ticket;
         this._brokerAccount = brokerAccount;
-        this._directives = { ...directives, };
+        this._creationDirectives = { ...creationDirectives, };
         this._requestDate = new Date(requestDate);
-        this._releaseDate = new Date(releaseDate);
+        this._creationDate = new Date(creationDate);
     }
 
     public get ticket (): number {
@@ -37,23 +35,15 @@ export class MidaBrokerOrder {
         return this._brokerAccount;
     }
 
-    public get directives (): MidaBrokerOrderDirectives {
-        return { ...this._directives, };
+    public get creationDirectives (): MidaBrokerOrderDirectives {
+        return { ...this._creationDirectives, };
     }
 
     public get requestDate (): Date {
         return new Date(this._requestDate);
     }
 
-    public async getOrderPrice (): Promise<number> {
-        return NaN;
-    }
-
-    public async getFillPrice (): Promise<number | undefined> {
-        return;
-    }
-
-    public get releaseDate (): Date {
-        return new Date(this._releaseDate);
+    public get creationDate (): Date {
+        return new Date(this._creationDate);
     }
 }
