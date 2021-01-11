@@ -46,4 +46,8 @@ export class MidaBrokerOrder {
     public get creationDate (): Date {
         return new Date(this._creationDate);
     }
+
+    public async close (): Promise<void> {
+        await this._brokerAccount.closePositionByTicket(this._ticket);
+    }
 }

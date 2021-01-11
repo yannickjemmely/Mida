@@ -9,6 +9,7 @@ import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { MidaSymbol } from "#symbols/MidaSymbol";
 import { MidaSymbolPeriod } from "#/periods/MidaSymbolPeriod";
 import { MidaSymbolType } from "#symbols/MidaSymbolType";
+import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
 
 // Represents a broker account.
 export abstract class MidaBrokerAccount {
@@ -76,7 +77,9 @@ export abstract class MidaBrokerAccount {
 
     public abstract async getFreeMargin (): Promise<number>;
 
-    public abstract async placeOrder (directives: MidaBrokerOrderDirectives): Promise<MidaBrokerPosition>;
+    public abstract async placeOrder (directives: MidaBrokerOrderDirectives): Promise<MidaBrokerOrder>;
+
+    public abstract async closePositionByTicket (ticket: number): Promise<void>;
 
     public abstract async getPositions (): Promise<MidaBrokerPosition[]>;
 
