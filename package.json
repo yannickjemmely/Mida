@@ -6,7 +6,7 @@
         "lint": "tslint --project .",
         "build": "npm run lint && tsc",
         "start": "npm run build && node ./build/main.js",
-        "test": "npm run build && jest"
+        "test": "jest"
     },
     "dependencies": {
         "module-alias": "2.2.2"
@@ -14,22 +14,9 @@
     "devDependencies": {
         "typescript": "3.7.2",
         "tslint": "5.18.0",
-        "@types/node": "12.7.2"
-    },
-    "_moduleAliases": {
-        "!": ".",
-        "#": "build/src",
-        "#advisors": "build/src/advisors",
-        "#analysis": "build/src/analysis",
-        "#assets": "build/src/assets",
-        "#brokers": "build/src/brokers",
-        "#browsers": "build/src/browsers",
-        "#commodities": "build/src/commodities",
-        "#currencies": "build/src/currencies",
-        "#errors": "build/src/errors",
-        "#events": "build/src/events",
-        "#forex": "build/src/forex",
-        "#positions": "build/src/positions",
-        "#utilities": "build/src/utilities"
+        "jest": "26.6.3",
+        "ts-jest": "26.4.4",
+        "@types/node": "12.7.2",
+        "@types/jest": "26.0.20"
     }
 }
