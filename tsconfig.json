@@ -29,11 +29,11 @@
             "#orders/*": [
                 "src/orders/*"
             ],
+            "#periods/*": [
+                "src/periods/*"
+            ],
             "#browsers/*": [
                 "src/browsers/*"
-            ],
-            "#commodities/*": [
-                "src/commodities/*"
             ],
             "#currencies/*": [
                 "src/currencies/*"

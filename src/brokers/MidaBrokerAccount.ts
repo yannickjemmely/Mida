@@ -91,6 +91,8 @@ export abstract class MidaBrokerAccount {
 
     public abstract async getSymbolLeverage (symbol: string): Promise<any>;
 
+    public abstract async getSymbolRequiredMargin (symbol: string, lots: number): Promise<number>;
+    
     public abstract async getSymbolPeriods (
         symbol: string,
         timeframe: number,

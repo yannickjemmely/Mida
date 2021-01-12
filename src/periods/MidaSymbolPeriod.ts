@@ -1,4 +1,4 @@
-import { MidaSymbolPeriodParameters } from "#/periods/MidaSymbolPeriodParameters";
+import { MidaSymbolPeriodParameters } from "#periods/MidaSymbolPeriodParameters";
 import { MidaSymbolQuotationPriceType } from "#quotations/MidaSymbolQuotationPriceType";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { IMidaEquatable } from "#utilities/equatable/IMidaEquatable";
@@ -143,7 +143,7 @@ export class MidaSymbolPeriod implements IMidaEquatable {
      *** Static Utilities
      **
     */
-
+/*
     public static fromTicks (
         ticks: MidaSymbolTick[],
         startTime: Date,
@@ -218,5 +218,5 @@ export class MidaSymbolPeriod implements IMidaEquatable {
         tryComposePeriod();
 
         return periods;
-    }
+    }*/
 }

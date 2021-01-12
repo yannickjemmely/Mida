@@ -1,7 +1,7 @@
 {
     "name": "midafx",
     "version": "1.0.0",
-    "description": "",
+    "description": "A TypeScript framework to operate in financial markets.",
     "scripts": {
         "lint": "tslint --project .",
         "build": "npm run lint && tsc",
