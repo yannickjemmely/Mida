@@ -1,8 +1,8 @@
 import { MidaSymbolQuotation } from "#quotations/MidaSymbolQuotation";
+import { MidaSymbolQuotationPriceType } from "#quotations/MidaSymbolQuotationPriceType";
 import { MidaSymbolTickParameters } from "#ticks/MidaSymbolTickParameters";
 import { IMidaEquatable } from "#utilities/equatable/IMidaEquatable";
 import { IMidaCloneable } from "#utilities/cloneable/IMidaCloneable";
-import { MidaSymbolQuotationPriceType } from "#quotations/MidaSymbolQuotationPriceType";
 
 // Represents a symbol tick.
 export class MidaSymbolTick implements IMidaEquatable, IMidaCloneable {

@@ -1,3 +1,4 @@
+// Represents the timeframe type of a period.
 export enum MidaSymbolPeriodTimeframeType {
     // Represents 1 second.
     S1 = 1,

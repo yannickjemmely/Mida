@@ -1,6 +1,7 @@
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
 import { MidaBrokerOrderParameters } from "#orders/MidaBrokerOrderParameters";
+import { MidaBrokerPosition } from "#positions/MidaBrokerPosition";
 
 // Represents an order.
 export class MidaBrokerOrder {
@@ -45,6 +46,10 @@ export class MidaBrokerOrder {
 
     public get creationDate (): Date {
         return new Date(this._creationDate);
+    }
+
+    public async getPosition (): Promise<MidaBrokerPosition | undefined> {
+        throw new Error();
     }
 
     public async closePosition (): Promise<void> {

@@ -28,9 +28,9 @@ swaps and other taxes applied to your operations, they depend on your broker.
 Opening a long position for Bitcoin against USD.
 
 ```typescript
-const myAccount: MidaBrokerAccount = await MidaBroker.login("BDSwiss", {
-    login: "root",
-    password: "root",
+const myAccount: MidaBrokerAccount = await MidaBroker.login("example", {
+    login: "example",
+    password: "example",
 });
 
 const myOrder: MidaBrokerOrder = await myAccount.placeOrder({
