@@ -143,7 +143,7 @@ export class MidaSymbolPeriod implements IMidaEquatable {
      *** Static Utilities
      **
     */
-/*
+
     public static fromTicks (
         ticks: MidaSymbolTick[],
         startTime: Date,
@@ -218,5 +218,5 @@ export class MidaSymbolPeriod implements IMidaEquatable {
         tryComposePeriod();
 
         return periods;
-    }*/
+    }
 }

@@ -2,6 +2,7 @@ import { MidaSymbolQuotation } from "#quotations/MidaSymbolQuotation";
 import { MidaSymbolTickParameters } from "#ticks/MidaSymbolTickParameters";
 import { IMidaEquatable } from "#utilities/equatable/IMidaEquatable";
 import { IMidaCloneable } from "#utilities/cloneable/IMidaCloneable";
+import { MidaSymbolQuotationPriceType } from "#quotations/MidaSymbolQuotationPriceType";
 
 // Represents a symbol tick.
 export class MidaSymbolTick implements IMidaEquatable, IMidaCloneable {
@@ -79,17 +80,23 @@ export class MidaSymbolTick implements IMidaEquatable, IMidaCloneable {
      **
     */
 
-    public static getTicksInDateRange (ticks: MidaSymbolTick[], from: Date, to: Date): MidaSymbolTick[] {
-        const matchedTicks: MidaSymbolTick[] = [];
+    public static getTicksOpenPrice (ticks: MidaSymbolTick[], priceType: MidaSymbolQuotationPriceType): number {
+        return MidaSymbolQuotation.getQuotationsOpenPrice(ticks.map((tick: MidaSymbolTick): MidaSymbolQuotation => tick.quotation), priceType);
+    }
 
-        for (const tick of ticks) {
-            const date: Date = tick.date;
+    public static getTicksHighestPrice (ticks: MidaSymbolTick[], priceType: MidaSymbolQuotationPriceType): number {
+        return MidaSymbolQuotation.getQuotationsHighestPrice(ticks.map((tick: MidaSymbolTick): MidaSymbolQuotation => tick.quotation), priceType);
+    }
 
-            if (date >= from && date <= to) {
-                matchedTicks.push(tick);
-            }
-        }
+    public static getTicksLowestPrice (ticks: MidaSymbolTick[], priceType: MidaSymbolQuotationPriceType): number {
+        return MidaSymbolQuotation.getQuotationsLowestPrice(ticks.map((tick: MidaSymbolTick): MidaSymbolQuotation => tick.quotation), priceType);
+    }
 
-        return matchedTicks;
+    public static getTicksClosePrice (ticks: MidaSymbolTick[], priceType: MidaSymbolQuotationPriceType): number {
+        return MidaSymbolQuotation.getQuotationsClosePrice(ticks.map((tick: MidaSymbolTick): MidaSymbolQuotation => tick.quotation), priceType);
+    }
+
+    public static ticksHaveSameSymbol (ticks: MidaSymbolTick[]): boolean {
+        return MidaSymbolQuotation.quotationsHaveSameSymbol(ticks.map((tick: MidaSymbolTick): MidaSymbolQuotation => tick.quotation));
     }
 }
