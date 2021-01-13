@@ -1,5 +1,5 @@
 <p align="center"> 
-    <img src="images/logo.svg" alt="MidaFX" width="390px">
+    <img src="../images/logo.svg" alt="MidaFX" width="390px">
 </p>
 <br>
 
