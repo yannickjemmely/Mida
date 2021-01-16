@@ -8,4 +8,5 @@ export type MidaBrokerOrderParameters = {
     creationDirectives: MidaBrokerOrderDirectives;
     requestDate: Date;
     creationDate: Date;
+    tags?: string[];
 };
