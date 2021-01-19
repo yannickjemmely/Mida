@@ -21,6 +21,9 @@ export class MidaBrokerOrder {
     // Represents the order creation date.
     private readonly _creationDate: Date;
 
+    // Represents the order fill date.
+    private readonly _fillDate?: Date;
+
     // Represents the order tags.
     private readonly _tags: Set<string>;
 

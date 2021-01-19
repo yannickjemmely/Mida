@@ -4,4 +4,5 @@ export type MidaSymbolQuotationParameters = {
     date: Date;
     bid: number;
     ask: number;
+    exchangeName?: string;
 };

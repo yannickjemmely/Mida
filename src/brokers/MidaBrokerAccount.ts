@@ -102,7 +102,7 @@ export abstract class MidaBrokerAccount {
         priceType?: MidaSymbolQuotationPriceType
     ): Promise<MidaSymbolPeriod[]>;
 
-    public abstract async getSymbolLastTick (symbol: string): Promise<MidaSymbolTick[]>;
+    public abstract async getSymbolLastTick (symbol: string): Promise<MidaSymbolTick>;
 
     public async getPositionsByStatus (status: MidaBrokerPositionStatusType): Promise<MidaBrokerPosition[]> {
         const positions: MidaBrokerPosition[] = await this.getPositions();

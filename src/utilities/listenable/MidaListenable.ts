@@ -1,7 +1,7 @@
 import { v1 as uuidV1 }  from "uuid";
 import { MidaListener } from "#utilities/listenable/MidaListener";
 
-// Represents an object that may emit events.
+// Represents an object capable of emitting events.
 export class MidaListenable {
     private readonly _listeners: {
         [type: string]: {

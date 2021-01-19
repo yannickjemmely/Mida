@@ -53,6 +53,10 @@ export class MidaSymbolTick implements IMidaEquatable, IMidaCloneable {
         return this._quotation.ask;
     }
 
+    public get exchangeName (): string {
+        return this._quotation.exchangeName;
+    }
+
     public get spread (): number {
         return this._quotation.spread;
     }

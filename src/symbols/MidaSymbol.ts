@@ -1,6 +1,8 @@
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
+import { MidaBrokerPositionType } from "#positions/MidaBrokerPositionType";
 import { MidaSymbolParameters } from "#symbols/MidaSymbolParameters";
 import { MidaSymbolType } from "#symbols/MidaSymbolType";
+import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 
 // Represents a symbol.
 export class MidaSymbol {
@@ -41,6 +43,14 @@ export class MidaSymbol {
 
     public get digits (): number {
         return this._digits;
+    }
+
+    public async getLastTick (): Promise<MidaSymbolTick> {
+        return this._brokerAccount.getSymbolLastTick(this._symbol);
+    }
+
+    public async calculateRequiredMargin (lots: number, type: MidaBrokerPositionType): Promise<number> {
+        throw new Error();
     }
 
     public toString (): string {

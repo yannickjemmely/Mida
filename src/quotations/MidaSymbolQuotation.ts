@@ -17,11 +17,15 @@ export class MidaSymbolQuotation implements IMidaEquatable, IMidaCloneable {
     // Represents the quotation ask price.
     private readonly _ask: number;
 
-    public constructor ({ symbol, date, bid, ask, }: MidaSymbolQuotationParameters) {
+    // Represents the quotation exchange name.
+    private readonly _exchangeName: string;
+
+    public constructor ({ symbol, date, bid, ask, exchangeName = "", }: MidaSymbolQuotationParameters) {
         this._symbol = symbol;
         this._date = new Date(date);
         this._bid = bid;
         this._ask = ask;
+        this._exchangeName = exchangeName;
     }
 
     public get symbol (): string {
@@ -38,6 +42,10 @@ export class MidaSymbolQuotation implements IMidaEquatable, IMidaCloneable {
 
     public get ask (): number {
         return this._ask;
+    }
+
+    public get exchangeName (): string {
+        return this._exchangeName;
     }
 
     public get mid (): number {
@@ -62,6 +70,7 @@ export class MidaSymbolQuotation implements IMidaEquatable, IMidaCloneable {
             date: new Date(this._date),
             bid: this._bid,
             ask: this._ask,
+            exchangeName: this._exchangeName,
         });
     }
 
