@@ -78,7 +78,10 @@ export class MidaUtilities {
         return whatPercentage / subject * 100;
     }
 
-    public static async assertPromiseDuration (task: Promise<any>, timeout: number): Promise<any> {
-        
+    public static async assertPromiseDuration (task: Promise<any>, timeout: number, defaultValue?: any): Promise<any> {
+        return new Promise((resolve: any, reject: any): void => {
+            setTimeout(() => resolve(defaultValue), timeout);
+            task.then((value: any) => resolve(value)).catch((error: any) => reject(error));
+        });
     }
 }

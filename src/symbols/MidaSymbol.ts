@@ -49,8 +49,12 @@ export class MidaSymbol {
         return this._brokerAccount.getSymbolLastTick(this._symbol);
     }
 
-    public async calculateRequiredMargin (lots: number, type: MidaBrokerPositionType): Promise<number> {
+    public async getRequiredMargin (lots: number, type: MidaBrokerPositionType): Promise<number> {
         throw new Error();
+    }
+
+    public async isMarketOpen (): Promise<boolean> {
+        return this._brokerAccount.isSymbolMarketOpen(this._symbol);
     }
 
     public toString (): string {
