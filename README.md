@@ -27,7 +27,7 @@ swaps and other taxes applied to your operations, they depend on your broker.
 ## Usage
 
 ### Broker Login
-You can use any supported broker as long as you have an account.
+You can use any supported broker as long as you have an account.<br>
 MidaFX offers an internal demo broker named `PlaygroundBroker` which you can use to test your
 strategies and expert advisors without the risk of losing money.
 
