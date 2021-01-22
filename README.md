@@ -27,13 +27,9 @@ swaps and other taxes applied to your operations, they depend on your broker.
 ## Usage
 
 ### Broker Login
-You can use any supported broker as long as you have an account.<br>
-MidaFX offers an internal demo broker named `PlaygroundBroker` which you can use to test your
-strategies and expert advisors without the risk of losing money.
-
 Login into any supported broker by providing the broker name, your login id and password.
 ```typescript
-const myAccount: MidaBrokerAccount = await MidaBroker.login("example", {
+const myAccount = await MidaBroker.login("example", {
     login: "example",
     password: "example",
 });
@@ -41,15 +37,16 @@ const myAccount: MidaBrokerAccount = await MidaBroker.login("example", {
 
 Login into the `PlaygroundBroker`.
 ```typescript
-const myAccount: MidaBrokerAccount = await MidaBroker.login("MidaPlayground");
+const myAccount = await MidaBroker.login("MidaPlayground");
 ```
 
 ### Opening Positions
 All examples assume that you have logged into a broker account.
 
+#### Long Position
 Opening a long position for Bitcoin against USD.
 ```typescript
-const myOrder: MidaBrokerOrder = await myAccount.placeOrder({
+const myOrder = await myAccount.placeOrder({
     symbol: "BTCUSD",
     type: MidaBrokerOrderType.BUY,
     size: 1,
@@ -58,25 +55,48 @@ const myOrder: MidaBrokerOrder = await myAccount.placeOrder({
 console.log(await myOrder.getOpenPrice());
 ```
 
+#### Short Position
 Opening a forex short position for EUR against USD.
 ```typescript
-const myOrder: MidaBrokerOrder = await myAccount.placeOrder({
+const myOrder = await myAccount.placeOrder({
     symbol: "EURUSD",
     type: MidaBrokerOrderType.SELL,
     size: 0.1,
 });
+
+console.log(await myOrder.getOpenPrice());
 ```
 
 ### Market Analysis
 
 #### Candlesticks/Bars
-MidaFX refers to candlesticks and bars as periods.
+Candlesticks and bars are referred as periods.
 
 ```typescript
-const periods: MidaSymbolPeriod[] = await myAccount.getSymbolPeriods("EURUSD", MidaSymbolPeriodTimeframeType.M30);
-const lastPeriod: MidaSymbolPeriod = periods[periods.length - 1];
+const periods = await myAccount.getSymbolPeriods("EURUSD", MidaSymbolPeriodTimeframeType.M30);
+const lastPeriod = periods[periods.length - 1];
 
-console.log(lastPeriod.ohlc);
+console.log("Last period OHLC => " + lastPeriod.ohlc);
+console.log("Last period close price => " + lastPeriod.close);
+```
+
+### Symbols
+```typescript
+const eurUsd = await myAccount.getSymbol("EURUSD");
+
+eurUsd.on("market-open", () => {
+    console.log("EURUSD market has opened.");
+});
+
+eurUsd.on("tick", (tick) => {
+    console.log(tick.date);
+    console.log(tick.bid);
+    console.log(tick.ask);
+});
+
+eurUsd.on("market-close", () => {
+    console.log("EURUSD market has closed.");
+});
 ```
 
 ## Contributors
