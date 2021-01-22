@@ -10,34 +10,40 @@ import { MidaSymbol } from "#symbols/MidaSymbol";
 import { MidaSymbolPeriod } from "#/periods/MidaSymbolPeriod";
 import { MidaSymbolType } from "#symbols/MidaSymbolType";
 import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
+import { MidaListenable } from "#utilities/listenable/MidaListenable";
+import { MidaListener } from "#utilities/listenable/MidaListener";
 
 // Represents a broker account.
 export abstract class MidaBrokerAccount {
     // Represents the account id.
     private readonly _id: string;
 
-    // Represents the account broker.
-    private readonly _broker: MidaBroker;
+    // Represents the account full name.
+    private readonly _fullName: string;
 
     // Represents the account type.
     private readonly _type: MidaBrokerAccountType;
 
-    // Represents the account full name.
-    private readonly _fullName: string;
+    // Represents the account broker.
+    private readonly _broker: MidaBroker;
 
-    // Indicates if the account is connected to the broker.
-    private _isConnected: boolean;
+    // Represents the account event system.
+    private readonly _listenable: MidaListenable;
 
     protected constructor ({ id, fullName, type, broker, }: MidaBrokerAccountParameters) {
         this._id = id;
         this._fullName = fullName;
         this._type = type;
         this._broker = broker;
-        this._isConnected = false;
+        this._listenable = new MidaListenable();
     }
 
     public get id (): string {
         return this._id;
+    }
+
+    public get fullName (): string {
+        return this._fullName;
     }
 
     public get type (): MidaBrokerAccountType {
@@ -48,26 +54,7 @@ export abstract class MidaBrokerAccount {
         return this._broker;
     }
 
-    public get fullName (): string {
-        return this._fullName;
-    }
-
-    public async getPing (): Promise<number> {
-        this._assertConnection();
-
-        return this._getPing();
-    }
-
-    public async disconnect (): Promise<void> {
-        this._assertConnection();
-        await this._disconnect();
-
-        this._isConnected = true;
-    }
-
-    protected abstract async _getPing (): Promise<number>;
-
-    protected abstract async _disconnect (): Promise<void>;
+    public abstract async getPing (): Promise<number>;
 
     public abstract async getBalance (): Promise<number>;
 
@@ -79,19 +66,21 @@ export abstract class MidaBrokerAccount {
 
     public abstract async placeOrder (directives: MidaBrokerOrderDirectives): Promise<MidaBrokerOrder>;
 
-    public abstract async closePositionByTicket (ticket: number): Promise<void>;
+    public abstract async cancelOrderByTicket (ticket: number): Promise<void>;
 
-    public abstract async getPositions (): Promise<MidaBrokerPosition[]>;
+    public abstract async closeOrderByTicket (ticket: number): Promise<void>;
+
+    public abstract async getOrders (): Promise<MidaBrokerOrder[]>;
 
     public abstract async getSymbols (): Promise<MidaSymbol[]>;
 
     public abstract async isSymbolMarketOpen (symbol: string): Promise<boolean>;
 
-    public abstract async getCurrency (): Promise<string>;
-
     public abstract async getSymbolLeverage (symbol: string): Promise<any>;
 
-    public abstract async getSymbolRequiredMargin (symbol: string, lots: number): Promise<number>;
+    public abstract async getSymbolRequiredMargin (symbol: string, lots: number, direction: any): Promise<number>;
+
+    public abstract async getCurrency (): Promise<string>;
     
     public abstract async getSymbolPeriods (
         symbol: string,
@@ -104,26 +93,11 @@ export abstract class MidaBrokerAccount {
 
     public abstract async getSymbolLastTick (symbol: string): Promise<MidaSymbolTick>;
 
-    public async getPositionsByStatus (status: MidaBrokerPositionStatusType): Promise<MidaBrokerPosition[]> {
-        const positions: MidaBrokerPosition[] = await this.getPositions();
-        const foundPositions: MidaBrokerPosition[] = [];
-
-        await Promise.all(positions.map(async (position: MidaBrokerPosition): Promise<void> => {
-            if ((await position.getStatus()) === status) {
-                foundPositions.push(position);
-            }
-        }));
-
-        return foundPositions;
-    }
-
     public async getUsedMargin (): Promise<number> {
         return (await this.getMargin()) - (await this.getFreeMargin());
     }
 
     public async getMarginLevel (): Promise<number> {
-        this._assertConnection();
-        
         const usedMargin: number = await this.getUsedMargin();
 
         if (usedMargin === 0) {
@@ -134,12 +108,14 @@ export abstract class MidaBrokerAccount {
     }
 
     public async getSymbolsByType (type: MidaSymbolType): Promise<MidaSymbol[]> {
-        return [];
+        return (await this.getSymbols()).filter((symbol: MidaSymbol): boolean => symbol.type === type);
     }
 
-    private _assertConnection (): void {
-        if (!this._isConnected) {
-            throw new Error();
-        }
+    public on (type: string, listener?: MidaListener): Promise<void> | string {
+        return this._listenable.on(type, listener);
+    }
+
+    protected notifyListeners (type: string, ...parameters: any[]): void {
+        this._listenable.notifyListeners(type, ...parameters);
     }
 }

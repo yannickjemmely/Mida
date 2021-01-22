@@ -17,12 +17,6 @@
             "#advisors/*": [
                 "src/advisors/*"
             ],
-            "#analysis/*": [
-                "src/analysis/*"
-            ],
-            "#assets/*": [
-                "src/assets/*"
-            ],
             "#brokers/*": [
                 "src/brokers/*"
             ],
@@ -32,23 +26,8 @@
             "#periods/*": [
                 "src/periods/*"
             ],
-            "#browsers/*": [
-                "src/browsers/*"
-            ],
-            "#currencies/*": [
-                "src/currencies/*"
-            ],
-            "#errors/*": [
-                "src/errors/*"
-            ],
             "#quotations/*": [
                 "src/quotations/*"
-            ],
-            "#forex/*": [
-                "src/forex/*"
-            ],
-            "#positions/*": [
-                "src/positions/*"
             ],
             "#symbols/*": [
                 "src/symbols/*"

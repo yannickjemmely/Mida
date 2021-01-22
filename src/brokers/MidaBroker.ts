@@ -24,4 +24,12 @@ export abstract class MidaBroker {
     }
 
     public abstract async login (parameters: MidaBrokerLoginParameters): Promise<MidaBrokerAccount>;
+
+    public static async login (): Promise<MidaBrokerAccount> {
+        return createProxy({});
+    }
+}
+
+function createProxy (brokerAccount: any): any {
+
 }

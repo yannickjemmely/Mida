@@ -53,7 +53,7 @@ export class MidaSymbolQuotation implements IMidaEquatable, IMidaCloneable {
     }
 
     public get spread (): number {
-        return Math.abs(this._ask - this._bid);
+        return this._ask - this._bid;
     }
 
     public equals (object: any): boolean {

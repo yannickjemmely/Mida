@@ -15,5 +15,5 @@ export type MidaAdvisorParameters = {
 
     isTest?: boolean;
 
-    positionsTags: string[];
+    ordersTags?: string[];
 };

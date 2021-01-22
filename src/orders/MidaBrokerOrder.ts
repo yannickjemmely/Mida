@@ -1,8 +1,6 @@
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
 import { MidaBrokerOrderParameters } from "#orders/MidaBrokerOrderParameters";
-import { MidaBrokerPosition } from "#positions/MidaBrokerPosition";
-import { MidaBrokerPositionType } from "#positions/MidaBrokerPositionType";
 
 // Represents an order.
 export class MidaBrokerOrder {
@@ -84,11 +82,11 @@ export class MidaBrokerOrder {
         this._tags.delete(tag);
     }
 
-    public async getPosition (): Promise<MidaBrokerPosition | undefined> {
-        throw new Error();
+    public async getUsedMargin (): Promise<number> {
+        return NaN;
     }
 
-    public async closePosition (): Promise<void> {
-        await this._brokerAccount.closePositionByTicket(this._ticket);
+    public async close (): Promise<void> {
+        await this._brokerAccount.closeOrderByTicket(this._ticket);
     }
 }
