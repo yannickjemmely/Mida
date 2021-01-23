@@ -25,6 +25,8 @@ you should ensure that you understand the risks involved. Furthermore, MidaFX is
 swaps and other taxes applied to your operations, they depend on your broker.
 
 ## Usage
+Some examples may assume that you have logged into a broker account.<br>
+For the full documentation refer to [API.md](docs/API.md).
 
 ### Broker Login
 Login into any supported broker by providing the broker name, your login id and password.
@@ -35,16 +37,10 @@ const myAccount = await MidaBroker.login("example", {
 });
 ```
 
-Login into the `PlaygroundBroker`.
-```typescript
-const myAccount = await MidaBroker.login("MidaPlayground");
-```
-
 ### Opening Positions
-All examples assume that you have logged into a broker account.
 
 #### Long Position
-Opening a long position for Bitcoin against USD.
+Opening a long position for BTC against USD.
 ```typescript
 const myOrder = await myAccount.placeOrder({
     symbol: "BTCUSD",
@@ -56,7 +52,7 @@ console.log(await myOrder.getOpenPrice());
 ```
 
 #### Short Position
-Opening a forex short position for EUR against USD.
+Opening a short position for EUR against USD.
 ```typescript
 const myOrder = await myAccount.placeOrder({
     symbol: "EURUSD",
@@ -67,20 +63,8 @@ const myOrder = await myAccount.placeOrder({
 console.log(await myOrder.getOpenPrice());
 ```
 
-### Market Analysis
-
-#### Candlesticks/Bars
-Candlesticks and bars are referred as periods.
-
-```typescript
-const periods = await myAccount.getSymbolPeriods("EURUSD", MidaSymbolPeriodTimeframeType.M30);
-const lastPeriod = periods[periods.length - 1];
-
-console.log("Last period OHLC => " + lastPeriod.ohlc);
-console.log("Last period close price => " + lastPeriod.close);
-```
-
 ### Symbols
+Retrieving symbols.
 ```typescript
 const eurUsd = await myAccount.getSymbol("EURUSD");
 
@@ -97,6 +81,20 @@ eurUsd.on("tick", (tick) => {
 eurUsd.on("market-close", () => {
     console.log("EURUSD market has closed.");
 });
+```
+
+### Market Analysis
+Usage examples of the interfaces provided for market analysis.
+
+#### Candlesticks/Bars
+Candlesticks and bars are referred as periods.
+
+```typescript
+const periods = await myAccount.getSymbolPeriods("EURUSD", MidaSymbolPeriodTimeframeType.M30);
+const lastPeriod = periods[periods.length - 1];
+
+console.log("Last period OHLC => " + lastPeriod.ohlc);
+console.log("Last period close price => " + lastPeriod.close);
 ```
 
 ## Contributors
