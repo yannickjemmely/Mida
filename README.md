@@ -25,7 +25,6 @@ you should ensure that you understand the risks involved. Furthermore, MidaFX is
 swaps and other taxes applied to your operations, they depend on your broker.
 
 ## Usage
-Some examples may assume that you have logged into a broker account.<br>
 For the full documentation refer to [API.md](docs/API.md).
 
 ### Broker Login
@@ -141,6 +140,15 @@ const lastPeriod = periods[periods.length - 1];
 
 console.log("Last period OHLC => " + lastPeriod.ohlc);
 console.log("Last period close price => " + lastPeriod.close);
+```
+
+#### Indicators
+How to calculate the SMA (Simple Moving Average).
+```typescript
+const sma = new MidaSmaIndicator(periods);
+
+console.log(await sma.calculate());
+console.log(await sma.next(period));
 ```
 
 ## Contributors

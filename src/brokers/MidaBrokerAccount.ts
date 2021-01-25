@@ -64,7 +64,9 @@ export abstract class MidaBrokerAccount {
 
     public abstract async placeOrder (directives: MidaBrokerOrderDirectives): Promise<MidaBrokerOrder>;
 
-    public abstract async getOrders (): Promise<MidaBrokerOrder[]>;
+    public abstract async getOrders (from?: Date, to?: Date): Promise<MidaBrokerOrder[]>;
+
+    public abstract async getOrder (ticket: number): Promise<MidaBrokerOrder | undefined>;
 
     public abstract async cancelOrder (ticket: number): Promise<void>;
 
@@ -72,11 +74,15 @@ export abstract class MidaBrokerAccount {
 
     public abstract async getOrderProfit (ticket: number): Promise<number>;
 
+    public abstract async getOrderGrossProfit (ticket: number): Promise<number>;
+
     public abstract async getOrderSwaps (ticket: number): Promise<number>;
 
     public abstract async getOrderCommision (ticket: number): Promise<number>;
 
     public abstract async getSymbols (): Promise<MidaSymbol[]>;
+
+    public abstract async getSymbol (symbol: string): Promise<MidaSymbol | undefined>;
 
     public abstract async isSymbolMarketOpen (symbol: string): Promise<boolean>;
 

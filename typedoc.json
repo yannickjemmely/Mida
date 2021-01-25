@@ -1,0 +1,10 @@
+{
+    "entryPoints": [
+        "src/events/MidaEvent.ts"
+    ],
+    "exclude": [
+        "build",
+        "node_modules"
+    ],
+    "out": "prova"
+}
