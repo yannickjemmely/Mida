@@ -1,9 +1,8 @@
 import { MidaAdvisorParameters } from "#advisors/MidaAdvisorParameters";
-import { MidaBrokerPosition } from "#positions/MidaBrokerPosition";
 import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
-import { MidaAssetPair } from "#assets/MidaAssetPair";
-import { MidaAssetPairTick } from "#assets/MidaAssetPairTick";
+import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
+import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
 
 export abstract class MidaAdvisor {
     // Represents the advisor options.
@@ -12,28 +11,28 @@ export abstract class MidaAdvisor {
     // Represents the broker account used to operate.
     private readonly _brokerAccount: MidaBrokerAccount;
 
-    // Represents the operated asset pair.
-    private readonly _assetPair: MidaAssetPair;
+    // Represents the operated symbol.
+    private readonly _symbol: string;
 
-    // Represents the created positions.
-    private readonly _positions: Map<string, MidaBrokerPosition>;
+    // Represents the created orders.
+    private readonly _positions: Map<number, MidaBrokerOrder>;
 
     // Indicates if the advisor is operative.
     private _operative: boolean;
 
     // Represents the captured ticks of the operated asset pair.
-    private readonly _capturedTicks: MidaAssetPairTick[];
+    private readonly _capturedTicks: MidaSymbolTick[];
 
     // Represents the async tick.
     private _asyncTickPromise: Promise<void> | undefined;
 
     // Represents the queue of the async captured ticks.
-    private readonly _asyncTicks: MidaAssetPairTick[];
+    private readonly _asyncTicks: MidaSymbolTick[];
 
     protected constructor (options: MidaAdvisorParameters) {
         this._options = options;
         this._brokerAccount = options.brokerAccount;
-        this._assetPair = options.assetPair;
+        this._symbol = options.symbol;
         this._positions = new Map();
         this._operative = false;
         this._capturedTicks = [];
@@ -55,19 +54,19 @@ export abstract class MidaAdvisor {
         return this._brokerAccount;
     }
 
-    public get assetPair (): MidaAssetPair {
-        return this._assetPair;
+    public get symbol (): string {
+        return this._symbol;
     }
 
     public get operative (): boolean {
         return this._operative;
     }
 
-    public get positions (): readonly MidaBrokerPosition[] {
+    public get positions (): readonly MidaBrokerOrder[] {
         return [ ...this._positions.values(), ];
     }
 
-    protected get capturedTicks (): readonly MidaAssetPairTick[] {
+    protected get capturedTicks (): readonly MidaSymbolTick[] {
         return this._capturedTicks;
     }
 
@@ -87,27 +86,23 @@ export abstract class MidaAdvisor {
         this._operative = false;
     }
 
-    protected abstract onTick (tick: MidaAssetPairTick): void;
+    protected abstract onTick (tick: MidaSymbolTick): void;
 
-    protected abstract async onTickAsync (tick: MidaAssetPairTick): Promise<void>;
+    protected abstract onTickAsync (tick: MidaSymbolTick): Promise<void>;
 
-    protected getTicksInTimeRange (fromTime: Date, toTime: Date): MidaAssetPairTick[] {
-        return MidaAssetPairTick.getTicksInTimeRange(this._capturedTicks, fromTime, toTime);
-    }
+    protected async placeOrder (directives: MidaBrokerOrderDirectives): Promise<MidaBrokerOrder> {
+        const order: MidaBrokerOrder = await this._brokerAccount.placeOrder(directives);
 
-    protected async openPosition (directives: MidaBrokerOrderDirectives): Promise<MidaBrokerPosition> {
-        const position: MidaBrokerPosition = await this._brokerAccount.openPosition(directives);
+        this._positions.set(order.ticket, order);
 
-        this._positions.set(position.id, position);
-
-        return position;
+        return order;
     }
 
     private _construct (): void {
         
     }
 
-    private _onTick (tick: MidaAssetPairTick): void {
+    private _onTick (tick: MidaSymbolTick): void {
         if (!this._operative) {
             return;
         }
@@ -129,7 +124,7 @@ export abstract class MidaAdvisor {
         }
     }
 
-    private async _onTickAsync (tick: MidaAssetPairTick): Promise<void> {
+    private async _onTickAsync (tick: MidaSymbolTick): Promise<void> {
         try {
             this._asyncTickPromise = this.onTickAsync(tick);
 
@@ -139,7 +134,7 @@ export abstract class MidaAdvisor {
             console.error(error);
         }
 
-        const nextTick: MidaAssetPairTick | undefined = this._asyncTicks.shift();
+        const nextTick: MidaSymbolTick | undefined = this._asyncTicks.shift();
 
         if (nextTick) {
             this._onTickAsync(nextTick);

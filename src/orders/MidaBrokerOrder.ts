@@ -1,6 +1,7 @@
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
 import { MidaBrokerOrderParameters } from "#orders/MidaBrokerOrderParameters";
+import { MidaBrokerOrderType } from "#orders/MidaBrokerOrderType";
 
 // Represents an order.
 export class MidaBrokerOrder {
@@ -17,10 +18,7 @@ export class MidaBrokerOrder {
     private readonly _requestDate: Date;
 
     // Represents the order creation date.
-    private readonly _creationDate: Date;
-
-    // Represents the order fill date.
-    private readonly _fillDate?: Date;
+    private readonly _creationDate?: Date;
 
     // Represents the order tags.
     private readonly _tags: Set<string>;
@@ -30,7 +28,7 @@ export class MidaBrokerOrder {
         this._brokerAccount = brokerAccount;
         this._creationDirectives = { ...creationDirectives, };
         this._requestDate = new Date(requestDate);
-        this._creationDate = new Date(creationDate);
+        this._creationDate = creationDate;
         this._tags = new Set(tags);
     }
 
@@ -50,15 +48,15 @@ export class MidaBrokerOrder {
         return new Date(this._requestDate);
     }
 
-    public get creationDate (): Date {
-        return new Date(this._creationDate);
+    public get creationDate (): Date | undefined {
+        return this._creationDate ? new Date(this._creationDate) : undefined;
     }
 
     public get symbol (): string {
         return this._creationDirectives.symbol;
     }
 
-    public get type (): MidaBrokerPositionType {
+    public get type (): MidaBrokerOrderType {
         return this._creationDirectives.type;
     }
 
@@ -87,6 +85,6 @@ export class MidaBrokerOrder {
     }
 
     public async close (): Promise<void> {
-        await this._brokerAccount.closeOrderByTicket(this._ticket);
+        await this._brokerAccount.closeOrder(this._ticket);
     }
 }

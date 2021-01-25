@@ -5,7 +5,7 @@ export type MidaAdvisorParameters = {
     brokerAccount: MidaBrokerAccount;
 
     // Represents the operated symbol.
-    symbol?: string;
+    symbol: string;
 
     // Represents the advisor name.
     name?: string;

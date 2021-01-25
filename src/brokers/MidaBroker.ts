@@ -22,5 +22,5 @@ export abstract class MidaBroker {
         return this._websiteUri;
     }
 
-    public abstract async login (...parameters: any[]): Promise<MidaBrokerAccount>;
+    public abstract login (...parameters: any[]): Promise<MidaBrokerAccount>;
 }

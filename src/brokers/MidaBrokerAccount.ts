@@ -52,45 +52,45 @@ export abstract class MidaBrokerAccount {
         return this._broker;
     }
 
-    public abstract async getPing (): Promise<number>;
+    public abstract getPing (): Promise<number>;
 
-    public abstract async getBalance (): Promise<number>;
+    public abstract getBalance (): Promise<number>;
 
-    public abstract async getEquity (): Promise<number>;
+    public abstract getEquity (): Promise<number>;
 
-    public abstract async getMargin (): Promise<number>;
+    public abstract getMargin (): Promise<number>;
 
-    public abstract async getFreeMargin (): Promise<number>;
+    public abstract getFreeMargin (): Promise<number>;
 
-    public abstract async placeOrder (directives: MidaBrokerOrderDirectives): Promise<MidaBrokerOrder>;
+    public abstract placeOrder (directives: MidaBrokerOrderDirectives): Promise<MidaBrokerOrder>;
 
-    public abstract async getOrders (from?: Date, to?: Date): Promise<MidaBrokerOrder[]>;
+    public abstract getOrders (from?: Date, to?: Date): Promise<MidaBrokerOrder[]>;
 
-    public abstract async getOrder (ticket: number): Promise<MidaBrokerOrder | undefined>;
+    public abstract getOrder (ticket: number): Promise<MidaBrokerOrder | undefined>;
 
-    public abstract async cancelOrder (ticket: number): Promise<void>;
+    public abstract cancelOrder (ticket: number): Promise<void>;
 
-    public abstract async closeOrder (ticket: number): Promise<void>;
+    public abstract closeOrder (ticket: number): Promise<void>;
 
-    public abstract async getOrderProfit (ticket: number): Promise<number>;
+    public abstract getOrderProfit (ticket: number): Promise<number>;
 
-    public abstract async getOrderGrossProfit (ticket: number): Promise<number>;
+    public abstract getOrderGrossProfit (ticket: number): Promise<number>;
 
-    public abstract async getOrderSwaps (ticket: number): Promise<number>;
+    public abstract getOrderSwaps (ticket: number): Promise<number>;
 
-    public abstract async getOrderCommision (ticket: number): Promise<number>;
+    public abstract getOrderCommision (ticket: number): Promise<number>;
 
-    public abstract async getSymbols (): Promise<MidaSymbol[]>;
+    public abstract getSymbols (): Promise<MidaSymbol[]>;
 
-    public abstract async getSymbol (symbol: string): Promise<MidaSymbol | undefined>;
+    public abstract getSymbol (symbol: string): Promise<MidaSymbol | undefined>;
 
-    public abstract async isSymbolMarketOpen (symbol: string): Promise<boolean>;
+    public abstract isSymbolMarketOpen (symbol: string): Promise<boolean>;
 
-    public abstract async getCurrency (): Promise<string>;
+    public abstract getCurrency (): Promise<string>;
     
-    public abstract async getSymbolPeriods (symbol: string, timeframe: number, priceType?: MidaSymbolQuotationPriceType): Promise<MidaSymbolPeriod[]>;
+    public abstract getSymbolPeriods (symbol: string, timeframe: number, priceType?: MidaSymbolQuotationPriceType): Promise<MidaSymbolPeriod[]>;
 
-    public abstract async getSymbolLastTick (symbol: string): Promise<MidaSymbolTick>;
+    public abstract getSymbolLastTick (symbol: string): Promise<MidaSymbolTick>;
 
     public async getUsedMargin (): Promise<number> {
         return (await this.getMargin()) - (await this.getFreeMargin());

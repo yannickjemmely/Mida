@@ -2,6 +2,7 @@ import { MidaBroker } from "#brokers/MidaBroker";
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 import { GenericObject } from "#utilities/GenericObject";
 
+/*
 export class PlaygroundBroker extends MidaBroker {
     public constructor () {
         super({
@@ -13,3 +14,4 @@ export class PlaygroundBroker extends MidaBroker {
         throw new Error();
     }
 }
+*/
