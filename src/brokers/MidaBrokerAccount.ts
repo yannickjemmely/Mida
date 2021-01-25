@@ -2,12 +2,10 @@ import { MidaBroker } from "#brokers/MidaBroker";
 import { MidaBrokerAccountParameters } from "#brokers/MidaBrokerAccountParameters";
 import { MidaBrokerAccountType } from "#brokers/MidaBrokerAccountType";
 import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
-import { MidaBrokerPosition } from "#positions/MidaBrokerPosition";
-import { MidaBrokerPositionStatusType } from "#positions/MidaBrokerPositionStatusType";
-import { MidaSymbolQuotationPriceType } from "#/quotations/MidaSymbolQuotationPriceType";
+import { MidaSymbolQuotationPriceType } from "#quotations/MidaSymbolQuotationPriceType";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { MidaSymbol } from "#symbols/MidaSymbol";
-import { MidaSymbolPeriod } from "#/periods/MidaSymbolPeriod";
+import { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
 import { MidaSymbolType } from "#symbols/MidaSymbolType";
 import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
 import { MidaListenable } from "#utilities/listenable/MidaListenable";
@@ -66,30 +64,25 @@ export abstract class MidaBrokerAccount {
 
     public abstract async placeOrder (directives: MidaBrokerOrderDirectives): Promise<MidaBrokerOrder>;
 
-    public abstract async cancelOrderByTicket (ticket: number): Promise<void>;
-
-    public abstract async closeOrderByTicket (ticket: number): Promise<void>;
-
     public abstract async getOrders (): Promise<MidaBrokerOrder[]>;
+
+    public abstract async cancelOrder (ticket: number): Promise<void>;
+
+    public abstract async closeOrder (ticket: number): Promise<void>;
+
+    public abstract async getOrderProfit (ticket: number): Promise<number>;
+
+    public abstract async getOrderSwaps (ticket: number): Promise<number>;
+
+    public abstract async getOrderCommision (ticket: number): Promise<number>;
 
     public abstract async getSymbols (): Promise<MidaSymbol[]>;
 
     public abstract async isSymbolMarketOpen (symbol: string): Promise<boolean>;
 
-    public abstract async getSymbolLeverage (symbol: string): Promise<any>;
-
-    public abstract async getSymbolRequiredMargin (symbol: string, lots: number, direction: any): Promise<number>;
-
     public abstract async getCurrency (): Promise<string>;
     
-    public abstract async getSymbolPeriods (
-        symbol: string,
-        timeframe: number,
-        from?: Date,
-        to?: Date,
-        count?: number,
-        priceType?: MidaSymbolQuotationPriceType
-    ): Promise<MidaSymbolPeriod[]>;
+    public abstract async getSymbolPeriods (symbol: string, timeframe: number, priceType?: MidaSymbolQuotationPriceType): Promise<MidaSymbolPeriod[]>;
 
     public abstract async getSymbolLastTick (symbol: string): Promise<MidaSymbolTick>;
 
