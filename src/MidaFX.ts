@@ -1,13 +1,18 @@
-import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
-import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
-import { MidaBrokerOrderParameters } from "#orders/MidaBrokerOrderParameters";
-import { MidaBrokerOrderStatusType } from "#orders/MidaBrokerOrderStatusType";
-import { MidaBrokerOrderType } from "#orders/MidaBrokerOrderType";
+export { MidaBroker} from "#brokers/MidaBroker";
+export { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 
-export {
-    MidaBrokerOrder,
-    MidaBrokerOrderDirectives,
-    MidaBrokerOrderParameters,
-    MidaBrokerOrderStatusType,
-    MidaBrokerOrderType,
-};
+export { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
+export { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
+export { MidaBrokerOrderParameters } from "#orders/MidaBrokerOrderParameters";
+export { MidaBrokerOrderStatusType } from "#orders/MidaBrokerOrderStatusType";
+export { MidaBrokerOrderType } from "#orders/MidaBrokerOrderType";
+
+export class MidaFX {
+    private constructor () {
+        // Silence is golden.
+    }
+
+    public static get version (): string {
+        return "";
+    }
+}
