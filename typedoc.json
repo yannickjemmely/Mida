@@ -1,6 +1,6 @@
 {
     "entryPoints": [
-        "src/events/"
+        "./src/MidaFX.ts"
     ],
     "excludePrivate": true,
     "out": "prova"
