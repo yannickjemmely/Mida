@@ -20,6 +20,15 @@ export class MidaBrokerOrder {
     // Represents the order creation date.
     private readonly _creationDate?: Date;
 
+    // Represents the order cancel date.
+    private readonly _cancelDate?: Date;
+
+    // Represents the order open date.
+    private readonly _openDate?: Date;
+
+    // Represents the order close date.
+    private readonly _closeDate?: Date;
+
     // Represents the order tags.
     private readonly _tags: Set<string>;
 
@@ -28,7 +37,7 @@ export class MidaBrokerOrder {
         this._brokerAccount = brokerAccount;
         this._creationDirectives = { ...creationDirectives, };
         this._requestDate = new Date(requestDate);
-        this._creationDate = creationDate;
+        this._creationDate = creationDate ? new Date(creationDate) : undefined;
         this._tags = new Set(tags);
     }
 
