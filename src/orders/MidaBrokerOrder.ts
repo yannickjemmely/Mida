@@ -2,6 +2,8 @@ import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
 import { MidaBrokerOrderParameters } from "#orders/MidaBrokerOrderParameters";
 import { MidaBrokerOrderType } from "#orders/MidaBrokerOrderType";
+import { MidaListenable } from "#utilities/listenable/MidaListenable";
+import { MidaListener } from "#utilities/listenable/MidaListener";
 
 // Represents an order.
 export class MidaBrokerOrder {
@@ -21,16 +23,31 @@ export class MidaBrokerOrder {
     private readonly _creationDate?: Date;
 
     // Represents the order cancel date.
-    private readonly _cancelDate?: Date;
+    private _cancelDate?: Date;
 
     // Represents the order open date.
-    private readonly _openDate?: Date;
+    private _openDate?: Date;
 
     // Represents the order close date.
-    private readonly _closeDate?: Date;
+    private _closeDate?: Date;
+
+    // Represents the order creation price.
+    private _creationPrice?: number;
+
+    // Represents the order cancel price.
+    private _cancelPrice?: number;
+
+    // Represents the order open price.
+    private _openPrice?: number;
+
+    // Represents the order close price.
+    private _closePrice?: number;
 
     // Represents the order tags.
     private readonly _tags: Set<string>;
+
+    // Represents the order event system.
+    private readonly _listenable: MidaListenable;
 
     public constructor ({ ticket, brokerAccount, creationDirectives, requestDate, creationDate, tags = [], }: MidaBrokerOrderParameters) {
         this._ticket = ticket;
@@ -39,6 +56,7 @@ export class MidaBrokerOrder {
         this._requestDate = new Date(requestDate);
         this._creationDate = creationDate ? new Date(creationDate) : undefined;
         this._tags = new Set(tags);
+        this._listenable = new MidaListenable();
     }
 
     public get ticket (): number {
@@ -95,5 +113,13 @@ export class MidaBrokerOrder {
 
     public async close (): Promise<void> {
         await this._brokerAccount.closeOrder(this._ticket);
+    }
+
+    public on (type: string, listener?: MidaListener): Promise<void> | string {
+        return this._listenable.on(type, listener);
+    }
+
+    protected notifyListeners (type: string, ...parameters: any[]): void {
+        this._listenable.notifyListeners(type, ...parameters);
     }
 }

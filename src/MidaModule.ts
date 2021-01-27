@@ -1,4 +1,5 @@
 export { MidaBroker} from "#brokers/MidaBroker";
+export { MidaBrokerParameters } from "#brokers/MidaBrokerParameters";
 export { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 
 export { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
@@ -9,7 +10,7 @@ export { MidaBrokerOrderType } from "#orders/MidaBrokerOrderType";
 
 import { GenericObject } from "#utilities/GenericObject";
 
-export class MidaFX {
+export class MidaModule {
     private static readonly _PACKAGE: GenericObject = require("../package.json");
 
     private constructor () {
@@ -17,6 +18,6 @@ export class MidaFX {
     }
 
     public static get version (): string {
-        return MidaFX._PACKAGE.version;
+        return MidaModule._PACKAGE.version;
     }
 }
