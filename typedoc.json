@@ -1,4 +1,6 @@
 {
+    "name": "MidaFX",
+    "includeVersion": true,
     "entryPoints": [
         "./src/MidaModule.ts"
     ],
