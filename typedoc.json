@@ -3,5 +3,5 @@
         "./src/MidaFX.ts"
     ],
     "excludePrivate": true,
-    "out": "prova"
+    "out": "docs/typedoc"
 }
