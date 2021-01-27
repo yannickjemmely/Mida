@@ -4,11 +4,11 @@ const jestConfiguration = {
     testEnvironment: "node",
     coverageProvider: "v8",
     roots: [
-        "./build/tests"
+        "./build/tests",
     ],
     clearMocks: true,
     testMatch: [
-        "**/?(*.)+(spec|test).+(ts|tsx|js)"
+        "**/?(*.)+(spec|test).+(ts|tsx|js)",
     ],
     moduleNameMapper: {},
 };
