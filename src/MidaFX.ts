@@ -7,12 +7,16 @@ export { MidaBrokerOrderParameters } from "#orders/MidaBrokerOrderParameters";
 export { MidaBrokerOrderStatusType } from "#orders/MidaBrokerOrderStatusType";
 export { MidaBrokerOrderType } from "#orders/MidaBrokerOrderType";
 
+import { GenericObject } from "#utilities/GenericObject";
+
 export class MidaFX {
+    private static readonly _PACKAGE: GenericObject = require("../package.json");
+
     private constructor () {
         // Silence is golden.
     }
 
     public static get version (): string {
-        return "";
+        return MidaFX._PACKAGE.version;
     }
 }
