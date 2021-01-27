@@ -1,6 +1,6 @@
 {
     "entryPoints": [
-        "./src/MidaFX.ts"
+        "./src/MidaModule.ts"
     ],
     "excludePrivate": true,
     "out": "docs/typedoc"
