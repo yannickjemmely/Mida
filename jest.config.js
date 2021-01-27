@@ -2,13 +2,13 @@ module.exports = {
     testEnvironment: "node",
     coverageProvider: "v8",
     roots: [
-        "./tests"
+        "./build/tests"
     ],
     clearMocks: true,
     testMatch: [
         "**/?(*.)+(spec|test).+(ts|tsx|js)"
     ],
-    transform: {
-        "^.+\\.(ts|tsx)$": "ts-jest"
-    },
+    moduleNameMapper: {
+        "^#periods/(.*)": __dirname + "/build/src/periods/$1"
+    }
 };

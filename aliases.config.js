@@ -7,6 +7,8 @@ Object.keys(tsConfiguration.compilerOptions.paths).forEach((key) => {
     for (const plainPath of tsConfiguration.compilerOptions.paths[key]) {
         const normalizedPath = plainPath.endsWith("/*") ? plainPath.substr(0, plainPath.length - 2) : plainPath;
 
-        moduleAlias.addAlias(normalizedAlias, normalizedPath);
+        console.log(__dirname);
+
+        moduleAlias.addAlias(normalizedAlias, `${__dirname}/${tsConfiguration.compilerOptions.outDir}/${normalizedPath}`);
     }
 });
