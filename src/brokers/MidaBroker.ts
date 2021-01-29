@@ -1,7 +1,7 @@
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 import { MidaBrokerParameters } from "#brokers/MidaBrokerParameters";
 
-// Represents a broker.
+/** Represents a broker. */
 export abstract class MidaBroker {
     // Represents the broker name.
     private readonly _name: string;

@@ -2,7 +2,7 @@
     "name": "MidaFX",
     "includeVersion": true,
     "entryPoints": [
-        "./src/MidaModule.ts"
+        "./src/"
     ],
     "excludePrivate": true,
     "out": "docs/typedoc"
