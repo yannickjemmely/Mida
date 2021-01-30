@@ -1,17 +1,15 @@
 import { MidaBroker } from "#brokers/MidaBroker";
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
-import { GenericObject } from "#utilities/GenericObject";
 
-/*
 export class PlaygroundBroker extends MidaBroker {
     public constructor () {
         super({
-            name: PlaygroundBroker.name,
+            name: "PlaygroundBroker",
+            websiteUri: "https://www.midafx.com",
         });
     }
 
-    public async login (credentials: GenericObject): Promise<MidaBrokerAccount> {
+    public async login (...parameters: any[]): Promise<MidaBrokerAccount> {
         throw new Error();
     }
 }
-*/
