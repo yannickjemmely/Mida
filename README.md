@@ -3,7 +3,7 @@
 </p>
 <br>
 
-A TypeScript framework to operate in financial markets.
+A TypeScript framework to easily operate in financial markets.
 
 MidaFX allows to:
 - Trade financial assets like stocks, forex, crypto or commodities;
@@ -25,7 +25,6 @@ you should ensure that you understand the risks involved. Furthermore, MidaFX is
 swaps and other taxes applied to your operations, they depend on your broker.
 
 ## Usage
-For the full documentation refer to [API.md](docs/API.md).
 
 ### Broker Login
 Login into any supported broker by providing the broker name, your login id and password.
