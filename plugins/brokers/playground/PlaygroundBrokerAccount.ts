@@ -1,6 +1,7 @@
+import { PlaygroundBrokerAccountParameters } from "./PlaygroundBrokerAccountParameters";
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
-import { PlaygroundBrokerAccountParameters } from "./PlaygroundBrokerAccountParameters";
+import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 
 /*
 export class PlaygroundBrokerAccount extends MidaBrokerAccount {
@@ -26,10 +27,16 @@ export class PlaygroundBrokerAccount extends MidaBrokerAccount {
         return this._currency;
     }
 
-    /** @override */
-/*
     public async getBalance (): Promise<number> {
         return this._balance;
+    }
+
+    public async getEquity (): Promise<number> {
+        return this._balance;
+    }
+
+    private async _onTick (tick: MidaSymbolTick): Promise<void> {
+
     }
 }
 */
