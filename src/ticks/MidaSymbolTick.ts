@@ -4,18 +4,11 @@ import { MidaSymbolTickParameters } from "#ticks/MidaSymbolTickParameters";
 import { IMidaEquatable } from "#utilities/equatable/IMidaEquatable";
 import { IMidaCloneable } from "#utilities/cloneable/IMidaCloneable";
 
-// Represents a symbol tick.
+/** Represents a symbol tick. */
 export class MidaSymbolTick implements IMidaEquatable, IMidaCloneable {
-    // Represents the tick quotation.
     private readonly _quotation: MidaSymbolQuotation;
-
-    // Represents the tick date.
     private readonly _date: Date;
-
-    // Represents the tick previous to this.
     private readonly _previousTick?: MidaSymbolTick;
-
-    // Represents the tick next to this.
     private readonly _nextTick?: MidaSymbolTick;
 
     public constructor ({ quotation, date, previousTick, nextTick, }: MidaSymbolTickParameters) {
@@ -25,38 +18,47 @@ export class MidaSymbolTick implements IMidaEquatable, IMidaCloneable {
         this._nextTick = nextTick;
     }
 
+    /** The tick quotation. */
     public get quotation (): MidaSymbolQuotation {
         return this._quotation;
     }
 
+    /** The tick date. */
     public get date (): Date {
         return new Date(this._date);
     }
 
+    /** The tick previous to this. */
     public get previousTick (): MidaSymbolTick | undefined {
         return this._previousTick;
     }
 
+    /** The tick next to this. */
     public get nextTick (): MidaSymbolTick | undefined {
         return this._nextTick;
     }
 
+    /** The tick symbol. */
     public get symbol (): string {
         return this._quotation.symbol;
     }
 
+    /** The tick bid. */
     public get bid (): number {
         return this._quotation.bid;
     }
 
+    /** The tick ask. */
     public get ask (): number {
         return this._quotation.ask;
     }
 
+    /** The tick exchange name. */
     public get exchangeName (): string {
         return this._quotation.exchangeName;
     }
 
+    /** The tick spread. */
     public get spread (): number {
         return this._quotation.spread;
     }

@@ -11,16 +11,12 @@ export abstract class MidaBroker {
         this._websiteUri = websiteUri;
     }
 
-    /**
-     * The broker name.
-     */
+    /** The broker name. */
     public get name (): string {
         return this._name;
     }
 
-    /**
-     * The broker website address.
-     */
+    /** The broker website address. */
     public get websiteUri (): string {
         return this._websiteUri;
     }

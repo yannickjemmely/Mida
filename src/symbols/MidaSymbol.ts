@@ -4,21 +4,12 @@ import { MidaSymbolParameters } from "#symbols/MidaSymbolParameters";
 import { MidaSymbolType } from "#symbols/MidaSymbolType";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 
-// Represents a symbol.
+/** Represents a symbol. */
 export class MidaSymbol {
-    // Represents the symbol as string.
     private readonly _symbol: string;
-
-    // Represents the broker account that issued this symbol.
     private readonly _brokerAccount: MidaBrokerAccount;
-
-    // Represents the symbol description.
     private readonly _description: string;
-
-    // Represents the symbol type.
     private readonly _type: MidaSymbolType;
-
-    // Represents the symbol digits.
     private readonly _digits: number;
 
     public constructor ({ symbol, brokerAccount, description, type, digits, }: MidaSymbolParameters) {
@@ -29,18 +20,22 @@ export class MidaSymbol {
         this._digits = digits;
     }
 
+    /** The symbol broker account. */
     public get brokerAccount (): MidaBrokerAccount {
         return this._brokerAccount;
     }
 
+    /** The symbol description. */
     public get description (): string {
         return this._description;
     }
 
+    /** The symbol type. */
     public get type (): MidaSymbolType {
         return this._type;
     }
 
+    /** The symbol digits. */
     public get digits (): number {
         return this._digits;
     }
@@ -57,6 +52,7 @@ export class MidaSymbol {
         return this._brokerAccount.isSymbolMarketOpen(this._symbol);
     }
 
+    /** Used to get the symbol represented as string. */
     public toString (): string {
         return this._symbol;
     }

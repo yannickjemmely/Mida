@@ -82,15 +82,6 @@ export abstract class MidaBrokerAccount {
     public abstract getFreeMargin (): Promise<number>;
 
     /**
-     * Used to place an order.
-     * @param directives The order directives.
-     * @returns The placed order. If the order directives require a market order, then the Promise
-     * will resolve at order open (in open state), otherwise the Promise will resolve immediately
-     * after the order creation (in pending state).
-     */
-    public abstract placeOrder (directives: MidaBrokerOrderDirectives): Promise<MidaBrokerOrder>;
-
-    /**
      * Used to get the account orders.
      * @param from Time range start.
      * @param to Time range end.
@@ -104,18 +95,6 @@ export abstract class MidaBrokerAccount {
      * @param ticket The order ticket.
      */
     public abstract getOrder (ticket: number): Promise<MidaBrokerOrder | undefined>;
-
-    /**
-     * Used to cancel an order (the order must be in pending state).
-     * @param ticket The order ticket.
-     */
-    public abstract cancelOrder (ticket: number): Promise<void>;
-
-    /**
-     * Used to close an order (the order must be in open state).
-     * @param ticket The order ticket.
-     */
-    public abstract closeOrder (ticket: number): Promise<void>;
 
     /**
      * Used to get the net profit of an order (the order must be in open or closed state).
@@ -140,6 +119,41 @@ export abstract class MidaBrokerAccount {
      * @param ticket The order ticket.
      */
     public abstract getOrderCommision (ticket: number): Promise<number>;
+
+    /**
+     * Used to place an order.
+     * @param directives The order directives.
+     * @returns The placed order. If the order directives require a market order, then the Promise
+     * will resolve at order open (in open state), otherwise the Promise will resolve immediately
+     * after the order creation (in pending state).
+     */
+    public abstract placeOrder (directives: MidaBrokerOrderDirectives): Promise<MidaBrokerOrder>;
+
+    /**
+     * Used to cancel an order (the order must be in pending state).
+     * @param ticket The order ticket.
+     */
+    public abstract cancelOrder (ticket: number): Promise<void>;
+
+    /**
+     * Used to close an order (the order must be in open state).
+     * @param ticket The order ticket.
+     */
+    public abstract closeOrder (ticket: number): Promise<void>;
+
+    /**
+     * Used to set the stop loss of an order.
+     * @param ticket The order ticket.
+     * @param stopLoss The stop loss.
+     */
+    public abstract setOrderStopLoss (ticket: number, stopLoss: number): Promise<void>;
+
+    /**
+     * Used to set the take profit of an order.
+     * @param ticket The order ticket.
+     * @param takeProfit The take profit.
+     */
+    public abstract setOrderTakeProfit (ticket: number, takeProfit: number): Promise<void>;
 
     /**
      * Used to get the symbols operable by the account.
@@ -185,6 +199,7 @@ export abstract class MidaBrokerAccount {
     /**
      * Used to get the last tick of a symbol.
      * @param symbol The string representation of the symbol.
+     * @returns The symbol last tick.
      */
     public abstract getSymbolLastTick (symbol: string): Promise<MidaSymbolTick>;
 
@@ -197,6 +212,7 @@ export abstract class MidaBrokerAccount {
 
     /**
      * Used to get the account margin level.
+     * @returns The margin level or `NaN` if no margin is used.
      */
     public async getMarginLevel (): Promise<number> {
         const usedMargin: number = await this.getUsedMargin();
