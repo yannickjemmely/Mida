@@ -7,7 +7,7 @@
         "build": "npm run lint && tsc",
         "create-docs": "typedoc",
         "start": "npm run build && node ./build/main.js",
-        "test": "npm run build && jest"
+        "test": "npm run build && jest --verbose"
     },
     "dependencies": {
         "module-alias": "2.2.2",
