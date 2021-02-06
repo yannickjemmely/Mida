@@ -3,8 +3,9 @@ import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 
-/*
 export class PlaygroundBrokerAccount extends MidaBrokerAccount {
+    private readonly _localDate: Date;
+    private readonly _ticks: { [symbol: string]: MidaSymbolTick[]; };
     private readonly _currency: string;
 
     private _balance: number;
@@ -14,6 +15,8 @@ export class PlaygroundBrokerAccount extends MidaBrokerAccount {
     public constructor ({ id, fullName, type, broker, currency, }: PlaygroundBrokerAccountParameters) {
         super({ id, fullName, type, broker, });
 
+        this._localDate = new Date(0);
+        this._ticks = {};
         this._currency = currency;
         this._balance = 0;
         this._orders = new Map();
@@ -35,8 +38,15 @@ export class PlaygroundBrokerAccount extends MidaBrokerAccount {
         return this._balance;
     }
 
-    private async _onTick (tick: MidaSymbolTick): Promise<void> {
+    public async addTime (time: number): Promise<MidaSymbolTick[]> {
+        const previousDate: Date = new Date(this._localDate);
+        const nextDate: Date = new Date(this._localDate.valueOf() + time);
 
+        return [];
+    }
+
+    private async _onTick (tick: MidaSymbolTick): Promise<void> {
+        this.notifyListeners("tick");
     }
 }
-*/
+

@@ -7,7 +7,7 @@ export type MidaBrokerOrderParameters = {
     brokerAccount: MidaBrokerAccount;
     creationDirectives: MidaBrokerOrderDirectives;
     requestDate: Date;
-    creationDate?: Date;
+    creationDate: Date;
     openDate?: Date;
     closeDate?: Date;
     tags?: string[];

@@ -20,7 +20,7 @@ export class MidaBrokerOrder {
     private readonly _requestDate: Date;
 
     // Represents the order creation date.
-    private readonly _creationDate?: Date;
+    private readonly _creationDate: Date;
 
     // Represents the order cancel date.
     private _cancelDate?: Date;
@@ -49,12 +49,19 @@ export class MidaBrokerOrder {
     // Represents the order event system.
     private readonly _listenable: MidaListenable;
 
-    public constructor ({ ticket, brokerAccount, creationDirectives, requestDate, creationDate, tags = [], }: MidaBrokerOrderParameters) {
+    public constructor ({
+        ticket,
+        brokerAccount,
+        creationDirectives,
+        requestDate,
+        creationDate,
+        tags = [],
+    }: MidaBrokerOrderParameters) {
         this._ticket = ticket;
         this._brokerAccount = brokerAccount;
         this._creationDirectives = { ...creationDirectives, };
         this._requestDate = new Date(requestDate);
-        this._creationDate = creationDate ? new Date(creationDate) : undefined;
+        this._creationDate = new Date(creationDate);
         this._tags = new Set(tags);
         this._listenable = new MidaListenable();
     }
@@ -75,8 +82,8 @@ export class MidaBrokerOrder {
         return new Date(this._requestDate);
     }
 
-    public get creationDate (): Date | undefined {
-        return this._creationDate ? new Date(this._creationDate) : undefined;
+    public get creationDate (): Date {
+        return new Date(this._creationDate);
     }
 
     public get symbol (): string {
@@ -107,12 +114,24 @@ export class MidaBrokerOrder {
         this._tags.delete(tag);
     }
 
-    public async getUsedMargin (): Promise<number> {
-        return NaN;
+    public async cancel (): Promise<void> {
+        await this._brokerAccount.cancelOrder(this._ticket);
     }
 
     public async close (): Promise<void> {
         await this._brokerAccount.closeOrder(this._ticket);
+    }
+
+    public async getLeverage (): Promise<number> {
+        return NaN;
+    }
+
+    public async getUsedMargin (): Promise<number | undefined> {
+        if (this._openPrice === undefined) {
+            return;
+        }
+
+        return (await this.getLeverage()) * this._openPrice;
     }
 
     public on (type: string, listener?: MidaListener): Promise<void> | string {
