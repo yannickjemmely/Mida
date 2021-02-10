@@ -44,7 +44,11 @@ export class MidaSymbol {
         return this._brokerAccount.getSymbolLastTick(this._symbol);
     }
 
-    public async calculateRequiredMargin (lots: number, type: MidaBrokerOrderType): Promise<number> {
+    public async getLeverage (): Promise<number> {
+        return NaN;
+    }
+
+    public async getRequiredMargin (lots: number, type: MidaBrokerOrderType): Promise<number> {
         throw new Error();
     }
 
