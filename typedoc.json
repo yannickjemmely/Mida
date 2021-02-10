@@ -1,5 +1,5 @@
 {
-    "name": "MidaFX",
+    "name": "Mida",
     "includeVersion": true,
     "entryPoints": [
         "./src/"

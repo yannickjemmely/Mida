@@ -5,7 +5,7 @@ export class PlaygroundBroker extends MidaBroker {
     public constructor () {
         super({
             name: "PlaygroundBroker",
-            websiteUri: "https://www.midafx.com",
+            websiteUri: "",
         });
     }
 
