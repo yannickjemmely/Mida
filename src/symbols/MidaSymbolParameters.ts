@@ -17,4 +17,7 @@ export type MidaSymbolParameters = {
 
     /** The symbol digits. */
     digits: number;
+
+    /** The symbol leverage. */
+    leverage: number;
 };

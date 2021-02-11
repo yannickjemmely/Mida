@@ -2,10 +2,14 @@ import { PlaygroundBrokerAccountParameters } from "./PlaygroundBrokerAccountPara
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
+import { MidaBrokerOrderStatusType } from "#orders/MidaBrokerOrderStatusType";
 
+// @ts-ignore
 export class PlaygroundBrokerAccount extends MidaBrokerAccount {
     private readonly _localDate: Date;
-    private readonly _ticks: { [symbol: string]: MidaSymbolTick[]; };
+    private readonly _ticks: {
+        [symbol: string]: MidaSymbolTick[];
+    };
     private readonly _currency: string;
 
     private _balance: number;
@@ -35,17 +39,49 @@ export class PlaygroundBrokerAccount extends MidaBrokerAccount {
     }
 
     public async getEquity (): Promise<number> {
-        return this._balance;
+        const orders: MidaBrokerOrder[] = [ ...this._orders.values(), ].filter((order: MidaBrokerOrder): boolean =>
+            order.status === MidaBrokerOrderStatusType.OPEN
+        );
+        let equity: number = this._balance;
+
+        for (const order of orders) {
+            equity += (await order.getProfit());
+        }
+
+        return equity;
     }
 
     public async addTime (time: number): Promise<MidaSymbolTick[]> {
         const previousDate: Date = new Date(this._localDate);
         const nextDate: Date = new Date(this._localDate.valueOf() + time);
 
+        for (const symbol in this._ticks) {/*
+            const ticks: MidaSymbolTick[] = this._ticks[symbol];
+            const matchedTicks: MidaSymbolTick[] = ...;
+
+            for (const tick of matchedTicks) {
+                await this._onTick(tick);
+            }*/
+        }
+
         return [];
     }
 
+    public async deposit (amount: number): Promise<void> {
+        this._balance += amount;
+    }
+
     private async _onTick (tick: MidaSymbolTick): Promise<void> {
+        const orders: MidaBrokerOrder[] = [ ...this._orders.values(), ].filter((order: MidaBrokerOrder): boolean =>
+            tick.symbol === order.symbol && (order.status === MidaBrokerOrderStatusType.PENDING || order.status === MidaBrokerOrderStatusType.OPEN)
+        );
+
+        for (const order of orders) {
+
+        }
+
+        const equity: number = await this.getEquity();
+
         this.notifyListeners("tick");
     }
 }

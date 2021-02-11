@@ -1,6 +1,7 @@
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
 import { MidaBrokerOrderParameters } from "#orders/MidaBrokerOrderParameters";
+import { MidaBrokerOrderStatusType } from "#orders/MidaBrokerOrderStatusType";
 import { MidaBrokerOrderType } from "#orders/MidaBrokerOrderType";
 import { MidaListenable } from "#utilities/listenable/MidaListenable";
 import { MidaListener } from "#utilities/listenable/MidaListener";
@@ -102,6 +103,20 @@ export class MidaBrokerOrder {
         return [ ...this._tags, ];
     }
 
+    public get status (): MidaBrokerOrderStatusType {
+        if (this._cancelDate) {
+            return MidaBrokerOrderStatusType.CANCELED;
+        }
+        else if (this._closeDate) {
+            return MidaBrokerOrderStatusType.CLOSED;
+        }
+        else if (this._openDate) {
+            return MidaBrokerOrderStatusType.OPEN;
+        }
+
+        return MidaBrokerOrderStatusType.PENDING;
+    }
+
     public addTag (tag: string): void {
         this._tags.add(tag);
     }
@@ -124,6 +139,22 @@ export class MidaBrokerOrder {
 
     public async getLeverage (): Promise<number> {
         return NaN;
+    }
+
+    public async getProfit (): Promise<number> {
+        if (this.status === MidaBrokerOrderStatusType.OPEN || this.status === MidaBrokerOrderStatusType.CLOSED) {
+            return this._brokerAccount.getOrderProfit(this._ticket);
+        }
+
+        throw new Error();
+    }
+
+    public async getGrossProfit (): Promise<number> {
+        if (this.status === MidaBrokerOrderStatusType.OPEN || this.status === MidaBrokerOrderStatusType.CLOSED) {
+            return this._brokerAccount.getOrderGrossProfit(this._ticket);
+        }
+
+        throw new Error();
     }
 
     public async getUsedMargin (): Promise<number | undefined> {

@@ -11,13 +11,15 @@ export class MidaSymbol {
     private readonly _description: string;
     private readonly _type: MidaSymbolType;
     private readonly _digits: number;
+    private readonly _leverage: number;
 
-    public constructor ({ symbol, brokerAccount, description, type, digits, }: MidaSymbolParameters) {
+    public constructor ({ symbol, brokerAccount, description, type, digits, leverage, }: MidaSymbolParameters) {
         this._symbol = symbol;
         this._brokerAccount = brokerAccount;
         this._description = description;
         this._type = type;
         this._digits = digits;
+        this._leverage = leverage;
     }
 
     /** The symbol broker account. */
@@ -40,16 +42,31 @@ export class MidaSymbol {
         return this._digits;
     }
 
+    /** The symbol leverage. */
+    public get leverage (): number {
+        return this._leverage;
+    }
+
     public async getLastTick (): Promise<MidaSymbolTick> {
         return this._brokerAccount.getSymbolLastTick(this._symbol);
     }
 
-    public async getLeverage (): Promise<number> {
-        return NaN;
+    public async getBid (): Promise<number> {
+        return (await this.getLastTick()).bid;
+    }
+
+    public async getAsk (): Promise<number> {
+        return (await this.getLastTick()).ask;
     }
 
     public async getRequiredMargin (lots: number, type: MidaBrokerOrderType): Promise<number> {
-        throw new Error();
+        const lastTick: MidaSymbolTick = await this.getLastTick();
+
+        if (type === MidaBrokerOrderType.SELL) {
+            return this._leverage * lastTick.bid * lots;
+        }
+
+        return this._leverage * lastTick.ask * lots;
     }
 
     public async isMarketOpen (): Promise<boolean> {
