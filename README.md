@@ -9,7 +9,7 @@ Mida allows to:
 - Trade financial assets like stocks, forex, crypto or commodities;
 - Execute and automate trading strategies by creating expert advisors and indicators;
 - Backtest expert advisors on time series covering the last decades;
-- Analyze markets and prices movements through dedicated analysis interfaces.
+- Analyze markets and prices movements through analysis interfaces.
 
 Furthermore, Mida is free and open source.
 
@@ -21,8 +21,8 @@ npm install mida
 ## Disclaimer
 Operating in CFDs/Forex is highly speculative and carries a high level of risk.
 It's possible to lose all your capital. These products may not be suitable for everyone,
-you should ensure that you understand the risks involved. Furthermore, Mida is not responsible for commissions,
-swaps and other taxes applied to your operations, they depend on your broker.
+you should ensure that you understand the risks involved. Furthermore, Mida is not responsible
+for commissions and other costs applied to your operations, they depend on your broker.
 
 ## Usage
 
