@@ -1,5 +1,4 @@
 const tsConfiguration = require("./tsconfig");
-
 const jestConfiguration = {
     testEnvironment: "node",
     coverageProvider: "v8",

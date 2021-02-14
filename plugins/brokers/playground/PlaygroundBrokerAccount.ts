@@ -4,6 +4,8 @@ import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { MidaBrokerOrderStatusType } from "#orders/MidaBrokerOrderStatusType";
 
+const { getTicksInDateRange } = MidaSymbolTick;
+
 // @ts-ignore
 export class PlaygroundBrokerAccount extends MidaBrokerAccount {
     private readonly _localDate: Date;
@@ -51,20 +53,25 @@ export class PlaygroundBrokerAccount extends MidaBrokerAccount {
         return equity;
     }
 
-    public async addTime (time: number): Promise<MidaSymbolTick[]> {
+    public async elapseTime (time: number): Promise<MidaSymbolTick[]> {
         const previousDate: Date = new Date(this._localDate);
-        const nextDate: Date = new Date(this._localDate.valueOf() + time);
+        const actualDate: Date = new Date(this._localDate.valueOf() + time);
+        const elapsedTicks: MidaSymbolTick[] = [];
 
-        for (const symbol in this._ticks) {/*
+        for (const symbol in this._ticks) {
             const ticks: MidaSymbolTick[] = this._ticks[symbol];
-            const matchedTicks: MidaSymbolTick[] = ...;
+            const matchedTicks: MidaSymbolTick[] = getTicksInDateRange(ticks, previousDate, actualDate);
 
             for (const tick of matchedTicks) {
                 await this._onTick(tick);
-            }*/
+            }
+
+            elapsedTicks.push(...matchedTicks);
         }
 
-        return [];
+        this._localDate.setDate(actualDate.valueOf());
+
+        return elapsedTicks;
     }
 
     public async deposit (amount: number): Promise<void> {
@@ -81,8 +88,6 @@ export class PlaygroundBrokerAccount extends MidaBrokerAccount {
         }
 
         const equity: number = await this.getEquity();
-
-        this.notifyListeners("tick");
     }
 }
 

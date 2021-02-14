@@ -5,11 +5,11 @@
 
 A TypeScript framework to easily operate in financial markets.
 
-Mida allows to:
-- Trade financial assets like stocks, forex, crypto or commodities;
-- Execute and automate trading strategies by creating expert advisors and indicators;
-- Backtest expert advisors on time series covering the last decades;
-- Analyze markets and prices movements through analysis interfaces.
+Mida is designed to:
+- Trade financial assets such as stocks, forex, crypto or commodities;
+- Automate trading strategies by creating expert advisors and indicators;
+- Backtest expert advisors and ideas on time series covering the last decades;
+- Analyze markets and prices movements through indicators and analysis interfaces.
 
 Furthermore, Mida is free and open source.
 

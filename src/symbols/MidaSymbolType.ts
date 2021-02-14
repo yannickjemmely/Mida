@@ -6,5 +6,3 @@ export enum MidaSymbolType {
     STOCK = "stock",
     COMMODITY = "commodity",
 }
-
-export const { FOREX, CRYPTO, INDEX, STOCK, COMMODITY, } = MidaSymbolType;

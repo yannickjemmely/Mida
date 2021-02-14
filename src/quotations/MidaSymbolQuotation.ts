@@ -102,14 +102,6 @@ export class MidaSymbolQuotation implements IMidaEquatable, IMidaCloneable {
         return quotations[0][priceType];
     }
 
-    public static getQuotationsClosePrice (quotations: MidaSymbolQuotation[], priceType: MidaSymbolQuotationPriceType): number {
-        if (quotations.length < 1) {
-            throw new Error();
-        }
-
-        return quotations[quotations.length - 1][priceType];
-    }
-
     public static getQuotationsHighestPrice (quotations: MidaSymbolQuotation[], priceType: MidaSymbolQuotationPriceType): number {
         if (quotations.length < 1) {
             throw new Error();
@@ -140,6 +132,14 @@ export class MidaSymbolQuotation implements IMidaEquatable, IMidaCloneable {
         }
 
         return lowestPrice;
+    }
+
+    public static getQuotationsClosePrice (quotations: MidaSymbolQuotation[], priceType: MidaSymbolQuotationPriceType): number {
+        if (quotations.length < 1) {
+            throw new Error();
+        }
+
+        return quotations[quotations.length - 1][priceType];
     }
 
     public static quotationsHaveSameSymbol (quotations: MidaSymbolQuotation[]): boolean {
