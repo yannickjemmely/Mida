@@ -2,7 +2,7 @@
     "name": "Mida",
     "includeVersion": true,
     "entryPoints": [
-        "./src/"
+        "./src/Mida.ts"
     ],
     "excludePrivate": true,
     "out": "docs/typedoc"
