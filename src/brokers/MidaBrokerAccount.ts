@@ -118,7 +118,7 @@ export abstract class MidaBrokerAccount {
      * Used to get the commission of an order (the order must be in open or closed state).
      * @param ticket The order ticket.
      */
-    public abstract getOrderCommision (ticket: number): Promise<number>;
+    public abstract getOrderCommission (ticket: number): Promise<number>;
 
     /**
      * Used to place an order.
