@@ -13,11 +13,6 @@ Mida is designed to:
 
 Furthermore, Mida is free and open source.
 
-## Installation
-```console
-npm install mida
-```
-
 ## Disclaimer
 Operating in CFDs/Forex is highly speculative and carries a high level of risk.
 It's possible to lose all your capital. These products may not be suitable for everyone,
@@ -60,44 +55,6 @@ const myOrder = await myAccount.placeOrder({
 console.log(await myOrder.getOpenPrice());
 ```
 
-#### Profit
-How to get the net profit of a position.
-```typescript
-const actualProfit = await myOrder.getProfit();
-
-console.log(actualProfit);
-```
-
-How to get the gross profit of a position.
-```typescript
-const grossProfit = await myOrder.getGrossProfit();
-
-console.log(grossProfit);
-```
-
-How to get the commision and swaps of a position.
-```typescript
-console.log(await myOrder.getCommision());
-console.log(await myOrder.getSwaps());
-```
-
-#### Management
-How to close a position.
-```typescript
-await myOrder.close();
-```
-
-How to change the stop loss and take profit of a position.
-```typescript
-await myOrder.setStopLoss(10);
-await myOrder.setTakeProfit(30);
-```
-
-How to remove the stop loss and take profit of a position.
-```typescript
-await myOrder.clearStopLoss();
-await myOrder.clearTakeProfit();
-```
 
 ### Symbols
 How to check if a symbol is available for your account.
@@ -109,27 +66,8 @@ if (!symbol) {
 }
 ```
 
-How to listen to the events of a symbol.
-```typescript
-const eurUsd = await myAccount.getSymbol("EURUSD");
-
-eurUsd.on("market-open", () => {
-    console.log("EURUSD market has opened.");
-});
-
-eurUsd.on("tick", (tick) => {
-    console.log(tick.bid);
-    console.log(tick.ask);
-    console.log(tick.spread);
-});
-
-eurUsd.on("market-close", () => {
-    console.log("EURUSD market has closed.");
-});
-```
-
 ### Market Analysis
-Usage examples of the interfaces provided for market analysis.
+Examples of market analysis.
 
 #### Candlesticks/Bars
 Candlesticks and bars are referred as periods.
@@ -139,15 +77,6 @@ const lastPeriod = periods[periods.length - 1];
 
 console.log("Last period OHLC => " + lastPeriod.ohlc);
 console.log("Last period close price => " + lastPeriod.close);
-```
-
-#### Indicators
-How to calculate the SMA (Simple Moving Average).
-```typescript
-const sma = new MidaSmaIndicator(periods);
-
-console.log(await sma.calculate());
-console.log(await sma.next(period));
 ```
 
 ## Contributors

@@ -88,7 +88,7 @@ export abstract class MidaBrokerAccount {
      * @returns The orders. If no time range is provided, the broker will return the most
      * recent orders (with a limit chosen by the broker).
      */
-    public abstract getOrders (from?: Date, to?: Date): Promise<MidaBrokerOrder[]>;
+    public abstract getOrders ({ from, to,}: { from?: Date, to?: Date, }): Promise<MidaBrokerOrder[]>;
 
     /**
      * Used to get an order.

@@ -173,13 +173,19 @@ export class MidaBrokerOrder {
         this._listenable.notifyListeners(type, ...parameters);
     }
 
-    private _initializeEvents (): void {
-        this._brokerAccount.on("position-open", () => {
+    private _onEvent (event: any): void {
+        switch (event.type) {
+            case "position-cancel": {
+                break;
+            }
 
-        });
+            case "position-open": {
+                break;
+            }
 
-        this._brokerAccount.on("position-close", () => {
-
-        });
+            case "position-close": {
+                break;
+            }
+        }
     }
 }

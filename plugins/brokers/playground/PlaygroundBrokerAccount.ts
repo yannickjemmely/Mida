@@ -4,6 +4,7 @@ import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { MidaBrokerOrderStatusType } from "#orders/MidaBrokerOrderStatusType";
 import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
+import { MidaBrokerOrderType } from "#orders/MidaBrokerOrderType";
 
 // @ts-ignore
 export class PlaygroundBrokerAccount extends MidaBrokerAccount {
@@ -56,7 +57,7 @@ export class PlaygroundBrokerAccount extends MidaBrokerAccount {
         return equity;
     }
 
-    public async getOrders (from?: Date, to?: Date): Promise<MidaBrokerOrder[]> {
+    public async getOrders ({ from, to,}: { from?: Date, to?: Date, }): Promise<MidaBrokerOrder[]> {
         return [ ...this._orders.values(), ].filter((order: MidaBrokerOrder): boolean => {
             if (from && !to) {
                 return order.creationDate >= from;
@@ -82,18 +83,29 @@ export class PlaygroundBrokerAccount extends MidaBrokerAccount {
 
     public async placeOrder (directives: MidaBrokerOrderDirectives): Promise<MidaBrokerOrder> {
         const symbol: string = directives.symbol;
+        const lastTick: MidaSymbolTick = await this.getSymbolLastTick(symbol);
+        const isBuyOrder: boolean = directives.type === MidaBrokerOrderType.BUY;
+        const isMarketOpen: boolean = await this.isSymbolMarketOpen(symbol);
+        const isMarketOrder: boolean = (
+            Number.isFinite(directives.sellLimit)
+            && Number.isFinite(directives.sellStop)
+            && Number.isFinite(directives.buyLimit)
+            && Number.isFinite(directives.buyStop)
+        );
 
-        if (!(await this.isSymbolMarketOpen(symbol))) {
+        if (!isMarketOpen) {
             throw new Error();
         }
 
-        const lastTick: MidaSymbolTick = await this.getSymbolLastTick(symbol);
+        const actualDate: Date = new Date();
         const order: MidaBrokerOrder = new MidaBrokerOrder({
             ticket: ++this._tickets,
             brokerAccount: this,
             creationDirectives: directives,
-            requestDate: new Date(),
-            creationDate: new Date(),
+            requestDate: actualDate,
+            creationDate: actualDate,
+            openDate: isMarketOrder ? actualDate : undefined,
+            // openPrice: isMarketOrder ? (isBuyOrder ? lastTick.bid : lastTick.ask) : undefined,
         });
 
         this._orders.set(order.ticket, order);
@@ -104,7 +116,7 @@ export class PlaygroundBrokerAccount extends MidaBrokerAccount {
     /**
      * Used to elapse a given amount of time.
      * @param amount Amount of time to elapse in seconds.
-     * @returns The ticks that have been triggered.
+     * @returns The ticks that have been elapsed.
      */
     public async elapseTime (amount: number): Promise<MidaSymbolTick[]> {
         const previousDate: Date = this._localDate;
@@ -152,4 +164,3 @@ export class PlaygroundBrokerAccount extends MidaBrokerAccount {
 
     }
 }
-
