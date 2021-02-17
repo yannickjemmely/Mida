@@ -4,14 +4,11 @@ import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { MidaBrokerOrderStatusType } from "#orders/MidaBrokerOrderStatusType";
 
-const { getTicksInDateRange } = MidaSymbolTick;
-
 // @ts-ignore
 export class PlaygroundBrokerAccount extends MidaBrokerAccount {
     private readonly _localDate: Date;
-    private readonly _ticks: {
-        [symbol: string]: MidaSymbolTick[];
-    };
+    private readonly _ticks: { [symbol: string]: MidaSymbolTick[]; };
+    private readonly _lastTicks: { [symbol: string]: MidaSymbolTick; };
     private readonly _currency: string;
 
     private _balance: number;
@@ -23,6 +20,7 @@ export class PlaygroundBrokerAccount extends MidaBrokerAccount {
 
         this._localDate = new Date(0);
         this._ticks = {};
+        this._lastTicks = {};
         this._currency = currency;
         this._balance = 0;
         this._orders = new Map();
@@ -41,9 +39,7 @@ export class PlaygroundBrokerAccount extends MidaBrokerAccount {
     }
 
     public async getEquity (): Promise<number> {
-        const orders: MidaBrokerOrder[] = [ ...this._orders.values(), ].filter((order: MidaBrokerOrder): boolean =>
-            order.status === MidaBrokerOrderStatusType.OPEN
-        );
+        const orders: MidaBrokerOrder[] = await this.getOpenOrders();
         let equity: number = this._balance;
 
         for (const order of orders) {
@@ -54,19 +50,28 @@ export class PlaygroundBrokerAccount extends MidaBrokerAccount {
     }
 
     public async elapseTime (time: number): Promise<MidaSymbolTick[]> {
-        const previousDate: Date = new Date(this._localDate);
-        const actualDate: Date = new Date(this._localDate.valueOf() + time);
+        const previousDate: Date = this._localDate;
+        const actualDate: Date = new Date(this._localDate.valueOf() + time * 1000);
         const elapsedTicks: MidaSymbolTick[] = [];
 
         for (const symbol in this._ticks) {
             const ticks: MidaSymbolTick[] = this._ticks[symbol];
-            const matchedTicks: MidaSymbolTick[] = getTicksInDateRange(ticks, previousDate, actualDate);
 
-            for (const tick of matchedTicks) {
-                await this._onTick(tick);
+            for (const tick of ticks) {
+                if (tick.date > previousDate && tick.date <= actualDate) {
+                    elapsedTicks.push(tick);
+                }
             }
+        }
 
-            elapsedTicks.push(...matchedTicks);
+        elapsedTicks.sort((a: MidaSymbolTick, b: MidaSymbolTick): number => a.date.valueOf() - b.date.valueOf());
+
+        for (const tick of elapsedTicks) {
+            this._localDate.setDate(tick.date.valueOf());
+
+            this._lastTicks[tick.symbol] = tick;
+
+            await this._onTick(tick);
         }
 
         this._localDate.setDate(actualDate.valueOf());
@@ -78,16 +83,20 @@ export class PlaygroundBrokerAccount extends MidaBrokerAccount {
         this._balance += amount;
     }
 
+    public async getPendingOrders (): Promise<MidaBrokerOrder[]> {
+        return [ ...this._orders.values(), ].filter((order: MidaBrokerOrder): boolean => order.status === MidaBrokerOrderStatusType.PENDING);
+    }
+
+    public async getOpenOrders (): Promise<MidaBrokerOrder[]> {
+        return [ ...this._orders.values(), ].filter((order: MidaBrokerOrder): boolean => order.status === MidaBrokerOrderStatusType.OPEN);
+    }
+
     private async _onTick (tick: MidaSymbolTick): Promise<void> {
-        const orders: MidaBrokerOrder[] = [ ...this._orders.values(), ].filter((order: MidaBrokerOrder): boolean =>
-            tick.symbol === order.symbol && (order.status === MidaBrokerOrderStatusType.PENDING || order.status === MidaBrokerOrderStatusType.OPEN)
-        );
 
-        for (const order of orders) {
+    }
 
-        }
+    private async _onOrderStatusChange (order: MidaBrokerOrder): Promise<void> {
 
-        const equity: number = await this.getEquity();
     }
 }
 
