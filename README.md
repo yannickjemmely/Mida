@@ -7,7 +7,8 @@ A TypeScript framework to easily operate in financial markets.
 
 Mida is designed to:
 - Trade financial assets such as stocks, forex, crypto or commodities;
-- Automate trading strategies by creating expert advisors and indicators;
+- Operate with any MetaTrader 4 or MetaTrader 5 broker accounts using only Node.js;
+- Automate trading strategies through expert advisors and indicators;
 - Backtest expert advisors and ideas on time series covering the last decades;
 - Analyze markets and prices movements through indicators and analysis interfaces.
 
@@ -23,6 +24,7 @@ for commissions and other costs applied to your operations, they depend on your 
 
 ### Broker Login
 Login into any supported broker by providing the broker name, your login id and password.
+
 ```typescript
 const myAccount = await MidaBroker.login("example", {
     login: "example",
