@@ -32,9 +32,7 @@ const myAccount = await MidaBroker.login("ICMarkets-MT4", {
 });
 ```
 
-### Positions
-
-#### Orders
+### Orders and Positions
 How top open a long position for Bitcoin against USD.
 ```typescript
 const myOrder = await myAccount.placeOrder({
