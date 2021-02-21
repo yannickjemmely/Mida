@@ -3,38 +3,17 @@ import { MidaSymbolQuotationPriceType } from "#quotations/MidaSymbolQuotationPri
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { IMidaEquatable } from "#utilities/equatable/IMidaEquatable";
 
-// Represents a symbol period (the ticks of a symbol in a timeframe).
+/** Represents a symbol period (the ticks of a symbol in a timeframe). */
 export class MidaSymbolPeriod implements IMidaEquatable {
-    // Represents the period symbol.
     private readonly _symbol: string;
-
-    // Represents the period start time.
     private readonly _startTime: Date;
-
-    // Represents the period price type.
-    // Indicates if the period is representing the bid price or the ask price.
     private readonly _priceType: MidaSymbolQuotationPriceType;
-
-    // Represents the period open price.
     private readonly _open: number;
-
-    // Represents the period highest price.
     private readonly _high: number;
-
-    // Represents the period lowest price.
     private readonly _low: number;
-
-    // Represents the period close price.
     private readonly _close: number;
-
-    // Represents the period volume.
     private readonly _volume: number;
-
-    // Represents the period timeframe (in seconds).
     private readonly _timeframe: number;
-
-    // Represents the ticks composing the period.
-    // This is optional as ticks are not always stored: it may result in an empty array.
     private readonly _ticks?: MidaSymbolTick[];
 
     public constructor ({ symbol, startTime, priceType, open, high, low, close, volume, timeframe, ticks, }: MidaSymbolPeriodParameters) {
@@ -50,89 +29,114 @@ export class MidaSymbolPeriod implements IMidaEquatable {
         this._ticks = ticks;
     }
 
+    /** The period symbol. */
     public get symbol (): string {
         return this._symbol;
     }
 
+    /** The period start time. */
     public get startTime (): Date {
         return new Date(this._startTime);
     }
 
+    /** The price type represented by the period (bid or ask). */
     public get priceType (): MidaSymbolQuotationPriceType {
         return this._priceType;
     }
 
+    /** The period open price. */
     public get open (): number {
         return this._open;
     }
 
+    /** The period highest price. */
     public get high (): number {
         return this._high;
     }
 
+    /** The period lowest price. */
     public get low (): number {
         return this._low;
     }
 
+    /** The period close price. */
     public get close (): number {
         return this._close;
     }
 
+    /** The period volume. */
     public get volume (): number {
         return this._volume;
     }
 
+    /** The period timeframe expressed in seconds. */
     public get timeframe (): number {
         return this._timeframe;
     }
 
+    /** The period ticks. Usually ticks are not registered. */
     public get ticks (): readonly MidaSymbolTick[] | undefined {
         return this._ticks;
     }
 
+    /** The period end time. */
     public get endTime (): Date {
         return new Date(this._startTime.valueOf() + this._timeframe * 1000);
     }
 
+    /** The period momentum. */
     public get momentum (): number {
         return this._close / this._open;
     }
 
+    /** The period body. */
     public get body (): number {
         return this._close - this._open;
     }
 
+    /** The period absolute body. */
     public get absBody (): number {
         return Math.abs(this.body);
     }
 
+    /** The period lower shadow. */
     public get lowerShadow (): number {
         return Math.min(this._open, this._close) - this._low;
     }
 
+    /** The period upper shadow. */
     public get upperShadow (): number {
         return this._high - Math.max(this._open, this._close);
     }
 
+    /** The period OHLC (open, high, low, close). */
     public get ohlc (): number[] {
         return [ this._open, this._high, this._low, this._close, ];
     }
 
+    /** Indicates if the period is bearish (negative body). */
     public get isBearish (): boolean {
         return this.body < 0;
     }
 
+    /** Indicates if the period is neutral (zero body). */
     public get isNeutral (): boolean {
         return this.body === 0;
     }
 
+    /** Indicates if the period is bullish (positive body). */
     public get isBullish (): boolean {
         return this.body > 0;
     }
 
+    /**
+     * Used to verify if two periods are equal in terms of symbol, start time and timeframe.
+     * @param object
+     */
     public equals (object: any): boolean {
         return (
             object instanceof MidaSymbolPeriod
+            && this._symbol === object._symbol
             && this._startTime.valueOf() === object._startTime.valueOf()
             && this._timeframe === object._timeframe
         );
@@ -144,6 +148,14 @@ export class MidaSymbolPeriod implements IMidaEquatable {
      **
     */
 
+    /**
+     * Used to compose periods from a set of ticks.
+     * @param ticks The ticks.
+     * @param startTime The start time of the first period.
+     * @param timeframe The periods timeframe.
+     * @param priceType The periods price type (bid or ask).
+     * @param limit Limit the length of composed periods.
+     */
     public static fromTicks (
         ticks: MidaSymbolTick[],
         startTime: Date,

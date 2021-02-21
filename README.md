@@ -26,16 +26,16 @@ for commissions and other costs applied to your operations, they depend on your 
 Login into any supported broker by providing the broker name, your login id and password.
 
 ```typescript
-const myAccount = await MidaBroker.login("example", {
-    login: "example",
-    password: "example",
+const myAccount = await MidaBroker.login("ICMarkets-MT4", {
+    id: "",
+    password: "",
 });
 ```
 
 ### Positions
 
 #### Orders
-How top open a long position for BTC against USD.
+How top open a long position for Bitcoin against USD.
 ```typescript
 const myOrder = await myAccount.placeOrder({
     symbol: "BTCUSD",
@@ -43,7 +43,7 @@ const myOrder = await myAccount.placeOrder({
     size: 1,
 });
 
-console.log(await myOrder.getOpenPrice());
+console.log(myOrder.openPrice);
 ```
 
 How to open a short position for EUR against USD.
@@ -54,14 +54,14 @@ const myOrder = await myAccount.placeOrder({
     size: 0.1,
 });
 
-console.log(await myOrder.getOpenPrice());
+console.log(myOrder.openPrice);
 ```
 
 
 ### Symbols
 How to check if a symbol is available for your account.
 ```typescript
-const symbol = await myAccount.getSymbol("example");
+const symbol = await myAccount.getSymbol("#AAPL");
 
 if (!symbol) {
     console.log("You can't operate with this symbol.");
@@ -69,7 +69,7 @@ if (!symbol) {
 ```
 
 ### Market Analysis
-Examples of market analysis.
+Examples of market technical analysis.
 
 #### Candlesticks/Bars
 Candlesticks and bars are referred as periods.

@@ -85,21 +85,7 @@ export class MidaSymbolTick implements IMidaEquatable, IMidaCloneable {
      *** Static Utilities
      **
     */
-
-    public static getTicksInDateRange (ticks: MidaSymbolTick[], from: Date, to: Date): MidaSymbolTick[] {
-        const foundTicks: MidaSymbolTick[] = [];
-
-        for (const tick of ticks) {
-            const date: Date = tick.date;
-
-            if (date >= from && date <= to) {
-                foundTicks.push(tick);
-            }
-        }
-
-        return foundTicks;
-    }
-
+    
     public static getTicksOpenPrice (ticks: MidaSymbolTick[], priceType: MidaSymbolQuotationPriceType): number {
         return MidaSymbolQuotation.getQuotationsOpenPrice(ticks.map((tick: MidaSymbolTick): MidaSymbolQuotation => tick.quotation), priceType);
     }
