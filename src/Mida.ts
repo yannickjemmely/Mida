@@ -13,6 +13,8 @@ export class Mida {
     }
 }
 
+// <periods>
 export { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
 export { MidaSymbolPeriodParameters} from "#periods/MidaSymbolPeriodParameters";
 export { MidaSymbolPeriodTimeframeType } from "#periods/MidaSymbolPeriodTimeframeType";
+// </periods>

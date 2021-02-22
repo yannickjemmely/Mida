@@ -27,4 +27,14 @@ export abstract class MidaBroker {
      * @returns Logged in account.
      */
     public abstract login (...parameters: any[]): Promise<MidaBrokerAccount>;
+
+    /*
+     **
+     *** Static Utilities
+     **
+    */
+
+    public static async login (...parameters: any[]): Promise<any> {
+
+    }
 }

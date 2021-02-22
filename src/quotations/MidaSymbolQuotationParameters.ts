@@ -1,4 +1,4 @@
-// Represents the parameters of the symbol quotation constructor.
+/** The parameters of the symbol quotation constructor. */
 export type MidaSymbolQuotationParameters = {
     symbol: string;
     date: Date;

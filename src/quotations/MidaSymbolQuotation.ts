@@ -3,21 +3,12 @@ import { MidaSymbolQuotationPriceType } from "#quotations/MidaSymbolQuotationPri
 import { IMidaEquatable } from "#utilities/equatable/IMidaEquatable";
 import { IMidaCloneable } from "#utilities/cloneable/IMidaCloneable";
 
-// Represents a symbol quotation.
+/** Represents a symbol quotation. */
 export class MidaSymbolQuotation implements IMidaEquatable, IMidaCloneable {
-    // Represents the quotation symbol.
     private readonly _symbol: string;
-
-    // Represents the quotation date.
     private readonly _date: Date;
-
-    // Represents the quotation bid price.
     private readonly _bid: number;
-
-    // Represents the quotation ask price.
     private readonly _ask: number;
-
-    // Represents the quotation exchange name.
     private readonly _exchangeName: string;
 
     public constructor ({ symbol, date, bid, ask, exchangeName = "", }: MidaSymbolQuotationParameters) {
@@ -28,30 +19,37 @@ export class MidaSymbolQuotation implements IMidaEquatable, IMidaCloneable {
         this._exchangeName = exchangeName;
     }
 
+    /** The quotation symbol. */
     public get symbol (): string {
         return this._symbol;
     }
 
+    /** The quotation date. */
     public get date (): Date {
         return new Date(this._date);
     }
 
+    /** The quotation bid price. */
     public get bid (): number {
         return this._bid;
     }
 
+    /** The quotation ask price. */
     public get ask (): number {
         return this._ask;
     }
 
+    /** The quotation exchange name. */
     public get exchangeName (): string {
         return this._exchangeName;
     }
 
+    /** The quotation mid price. */
     public get mid (): number {
         return (this._bid + this._ask) / 2;
     }
 
+    /** The quotation spread. */
     public get spread (): number {
         return this._ask - this._bid;
     }
@@ -64,6 +62,7 @@ export class MidaSymbolQuotation implements IMidaEquatable, IMidaCloneable {
         );
     }
 
+    /** Used to get a clone of the quotation. */
     public clone (): any {
         return new MidaSymbolQuotation({
             symbol: this._symbol,

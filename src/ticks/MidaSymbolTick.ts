@@ -43,12 +43,12 @@ export class MidaSymbolTick implements IMidaEquatable, IMidaCloneable {
         return this._quotation.symbol;
     }
 
-    /** The tick bid. */
+    /** The tick bid price. */
     public get bid (): number {
         return this._quotation.bid;
     }
 
-    /** The tick ask. */
+    /** The tick ask price. */
     public get ask (): number {
         return this._quotation.ask;
     }
