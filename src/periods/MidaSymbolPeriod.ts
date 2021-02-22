@@ -3,7 +3,7 @@ import { MidaSymbolQuotationPriceType } from "#quotations/MidaSymbolQuotationPri
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { IMidaEquatable } from "#utilities/equatable/IMidaEquatable";
 
-/** Represents a symbol period (the ticks of a symbol in a timeframe). */
+/** Represents a symbol period (commonly named bar or candlestick). */
 export class MidaSymbolPeriod implements IMidaEquatable {
     private readonly _symbol: string;
     private readonly _startTime: Date;

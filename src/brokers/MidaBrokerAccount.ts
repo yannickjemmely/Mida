@@ -85,7 +85,7 @@ export abstract class MidaBrokerAccount {
      * Used to get the account orders.
      * @param from Time range start.
      * @param to Time range end.
-     * @returns The orders. If no time range is provided, the broker will return the most
+     * @returns The orders. If no time range is provided, the broker may return the most
      * recent orders (with a limit chosen by the broker).
      */
     public abstract getOrders ({ from, to,}: { from?: Date, to?: Date, }): Promise<MidaBrokerOrder[]>;

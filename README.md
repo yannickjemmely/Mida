@@ -18,7 +18,7 @@ Furthermore, Mida is free and open source.
 Operating in CFDs/Forex is highly speculative and carries a high level of risk.
 It's possible to lose all your capital. These products may not be suitable for everyone,
 you should ensure that you understand the risks involved. Furthermore, Mida is not responsible
-for commissions and other costs applied to your operations, they depend on your broker.
+for commissions or other taxes applied to your operations, they depend on your broker.
 
 ## Usage
 
@@ -26,9 +26,11 @@ for commissions and other costs applied to your operations, they depend on your 
 Login into any supported broker by providing the broker name, your login id and password.
 
 ```typescript
-const myAccount = await MidaBroker.login("ICMarkets-MT4", {
+const myAccount = await MidaBroker.login("ICMarkets", {
+    type: "MT4",
     id: "",
     password: "",
+    server: "ICMarkets-Live",
 });
 ```
 
@@ -41,6 +43,7 @@ const myOrder = await myAccount.placeOrder({
     size: 1,
 });
 
+console.log(myOrder.ticket);
 console.log(myOrder.openPrice);
 ```
 
@@ -52,9 +55,9 @@ const myOrder = await myAccount.placeOrder({
     size: 0.1,
 });
 
+console.log(myOrder.ticket);
 console.log(myOrder.openPrice);
 ```
-
 
 ### Symbols
 How to check if a symbol is available for your account.
@@ -62,21 +65,21 @@ How to check if a symbol is available for your account.
 const symbol = await myAccount.getSymbol("#AAPL");
 
 if (!symbol) {
-    console.log("You can't operate with this symbol.");
+    console.log("You can't trade Apple stocks.");
 }
 ```
 
 ### Market Analysis
-Examples of market technical analysis.
+Examples of technical market analysis.
 
 #### Candlesticks/Bars
 Candlesticks and bars are referred as periods.
 ```typescript
-const periods = await myAccount.getSymbolPeriods("EURUSD", MidaSymbolPeriodTimeframeType.M30);
-const lastPeriod = periods[periods.length - 1];
+const candlesticks = await myAccount.getSymbolPeriods("EURUSD", MidaSymbolPeriodTimeframeType.M30);
+const lastCandlestick = periods[periods.length - 1];
 
-console.log("Last period OHLC => " + lastPeriod.ohlc);
-console.log("Last period close price => " + lastPeriod.close);
+console.log("Last candlestick OHLC => " + lastPeriod.ohlc);
+console.log("Last candlestick close price => " + lastPeriod.close);
 ```
 
 ## Contributors
