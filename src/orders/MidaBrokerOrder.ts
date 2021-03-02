@@ -3,8 +3,8 @@ import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
 import { MidaBrokerOrderParameters } from "#orders/MidaBrokerOrderParameters";
 import { MidaBrokerOrderStatusType } from "#orders/MidaBrokerOrderStatusType";
 import { MidaBrokerOrderType } from "#orders/MidaBrokerOrderType";
-import { MidaEmitter } from "#utilities/listenable/MidaEmitter";
-import { MidaListener } from "#utilities/listenable/MidaListener";
+import { MidaEmitter } from "#utilities/emitter/MidaEmitter";
+import { MidaListener } from "#utilities/emitter/MidaListener";
 
 // Represents an order.
 export class MidaBrokerOrder {
