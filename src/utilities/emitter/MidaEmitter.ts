@@ -1,8 +1,10 @@
 import { v1 as uuidV1 }  from "uuid";
-import { MidaListener } from "#utilities/listenable/MidaListener";
+import { MidaListener } from "#utilities/emitter/MidaListener";
 
-// Represents an object capable of emitting events.
-export class MidaListenable {
+/** Represents an entity that may emit events. */
+export class MidaEmitter {
+    private static readonly _ANY_TYPE_KEY: string = "*";
+
     private readonly _listeners: {
         [type: string]: {
             [uuid: string]: MidaListener;
@@ -55,6 +57,10 @@ export class MidaListenable {
     }
 
     public notifyListeners (type: string, ...parameters: any[]): void {
+        if (type !== MidaEmitter._ANY_TYPE_KEY) {
+            Object.values(this._listeners[MidaEmitter._ANY_TYPE_KEY] || {}).forEach((listener: MidaListener): void => listener(...parameters));
+        }
+
         Object.values(this._listeners[type] || {}).forEach((listener: MidaListener): void => listener(...parameters));
     }
 

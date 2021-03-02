@@ -1,7 +1,7 @@
-import { MidaListenable } from "#utilities/listenable/MidaListenable";
+import { MidaEmitter } from "#utilities/listenable/MidaEmitter";
 
 describe("MidaListenable", () => {
-    const listenable: MidaListenable = new MidaListenable();
+    const listenable: MidaEmitter = new MidaEmitter();
 
     describe(".on", () => {
         it("returns a string when listener is passed.", () => {

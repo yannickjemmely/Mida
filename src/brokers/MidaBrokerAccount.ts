@@ -9,7 +9,7 @@ import { MidaSymbolQuotationPriceType } from "#quotations/MidaSymbolQuotationPri
 import { MidaSymbol } from "#symbols/MidaSymbol";
 import { MidaSymbolType } from "#symbols/MidaSymbolType";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
-import { MidaListenable } from "#utilities/listenable/MidaListenable";
+import { MidaEmitter } from "#utilities/listenable/MidaEmitter";
 import { MidaListener } from "#utilities/listenable/MidaListener";
 
 /** Represents a broker account. */
@@ -18,14 +18,14 @@ export abstract class MidaBrokerAccount {
     private readonly _fullName: string;
     private readonly _type: MidaBrokerAccountType;
     private readonly _broker: MidaBroker;
-    private readonly _listenable: MidaListenable;
+    private readonly _listenable: MidaEmitter;
 
     protected constructor ({ id, fullName, type, broker, }: MidaBrokerAccountParameters) {
         this._id = id;
         this._fullName = fullName;
         this._type = type;
         this._broker = broker;
-        this._listenable = new MidaListenable();
+        this._listenable = new MidaEmitter();
     }
 
     /**

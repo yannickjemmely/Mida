@@ -3,7 +3,7 @@ import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
 import { MidaBrokerOrderParameters } from "#orders/MidaBrokerOrderParameters";
 import { MidaBrokerOrderStatusType } from "#orders/MidaBrokerOrderStatusType";
 import { MidaBrokerOrderType } from "#orders/MidaBrokerOrderType";
-import { MidaListenable } from "#utilities/listenable/MidaListenable";
+import { MidaEmitter } from "#utilities/listenable/MidaEmitter";
 import { MidaListener } from "#utilities/listenable/MidaListener";
 
 // Represents an order.
@@ -48,7 +48,7 @@ export class MidaBrokerOrder {
     private readonly _tags: Set<string>;
 
     // Represents the order event system.
-    private readonly _listenable: MidaListenable;
+    private readonly _listenable: MidaEmitter;
 
     public constructor ({
         ticket,
@@ -64,7 +64,7 @@ export class MidaBrokerOrder {
         this._requestDate = new Date(requestDate);
         this._creationDate = new Date(creationDate);
         this._tags = new Set(tags);
-        this._listenable = new MidaListenable();
+        this._listenable = new MidaEmitter();
     }
 
     public get ticket (): number {
