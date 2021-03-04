@@ -9,8 +9,8 @@ import { MidaSymbolQuotationPriceType } from "#quotations/MidaSymbolQuotationPri
 import { MidaSymbol } from "#symbols/MidaSymbol";
 import { MidaSymbolType } from "#symbols/MidaSymbolType";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
-import { MidaEmitter } from "#utilities/listenable/MidaEmitter";
-import { MidaListener } from "#utilities/listenable/MidaListener";
+import { MidaEmitter } from "#utilities/emitter/MidaEmitter";
+import { MidaListener } from "#utilities/emitter/MidaListener";
 
 /** Represents a broker account. */
 export abstract class MidaBrokerAccount {
@@ -18,14 +18,14 @@ export abstract class MidaBrokerAccount {
     private readonly _fullName: string;
     private readonly _type: MidaBrokerAccountType;
     private readonly _broker: MidaBroker;
-    private readonly _listenable: MidaEmitter;
+    private readonly _emitter: MidaEmitter;
 
     protected constructor ({ id, fullName, type, broker, }: MidaBrokerAccountParameters) {
         this._id = id;
         this._fullName = fullName;
         this._type = type;
         this._broker = broker;
-        this._listenable = new MidaEmitter();
+        this._emitter = new MidaEmitter();
     }
 
     /**
@@ -100,7 +100,7 @@ export abstract class MidaBrokerAccount {
      * Used to get the net profit of an order (the order must be in open or closed state).
      * @param ticket The order ticket.
      */
-    public abstract getOrderProfit (ticket: number): Promise<number>;
+    public abstract getOrderNetProfit (ticket: number): Promise<number>;
 
     /**
      * Used to get the gross profit of an order (the order must be in open or closed state).
@@ -229,10 +229,10 @@ export abstract class MidaBrokerAccount {
     }
 
     public on (type: string, listener?: MidaListener): Promise<void> | string {
-        return this._listenable.on(type, listener);
+        return this._emitter.on(type, listener);
     }
 
     protected notifyListeners (type: string, ...parameters: any[]): void {
-        this._listenable.notifyListeners(type, ...parameters);
+        this._emitter.notifyListeners(type, ...parameters);
     }
 }

@@ -14,14 +14,17 @@ export class MidaBrokerOrder {
     // Represents the order broker account.
     private readonly _brokerAccount: MidaBrokerAccount;
 
-    // Represents the order creation directives.
-    private readonly _creationDirectives: MidaBrokerOrderDirectives;
-
     // Represents the order request date.
     private readonly _requestDate: Date;
 
+    // Represents the order request directives.
+    private readonly _requestDirectives: MidaBrokerOrderDirectives;
+
     // Represents the order creation date.
     private readonly _creationDate: Date;
+
+    // Represents the order creation price.
+    private readonly _creationPrice: number;
 
     // Represents the order cancel date.
     private _cancelDate?: Date;
@@ -31,9 +34,6 @@ export class MidaBrokerOrder {
 
     // Represents the order close date.
     private _closeDate?: Date;
-
-    // Represents the order creation price.
-    private _creationPrice?: number;
 
     // Represents the order cancel price.
     private _cancelPrice?: number;
@@ -47,24 +47,24 @@ export class MidaBrokerOrder {
     // Represents the order tags.
     private readonly _tags: Set<string>;
 
-    // Represents the order event system.
-    private readonly _listenable: MidaEmitter;
+    // Represents the order events emitter.
+    private readonly _emitter: MidaEmitter;
 
     public constructor ({
         ticket,
         brokerAccount,
-        creationDirectives,
         requestDate,
+        requestDirectives,
         creationDate,
         tags = [],
     }: MidaBrokerOrderParameters) {
         this._ticket = ticket;
         this._brokerAccount = brokerAccount;
-        this._creationDirectives = { ...creationDirectives, };
         this._requestDate = new Date(requestDate);
+        this._requestDirectives = { ...requestDirectives, };
         this._creationDate = new Date(creationDate);
         this._tags = new Set(tags);
-        this._listenable = new MidaEmitter();
+        this._emitter = new MidaEmitter();
     }
 
     public get ticket (): number {
@@ -75,12 +75,12 @@ export class MidaBrokerOrder {
         return this._brokerAccount;
     }
 
-    public get creationDirectives (): MidaBrokerOrderDirectives {
-        return { ...this._creationDirectives, };
-    }
-
     public get requestDate (): Date {
         return new Date(this._requestDate);
+    }
+
+    public get requestDirectives (): MidaBrokerOrderDirectives {
+        return { ...this._requestDirectives, };
     }
 
     public get creationDate (): Date {
@@ -88,15 +88,15 @@ export class MidaBrokerOrder {
     }
 
     public get symbol (): string {
-        return this._creationDirectives.symbol;
+        return this._requestDirectives.symbol;
     }
 
     public get type (): MidaBrokerOrderType {
-        return this._creationDirectives.type;
+        return this._requestDirectives.type;
     }
 
     public get size (): number {
-        return this._creationDirectives.size;
+        return this._requestDirectives.size;
     }
 
     public get tags (): string[] {
@@ -141,9 +141,9 @@ export class MidaBrokerOrder {
         return NaN;
     }
 
-    public async getProfit (): Promise<number> {
+    public async getNetProfit (): Promise<number> {
         if (this.status === MidaBrokerOrderStatusType.OPEN || this.status === MidaBrokerOrderStatusType.CLOSED) {
-            return this._brokerAccount.getOrderProfit(this._ticket);
+            return this._brokerAccount.getOrderNetProfit(this._ticket);
         }
 
         throw new Error();
@@ -162,15 +162,15 @@ export class MidaBrokerOrder {
             return;
         }
 
-        return (await this.getLeverage()) * this._openPrice;
+        return this._openPrice * this.size / (await this.getLeverage());
     }
 
     public on (type: string, listener?: MidaListener): Promise<void> | string {
-        return this._listenable.on(type, listener);
+        return this._emitter.on(type, listener);
     }
 
     protected notifyListeners (type: string, ...parameters: any[]): void {
-        this._listenable.notifyListeners(type, ...parameters);
+        this._emitter.notifyListeners(type, ...parameters);
     }
 
     private _onEvent (event: any): void {

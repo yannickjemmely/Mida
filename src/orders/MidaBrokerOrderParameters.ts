@@ -5,8 +5,8 @@ import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
 export type MidaBrokerOrderParameters = {
     ticket: number;
     brokerAccount: MidaBrokerAccount;
-    creationDirectives: MidaBrokerOrderDirectives;
     requestDate: Date;
+    requestDirectives: MidaBrokerOrderDirectives;
     creationDate: Date;
     openDate?: Date;
     closeDate?: Date;

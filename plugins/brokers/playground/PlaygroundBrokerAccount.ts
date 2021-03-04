@@ -101,7 +101,7 @@ export class PlaygroundBrokerAccount extends MidaBrokerAccount {
         const order: MidaBrokerOrder = new MidaBrokerOrder({
             ticket: ++this._tickets,
             brokerAccount: this,
-            creationDirectives: directives,
+            requestDirectives: directives,
             requestDate: actualDate,
             creationDate: actualDate,
             openDate: isMarketOrder ? actualDate : undefined,
