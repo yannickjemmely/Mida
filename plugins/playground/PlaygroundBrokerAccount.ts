@@ -51,7 +51,7 @@ export class PlaygroundBrokerAccount extends MidaBrokerAccount {
         let equity: number = this._balance;
 
         for (const order of orders) {
-            equity += (await order.getProfit());
+            equity += (await order.getNetProfit());
         }
 
         return equity;
