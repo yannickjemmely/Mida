@@ -7,48 +7,21 @@ import { MidaBrokerOrderStatusType } from "#orders/MidaBrokerOrderStatusType";
 import { MidaBrokerOrderType } from "#orders/MidaBrokerOrderType";
 import { MidaEmitter } from "#utilities/emitter/MidaEmitter";
 
-// Represents an order.
+/** Represents an order. */
 export class MidaBrokerOrder {
-    // Represents the order ticket.
     private readonly _ticket: number;
-
-    // Represents the order broker account.
     private readonly _brokerAccount: MidaBrokerAccount;
-
-    // Represents the order request date.
-    private readonly _requestDate: Date;
-
-    // Represents the order request directives.
     private readonly _requestDirectives: MidaBrokerOrderDirectives;
-
-    // Represents the order creation date.
+    private readonly _requestDate: Date;
     private readonly _creationDate: Date;
-
-    // Represents the order creation price.
-    // private readonly _creationPrice: number;
-
-    // Represents the order cancel date.
     private _cancelDate?: Date;
-
-    // Represents the order open date.
     private _openDate?: Date;
-
-    // Represents the order close date.
     private _closeDate?: Date;
-
-    // Represents the order cancel price.
+    private readonly _creationPrice: number;
     private _cancelPrice?: number;
-
-    // Represents the order open price.
     private _openPrice?: number;
-
-    // Represents the order close price.
     private _closePrice?: number;
-
-    // Represents the order tags.
     private readonly _tags: Set<string>;
-
-    // Represents the order events emitter.
     private readonly _emitter: MidaEmitter;
 
     public constructor ({
@@ -64,26 +37,34 @@ export class MidaBrokerOrder {
         this._requestDate = new Date(requestDate);
         this._requestDirectives = { ...requestDirectives, };
         this._creationDate = new Date(creationDate);
+        this._creationPrice = 0;
         this._tags = new Set(tags);
         this._emitter = new MidaEmitter();
+
+        this._brokerAccount.on("*", (event: MidaEvent) => this._onAccountEvent(event));
     }
 
+    /** The order ticket. */
     public get ticket (): number {
         return this._ticket;
     }
 
+    /** The order broker account. */
     public get brokerAccount (): MidaBrokerAccount {
         return this._brokerAccount;
     }
 
-    public get requestDate (): Date {
-        return new Date(this._requestDate);
-    }
-
+    /** The order request directives. */
     public get requestDirectives (): MidaBrokerOrderDirectives {
         return { ...this._requestDirectives, };
     }
 
+    /** The order request date. */
+    public get requestDate (): Date {
+        return new Date(this._requestDate);
+    }
+
+    /** The order creation date. */
     public get creationDate (): Date {
         return new Date(this._creationDate);
     }
@@ -166,6 +147,12 @@ export class MidaBrokerOrder {
         return this._openPrice * this.size / (await this.getLeverage());
     }
 
+    /*
+    public async getStopLoss (): Promise<number | undefined> {
+        return this._brokerAccount.getOrderStopLoss(this._ticket);
+    }
+    */
+
     public on (type: string, listener?: MidaEventListener): Promise<MidaEvent> | string {
         return this._emitter.on(type, listener);
     }
@@ -174,17 +161,27 @@ export class MidaBrokerOrder {
         this._emitter.notifyListeners(type, ...parameters);
     }
 
-    private _onEvent (event: any): void {
+    private _onAccountEvent (event: MidaEvent): void {
+        if (!event.data || !event.data.ticket || event.data.ticket !== this._ticket) {
+            return;
+        }
+
         switch (event.type) {
             case "position-cancel": {
+                this.notifyListeners("cancel", event.data);
+
                 break;
             }
 
             case "position-open": {
+                this.notifyListeners("open", event.data);
+
                 break;
             }
 
             case "position-close": {
+                this.notifyListeners("close", event.data);
+
                 break;
             }
         }

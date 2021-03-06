@@ -34,7 +34,16 @@ describe("MidaEmitter", () => {
         it("returns a Promise when no listener is passed", () => {
             const emitter: MidaEmitter = new MidaEmitter();
 
-            expect(emitter.on("test")).toBeInstanceOf(Promise);
+            expect(emitter.on("event")).toBeInstanceOf(Promise);
+        });
+
+        it("when returns a Promise, it's resolved when event occurs", () => {
+            const emitter: MidaEmitter = new MidaEmitter();
+            const eventPromise: string | Promise<MidaEvent> = emitter.on("event");
+
+            emitter.notifyListeners("event");
+
+            expect(eventPromise).resolves.toBeInstanceOf(MidaEvent);
         });
     });
 

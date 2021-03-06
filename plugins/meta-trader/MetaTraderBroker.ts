@@ -1,6 +1,7 @@
-import puppeteer = require("puppeteer");
 import { MidaBroker } from "#brokers/MidaBroker";
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
+import { MidaBrowser } from "#utilities/browser/MidaBrowser";
+import { MidaBrowserTab } from "#utilities/browser/MidaBrowserTab";
 
 export class MetaTraderBroker extends MidaBroker {
     private static readonly _WEB_META_TRADER_URI: string = "https://trade.mql5.com/trade";
@@ -16,7 +17,7 @@ export class MetaTraderBroker extends MidaBroker {
 
     public async login (...parameters: any[]): Promise<MidaBrokerAccount> {
         try {
-            this._browser = await puppeteer.launch();
+            //this._browser = await puppeteer.launch();
         }
         catch (error) {
             throw new Error();
