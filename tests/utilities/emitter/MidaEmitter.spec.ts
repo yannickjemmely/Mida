@@ -51,7 +51,7 @@ describe("MidaEmitter", () => {
             expect(invocationsCount).toBe(3);
         });
 
-        it("invokes listener with correct event", () => {
+        it("invokes listener with correct event object", () => {
             const emitter: MidaEmitter = new MidaEmitter();
             let lastEvent: any = undefined;
 
