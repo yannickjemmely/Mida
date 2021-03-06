@@ -78,8 +78,8 @@ Candlesticks and bars are referred as periods.
 const candlesticks = await myAccount.getSymbolPeriods("EURUSD", MidaSymbolPeriodTimeframeType.M30);
 const lastCandlestick = periods[periods.length - 1];
 
-console.log("Last candlestick OHLC => " + lastPeriod.ohlc);
-console.log("Last candlestick close price => " + lastPeriod.close);
+console.log("Last candlestick OHLC => " + lastCandlestick.ohlc);
+console.log("Last candlestick close price => " + lastCandlestick.close);
 ```
 
 ## Contributors
