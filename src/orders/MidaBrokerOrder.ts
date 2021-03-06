@@ -1,10 +1,11 @@
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
+import { MidaEvent } from "#events/MidaEvent";
+import { MidaEventListener } from "#events/MidaEventListener";
 import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
 import { MidaBrokerOrderParameters } from "#orders/MidaBrokerOrderParameters";
 import { MidaBrokerOrderStatusType } from "#orders/MidaBrokerOrderStatusType";
 import { MidaBrokerOrderType } from "#orders/MidaBrokerOrderType";
 import { MidaEmitter } from "#utilities/emitter/MidaEmitter";
-import { MidaListener } from "#utilities/emitter/MidaListener";
 
 // Represents an order.
 export class MidaBrokerOrder {
@@ -24,7 +25,7 @@ export class MidaBrokerOrder {
     private readonly _creationDate: Date;
 
     // Represents the order creation price.
-    private readonly _creationPrice: number;
+    // private readonly _creationPrice: number;
 
     // Represents the order cancel date.
     private _cancelDate?: Date;
@@ -165,7 +166,7 @@ export class MidaBrokerOrder {
         return this._openPrice * this.size / (await this.getLeverage());
     }
 
-    public on (type: string, listener?: MidaListener): Promise<void> | string {
+    public on (type: string, listener?: MidaEventListener): Promise<MidaEvent> | string {
         return this._emitter.on(type, listener);
     }
 

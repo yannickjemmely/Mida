@@ -1,5 +1,8 @@
-// Represents the parameters of the event constructor.
+import { GenericObject } from "#utilities/GenericObject";
+
+/** The parameters of the event constructor. */
 export type MidaEventParameters = {
     type: string;
     date: Date;
+    data?: GenericObject;
 };

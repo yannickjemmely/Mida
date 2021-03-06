@@ -1,6 +1,8 @@
 import { MidaBroker } from "#brokers/MidaBroker";
 import { MidaBrokerAccountParameters } from "#brokers/MidaBrokerAccountParameters";
 import { MidaBrokerAccountType } from "#brokers/MidaBrokerAccountType";
+import { MidaEvent } from "#events/MidaEvent";
+import { MidaEventListener } from "#events/MidaEventListener";
 import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
 import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
 import { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
@@ -10,7 +12,6 @@ import { MidaSymbol } from "#symbols/MidaSymbol";
 import { MidaSymbolType } from "#symbols/MidaSymbolType";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { MidaEmitter } from "#utilities/emitter/MidaEmitter";
-import { MidaListener } from "#utilities/emitter/MidaListener";
 
 /** Represents a broker account. */
 export abstract class MidaBrokerAccount {
@@ -228,7 +229,7 @@ export abstract class MidaBrokerAccount {
         return (await this.getSymbols()).filter((symbol: MidaSymbol): boolean => symbol.type === type);
     }
 
-    public on (type: string, listener?: MidaListener): Promise<void> | string {
+    public on (type: string, listener?: MidaEventListener): Promise<MidaEvent> | string {
         return this._emitter.on(type, listener);
     }
 
