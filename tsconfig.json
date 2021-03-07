@@ -20,6 +20,9 @@
             "#brokers/*": [
                 "src/brokers/*"
             ],
+            "#errors/*": [
+                "src/errors/*"
+            ],
             "#events/*": [
                 "src/events/*"
             ],

@@ -6,16 +6,22 @@ import { MidaBrowserTab } from "#utilities/browser/MidaBrowserTab";
 export class MetaTraderBroker extends MidaBroker {
     private static readonly _WEB_META_TRADER_URI: string = "https://trade.mql5.com/trade";
 
-    private _browser: any;
+    private readonly _browser: MidaBrowser;
 
     public constructor (name: string) {
         super({
             name,
             websiteUri: "",
         });
+
+        this._browser = new MidaBrowser();
     }
 
     public async login (...parameters: any[]): Promise<MidaBrokerAccount> {
+        if (!this._browser.isOpen) {
+            await this._browser.open();
+        }
+
         try {
             //this._browser = await puppeteer.launch();
         }
@@ -34,7 +40,7 @@ export class MetaTraderBroker extends MidaBroker {
         let page: any;
 
         try {
-            page = await this._browser.newPage();
+            page = await this._browser.openTab();
 
             await page.goto(MetaTraderBroker._WEB_META_TRADER_URI);
 

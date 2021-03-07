@@ -2,6 +2,7 @@ import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 import { MidaEvent } from "#events/MidaEvent";
 import { MidaEventListener } from "#events/MidaEventListener";
 import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
+import { MidaBrokerOrderExecutionType } from "#orders/MidaBrokerOrderExecutionType";
 import { MidaBrokerOrderParameters } from "#orders/MidaBrokerOrderParameters";
 import { MidaBrokerOrderStatusType } from "#orders/MidaBrokerOrderStatusType";
 import { MidaBrokerOrderType } from "#orders/MidaBrokerOrderType";
@@ -145,6 +146,18 @@ export class MidaBrokerOrder {
         }
 
         return MidaBrokerOrderStatusType.PENDING;
+    }
+
+    public get executionType (): any {
+        if (Number.isFinite(this._requestDirectives.limit)) {
+            return MidaBrokerOrderExecutionType.LIMIT;
+        }
+
+        if (Number.isFinite(this._requestDirectives.stop)) {
+            return MidaBrokerOrderExecutionType.STOP;
+        }
+
+        return MidaBrokerOrderExecutionType.MARKET;
     }
 
     public addTag (tag: string): void {
