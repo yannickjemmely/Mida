@@ -27,17 +27,30 @@ export class MidaBrokerOrder {
     public constructor ({
         ticket,
         brokerAccount,
-        requestDate,
         requestDirectives,
+        requestDate,
         creationDate,
+        cancelDate = undefined,
+        openDate = undefined,
+        closeDate = undefined,
+        creationPrice,
+        cancelPrice = undefined,
+        openPrice = undefined,
+        closePrice = undefined,
         tags = [],
     }: MidaBrokerOrderParameters) {
         this._ticket = ticket;
         this._brokerAccount = brokerAccount;
-        this._requestDate = new Date(requestDate);
         this._requestDirectives = { ...requestDirectives, };
+        this._requestDate = new Date(requestDate);
         this._creationDate = new Date(creationDate);
-        this._creationPrice = 0;
+        this._cancelDate = cancelDate;
+        this._openDate = openDate;
+        this._closeDate = closeDate;
+        this._creationPrice = creationPrice;
+        this._cancelPrice = cancelPrice;
+        this._openPrice = openPrice;
+        this._closePrice = closePrice;
         this._tags = new Set(tags);
         this._emitter = new MidaEmitter();
 
@@ -69,6 +82,45 @@ export class MidaBrokerOrder {
         return new Date(this._creationDate);
     }
 
+    /** The order cancel date. */
+    public get cancelDate (): Date | undefined {
+        return this._cancelDate;
+    }
+
+    /** The order open date. */
+    public get openDate (): Date | undefined {
+        return this._openDate;
+    }
+
+    /** The order close date. */
+    public get closeDate (): Date | undefined {
+        return this._closeDate;
+    }
+
+    /** The order creation price. */
+    public get creationPrice (): number {
+        return this._creationPrice;
+    }
+
+    /** The order cancel price. */
+    public get cancelPrice (): number | undefined {
+        return this._cancelPrice;
+    }
+
+    /** The order open price. */
+    public get openPrice (): number | undefined {
+        return this._openPrice;
+    }
+
+    /** The order close price. */
+    public get closePrice (): number | undefined {
+        return this._closePrice;
+    }
+
+    public get tags (): string[] {
+        return [ ...this._tags, ];
+    }
+
     public get symbol (): string {
         return this._requestDirectives.symbol;
     }
@@ -79,10 +131,6 @@ export class MidaBrokerOrder {
 
     public get size (): number {
         return this._requestDirectives.size;
-    }
-
-    public get tags (): string[] {
-        return [ ...this._tags, ];
     }
 
     public get status (): MidaBrokerOrderStatusType {
@@ -167,19 +215,28 @@ export class MidaBrokerOrder {
         }
 
         switch (event.type) {
-            case "position-cancel": {
+            case "order-cancel": {
+                this._cancelDate = event.data.date;
+                this._cancelPrice = event.data.price;
+
                 this.notifyListeners("cancel", event.data);
 
                 break;
             }
 
-            case "position-open": {
+            case "order-open": {
+                this._openDate = event.data.date;
+                this._openPrice = event.data.price;
+
                 this.notifyListeners("open", event.data);
 
                 break;
             }
 
-            case "position-close": {
+            case "order-close": {
+                this._closeDate = event.data.date;
+                this._closePrice = event.data.close;
+
                 this.notifyListeners("close", event.data);
 
                 break;

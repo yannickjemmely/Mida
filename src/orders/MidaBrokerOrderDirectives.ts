@@ -1,6 +1,6 @@
 import { MidaBrokerOrderType } from "#orders/MidaBrokerOrderType";
 
-// Represents the creation directives of an order.
+/** The creation directives of an order. */
 export type MidaBrokerOrderDirectives = {
     symbol: string;
     type: MidaBrokerOrderType;
