@@ -81,6 +81,7 @@ export class PlaygroundBrokerAccount extends MidaBrokerAccount {
         return this._lastTicks[symbol];
     }
 
+    /*
     public async placeOrder (directives: MidaBrokerOrderDirectives): Promise<MidaBrokerOrder> {
         const symbol: string = directives.symbol;
         const lastTick: MidaSymbolTick = await this.getSymbolLastTick(symbol);
@@ -111,7 +112,7 @@ export class PlaygroundBrokerAccount extends MidaBrokerAccount {
         this._orders.set(order.ticket, order);
 
         return order;
-    }
+    }*/
 
     /**
      * Used to elapse a given amount of time.
