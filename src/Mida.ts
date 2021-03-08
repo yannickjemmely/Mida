@@ -14,6 +14,15 @@ export class Mida {
     }
 }
 
+// <orders>
+export { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
+export { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
+export { MidaBrokerOrderExecutionType } from "#orders/MidaBrokerOrderExecutionType";
+export { MidaBrokerOrderParameters } from "#orders/MidaBrokerOrderParameters";
+export { MidaBrokerOrderStatusType } from "#orders/MidaBrokerOrderStatusType";
+export { MidaBrokerOrderType } from "#orders/MidaBrokerOrderType";
+// </orders>
+
 // <periods>
 export { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
 export { MidaSymbolPeriodParameters} from "#periods/MidaSymbolPeriodParameters";

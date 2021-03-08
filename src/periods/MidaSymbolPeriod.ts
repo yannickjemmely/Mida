@@ -69,7 +69,7 @@ export class MidaSymbolPeriod implements IMidaEquatable {
         return this._volume;
     }
 
-    /** The period timeframe expressed in seconds. */
+    /** The period timeframe (expressed in seconds). */
     public get timeframe (): number {
         return this._timeframe;
     }
@@ -112,6 +112,11 @@ export class MidaSymbolPeriod implements IMidaEquatable {
     /** The period OHLC (open, high, low, close). */
     public get ohlc (): number[] {
         return [ this._open, this._high, this._low, this._close, ];
+    }
+
+    /** The period OHLCV (open, high, low, close, volume). */
+    public get ohlcv (): number[] {
+        return [ ...this.ohlc, this._volume, ];
     }
 
     /** Indicates if the period is bearish (negative body). */
