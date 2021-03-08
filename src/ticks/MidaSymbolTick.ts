@@ -11,7 +11,12 @@ export class MidaSymbolTick implements IMidaEquatable, IMidaCloneable {
     private readonly _previousTick?: MidaSymbolTick;
     private readonly _nextTick?: MidaSymbolTick;
 
-    public constructor ({ quotation, date, previousTick, nextTick, }: MidaSymbolTickParameters) {
+    public constructor ({
+        quotation,
+        date,
+        previousTick,
+        nextTick,
+    }: MidaSymbolTickParameters) {
         this._quotation = quotation;
         this._date = new Date(date || quotation.date);
         this._previousTick = previousTick;

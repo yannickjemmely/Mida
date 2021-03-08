@@ -1,5 +1,6 @@
 import { GenericObject } from "#utilities/GenericObject";
 
+/** Represents the module class. */
 export class Mida {
     private static readonly _PACKAGE: GenericObject = require("!/package.json");
 

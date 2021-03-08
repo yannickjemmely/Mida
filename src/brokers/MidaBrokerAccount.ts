@@ -12,6 +12,7 @@ import { MidaSymbol } from "#symbols/MidaSymbol";
 import { MidaSymbolType } from "#symbols/MidaSymbolType";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { MidaEmitter } from "#utilities/emitter/MidaEmitter";
+import { GenericObject } from "#utilities/GenericObject";
 
 /** Represents a broker account. */
 export abstract class MidaBrokerAccount {
@@ -29,52 +30,36 @@ export abstract class MidaBrokerAccount {
         this._emitter = new MidaEmitter();
     }
 
-    /**
-     * The account id.
-     */
+    /** The account id. */
     public get id (): string {
         return this._id;
     }
 
-    /**
-     * The account owner full name.
-     */
+    /** The account owner full name. */
     public get fullName (): string {
         return this._fullName;
     }
 
-    /**
-     * The account type.
-     */
+    /** The account type (demo or real). */
     public get type (): MidaBrokerAccountType {
         return this._type;
     }
 
-    /**
-     * The account broker.
-     */
+    /** The account broker. */
     public get broker (): MidaBroker {
         return this._broker;
     }
 
-    /**
-     * Used to get the ping between this client and the broker.
-     */
+    /** Used to get the ping between this client and the broker. */
     public abstract getPing (): Promise<number>;
 
-    /**
-     * Used to get the account balance.
-     */
+    /** Used to get the account balance. */
     public abstract getBalance (): Promise<number>;
 
-    /**
-     * Used to get the account equity.
-     */
+    /** Used to get the account equity. */
     public abstract getEquity (): Promise<number>;
 
-    /**
-     * Used to get the account margin.
-     */
+    /** Used to get the account margin. */
     public abstract getMargin (): Promise<number>;
 
     /**
@@ -124,9 +109,9 @@ export abstract class MidaBrokerAccount {
     /**
      * Used to place an order.
      * @param directives The order directives.
-     * @returns The placed order. If the order directives require a market order, then the Promise
-     * will resolve at order open (in open state), otherwise the Promise will resolve immediately
-     * after the order creation (in pending state).
+     * @returns The placed order. If the order has a market execution, then the Promise
+     * will resolve after order open (open state). If the order has a limit or
+     * stop execution, the Promise will resolve after order creation (pending state).
      */
     public abstract placeOrder (directives: MidaBrokerOrderDirectives): Promise<MidaBrokerOrder>;
 
@@ -233,7 +218,7 @@ export abstract class MidaBrokerAccount {
         return this._emitter.on(type, listener);
     }
 
-    protected notifyListeners (type: string, ...parameters: any[]): void {
-        this._emitter.notifyListeners(type, ...parameters);
+    protected notifyListeners (type: string, data?: GenericObject): void {
+        this._emitter.notifyListeners(type, data);
     }
 }

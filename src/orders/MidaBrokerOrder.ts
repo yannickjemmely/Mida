@@ -7,6 +7,7 @@ import { MidaBrokerOrderParameters } from "#orders/MidaBrokerOrderParameters";
 import { MidaBrokerOrderStatusType } from "#orders/MidaBrokerOrderStatusType";
 import { MidaBrokerOrderType } from "#orders/MidaBrokerOrderType";
 import { MidaEmitter } from "#utilities/emitter/MidaEmitter";
+import { GenericObject } from "#utilities/GenericObject";
 
 /** Represents an order. */
 export class MidaBrokerOrder {
@@ -31,13 +32,13 @@ export class MidaBrokerOrder {
         requestDirectives,
         requestDate,
         creationDate,
-        cancelDate = undefined,
-        openDate = undefined,
-        closeDate = undefined,
+        cancelDate,
+        openDate,
+        closeDate,
         creationPrice,
-        cancelPrice = undefined,
-        openPrice = undefined,
-        closePrice = undefined,
+        cancelPrice,
+        openPrice,
+        closePrice,
         tags = [],
     }: MidaBrokerOrderParameters) {
         this._ticket = ticket;
@@ -45,9 +46,9 @@ export class MidaBrokerOrder {
         this._requestDirectives = { ...requestDirectives, };
         this._requestDate = new Date(requestDate);
         this._creationDate = new Date(creationDate);
-        this._cancelDate = cancelDate;
-        this._openDate = openDate;
-        this._closeDate = closeDate;
+        this._cancelDate = cancelDate ? new Date(cancelDate) : undefined;
+        this._openDate = openDate ? new Date(openDate) : undefined;
+        this._closeDate = closeDate ? new Date(closeDate) : undefined;
         this._creationPrice = creationPrice;
         this._cancelPrice = cancelPrice;
         this._openPrice = openPrice;
@@ -83,19 +84,19 @@ export class MidaBrokerOrder {
         return new Date(this._creationDate);
     }
 
-    /** The order cancel date. */
+    /** The order cancel date, undefined if the order is not canceled. */
     public get cancelDate (): Date | undefined {
-        return this._cancelDate;
+        return this._cancelDate ? new Date(this._cancelDate) : undefined;
     }
 
-    /** The order open date. */
+    /** The order open date, undefined if the order is not open. */
     public get openDate (): Date | undefined {
-        return this._openDate;
+        return this._openDate ? new Date(this._openDate) : undefined;
     }
 
-    /** The order close date. */
+    /** The order close date, undefined if the order is not closed. */
     public get closeDate (): Date | undefined {
-        return this._closeDate;
+        return this._closeDate ? new Date(this._closeDate) : undefined;
     }
 
     /** The order creation price. */
@@ -103,17 +104,17 @@ export class MidaBrokerOrder {
         return this._creationPrice;
     }
 
-    /** The order cancel price. */
+    /** The order cancel price, undefined if the order is not canceled. */
     public get cancelPrice (): number | undefined {
         return this._cancelPrice;
     }
 
-    /** The order open price. */
+    /** The order open price, undefined if the order is not open. */
     public get openPrice (): number | undefined {
         return this._openPrice;
     }
 
-    /** The order close price. */
+    /** The order close price, undefined if the order is not closed. */
     public get closePrice (): number | undefined {
         return this._closePrice;
     }
@@ -218,8 +219,8 @@ export class MidaBrokerOrder {
         return this._emitter.on(type, listener);
     }
 
-    protected notifyListeners (type: string, ...parameters: any[]): void {
-        this._emitter.notifyListeners(type, ...parameters);
+    protected notifyListeners (type: string, data?: GenericObject): void {
+        this._emitter.notifyListeners(type, data);
     }
 
     private _onAccountEvent (event: MidaEvent): void {
