@@ -23,6 +23,12 @@ export { MidaBrokerOrderStatusType } from "#orders/MidaBrokerOrderStatusType";
 export { MidaBrokerOrderType } from "#orders/MidaBrokerOrderType";
 // </orders>
 
+// <events>
+export { MidaEvent } from "#events/MidaEvent";
+export { MidaEventListener } from "#events/MidaEventListener";
+export { MidaEventParameters } from "#events/MidaEventParameters";
+// </events>
+
 // <periods>
 export { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
 export { MidaSymbolPeriodParameters} from "#periods/MidaSymbolPeriodParameters";

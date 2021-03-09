@@ -1,53 +1,31 @@
 import { MidaAdvisorParameters } from "#advisors/MidaAdvisorParameters";
-import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
-import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
+import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
+import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
+import { MidaEmitter } from "#utilities/emitter/MidaEmitter";
 
 export abstract class MidaAdvisor {
-    // Represents the advisor options.
-    private readonly _options: MidaAdvisorParameters;
-
-    // Represents the broker account used to operate.
     private readonly _brokerAccount: MidaBrokerAccount;
-
-    // Represents the operated symbol.
     private readonly _symbol: string;
-
-    // Represents the created orders.
-    private readonly _positions: Map<number, MidaBrokerOrder>;
-
-    // Indicates if the advisor is operative.
-    private _operative: boolean;
-
-    // Represents the captured ticks of the operated asset pair.
+    private _isOperative: boolean;
+    private readonly _orders: Map<number, MidaBrokerOrder>;
     private readonly _capturedTicks: MidaSymbolTick[];
-
-    // Represents the async tick.
-    private _asyncTickPromise: Promise<void> | undefined;
-
-    // Represents the queue of the async captured ticks.
     private readonly _asyncTicks: MidaSymbolTick[];
+    private _asyncTickPromise: Promise<void> | undefined;
+    private readonly _emitter: MidaEmitter;
 
-    protected constructor (options: MidaAdvisorParameters) {
-        this._options = options;
-        this._brokerAccount = options.brokerAccount;
-        this._symbol = options.symbol;
-        this._positions = new Map();
-        this._operative = false;
+    protected constructor ({ brokerAccount, symbol, }: MidaAdvisorParameters) {
+        this._brokerAccount = brokerAccount;
+        this._symbol = symbol;
+        this._orders = new Map();
+        this._isOperative = false;
         this._capturedTicks = [];
-        this._asyncTickPromise = undefined;
         this._asyncTicks = [];
+        this._asyncTickPromise = undefined;
+        this._emitter = new MidaEmitter();
 
-        this._construct();
-
-        if (options.operative) {
-            this.start();
-        }
-    }
-
-    public get options (): MidaAdvisorParameters {
-        return this._options;
+        this._constructListeners();
     }
 
     public get brokerAccount (): MidaBrokerAccount {
@@ -58,32 +36,32 @@ export abstract class MidaAdvisor {
         return this._symbol;
     }
 
-    public get operative (): boolean {
-        return this._operative;
+    public get isOperative (): boolean {
+        return this._isOperative;
     }
 
-    public get positions (): readonly MidaBrokerOrder[] {
-        return [ ...this._positions.values(), ];
+    public get orders (): MidaBrokerOrder[] {
+        return [ ...this._orders.values(), ];
     }
 
     protected get capturedTicks (): readonly MidaSymbolTick[] {
         return this._capturedTicks;
     }
 
-    public async start (): Promise<void> {
-        if (this._operative) {
+    public start (): void {
+        if (this._isOperative) {
             return;
         }
 
-        this._operative = true;
+        this._isOperative = true;
     }
 
     public stop (): void {
-        if (!this._operative) {
+        if (!this._isOperative) {
             return;
         }
 
-        this._operative = false;
+        this._isOperative = false;
     }
 
     protected abstract onTick (tick: MidaSymbolTick): void;
@@ -93,17 +71,17 @@ export abstract class MidaAdvisor {
     protected async placeOrder (directives: MidaBrokerOrderDirectives): Promise<MidaBrokerOrder> {
         const order: MidaBrokerOrder = await this._brokerAccount.placeOrder(directives);
 
-        this._positions.set(order.ticket, order);
+        this._orders.set(order.ticket, order);
 
         return order;
     }
 
-    private _construct (): void {
-        
+    private _constructListeners (): void {
+
     }
 
     private _onTick (tick: MidaSymbolTick): void {
-        if (!this._operative) {
+        if (!this._isOperative) {
             return;
         }
 
