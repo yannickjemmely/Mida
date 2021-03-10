@@ -2,15 +2,16 @@ import { MidaBroker } from "#brokers/MidaBroker";
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 import { MidaBrowser } from "#utilities/browser/MidaBrowser";
 import { MidaBrowserTab } from "#utilities/browser/MidaBrowserTab";
+import { MetaTraderBrokerParameters } from "!/plugins/meta-trader/MetaTraderBrokerParameters";
 
 export class MetaTraderBroker extends MidaBroker {
     private static readonly _WEB_META_TRADER_URI: string = "https://trade.mql5.com/trade";
 
     private readonly _browser: MidaBrowser;
 
-    public constructor (name: string) {
+    public constructor ({ serverName, }: MetaTraderBrokerParameters) {
         super({
-            name,
+            name: serverName,
             websiteUri: "",
         });
 
