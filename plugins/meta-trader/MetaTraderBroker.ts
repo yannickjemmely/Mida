@@ -29,6 +29,17 @@ export class MetaTraderBroker extends MidaBroker {
             throw new Error();
         }
 
+        const loggedPage: MidaBrowserTab = await this._createLoggedPage();
+        const sessionDescriptor: any = await loggedPage.evaluate(`
+            const descriptor = window.B.Oa.Xa.I;
+            
+            return {
+                brokerName: descriptor.LI,
+                currency: descriptor.Of,
+                fullName: descriptor.Pg,
+            };
+        `);
+
         throw new Error();
     }
 
@@ -53,7 +64,7 @@ export class MetaTraderBroker extends MidaBroker {
             await page.type(serverBoxSelector, "ICMarketsEU-Live");
         }
         catch (error) {
-            // Silence is golden.
+            console.log(error);
         }
 
         return page;
