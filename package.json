@@ -1,7 +1,7 @@
 {
     "name": "mida",
     "version": "1.0.0",
-    "description": "A TypeScript framework to easily operate in financial markets.",
+    "description": "A JavaScript/TypeScript framework to easily operate in financial markets.",
     "scripts": {
         "lint": "tslint --project .",
         "build": "npm run lint && tsc",

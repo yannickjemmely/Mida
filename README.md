@@ -19,16 +19,15 @@ Operating in CFDs/Forex is highly speculative and carries a high level of risk.
 It's possible to lose all your capital. These products may not be suitable for everyone,
 you should ensure that you understand the risks involved. Furthermore, Mida is not responsible
 for: commissions or other taxes applied to your operations, they depend on your broker;
-any technical inconvenience that may lead to money loss (for example a stop loss not being set).
+and any technical inconvenience that may lead to money loss, for example a stop loss not being set.
 
 ## Usage
 Below some introductory usage examples, for the complete documentation, please
 refer to the [API documentation](https://github.com/).
-
-### Broker account login
 Operating is possible with any broker supporting Web MetaTrader 4/5 and
 any broker directly integrated in Mida.
 
+### Broker account login
 How to login into a MetaTrader 4 account.
 ```typescript
 const myAccount = await MidaBroker.login("MT4", {
