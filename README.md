@@ -24,8 +24,8 @@ and any technical inconvenience that may lead to money loss, for example a stop 
 ## Usage
 Below some introductory usage examples, for the complete documentation, please
 refer to the [API documentation](https://github.com/).
-Operating is possible with: any broker supporting Web MetaTrader 4/5,
-any broker directly integrated in Mida.
+Operating is possible with any broker supporting Web MetaTrader 4/5,
+and any broker directly integrated in Mida.
 
 ### Broker account login
 How to login into a MetaTrader 4 account.
