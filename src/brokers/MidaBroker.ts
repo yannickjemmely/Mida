@@ -5,12 +5,10 @@ import { MidaBrokerParameters } from "#brokers/MidaBrokerParameters";
 export abstract class MidaBroker {
     private readonly _name: string;
     private readonly _websiteUri: string;
-    private readonly _certifications: string[];
 
     protected constructor ({ name, websiteUri, }: MidaBrokerParameters) {
         this._name = name;
         this._websiteUri = websiteUri;
-        this._certifications = [];
     }
 
     /** The broker name. */
@@ -21,11 +19,6 @@ export abstract class MidaBroker {
     /** The broker website address. */
     public get websiteUri (): string {
         return this._websiteUri;
-    }
-
-    /** The broker certifications. */
-    public get certifications (): string[]{
-        return [ ...this._certifications, ];
     }
 
     /**

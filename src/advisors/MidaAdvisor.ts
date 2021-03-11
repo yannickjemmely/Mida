@@ -7,7 +7,6 @@ import { MidaEmitter } from "#utilities/emitter/MidaEmitter";
 
 export abstract class MidaAdvisor {
     private readonly _brokerAccount: MidaBrokerAccount;
-    private readonly _symbol: string;
     private _isOperative: boolean;
     private readonly _orders: Map<number, MidaBrokerOrder>;
     private readonly _capturedTicks: MidaSymbolTick[];
@@ -15,9 +14,8 @@ export abstract class MidaAdvisor {
     private _asyncTickPromise: Promise<void> | undefined;
     private readonly _emitter: MidaEmitter;
 
-    protected constructor ({ brokerAccount, symbol, }: MidaAdvisorParameters) {
+    protected constructor ({ brokerAccount, }: MidaAdvisorParameters) {
         this._brokerAccount = brokerAccount;
-        this._symbol = symbol;
         this._orders = new Map();
         this._isOperative = false;
         this._capturedTicks = [];
@@ -30,10 +28,6 @@ export abstract class MidaAdvisor {
 
     public get brokerAccount (): MidaBrokerAccount {
         return this._brokerAccount;
-    }
-
-    public get symbol (): string {
-        return this._symbol;
     }
 
     public get isOperative (): boolean {

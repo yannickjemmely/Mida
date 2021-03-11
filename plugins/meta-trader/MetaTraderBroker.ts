@@ -3,6 +3,7 @@ import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 import { MidaBrowser } from "#utilities/browser/MidaBrowser";
 import { MidaBrowserTab } from "#utilities/browser/MidaBrowserTab";
 import { MetaTraderBrokerParameters } from "!/plugins/meta-trader/MetaTraderBrokerParameters";
+import { MetaTraderBrokerAccount } from "!/plugins/meta-trader/MetaTraderBrokerAccount";
 
 export class MetaTraderBroker extends MidaBroker {
     private static readonly _WEB_META_TRADER_URI: string = "https://trade.mql5.com/trade";
@@ -11,7 +12,7 @@ export class MetaTraderBroker extends MidaBroker {
 
     public constructor ({ serverName, }: MetaTraderBrokerParameters) {
         super({
-            name: serverName,
+            name: "MetaTrader",
             websiteUri: "",
         });
 
@@ -69,5 +70,9 @@ export class MetaTraderBroker extends MidaBroker {
         }
 
         return page;
+    }
+
+    public static async login (): Promise<MetaTraderBrokerAccount> {
+        throw new Error();
     }
 }

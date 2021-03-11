@@ -17,14 +17,14 @@ import { GenericObject } from "#utilities/GenericObject";
 /** Represents a broker account. */
 export abstract class MidaBrokerAccount {
     private readonly _id: string;
-    private readonly _fullName: string;
+    private readonly _ownerName: string;
     private readonly _type: MidaBrokerAccountType;
     private readonly _broker: MidaBroker;
     private readonly _emitter: MidaEmitter;
 
     protected constructor ({ id, fullName, type, broker, }: MidaBrokerAccountParameters) {
         this._id = id;
-        this._fullName = fullName;
+        this._ownerName = fullName;
         this._type = type;
         this._broker = broker;
         this._emitter = new MidaEmitter();
@@ -36,8 +36,8 @@ export abstract class MidaBrokerAccount {
     }
 
     /** The account owner full name. */
-    public get fullName (): string {
-        return this._fullName;
+    public get ownerName (): string {
+        return this._ownerName;
     }
 
     /** The account type (demo or real). */
@@ -165,22 +165,13 @@ export abstract class MidaBrokerAccount {
     public abstract getCurrency (): Promise<string>;
 
     /**
-     * Used to get the candlesticks (referred as periods) of a symbol.
+     * Used to get the most recent periods of a symbol.
      * @param symbol The string representation of the symbol.
      * @param timeframe The periods timeframe.
-     * @param from Time range start.
-     * @param to Time range end.
      * @param priceType The periods price type.
-     * @returns The periods. If no time range is provided, the broker will return the most
-     * recent periods (with a limit chosen by the broker).
+     * @returns The periods, length is decided by the broker.
      */
-    public abstract getSymbolPeriods (
-        symbol: string,
-        timeframe: MidaSymbolPeriodTimeframeType | number,
-        from?: Date,
-        to?: Date,
-        priceType?: MidaSymbolQuotationPriceType
-    ): Promise<MidaSymbolPeriod[]>;
+    public abstract getSymbolPeriods (symbol: string, timeframe: number, priceType?: MidaSymbolQuotationPriceType): Promise<MidaSymbolPeriod[]>;
 
     /**
      * Used to get the last tick of a symbol.

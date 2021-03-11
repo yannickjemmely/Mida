@@ -1,17 +1,17 @@
 import { MidaSymbolQuotationParameters } from "#quotations/MidaSymbolQuotationParameters";
 import { MidaSymbolQuotationPriceType } from "#quotations/MidaSymbolQuotationPriceType";
-import { IMidaEquatable } from "#utilities/equatable/IMidaEquatable";
 import { IMidaCloneable } from "#utilities/cloneable/IMidaCloneable";
+import { IMidaEquatable } from "#utilities/equatable/IMidaEquatable";
 
 /** Represents a symbol quotation. */
-export class MidaSymbolQuotation implements IMidaEquatable, IMidaCloneable {
+export class MidaSymbolQuotation implements IMidaCloneable, IMidaEquatable {
     private readonly _symbol: string;
     private readonly _date: Date;
     private readonly _bid: number;
     private readonly _ask: number;
-    private readonly _exchangeName: string;
+    private readonly _exchangeName: string | undefined;
 
-    public constructor ({ symbol, date, bid, ask, exchangeName = "", }: MidaSymbolQuotationParameters) {
+    public constructor ({ symbol, date, bid, ask, exchangeName, }: MidaSymbolQuotationParameters) {
         this._symbol = symbol;
         this._date = new Date(date);
         this._bid = bid;
@@ -40,7 +40,7 @@ export class MidaSymbolQuotation implements IMidaEquatable, IMidaCloneable {
     }
 
     /** The quotation exchange name. */
-    public get exchangeName (): string {
+    public get exchangeName (): string | undefined {
         return this._exchangeName;
     }
 
@@ -54,14 +54,6 @@ export class MidaSymbolQuotation implements IMidaEquatable, IMidaCloneable {
         return this._ask - this._bid;
     }
 
-    public equals (object: any): boolean {
-        return (
-            object instanceof MidaSymbolQuotation
-            && this._symbol === object._symbol
-            && this._date.valueOf() === object._date.valueOf()
-        );
-    }
-
     /** Used to get a clone of the quotation. */
     public clone (): any {
         return new MidaSymbolQuotation({
@@ -71,6 +63,14 @@ export class MidaSymbolQuotation implements IMidaEquatable, IMidaCloneable {
             ask: this._ask,
             exchangeName: this._exchangeName,
         });
+    }
+
+    public equals (object: any): boolean {
+        return (
+            object instanceof MidaSymbolQuotation
+            && this._symbol === object._symbol
+            && this._date.valueOf() === object._date.valueOf()
+        );
     }
 
     /*

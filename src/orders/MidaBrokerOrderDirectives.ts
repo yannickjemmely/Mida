@@ -4,7 +4,7 @@ import { MidaBrokerOrderType } from "#orders/MidaBrokerOrderType";
 export type MidaBrokerOrderDirectives = {
     symbol: string;
     type: MidaBrokerOrderType;
-    size: number;
+    volume: number;
     stopLoss?: number;
     takeProfit?: number;
     limit?: number;

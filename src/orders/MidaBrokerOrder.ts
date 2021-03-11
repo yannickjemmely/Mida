@@ -9,7 +9,7 @@ import { MidaBrokerOrderType } from "#orders/MidaBrokerOrderType";
 import { MidaEmitter } from "#utilities/emitter/MidaEmitter";
 import { GenericObject } from "#utilities/GenericObject";
 
-/** Represents an order. */
+/** Represents a broker order. */
 export class MidaBrokerOrder {
     private readonly _ticket: number;
     private readonly _brokerAccount: MidaBrokerAccount;
@@ -131,8 +131,8 @@ export class MidaBrokerOrder {
         return this._requestDirectives.type;
     }
 
-    public get size (): number {
-        return this._requestDirectives.size;
+    public get volume (): number {
+        return this._requestDirectives.volume;
     }
 
     public get status (): MidaBrokerOrderStatusType {
@@ -206,7 +206,7 @@ export class MidaBrokerOrder {
             return;
         }
 
-        return this._openPrice * this.size / (await this.getLeverage());
+        return this._openPrice * this.volume / (await this.getLeverage());
     }
 
     /*
@@ -219,7 +219,7 @@ export class MidaBrokerOrder {
         return this._emitter.on(type, listener);
     }
 
-    protected notifyListeners (type: string, data?: GenericObject): void {
+    private _notifyListeners (type: string, data?: GenericObject): void {
         this._emitter.notifyListeners(type, data);
     }
 
@@ -233,7 +233,7 @@ export class MidaBrokerOrder {
                 this._cancelDate = event.data.date;
                 this._cancelPrice = event.data.price;
 
-                this.notifyListeners("cancel", event.data);
+                this._notifyListeners("cancel", event.data);
 
                 break;
             }
@@ -242,7 +242,7 @@ export class MidaBrokerOrder {
                 this._openDate = event.data.date;
                 this._openPrice = event.data.price;
 
-                this.notifyListeners("open", event.data);
+                this._notifyListeners("open", event.data);
 
                 break;
             }
@@ -251,7 +251,7 @@ export class MidaBrokerOrder {
                 this._closeDate = event.data.date;
                 this._closePrice = event.data.close;
 
-                this.notifyListeners("close", event.data);
+                this._notifyListeners("close", event.data);
 
                 break;
             }

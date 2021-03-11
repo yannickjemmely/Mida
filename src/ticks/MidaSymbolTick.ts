@@ -59,7 +59,7 @@ export class MidaSymbolTick implements IMidaEquatable, IMidaCloneable {
     }
 
     /** The tick exchange name. */
-    public get exchangeName (): string {
+    public get exchangeName (): string | undefined {
         return this._quotation.exchangeName;
     }
 
