@@ -56,7 +56,7 @@ export class MidaBrokerOrder {
         this._tags = new Set(tags);
         this._emitter = new MidaEmitter();
 
-        this._brokerAccount.on("*", (event: MidaEvent) => this._onAccountEvent(event));
+        this._addListeners();
     }
 
     /** The order ticket. */
@@ -181,7 +181,7 @@ export class MidaBrokerOrder {
         await this._brokerAccount.closeOrder(this._ticket);
     }
 
-    public async getLeverage (): Promise<number> {
+    public async getLeverage (): Promise<number>  {
         return NaN;
     }
 
@@ -209,6 +209,14 @@ export class MidaBrokerOrder {
         return this._openPrice * this.volume / (await this.getLeverage());
     }
 
+    public async getSwaps (): Promise<number> {
+        return this._brokerAccount.getOrderSwaps(this._ticket);
+    }
+
+    public async getCommission (): Promise<number> {
+        return this._brokerAccount.getOrderCommission(this._ticket);
+    }
+
     /*
     public async getStopLoss (): Promise<number | undefined> {
         return this._brokerAccount.getOrderStopLoss(this._ticket);
@@ -223,11 +231,15 @@ export class MidaBrokerOrder {
         this._emitter.notifyListeners(type, data);
     }
 
-    private _onAccountEvent (event: MidaEvent): void {
-        if (!event.data || !event.data.ticket || event.data.ticket !== this._ticket) {
-            return;
-        }
+    private _addListeners (): void {
+        this._brokerAccount.on("*", (event: MidaEvent) => {
+            if (event.data && event.data.ticket && event.data.ticket === this._ticket) {
+                this._onEvent(event);
+            }
+        });
+    }
 
+    private _onEvent (event: MidaEvent): void {
         switch (event.type) {
             case "order-cancel": {
                 this._cancelDate = event.data.date;

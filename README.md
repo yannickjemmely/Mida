@@ -22,7 +22,7 @@ for: commissions or other taxes applied to your operations, they depend on your 
 and any technical inconvenience that may lead to money loss, for example a stop loss not being set.
 
 ## Usage
-Below some introductory usage examples, for the complete documentation, please
+Below some introductory usage examples, for the complete documentation please
 refer to the [API documentation](https://github.com/).
 Operating is possible with any broker supporting Web MetaTrader 4/5,
 and any broker directly integrated in Mida.
