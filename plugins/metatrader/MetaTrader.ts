@@ -45,7 +45,7 @@ export class MetaTrader {
 
             await page.goto(MetaTrader._WEB_META_TRADER_URI);
 
-            hasInterfaceChanged = await MetaTrader._hasLoggedPageApiChanged(page);
+            hasInterfaceChanged = await MetaTrader._hasLoggedPageInterfaceChanged(page);
         }
         catch (error) {
             throw new Error();
