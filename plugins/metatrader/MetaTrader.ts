@@ -3,9 +3,12 @@ import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 import { MidaBrowser } from "#utilities/browser/MidaBrowser";
 import { MidaBrowserTab } from "#utilities/browser/MidaBrowserTab";
 import { MetaTraderBrokerLoginParameters } from "!plugins/metatrader/MetaTraderBrokerLoginParameters";
+import { MetaTraderBrokerAccount } from "!plugins/metatrader/MetaTraderBrokerAccount";
+import { MetaTraderBroker } from "!plugins/metatrader/MetaTraderBroker";
 
 export class MetaTrader {
     private static readonly _WEB_META_TRADER_URI: string = "https://trade.mql5.com/trade";
+    private static readonly _loggedBrokers: Map<string, MetaTraderBroker> = new Map();
 
     private constructor () {
         // Silence is golden.
@@ -16,10 +19,9 @@ export class MetaTrader {
 
         await browser.open();
 
-        const loggedPage: MidaBrowserTab = await MetaTrader._createLoggedPage(browser);
+        const loggedPage: MidaBrowserTab = await MetaTrader._createLoggedPage(browser, id, password, serverName);
 
-
-        const sessionDescriptor: any = await loggedPage.evaluate(`
+        const accountDescriptor: any = await loggedPage.evaluate(`
             const descriptor = window.B.Oa.Xa.I;
             
             return {
@@ -29,10 +31,19 @@ export class MetaTrader {
             };
         `);
 
+        if (!MetaTrader._loggedBrokers.has(accountDescriptor.brokerName)) {
+            // MetaTrader._loggedBrokers.set(accountDescriptor.brokerName, );
+        }
+
+        /*
+        return new MetaTraderBrokerAccount({
+            id,
+        });*/
+
         throw new Error();
     }
 
-    private static async _createLoggedPage (browser: MidaBrowser): Promise<any> {
+    private static async _createLoggedPage (browser: MidaBrowser, id: string, password: string, serverName: string): Promise<MidaBrowserTab> {
         const loginButtonSelector: string = ".menu .box span div:nth-child(8)";
         const idBoxSelector: string = "#login";
         const passwordBoxSelector: string = "#password";
@@ -60,9 +71,9 @@ export class MetaTrader {
             await page.click(loginButtonSelector);
             await page.click(loginButtonSelector);
 
-            await page.type(idBoxSelector, "12345678");
-            await page.type(passwordBoxSelector, "12345678");
-            await page.type(serverBoxSelector, "ICMarketsEU-Live");
+            await page.type(idBoxSelector, id);
+            await page.type(passwordBoxSelector, password);
+            await page.type(serverBoxSelector, serverName);
         }
         catch (error) {
             throw new Error();
