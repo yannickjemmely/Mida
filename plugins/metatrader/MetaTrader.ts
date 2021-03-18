@@ -8,39 +8,26 @@ import { MetaTraderBroker } from "!plugins/metatrader/MetaTraderBroker";
 
 export class MetaTrader {
     private static readonly _WEB_META_TRADER_URI: string = "https://trade.mql5.com/trade";
-    private static readonly _loggedBrokers: Map<string, MetaTraderBroker> = new Map();
 
     private constructor () {
         // Silence is golden.
     }
 
-    public static async login ({ id, password, serverName, }: MetaTraderBrokerLoginParameters): Promise<MidaBrokerAccount> {
+    public static async login ({ id, password, serverName, version = 4, }: MetaTraderBrokerLoginParameters): Promise<any> {
         const browser: MidaBrowser = new MidaBrowser();
 
         await browser.open();
 
         const loggedPage: MidaBrowserTab = await MetaTrader._createLoggedPage(browser, id, password, serverName);
 
-        const accountDescriptor: any = await loggedPage.evaluate(`
-            const descriptor = window.B.Oa.Xa.I;
-            
-            return {
-                brokerName: descriptor.LI,
-                currency: descriptor.Of,
-                ownerName: descriptor.Pg,
-            };
-        `);
 
-        if (!MetaTrader._loggedBrokers.has(accountDescriptor.brokerName)) {
-            // MetaTrader._loggedBrokers.set(accountDescriptor.brokerName, );
-        }
 
         /*
         return new MetaTraderBrokerAccount({
             id,
         });*/
 
-        throw new Error();
+        //throw new Error();
     }
 
     private static async _createLoggedPage (browser: MidaBrowser, id: string, password: string, serverName: string): Promise<MidaBrowserTab> {
@@ -49,28 +36,25 @@ export class MetaTrader {
         const passwordBoxSelector: string = "#password";
         const serverBoxSelector: string = "#server";
         let page: any;
-        let hasInterfaceChanged: boolean;
 
         try {
             page = await browser.openTab();
 
             await page.goto(MetaTrader._WEB_META_TRADER_URI);
-
-            hasInterfaceChanged = await MetaTrader._hasLoggedPageInterfaceChanged(page);
         }
         catch (error) {
             throw new Error();
         }
-
-        if (hasInterfaceChanged) {
+/*
+        if ((await MetaTrader._hasLoggedPageInterfaceChanged(page))) {
             throw new Error("Web MetaTrader API has changed.");
-        }
+        }*/
 
         try {
-            await page.click(loginButtonSelector);
-            await page.click(loginButtonSelector);
-            await page.click(loginButtonSelector);
+            await page.waitForSelector(loginButtonSelector);
+            await page.click(loginButtonSelector, 4);
 
+            await page.waitForSelector(`${idBoxSelector}, ${passwordBoxSelector}, ${serverBoxSelector}`);
             await page.type(idBoxSelector, id);
             await page.type(passwordBoxSelector, password);
             await page.type(serverBoxSelector, serverName);
@@ -82,9 +66,9 @@ export class MetaTrader {
         return page;
     }
 
-    private static async _hasLoggedPageInterfaceChanged (page: MidaBrowserTab): Promise<boolean> {
+    private static async _hasLoggedPageInterfaceChanged (loggedPage: MidaBrowserTab): Promise<boolean> {
         try {
-            return page.evaluate(`((w) => {
+            return loggedPage.evaluate(`((w) => {
                 return !(
                     window.B
                     && window.B.Oa

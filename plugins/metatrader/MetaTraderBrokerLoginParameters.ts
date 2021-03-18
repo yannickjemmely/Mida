@@ -1,5 +1,6 @@
 export type MetaTraderBrokerLoginParameters = {
     id: string;
     password: string;
-    serverName: string,
+    serverName: string;
+    version?: number;
 };

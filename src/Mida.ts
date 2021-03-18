@@ -1,6 +1,8 @@
+require("../../aliases.config");
+
 import { GenericObject } from "#utilities/GenericObject";
 
-/** Represents the module class. */
+/** Represents the module class. *//*
 export class Mida {
     private static readonly _PACKAGE: GenericObject = require("!/package.json");
 
@@ -8,11 +10,11 @@ export class Mida {
         // Silence is golden.
     }
 
-    /** The module version. */
+    /** The module version. *//*
     public static get version (): string {
         return Mida._PACKAGE.version;
     }
-}
+}*/
 
 // <orders>
 export { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
@@ -34,3 +36,13 @@ export { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
 export { MidaSymbolPeriodParameters} from "#periods/MidaSymbolPeriodParameters";
 export { MidaSymbolPeriodTimeframeType } from "#periods/MidaSymbolPeriodTimeframeType";
 // </periods>
+
+import { MetaTrader } from "!plugins/metatrader/MetaTrader";
+
+(async (): Promise<void> => {
+    await MetaTrader.login({
+        id: "123456789",
+        password: "pulcinopio",
+        serverName: "serverPulcino",
+    });
+})();

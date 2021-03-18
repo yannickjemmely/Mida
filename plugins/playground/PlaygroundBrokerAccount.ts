@@ -11,20 +11,18 @@ export class PlaygroundBrokerAccount extends MidaBrokerAccount {
     private readonly _localDate: Date;
     private readonly _ticks: { [symbol: string]: MidaSymbolTick[]; };
     private readonly _lastTicks: { [symbol: string]: MidaSymbolTick; };
-    private readonly _currency: string;
 
     private _balance: number;
     private _tickets: number;
 
     private readonly _orders: Map<number, MidaBrokerOrder>;
 
-    public constructor ({ id, fullName, type, broker, currency, ordersHistory = [], }: PlaygroundBrokerAccountParameters) {
-        super({ id, fullName, type, broker, });
+    public constructor ({ id, ownerName, type, broker, currency, ordersHistory = [], }: PlaygroundBrokerAccountParameters) {
+        super({ id, ownerName, type, currency, broker, });
 
         this._localDate = new Date(0);
         this._ticks = {};
         this._lastTicks = {};
-        this._currency = currency;
         this._balance = 0;
         this._tickets = 0;
         this._orders = new Map();
@@ -36,10 +34,6 @@ export class PlaygroundBrokerAccount extends MidaBrokerAccount {
 
     public async getPing (): Promise<number> {
         return 0; // I wish it was 0...
-    }
-
-    public async getCurrency (): Promise<string> {
-        return this._currency;
     }
 
     public async getBalance (): Promise<number> {

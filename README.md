@@ -3,7 +3,7 @@
 </p>
 <br>
 
-A JavaScript/TypeScript framework to easily operate in financial markets.
+A JavaScript framework to easily operate in financial markets.
 
 Mida is designed to:
 - Trade financial assets such as stocks, forex, crypto or commodities;

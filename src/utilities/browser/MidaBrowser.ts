@@ -34,7 +34,7 @@ export class MidaBrowser {
             ];
 
             this._puppeteerBrowser = await Puppeteer.launch({
-                headless: true,
+                headless: false,
                 devtools: false,
                 ignoreHTTPSErrors: true,
                 args: browserArguments,

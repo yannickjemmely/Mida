@@ -19,13 +19,15 @@ export abstract class MidaBrokerAccount {
     private readonly _id: string;
     private readonly _ownerName: string;
     private readonly _type: MidaBrokerAccountType;
+    private readonly _currency: string;
     private readonly _broker: MidaBroker;
     private readonly _emitter: MidaEmitter;
 
-    protected constructor ({ id, fullName, type, broker, }: MidaBrokerAccountParameters) {
+    protected constructor ({ id, ownerName, type, currency, broker, }: MidaBrokerAccountParameters) {
         this._id = id;
-        this._ownerName = fullName;
+        this._ownerName = ownerName;
         this._type = type;
+        this._currency = currency;
         this._broker = broker;
         this._emitter = new MidaEmitter();
     }
@@ -35,7 +37,7 @@ export abstract class MidaBrokerAccount {
         return this._id;
     }
 
-    /** The account owner full name. */
+    /** The account owner name. */
     public get ownerName (): string {
         return this._ownerName;
     }
@@ -43,6 +45,11 @@ export abstract class MidaBrokerAccount {
     /** The account type (demo or real). */
     public get type (): MidaBrokerAccountType {
         return this._type;
+    }
+
+    /** The account currency. */
+    public get currency (): string {
+        return this._currency;
     }
 
     /** The account broker. */
@@ -157,12 +164,6 @@ export abstract class MidaBrokerAccount {
      * @param symbol The string representation of the symbol.
      */
     public abstract isSymbolMarketOpen (symbol: string): Promise<boolean>;
-
-    /**
-     * Used to get the account currency.
-     * @returns The currency ISO code.
-     */
-    public abstract getCurrency (): Promise<string>;
 
     /**
      * Used to get the most recent periods of a symbol.

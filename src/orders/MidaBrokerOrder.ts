@@ -56,7 +56,7 @@ export class MidaBrokerOrder {
         this._tags = new Set(tags);
         this._emitter = new MidaEmitter();
 
-        this._addListeners();
+        this._configureListeners();
     }
 
     /** The order ticket. */
@@ -231,7 +231,7 @@ export class MidaBrokerOrder {
         this._emitter.notifyListeners(type, data);
     }
 
-    private _addListeners (): void {
+    private _configureListeners (): void {
         this._brokerAccount.on("*", (event: MidaEvent) => {
             if (event.data && event.data.ticket && event.data.ticket === this._ticket) {
                 this._onEvent(event);
