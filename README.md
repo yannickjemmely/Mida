@@ -7,13 +7,11 @@ A JavaScript framework to easily operate in financial markets.
 
 Mida is designed to:
 - Trade financial assets such as stocks, forex, crypto or commodities;
-- Operate with any web MetaTrader 4/5 account using only Node.js;
+- Operate with any MetaTrader account using only JavaScript/TypeScript;
 - Automate trading strategies through expert advisors and indicators;
 - Analyze markets and prices through indicators and analysis tools.
 
 Furthermore, Mida is free and open source.
-Every week there is a live stream on [Twitch](https://www.twitch.tv/vasile_peste) on how to trade and
-create an expert advisor with Mida. The next live stream is scheduled for June 20th.
 
 ## Disclaimer
 Operating in CFDs/Forex is highly speculative and carries a high level of risk.
@@ -23,7 +21,7 @@ for: commissions or other taxes applied to your operations, they depend on your 
 and any technical inconvenience that may lead to money loss, for example a stop loss not being set.
 
 ## Usage
-For the complete documentation please refer to the [API documentation](https://github.com/).
+For the complete documentation please refer to the [API documentation](https://github.com/).<br>
 Operating is possible with any broker supporting web MetaTrader 4/5,
 and any broker directly integrated in Mida.
 
