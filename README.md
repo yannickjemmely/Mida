@@ -6,8 +6,8 @@
 A JavaScript framework to easily operate in financial markets.
 
 Mida is designed to:
-- Trade financial assets such as stocks, forex, crypto or commodities;
-- Operate with any MetaTrader account using only JavaScript/TypeScript;
+- Trade financial assets such as stocks, crypto, forex or commodities;
+- Operate with any MetaTrader broker account using only JavaScript/TypeScript;
 - Automate trading strategies through expert advisors and indicators;
 - Analyze markets and prices through indicators and analysis tools.
 
