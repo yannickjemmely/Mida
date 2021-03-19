@@ -22,8 +22,7 @@ and any technical inconvenience that may lead to money loss, for example a stop 
 
 ## Usage
 For the complete documentation please refer to the [API documentation](https://github.com/).<br>
-Operating is possible with any broker supporting web MetaTrader 4/5,
-and any broker directly integrated in Mida.
+Operating is possible with any MetaTrader 4/5 broker account.
 
 ### Broker account login
 How to login into a MetaTrader 4 account.
@@ -110,4 +109,4 @@ specific computer requirements. Furthermore, Mida allows operating with MetaTrad
 accounts without installing MetaTrader (which is available only for Windows) or using a VPS.
 
 ## Contributors
-The author and maintainer of the project is [Vasile Pește](https://github.com/Vasile-Peste).
+The author and maintainer of the project is [Vasile Pește](https://github.com/Vasile-Peste) (vasile.peste@protonmail.ch).
