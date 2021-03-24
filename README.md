@@ -13,6 +13,8 @@ Mida is designed to:
 
 Furthermore, Mida is free and open source.
 
+**NOTE: This is a work in progress project: all statements are work in progress.**
+
 ## Disclaimer
 Operating in CFDs/Forex is highly speculative and carries a high level of risk.
 It's possible to lose all your capital. These products may not be suitable for everyone,

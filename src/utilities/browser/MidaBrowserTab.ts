@@ -31,6 +31,10 @@ export class MidaBrowserTab {
         };
     }
 
+    public async exposeCallable (name: string, callable: (...parameters: any) => any): Promise<void> {
+        return this._puppeteerPage.exposeFunction(name, callable);
+    }
+
     public async evaluate (text: string): Promise<any> {
         return this._puppeteerPage.evaluate(text);
     }

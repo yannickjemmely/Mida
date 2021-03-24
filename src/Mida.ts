@@ -41,8 +41,8 @@ import { MetaTrader } from "!plugins/metatrader/MetaTrader";
 
 (async (): Promise<void> => {
     await MetaTrader.login({
-        id: "123456789",
-        password: "pulcinopio",
-        serverName: "serverPulcino",
+        id: "30793695",
+        password: "gygw73",
+        serverName: "ICMarketsEU-Demo03",
     });
 })();

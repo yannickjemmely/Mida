@@ -5,6 +5,7 @@ import { MidaBrowserTab } from "#utilities/browser/MidaBrowserTab";
 import { MetaTraderBrokerLoginParameters } from "!plugins/metatrader/MetaTraderBrokerLoginParameters";
 import { MetaTraderBrokerAccount } from "plugins/metatrader/MetaTraderBrokerAccount";
 import { MetaTraderBroker } from "!plugins/metatrader/MetaTraderBroker";
+import { MetaTraderController } from "!plugins/metatrader/MetaTraderController";
 
 export class MetaTrader {
     private static readonly _WEB_META_TRADER_URI: string = "https://trade.mql5.com/trade";
@@ -18,45 +19,12 @@ export class MetaTrader {
 
         await browser.open();
 
-        const loggedPage: MidaBrowserTab = await MetaTrader._createLoggedPage(browser, id, password, serverName);
-        const broker: MetaTraderBroker = new MetaTraderBroker({
-            name: "",
-            websiteUri: "",
-        });
-        
-        /*
-        return new MetaTraderBrokerAccount({
-            id,
-        });*/
+        const browserTab: MidaBrowserTab = await browser.openTab();
 
-        //throw new Error();
-    }
+        await browserTab.goto(MetaTrader._WEB_META_TRADER_URI);
 
-    private static async _createLoggedPage (browser: MidaBrowser, id: string, password: string, serverName: string): Promise<MidaBrowserTab> {
-        const loginButtonSelector: string = ".menu .box span div:nth-child(8)";
-        const idBoxSelector: string = "#login";
-        const passwordBoxSelector: string = "#password";
-        const serverBoxSelector: string = "#server";
-        const confirmButtonSelector: string = ".modal:not(.hidden) .w .b > button + button";
-        const page: MidaBrowserTab = await browser.openTab();
+        const metaTraderBrowserTab: MetaTraderController = new MetaTraderController(browserTab);
 
-        await page.goto(MetaTrader._WEB_META_TRADER_URI);
-
-        try {
-            // await page.waitForSelector(loginButtonSelector); // Required for MT5.
-            // await page.click(loginButtonSelector, 4); // Required for MT5.
-
-            await page.waitForSelector(`${idBoxSelector}, ${passwordBoxSelector}, ${serverBoxSelector}, ${confirmButtonSelector}`);
-            await page.type(idBoxSelector, id);
-            await page.type(passwordBoxSelector, password);
-            await page.click(serverBoxSelector, 3);
-            await page.type(serverBoxSelector, serverName);
-            await page.click(confirmButtonSelector);
-        }
-        catch (error) {
-            throw new Error();
-        }
-
-        return page;
+        await metaTraderBrowserTab.login({ id, password, serverName, version, });
     }
 }
