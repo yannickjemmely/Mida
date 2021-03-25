@@ -3,19 +3,24 @@ import { MidaEvent } from "#events/MidaEvent";
 import { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
 import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
 import { MetaTraderBrokerLoginParameters } from "!plugins/metatrader/MetaTraderBrokerLoginParameters";
+import { MidaEmitter } from "#utilities/emitter/MidaEmitter";
 
 export class MetaTraderController {
     private readonly _browserTab: MidaBrowserTab;
-    private _areDomListenersAppended: boolean;
-    private _areDomIdentifiersAppended: boolean;
+    private _isLoggedIn: boolean;
+    private readonly _emitter: MidaEmitter;
 
     public constructor (browserTab: MidaBrowserTab) {
         this._browserTab = browserTab;
-        this._areDomListenersAppended = false;
-        this._areDomIdentifiersAppended = false;
+        this._isLoggedIn = false;
+        this._emitter = new MidaEmitter();
     }
 
     public async login ({ id, password, serverName, version = 4, }: MetaTraderBrokerLoginParameters): Promise<void> {
+        if (this._isLoggedIn) {
+            throw new Error();
+        }
+
         await this._appendDomListeners();
 
         const loginButtonSelector: string = ".menu .box span div:nth-child(8)";
@@ -45,6 +50,12 @@ export class MetaTraderController {
         catch (error) {
             throw new Error();
         }*/
+
+        this._isLoggedIn = true;
+    }
+
+    public async logout (): Promise<void> {
+
     }
 
     public async getJournalMessages (): Promise<string[]> {
@@ -75,10 +86,6 @@ export class MetaTraderController {
     }
 
     private async _appendDomListeners (): Promise<void> {
-        if (this._areDomIdentifiersAppended) {
-            return;
-        }
-
         // <journal>
         await this._browserTab.exposeCallable("__onJournalMessage", () => this._onJournalMessage());
         await this._browserTab.waitForSelector(".journal");
@@ -91,15 +98,9 @@ export class MetaTraderController {
             });
         })(window);`);
         // </journal>
-
-        this._areDomListenersAppended = true;
     }
 
     private async _appendDomIdentifiers (): Promise<void> {
-        if (this._areDomIdentifiersAppended) {
-            return;
-        }
-
         // <symbols>
         const symbolsElementAttributeName: string = "external-symbols-wrapper";
 
@@ -118,8 +119,25 @@ export class MetaTraderController {
             w.document.querySelector(".modal:not(.hidden)").setAttribute("${orderElementAttributeName}", "");
         })(window);`);
         // </orders>
+    }
 
-        this._areDomIdentifiersAppended = true;
+    private async _addMarketWatchSymbol (symbol: string): Promise<void> {
+
+    }
+
+    private async _removeMarketWatchSymbol (symbol: string): Promise<void> {
+
+    }
+
+    private async _requestSymbolTimeframe (timeframe: number): Promise<void> {
+        let timeframeType: string = "";
+
+        switch (timeframe) {
+            case 60:
+                timeframeType = "M1";
+
+                break;
+        }
     }
 
     private async _onTick (): Promise<void> {
