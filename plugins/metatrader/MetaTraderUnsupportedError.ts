@@ -1,6 +1,6 @@
 import { MidaError } from "#errors/MidaError";
 
-export class UnsupportedWebMetaTraderError extends MidaError {
+export class MetaTraderUnsupportedError extends MidaError {
     private readonly _server: string;
 
     public constructor (server: string) {

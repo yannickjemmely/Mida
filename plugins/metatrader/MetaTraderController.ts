@@ -4,6 +4,7 @@ import { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
 import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
 import { MetaTraderBrokerLoginParameters } from "!plugins/metatrader/MetaTraderBrokerLoginParameters";
 import { MidaEmitter } from "#utilities/emitter/MidaEmitter";
+import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
 
 export class MetaTraderController {
     private readonly _browserTab: MidaBrowserTab;
@@ -20,8 +21,6 @@ export class MetaTraderController {
         if (this._isLoggedIn) {
             throw new Error();
         }
-
-        await this._appendDomListeners();
 
         const loginButtonSelector: string = ".menu .box span div:nth-child(8)";
         const idBoxSelector: string = "#login";
@@ -43,6 +42,8 @@ export class MetaTraderController {
             throw new Error();
         }
 
+        await new Promise((resolve: any): any => setTimeout(resolve, 10000));
+
 /*
         try {
             await this._appendIdentifiers();
@@ -50,6 +51,9 @@ export class MetaTraderController {
         catch (error) {
             throw new Error();
         }*/
+
+        await this._appendListeners();
+        await this._appendDomIdentifiers();
 
         this._isLoggedIn = true;
     }
@@ -81,13 +85,21 @@ export class MetaTraderController {
         return orders;
     }
 
-    public async placeOrder (): Promise<any> {
-
+    public async placeOrder (directives: MidaBrokerOrderDirectives): Promise<any> {
+        const orderDescriptor: any = await this._browserTab.evaluate(`((w) => {
+            const orderInterface = w.document.querySelector("[external-order-wrapper]").cloneNode(true);
+            
+            w.document.body.appendChild(orderInterface);
+            
+            orderInterface.querySelector("#symbol").value = "${directives.symbol}";
+            
+            //orderInterface.remove();
+        })(window);`);
     }
 
-    private async _appendDomListeners (): Promise<void> {
+    private async _appendListeners (): Promise<void> {
         // <journal>
-        await this._browserTab.exposeCallable("__onJournalMessage", () => this._onJournalMessage());
+        await this._browserTab.exposeCallable("__onJournalMessage", (descriptor: any) => this._onJournalMessage(descriptor));
         await this._browserTab.waitForSelector(".journal");
         await this._browserTab.evaluate(`((w) => {
             const observer = new MutationObserver(w.__onJournalMessage);
@@ -98,6 +110,23 @@ export class MetaTraderController {
             });
         })(window);`);
         // </journal>
+
+        // <ticks>
+        await this._browserTab.exposeCallable("__onTick", (descriptor: any) => this._onTick(descriptor));
+        await this._browserTab.waitForSelector(".symbols-table");
+        await this._browserTab.evaluate(`((w) => {
+            window.B.Oa.Xa.Vb.Ea = new Proxy(window.B.Oa.Xa.Vb.Ea, {
+                set (item, property, value) {
+                    w.__onTick({
+                        symbol: value.J,
+                        bid: value.gb,
+                        ask: value.wb,
+                        date: new Date(value.vg),
+                    });
+                },
+            });
+        })(window);`);
+        // </ticks>
     }
 
     private async _appendDomIdentifiers (): Promise<void> {
@@ -137,16 +166,27 @@ export class MetaTraderController {
                 timeframeType = "M1";
 
                 break;
+
+            default:
+                throw new Error();
         }
-    }
 
-    private async _onTick (): Promise<void> {
 
     }
 
-    private async _onJournalMessage (): Promise<void> {
-        const messages: string[] = await this.getJournalMessages();
+    private _onTick ({ symbol, bid, ask, date, }: any): void {
+        if (typeof symbol !== "string" || typeof bid !== "number" || typeof ask !== "number" || typeof date !== "object") {
+            throw new Error();
+        }
 
-        console.log(messages[0]);
+        this._emitter.notifyListeners("tick", { symbol, bid, ask, date, });
+    }
+
+    private _onJournalMessage ({ message, date, }: any): void {
+        if (typeof message !== "string" || typeof date !== "object") {
+            throw new Error();
+        }
+
+        this._emitter.notifyListeners("journal-message", { message, date, });
     }
 }

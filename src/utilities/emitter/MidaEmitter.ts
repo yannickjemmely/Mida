@@ -54,12 +54,12 @@ export class MidaEmitter {
         });
     }
 
-    public notifyListeners (type: string, data?: GenericObject): void {
+    public notifyListeners (type: string, descriptor?: GenericObject): void {
         const date: Date = new Date();
         const event: MidaEvent = new MidaEvent({
             type,
             date,
-            data,
+            descriptor,
         });
 
         if (type !== MidaEmitter._ANY_TYPE_KEY) {

@@ -233,7 +233,7 @@ export class MidaBrokerOrder {
 
     private _configureListeners (): void {
         this._brokerAccount.on("*", (event: MidaEvent) => {
-            if (event.data && event.data.ticket && event.data.ticket === this._ticket) {
+            if (event.descriptor && event.descriptor.ticket && event.descriptor.ticket === this._ticket) {
                 this._onEvent(event);
             }
         });
@@ -242,28 +242,28 @@ export class MidaBrokerOrder {
     private _onEvent (event: MidaEvent): void {
         switch (event.type) {
             case "order-cancel": {
-                this._cancelDate = event.data.date;
-                this._cancelPrice = event.data.price;
+                this._cancelDate = event.descriptor.date;
+                this._cancelPrice = event.descriptor.price;
 
-                this._notifyListeners("cancel", event.data);
+                this._notifyListeners("cancel", event.descriptor);
 
                 break;
             }
 
             case "order-open": {
-                this._openDate = event.data.date;
-                this._openPrice = event.data.price;
+                this._openDate = event.descriptor.date;
+                this._openPrice = event.descriptor.price;
 
-                this._notifyListeners("open", event.data);
+                this._notifyListeners("open", event.descriptor);
 
                 break;
             }
 
             case "order-close": {
-                this._closeDate = event.data.date;
-                this._closePrice = event.data.close;
+                this._closeDate = event.descriptor.date;
+                this._closePrice = event.descriptor.close;
 
-                this._notifyListeners("close", event.data);
+                this._notifyListeners("close", event.descriptor);
 
                 break;
             }

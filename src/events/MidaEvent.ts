@@ -5,12 +5,12 @@ import { GenericObject } from "#utilities/GenericObject";
 export class MidaEvent {
     private readonly _type: string;
     private readonly _date: Date;
-    private readonly _data: GenericObject;
+    private readonly _descriptor: GenericObject;
 
-    public constructor ({ type, date, data = {}, }: MidaEventParameters) {
+    public constructor ({ type, date, descriptor = {}, }: MidaEventParameters) {
         this._type = type;
         this._date = new Date(date);
-        this._data = { ...data, };
+        this._descriptor = { ...descriptor, };
     }
 
     /** The event type. */
@@ -24,7 +24,7 @@ export class MidaEvent {
     }
 
     /** The event data. */
-    public get data (): GenericObject {
-        return { ...this._data, };
+    public get descriptor (): GenericObject {
+        return { ...this._descriptor, };
     }
 }
