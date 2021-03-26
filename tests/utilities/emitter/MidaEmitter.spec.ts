@@ -73,8 +73,8 @@ describe("MidaEmitter", () => {
             expect(lastEvent).not.toBe(undefined);
             expect(lastEvent.type).toBe("event");
             expect(lastEvent.date).toBeInstanceOf(Date);
-            expect(lastEvent.data.code).toBe(200);
-            expect(lastEvent.data.status).toBe("success");
+            expect(lastEvent.descriptor.code).toBe(200);
+            expect(lastEvent.descriptor.status).toBe("success");
         });
     });
 });
