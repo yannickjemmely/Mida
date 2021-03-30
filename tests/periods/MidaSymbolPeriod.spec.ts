@@ -24,6 +24,22 @@ describe("MidaSymbolPeriod", () => {
         });
     });
 
+    describe(".ohlcv", () => {
+        it("is set correctly", () => {
+            expect(bidPeriod.ohlcv[0]).toBe(bidPeriod.open);
+            expect(bidPeriod.ohlcv[1]).toBe(bidPeriod.high);
+            expect(bidPeriod.ohlcv[2]).toBe(bidPeriod.low);
+            expect(bidPeriod.ohlcv[3]).toBe(bidPeriod.close);
+            expect(bidPeriod.ohlcv[4]).toBe(bidPeriod.volume);
+        });
+    });
+
+    describe(".timeframe", () => {
+        it("is set correctly", () => {
+            expect(bidPeriod.timeframe).toBe(14400);
+        });
+    });
+
     describe(".body", () => {
         it("is set correctly", () => {
             expect(bidPeriod.body).toBe(15);

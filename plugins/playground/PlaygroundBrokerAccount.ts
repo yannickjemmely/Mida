@@ -50,20 +50,8 @@ export class PlaygroundBrokerAccount extends MidaBrokerAccount {
         return equity;
     }
 
-    public async getOrders ({ from, to,}: { from?: Date, to?: Date, }): Promise<MidaBrokerOrder[]> {
-        return [ ...this._orders.values(), ].filter((order: MidaBrokerOrder): boolean => {
-            if (from && !to) {
-                return order.creationDate >= from;
-            }
-            else if (!from && to) {
-                return order.creationDate <= to;
-            }
-            else if (from && to) {
-                return order.creationDate >= from && order.creationDate <= to;
-            }
-
-            return true;
-        });
+    public async getOrders (): Promise<MidaBrokerOrder[]> {
+        return [ ...this._orders.values(), ];
     }
 
     public async getOrder (ticket: number): Promise<MidaBrokerOrder | undefined> {
@@ -74,38 +62,27 @@ export class PlaygroundBrokerAccount extends MidaBrokerAccount {
         return this._lastTicks[symbol];
     }
 
-    /*
     public async placeOrder (directives: MidaBrokerOrderDirectives): Promise<MidaBrokerOrder> {
         const symbol: string = directives.symbol;
         const lastTick: MidaSymbolTick = await this.getSymbolLastTick(symbol);
         const isBuyOrder: boolean = directives.type === MidaBrokerOrderType.BUY;
-        const isMarketOpen: boolean = await this.isSymbolMarketOpen(symbol);
-        const isMarketOrder: boolean = (
-            Number.isFinite(directives.sellLimit)
-            && Number.isFinite(directives.sellStop)
-            && Number.isFinite(directives.buyLimit)
-            && Number.isFinite(directives.buyStop)
-        );
+        const isMarketOrder: boolean = Number.isFinite(directives.stop) && Number.isFinite(directives.limit);
 
-        if (!isMarketOpen) {
-            throw new Error();
-        }
-
-        const actualDate: Date = new Date();
         const order: MidaBrokerOrder = new MidaBrokerOrder({
             ticket: ++this._tickets,
             brokerAccount: this,
             requestDirectives: directives,
-            requestDate: actualDate,
-            creationDate: actualDate,
-            openDate: isMarketOrder ? actualDate : undefined,
-            // openPrice: isMarketOrder ? (isBuyOrder ? lastTick.bid : lastTick.ask) : undefined,
+            requestDate: this._localDate,
+            creationDate: this._localDate,
+            openDate: isMarketOrder ? this._localDate : undefined,
+            creationPrice: isBuyOrder ? lastTick.bid : lastTick.ask,
+            openPrice: isMarketOrder ? (isBuyOrder ? lastTick.bid : lastTick.ask) : undefined,
         });
 
         this._orders.set(order.ticket, order);
 
         return order;
-    }*/
+    }
 
     /**
      * Used to elapse a given amount of time.
