@@ -34,7 +34,7 @@ export abstract class MidaBroker {
      **
     */
 
-    public static async login (...parameters: any[]): Promise<any> {
+    public static async login (name: string, ...parameters: any[]): Promise<any> {
 
     }
 }

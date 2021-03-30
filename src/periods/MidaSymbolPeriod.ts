@@ -160,7 +160,7 @@ export class MidaSymbolPeriod implements IMidaEquatable {
      * @param timeframe The periods timeframe.
      * @param priceType The periods price type (bid or ask).
      * @param limit Limit the length of composed periods.
-     */
+     */ /*
     public static fromTicks (
         ticks: MidaSymbolTick[],
         startTime: Date,
@@ -235,5 +235,5 @@ export class MidaSymbolPeriod implements IMidaEquatable {
         tryComposePeriod();
 
         return periods;
-    }
+    }*/
 }

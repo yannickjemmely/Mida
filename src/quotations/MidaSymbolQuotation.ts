@@ -1,5 +1,4 @@
 import { MidaSymbolQuotationParameters } from "#quotations/MidaSymbolQuotationParameters";
-import { MidaSymbolQuotationPriceType } from "#quotations/MidaSymbolQuotationPriceType";
 import { IMidaCloneable } from "#utilities/cloneable/IMidaCloneable";
 import { IMidaEquatable } from "#utilities/equatable/IMidaEquatable";
 
@@ -71,89 +70,5 @@ export class MidaSymbolQuotation implements IMidaCloneable, IMidaEquatable {
             && this._symbol === object._symbol
             && this._date.valueOf() === object._date.valueOf()
         );
-    }
-
-    /*
-     **
-     *** Static Utilities
-     **
-    */
-
-    public static getQuotationsInDateRange (quotations: MidaSymbolQuotation[], from: Date, to: Date): MidaSymbolQuotation[] {
-        const foundQuotations: MidaSymbolQuotation[] = [];
-
-        for (const quotation of quotations) {
-            const date: Date = quotation.date;
-
-            if (date >= from && date <= to) {
-                foundQuotations.push(quotation);
-            }
-        }
-
-        return foundQuotations;
-    }
-
-    public static getQuotationsOpenPrice (quotations: MidaSymbolQuotation[], priceType: MidaSymbolQuotationPriceType): number {
-        if (quotations.length < 1) {
-            throw new Error();
-        }
-
-        return quotations[0][priceType];
-    }
-
-    public static getQuotationsHighestPrice (quotations: MidaSymbolQuotation[], priceType: MidaSymbolQuotationPriceType): number {
-        if (quotations.length < 1) {
-            throw new Error();
-        }
-
-        let highestPrice: number = quotations[0][priceType];
-
-        for (let i: number = 1; i < quotations.length; ++i) {
-            if (quotations[i][priceType] > highestPrice) {
-                highestPrice = quotations[i][priceType];
-            }
-        }
-
-        return highestPrice;
-    }
-
-    public static getQuotationsLowestPrice (quotations: MidaSymbolQuotation[], priceType: MidaSymbolQuotationPriceType): number {
-        if (quotations.length < 1) {
-            throw new Error();
-        }
-
-        let lowestPrice: number = quotations[0][priceType];
-
-        for (let i: number = 1; i < quotations.length; ++i) {
-            if (quotations[i][priceType] < lowestPrice) {
-                lowestPrice = quotations[i][priceType];
-            }
-        }
-
-        return lowestPrice;
-    }
-
-    public static getQuotationsClosePrice (quotations: MidaSymbolQuotation[], priceType: MidaSymbolQuotationPriceType): number {
-        if (quotations.length < 1) {
-            throw new Error();
-        }
-
-        return quotations[quotations.length - 1][priceType];
-    }
-
-    public static quotationsHaveSameSymbol (quotations: MidaSymbolQuotation[]): boolean {
-        if (quotations.length < 1) {
-            throw new Error();
-        }
-
-        const firstSymbol: string = quotations[0].symbol;
-
-        for (let i: number = 1; i < quotations.length; ++i) {
-            if (quotations[i].symbol !== firstSymbol) {
-                return false;
-            }
-        }
-
-        return true;
     }
 }

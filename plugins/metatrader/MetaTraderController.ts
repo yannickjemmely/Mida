@@ -1,10 +1,8 @@
 import { MidaBrowserTab } from "#utilities/browser/MidaBrowserTab";
-import { MidaEvent } from "#events/MidaEvent";
-import { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
-import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
 import { MetaTraderBrokerLoginParameters } from "!plugins/metatrader/MetaTraderBrokerLoginParameters";
 import { MidaEmitter } from "#utilities/emitter/MidaEmitter";
 import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
+import { MidaBrokerOrderType } from "#orders/MidaBrokerOrderType";
 
 export class MetaTraderController {
     private readonly _browserTab: MidaBrowserTab;
@@ -42,7 +40,7 @@ export class MetaTraderController {
             throw new Error();
         }
 
-        await new Promise((resolve: any): any => setTimeout(resolve, 10000));
+        await new Promise((resolve: any): any => setTimeout(resolve, 20000));
 
 /*
         try {
@@ -54,6 +52,13 @@ export class MetaTraderController {
 
         await this._appendListeners();
         await this._appendDomIdentifiers();
+
+        // @ts-ignore
+        await this.placeOrder({
+            type: MidaBrokerOrderType.SELL,
+            symbol: "CHFJPY",
+            volume: 5,
+        });
 
         this._isLoggedIn = true;
     }
@@ -87,13 +92,34 @@ export class MetaTraderController {
 
     public async placeOrder (directives: MidaBrokerOrderDirectives): Promise<any> {
         const orderDescriptor: any = await this._browserTab.evaluate(`((w) => {
-            const orderInterface = w.document.querySelector("[external-order-wrapper]").cloneNode(true);
-            
-            w.document.body.appendChild(orderInterface);
-            
+            const orderInterface = w.document.querySelector("[external-order-wrapper]");
+                        
             orderInterface.querySelector("#symbol").value = "${directives.symbol}";
+            orderInterface.querySelector("#volume").value = ${directives.volume};
             
-            //orderInterface.remove();
+            if (${typeof directives.stopLoss === "number"}) {
+                orderInterface.querySelector("#sl").value = ${directives.stopLoss};
+            }
+            
+            if (${typeof directives.takeProfit === "number"}) {
+                orderInterface.querySelector("#tp").value = ${directives.takeProfit};
+            }
+            
+            const sellButtonSelector = ".input-button.red";
+            const buyButtonSelector = ".input-button.blue";
+            const placeButtonSelector = ".input-text + .input-button.blue";
+            
+            if (Number.isNaN(${directives.stop}) && Number.isNaN(${directives.limit})) {
+                if (${directives.type === MidaBrokerOrderType.SELL}) {
+                    orderInterface.querySelector(sellButtonSelector).click();
+                }
+                else {
+                    
+                }
+            }
+            else {
+                
+            }
         })(window);`);
     }
 
@@ -121,8 +147,12 @@ export class MetaTraderController {
                         symbol: value.J,
                         bid: value.gb,
                         ask: value.wb,
-                        date: new Date(value.vg),
+                        date: value.vg,
                     });
+                    
+                    item[property] = value;
+                    
+                    return true;
                 },
             });
         })(window);`);
@@ -146,6 +176,7 @@ export class MetaTraderController {
         await this._browserTab.evaluate(`((w) => {
             w.document.querySelector('.page-block.bar > .page-block:first-child a[title="New Order"]').click();
             w.document.querySelector(".modal:not(.hidden)").setAttribute("${orderElementAttributeName}", "");
+            // w.document.querySelector("[${orderElementAttributeName}] > div > div:nth-child(2)").click();
         })(window);`);
         // </orders>
     }
@@ -175,17 +206,17 @@ export class MetaTraderController {
     }
 
     private _onTick ({ symbol, bid, ask, date, }: any): void {
-        if (typeof symbol !== "string" || typeof bid !== "number" || typeof ask !== "number" || typeof date !== "object") {
+        if (typeof symbol !== "string" || typeof bid !== "number" || typeof ask !== "number" || typeof date !== "number") {
             throw new Error();
         }
 
-        this._emitter.notifyListeners("tick", { symbol, bid, ask, date, });
+        this._emitter.notifyListeners("tick", { symbol, bid, ask, date: new Date(date), });
     }
 
-    private _onJournalMessage ({ message, date, }: any): void {
+    private _onJournalMessage ({ message, date, }: any): void {/*
         if (typeof message !== "string" || typeof date !== "object") {
             throw new Error();
-        }
+        }*/
 
         this._emitter.notifyListeners("journal-message", { message, date, });
     }

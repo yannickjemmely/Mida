@@ -1,5 +1,4 @@
 import { MidaSymbolQuotation } from "#quotations/MidaSymbolQuotation";
-import { MidaSymbolQuotationPriceType } from "#quotations/MidaSymbolQuotationPriceType";
 import { MidaSymbolTickParameters } from "#ticks/MidaSymbolTickParameters";
 import { IMidaEquatable } from "#utilities/equatable/IMidaEquatable";
 import { IMidaCloneable } from "#utilities/cloneable/IMidaCloneable";
@@ -83,31 +82,5 @@ export class MidaSymbolTick implements IMidaEquatable, IMidaCloneable {
             previousTick: this._previousTick?.clone(),
             nextTick: this._nextTick?.clone(),
         });
-    }
-
-    /*
-     **
-     *** Static Utilities
-     **
-    */
-    
-    public static getTicksOpenPrice (ticks: MidaSymbolTick[], priceType: MidaSymbolQuotationPriceType): number {
-        return MidaSymbolQuotation.getQuotationsOpenPrice(ticks.map((tick: MidaSymbolTick): MidaSymbolQuotation => tick.quotation), priceType);
-    }
-
-    public static getTicksHighestPrice (ticks: MidaSymbolTick[], priceType: MidaSymbolQuotationPriceType): number {
-        return MidaSymbolQuotation.getQuotationsHighestPrice(ticks.map((tick: MidaSymbolTick): MidaSymbolQuotation => tick.quotation), priceType);
-    }
-
-    public static getTicksLowestPrice (ticks: MidaSymbolTick[], priceType: MidaSymbolQuotationPriceType): number {
-        return MidaSymbolQuotation.getQuotationsLowestPrice(ticks.map((tick: MidaSymbolTick): MidaSymbolQuotation => tick.quotation), priceType);
-    }
-
-    public static getTicksClosePrice (ticks: MidaSymbolTick[], priceType: MidaSymbolQuotationPriceType): number {
-        return MidaSymbolQuotation.getQuotationsClosePrice(ticks.map((tick: MidaSymbolTick): MidaSymbolQuotation => tick.quotation), priceType);
-    }
-
-    public static ticksHaveSameSymbol (ticks: MidaSymbolTick[]): boolean {
-        return MidaSymbolQuotation.quotationsHaveSameSymbol(ticks.map((tick: MidaSymbolTick): MidaSymbolQuotation => tick.quotation));
     }
 }
