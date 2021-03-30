@@ -11,7 +11,6 @@ export class PlaygroundBrokerAccount extends MidaBrokerAccount {
     private readonly _localDate: Date;
     private readonly _ticks: { [symbol: string]: MidaSymbolTick[]; };
     private readonly _lastTicks: { [symbol: string]: MidaSymbolTick; };
-
     private _balance: number;
     private _tickets: number;
 
