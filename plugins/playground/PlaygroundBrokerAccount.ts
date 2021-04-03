@@ -6,13 +6,12 @@ import { MidaBrokerOrderStatusType } from "#orders/MidaBrokerOrderStatusType";
 import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
 import { MidaBrokerOrderType } from "#orders/MidaBrokerOrderType";
 
-// @ts-ignore
 export class PlaygroundBrokerAccount extends MidaBrokerAccount {
     private readonly _localDate: Date;
     private readonly _ticks: { [symbol: string]: MidaSymbolTick[]; };
     private readonly _lastTicks: { [symbol: string]: MidaSymbolTick; };
     private _balance: number;
-    private _tickets: number;
+    private _ticketsCounter: number;
 
     private readonly _orders: Map<number, MidaBrokerOrder>;
 
@@ -23,16 +22,12 @@ export class PlaygroundBrokerAccount extends MidaBrokerAccount {
         this._ticks = {};
         this._lastTicks = {};
         this._balance = 0;
-        this._tickets = 0;
+        this._ticketsCounter = 0;
         this._orders = new Map();
 
         for (const order of ordersHistory) {
             this._orders.set(order.ticket, order);
         }
-    }
-
-    public async getPing (): Promise<number> {
-        return 0; // I wish it was 0...
     }
 
     public async getBalance (): Promise<number> {
@@ -41,13 +36,13 @@ export class PlaygroundBrokerAccount extends MidaBrokerAccount {
 
     public async getEquity (): Promise<number> {
         const orders: MidaBrokerOrder[] = await this.getOpenOrders();
-        let equity: number = this._balance;
+        const profits: number[] = await Promise.all(orders.map((order: MidaBrokerOrder): Promise<number> => order.getNetProfit()));
 
-        for (const order of orders) {
-            equity += (await order.getNetProfit());
-        }
+        return this._balance + profits.reduce((a: number, b: number) => a + b, 0);
+    }
 
-        return equity;
+    public async getUsedMargin (): Promise<number> {
+        throw new Error();
     }
 
     public async getOrders (): Promise<MidaBrokerOrder[]> {
@@ -69,14 +64,14 @@ export class PlaygroundBrokerAccount extends MidaBrokerAccount {
         const isMarketOrder: boolean = Number.isFinite(directives.stop) && Number.isFinite(directives.limit);
 
         const order: MidaBrokerOrder = new MidaBrokerOrder({
-            ticket: ++this._tickets,
+            ticket: ++this._ticketsCounter,
             brokerAccount: this,
             requestDirectives: directives,
             requestDate: this._localDate,
             creationDate: this._localDate,
             openDate: isMarketOrder ? this._localDate : undefined,
             creationPrice: isBuyOrder ? lastTick.bid : lastTick.ask,
-            openPrice: isMarketOrder ? (isBuyOrder ? lastTick.bid : lastTick.ask) : undefined,
+            openPrice: isMarketOrder ? (isBuyOrder ? lastTick.ask : lastTick.bid) : undefined,
         });
 
         this._orders.set(order.ticket, order);
@@ -123,15 +118,19 @@ export class PlaygroundBrokerAccount extends MidaBrokerAccount {
         this._balance += amount;
     }
 
-    public async getPendingOrders (): Promise<MidaBrokerOrder[]> {
-        return [ ...this._orders.values(), ].filter((order: MidaBrokerOrder): boolean => order.status === MidaBrokerOrderStatusType.PENDING);
-    }
-
-    public async getOpenOrders (): Promise<MidaBrokerOrder[]> {
-        return [ ...this._orders.values(), ].filter((order: MidaBrokerOrder): boolean => order.status === MidaBrokerOrderStatusType.OPEN);
-    }
-
     private async _onTick (tick: MidaSymbolTick): Promise<void> {
+        await this._updatePendingOrders(tick);
+    }
+
+    private async _updatePendingOrders (tick: MidaSymbolTick): Promise<void> {
+        const orders: MidaBrokerOrder[] = await this.getPendingOrders();
+
+        for (const order of orders) {
+
+        }
+    }
+
+    private async _updateOpenOrders (tick: MidaSymbolTick): Promise<void> {
 
     }
 }

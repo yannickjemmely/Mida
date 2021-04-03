@@ -5,8 +5,9 @@ import { MidaEvent } from "#events/MidaEvent";
 import { MidaEventListener } from "#events/MidaEventListener";
 import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
 import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
+import { MidaBrokerOrderStatusType } from "#orders/MidaBrokerOrderStatusType";
+import { MidaBrokerOrderType } from "#orders/MidaBrokerOrderType";
 import { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
-import { MidaSymbolPeriodTimeframeType } from "#periods/MidaSymbolPeriodTimeframeType";
 import { MidaSymbolQuotationPriceType } from "#quotations/MidaSymbolQuotationPriceType";
 import { MidaSymbol } from "#symbols/MidaSymbol";
 import { MidaSymbolType } from "#symbols/MidaSymbolType";
@@ -47,7 +48,7 @@ export abstract class MidaBrokerAccount {
         return this._type;
     }
 
-    /** The account currency. */
+    /** The account currency (ISO code). */
     public get currency (): string {
         return this._currency;
     }
@@ -57,49 +58,23 @@ export abstract class MidaBrokerAccount {
         return this._broker;
     }
 
-    /** Used to get the ping between this client and the broker. */
-    public abstract getPing (): Promise<number>;
-
     /** Used to get the account balance. */
     public abstract getBalance (): Promise<number>;
 
     /** Used to get the account equity. */
     public abstract getEquity (): Promise<number>;
 
-    /** Used to get the account margin. */
-    public abstract getMargin (): Promise<number>;
+    /** Used to get the account used margin. */
+    public abstract getUsedMargin (): Promise<number>;
 
-    /**
-     * Used to get the account free margin.
-     */
-    public abstract getFreeMargin (): Promise<number>;
-
-    /**
-     * Used to get the account orders.
-     * @param from Time range start.
-     * @param to Time range end.
-     * @returns The orders. If no time range is provided, the broker may return the most
-     * recent orders (with a limit chosen by the broker).
-     */
-    public abstract getOrders ({ from, to,}: { from?: Date, to?: Date, }): Promise<MidaBrokerOrder[]>;
+    /** Used to get the account orders. */
+    public abstract getOrders (): Promise<MidaBrokerOrder[]>;
 
     /**
      * Used to get an order.
      * @param ticket The order ticket.
      */
     public abstract getOrder (ticket: number): Promise<MidaBrokerOrder | undefined>;
-
-    /**
-     * Used to get the net profit of an order (the order must be in open or closed state).
-     * @param ticket The order ticket.
-     */
-    public abstract getOrderNetProfit (ticket: number): Promise<number>;
-
-    /**
-     * Used to get the gross profit of an order (the order must be in open or closed state).
-     * @param ticket The order ticket.
-     */
-    public abstract getOrderGrossProfit (ticket: number): Promise<number>;
 
     /**
      * Used to get the swaps of an order (the order must be in open or closed state).
@@ -116,7 +91,7 @@ export abstract class MidaBrokerAccount {
     /**
      * Used to place an order.
      * @param directives The order directives.
-     * @returns The placed order. If the order has a market execution, then the Promise
+     * @returns The placed order. If the order has a market execution, the Promise
      * will resolve after order open (open state). If the order has a limit or
      * stop execution, the Promise will resolve after order creation (pending state).
      */
@@ -149,7 +124,7 @@ export abstract class MidaBrokerAccount {
     public abstract setOrderTakeProfit (ticket: number, takeProfit: number): Promise<void>;
 
     /**
-     * Used to get the symbols operable by the account.
+     * Used to get the account symbols.
      */
     public abstract getSymbols (): Promise<MidaSymbol[]>;
 
@@ -181,11 +156,9 @@ export abstract class MidaBrokerAccount {
      */
     public abstract getSymbolLastTick (symbol: string): Promise<MidaSymbolTick>;
 
-    /**
-     * Used to get the account used margin.
-     */
-    public async getUsedMargin (): Promise<number> {
-        return (await this.getMargin()) - (await this.getFreeMargin());
+    /** Used to get the account free margin. */
+    public async getFreeMargin (): Promise<number> {
+        return (await this.getEquity()) - (await this.getUsedMargin());
     }
 
     /**
@@ -202,6 +175,60 @@ export abstract class MidaBrokerAccount {
         return (await this.getEquity()) / usedMargin * 100;
     }
 
+    public async getOrdersByStatus (status: MidaBrokerOrderStatusType): Promise<MidaBrokerOrder[]> {
+        return (await this.getOrders()).filter((order: MidaBrokerOrder): boolean => order.status === status);
+    }
+
+    public async getPendingOrders (): Promise<MidaBrokerOrder[]> {
+        return this.getOrdersByStatus(MidaBrokerOrderStatusType.PENDING);
+    }
+
+    public async getCanceledOrders (): Promise<MidaBrokerOrder[]> {
+        return this.getOrdersByStatus(MidaBrokerOrderStatusType.CANCELED);
+    }
+
+    public async getOpenOrders (): Promise<MidaBrokerOrder[]> {
+        return this.getOrdersByStatus(MidaBrokerOrderStatusType.OPEN);
+    }
+
+    public async getClosedOrders (): Promise<MidaBrokerOrder[]> {
+        return this.getOrdersByStatus(MidaBrokerOrderStatusType.CLOSED);
+    }
+
+    /**
+     * Used to get the gross profit of an order (the order must be in open or closed state).
+     * @param ticket The order ticket.
+     */
+    public async getOrderGrossProfit (ticket: number): Promise<number> {
+        const order: MidaBrokerOrder | undefined = await this.getOrder(ticket);
+
+        if (!order || order.openPrice === undefined) {
+            throw new Error();
+        }
+
+        const lastTick: MidaSymbolTick = await this.getSymbolLastTick(order.symbol);
+        const openPrice: number = order.openPrice;
+        const closePrice: number = (
+            order.closePrice === undefined ? (order.type === MidaBrokerOrderType.SELL ? lastTick.ask : lastTick.bid) : order.closePrice
+        );
+
+        if (order.type === MidaBrokerOrderType.SELL) {
+            return (order.openPrice - closePrice) * order.volume * lastTick.ask;
+        }
+
+        if (order.type === MidaBrokerOrderType.BUY) {
+            return (closePrice - order.openPrice) * order.volume * lastTick.bid;
+        }
+
+        throw new Error();
+    }
+
+    /**
+     * Used to get the net profit of an order (the order must be in open or closed state).
+     * @param ticket The order ticket.
+     */
+    public abstract getOrderNetProfit (ticket: number): Promise<number>;
+
     public async getSymbolsByType (type: MidaSymbolType): Promise<MidaSymbol[]> {
         return (await this.getSymbols()).filter((symbol: MidaSymbol): boolean => symbol.type === type);
     }
@@ -210,7 +237,7 @@ export abstract class MidaBrokerAccount {
         return this._emitter.on(type, listener);
     }
 
-    protected notifyListeners (type: string, data?: GenericObject): void {
-        this._emitter.notifyListeners(type, data);
+    protected notifyListeners (type: string, descriptor?: GenericObject): void {
+        this._emitter.notifyListeners(type, descriptor);
     }
 }
