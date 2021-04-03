@@ -14,7 +14,7 @@ Mida is designed to:
 
 Furthermore, Mida is free and open source.
 
-**This is a work in progress project.**
+**This is a work in progress project (the API is not fully implemented, the NPM module is not published). Please create an issue for questions.**
 
 ## Disclaimer
 Operating in CFDs/Forex is highly speculative and carries a high level of risk.
@@ -24,7 +24,7 @@ for: commissions or other taxes applied to your operations, they depend on your 
 and any technical inconvenience that may lead to money loss, for example a stop loss not being set.
 
 ## Usage
-For the complete documentation please refer to the [API documentation](https://github.com/).<br>
+For the complete documentation please refer to the [API documentation]().<br>
 Operating is possible with any MetaTrader 4/5 broker account.
 
 ### Broker account login
@@ -37,8 +37,16 @@ const myAccount = await MidaBroker.login("MT4", {
 });
 ```
 
+How to login into a broker directly supported by Mida.
+```typescript
+const myAccount = await MidaBroker.login("BDSwiss", {
+    id: "",
+    password: "",
+});
+```
+
 ### Broker orders and positions
-How top open a crypto long position for Bitcoin against USD.
+How top open a long position for Bitcoin against USD.
 ```typescript
 const myOrder = await myAccount.placeOrder({
     symbol: "BTCUSD",
@@ -50,7 +58,7 @@ console.log(myOrder.ticket);
 console.log(myOrder.openPrice);
 ```
 
-How to open a forex short position for EUR against USD.
+How to open a short position for EUR against USD.
 ```typescript
 const myOrder = await myAccount.placeOrder({
     symbol: "EURUSD",
@@ -85,7 +93,7 @@ How to listen the ticks of a symbol.
 const symbol = await myAccount.getSymbol("#GME");
 
 symbol.on("tick", (event) => {
-    const tick = event.data.tick;
+    const tick = event.descriptor.tick;
     
     console.log(`GameStop share price is now ${tick.bid} dollars.`);
 });
@@ -109,7 +117,7 @@ Nowadays MQL is an obsolete technology and a barrier between
 modern traders and algorithmic trading. The mission of Mida is allowing
 anyone to operate in financial markets without advanced programming skills or
 specific computer requirements. Furthermore, Mida allows operating with MetaTrader
-accounts without installing MetaTrader (which is available only for Windows) or using a VPS.
+accounts without installing MetaTrader (which is available only for Windows).
 
 ## Contributors
 The author and maintainer of the project is [Vasile Pește](https://github.com/Vasile-Peste) (vasile.peste@protonmail.ch).
