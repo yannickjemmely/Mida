@@ -119,22 +119,27 @@ export class MidaBrokerOrder {
         return this._closePrice;
     }
 
+    /** The order tags (stored only locally). */
     public get tags (): string[] {
         return [ ...this._tags, ];
     }
 
+    /** The order symbol. */
     public get symbol (): string {
         return this._requestDirectives.symbol;
     }
 
+    /** The order type. */
     public get type (): MidaBrokerOrderType {
         return this._requestDirectives.type;
     }
 
+    /** The order volume. */
     public get volume (): number {
         return this._requestDirectives.volume;
     }
 
+    /** The order status. */
     public get status (): MidaBrokerOrderStatusType {
         if (this._cancelDate) {
             return MidaBrokerOrderStatusType.CANCELED;
@@ -149,6 +154,7 @@ export class MidaBrokerOrder {
         return MidaBrokerOrderStatusType.PENDING;
     }
 
+    /** The order execution type. */
     public get executionType (): any {
         if (Number.isFinite(this._requestDirectives.limit)) {
             return MidaBrokerOrderExecutionType.LIMIT;
@@ -181,24 +187,12 @@ export class MidaBrokerOrder {
         await this._brokerAccount.closeOrder(this._ticket);
     }
 
-    public async getLeverage (): Promise<number>  {
-        return NaN;
+    public async getGrossProfit (): Promise<number> {
+        return this._brokerAccount.getOrderGrossProfit(this._ticket);
     }
 
     public async getNetProfit (): Promise<number> {
-        if (this.status === MidaBrokerOrderStatusType.OPEN || this.status === MidaBrokerOrderStatusType.CLOSED) {
-            return this._brokerAccount.getOrderNetProfit(this._ticket);
-        }
-
-        throw new Error();
-    }
-
-    public async getGrossProfit (): Promise<number> {
-        if (this.status === MidaBrokerOrderStatusType.OPEN || this.status === MidaBrokerOrderStatusType.CLOSED) {
-            return this._brokerAccount.getOrderGrossProfit(this._ticket);
-        }
-
-        throw new Error();
+        return this._brokerAccount.getOrderNetProfit(this._ticket);
     }
 
     public async getUsedMargin (): Promise<number | undefined> {
@@ -206,7 +200,7 @@ export class MidaBrokerOrder {
             return;
         }
 
-        return this._openPrice * this.volume / (await this.getLeverage());
+        //return this._openPrice * this.volume / (await this.getLeverage());
     }
 
     public async getSwaps (): Promise<number> {
@@ -218,7 +212,7 @@ export class MidaBrokerOrder {
     }
 
     /*
-    public async getStopLoss (): Promise<number | undefined> {
+    public async getStopLoss (): Promise<number> {
         return this._brokerAccount.getOrderStopLoss(this._ticket);
     }
     */
@@ -227,8 +221,8 @@ export class MidaBrokerOrder {
         return this._emitter.on(type, listener);
     }
 
-    private _notifyListeners (type: string, data?: GenericObject): void {
-        this._emitter.notifyListeners(type, data);
+    private _notifyListeners (type: string, descriptor?: GenericObject): void {
+        this._emitter.notifyListeners(type, descriptor);
     }
 
     private _configureListeners (): void {

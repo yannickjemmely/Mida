@@ -79,22 +79,35 @@ export class MidaSymbol {
 
     /** Used to get the latest symbol bid quote. */
     public async getBid (): Promise<number> {
-        return (await this.getLastTick()).bid;
+        const lastTick: MidaSymbolTick = await this.getLastTick();
+
+        return lastTick.bid;
     }
 
     /** Used to get the latest symbol ask quote. */
     public async getAsk (): Promise<number> {
-        return (await this.getLastTick()).ask;
+        const lastTick: MidaSymbolTick = await this.getLastTick();
+
+        return lastTick.ask;
     }
 
+    /**
+     * Used to get the required margin for opening an order at the actual price.
+     * @param type The order type.
+     * @param volume The order volume.
+     * @returns The required margin to open the order.
+     */
     public async getRequiredMargin (type: MidaBrokerOrderType, volume: number): Promise<number> {
         const lastTick: MidaSymbolTick = await this.getLastTick();
 
         if (type === MidaBrokerOrderType.SELL) {
             return this._leverage * lastTick.bid * volume;
         }
+        else if (type === MidaBrokerOrderType.BUY) {
+            return this._leverage * lastTick.ask * volume;
+        }
 
-        return this._leverage * lastTick.ask * volume;
+        throw new Error();
     }
 
     /** Used to know if the symbol market is open. */

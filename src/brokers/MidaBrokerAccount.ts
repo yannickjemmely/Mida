@@ -125,14 +125,14 @@ export abstract class MidaBrokerAccount {
      * @param ticket The order ticket.
      * @param stopLoss The stop loss.
      */
-    public abstract setOrderStopLoss (ticket: number, stopLoss: number): Promise<void>;
+    // public abstract setOrderStopLoss (ticket: number, stopLoss: number): Promise<void>;
 
     /**
      * Used to set the take profit of an order.
      * @param ticket The order ticket.
      * @param takeProfit The take profit.
      */
-    public abstract setOrderTakeProfit (ticket: number, takeProfit: number): Promise<void>;
+    // public abstract setOrderTakeProfit (ticket: number, takeProfit: number): Promise<void>;
 
     /**
      * Used to get the account symbols.

@@ -5,6 +5,9 @@ import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { MidaBrokerOrderStatusType } from "#orders/MidaBrokerOrderStatusType";
 import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
 import { MidaBrokerOrderType } from "#orders/MidaBrokerOrderType";
+import { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
+import { MidaSymbolQuotationPriceType } from "#quotations/MidaSymbolQuotationPriceType";
+import { MidaSymbol } from "#symbols/MidaSymbol";
 
 export class PlaygroundBrokerAccount extends MidaBrokerAccount {
     private readonly _localDate: Date;
@@ -53,8 +56,20 @@ export class PlaygroundBrokerAccount extends MidaBrokerAccount {
         return this._orders.get(ticket);
     }
 
-    public async getSymbolLastTick (symbol: string): Promise<MidaSymbolTick> {
-        return this._lastTicks[symbol];
+    public async getOrderGrossProfit (ticket: number): Promise<number> {
+        throw new Error();
+    }
+
+    public async getOrderNetProfit (ticket: number): Promise<number> {
+        throw new Error();
+    }
+
+    public async getOrderSwaps (ticket: number): Promise<number> {
+        throw new Error();
+    }
+
+    public async getOrderCommission (ticket: number): Promise<number> {
+        throw new Error();
     }
 
     public async placeOrder (directives: MidaBrokerOrderDirectives): Promise<MidaBrokerOrder> {
@@ -77,6 +92,34 @@ export class PlaygroundBrokerAccount extends MidaBrokerAccount {
         this._orders.set(order.ticket, order);
 
         return order;
+    }
+
+    public async cancelOrder (ticket: number): Promise<void> {
+        throw new Error();
+    }
+
+    public async closeOrder (ticket: number): Promise<void> {
+        throw new Error();
+    }
+
+    public async getSymbols (): Promise<MidaSymbol[]> {
+        return [];
+    }
+
+    public async getSymbol (symbol: string): Promise<MidaSymbol> {
+        throw new Error();
+    }
+
+    public async isSymbolMarketOpen (symbol: string): Promise<boolean> {
+        throw new Error();
+    }
+
+    public async getSymbolPeriods (symbol: string, timeframe: number, priceType?: MidaSymbolQuotationPriceType): Promise<MidaSymbolPeriod[]> {
+        return [];
+    }
+
+    public async getSymbolLastTick (symbol: string): Promise<MidaSymbolTick> {
+        return this._lastTicks[symbol];
     }
 
     /**
@@ -120,6 +163,7 @@ export class PlaygroundBrokerAccount extends MidaBrokerAccount {
 
     private async _onTick (tick: MidaSymbolTick): Promise<void> {
         await this._updatePendingOrders(tick);
+        await this._updateOpenOrders(tick);
     }
 
     private async _updatePendingOrders (tick: MidaSymbolTick): Promise<void> {
@@ -131,6 +175,10 @@ export class PlaygroundBrokerAccount extends MidaBrokerAccount {
     }
 
     private async _updateOpenOrders (tick: MidaSymbolTick): Promise<void> {
+        const orders: MidaBrokerOrder[] = await this.getOpenOrders();
 
+        for (const order of orders) {
+
+        }
     }
 }
