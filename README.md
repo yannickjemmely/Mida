@@ -14,7 +14,8 @@ Mida is designed to:
 
 Furthermore, Mida is free and open source.
 
-**This is a work in progress project (the API is not fully implemented, the NPM module is not published). Please create an issue for questions.**
+**This is a work in progress project (the API is not fully implemented, the NPM module is not published).<br>
+Please create an issue for questions.**
 
 ## Disclaimer
 Operating in CFDs/Forex is highly speculative and carries a high level of risk.

@@ -2,7 +2,6 @@
 export type MidaBrokerParameters = {
     /** The broker name. */
     name: string;
-
     /** The broker website address. */
     websiteUri: string;
 };
