@@ -11,26 +11,22 @@ import { MidaSymbol } from "#symbols/MidaSymbol";
 
 export class PlaygroundBrokerAccount extends MidaBrokerAccount {
     private readonly _localDate: Date;
-    private readonly _ticks: { [symbol: string]: MidaSymbolTick[]; };
+    private readonly _localTicks: { [symbol: string]: MidaSymbolTick[]; };
     private readonly _lastTicks: { [symbol: string]: MidaSymbolTick; };
     private _balance: number;
     private _ticketsCounter: number;
 
     private readonly _orders: Map<number, MidaBrokerOrder>;
 
-    public constructor ({ id, ownerName, type, broker, currency, ordersHistory = [], }: PlaygroundBrokerAccountParameters) {
+    public constructor ({ id, ownerName, type, broker, currency, }: PlaygroundBrokerAccountParameters) {
         super({ id, ownerName, type, currency, broker, });
 
         this._localDate = new Date(0);
-        this._ticks = {};
+        this._localTicks = {};
         this._lastTicks = {};
         this._balance = 0;
         this._ticketsCounter = 0;
         this._orders = new Map();
-
-        for (const order of ordersHistory) {
-            this._orders.set(order.ticket, order);
-        }
     }
 
     public async getBalance (): Promise<number> {
@@ -95,11 +91,31 @@ export class PlaygroundBrokerAccount extends MidaBrokerAccount {
     }
 
     public async cancelOrder (ticket: number): Promise<void> {
-        throw new Error();
+        const order: MidaBrokerOrder | undefined = this._orders.get(ticket);
+
+        if (!order) {
+            throw new Error();
+        }
+
+        if (order.status !== MidaBrokerOrderStatusType.PENDING) {
+            throw new Error();
+        }
+
+        this.notifyListeners("order-cancel", { date: this._localDate, price: 0, });
     }
 
     public async closeOrder (ticket: number): Promise<void> {
-        throw new Error();
+        const order: MidaBrokerOrder | undefined = this._orders.get(ticket);
+
+        if (!order) {
+            throw new Error();
+        }
+
+        if (order.status !== MidaBrokerOrderStatusType.OPEN) {
+            throw new Error();
+        }
+
+        this.notifyListeners("order-close", { date: this._localDate, price: 0, });
     }
 
     public async getSymbols (): Promise<MidaSymbol[]> {
@@ -119,21 +135,26 @@ export class PlaygroundBrokerAccount extends MidaBrokerAccount {
     }
 
     public async getSymbolLastTick (symbol: string): Promise<MidaSymbolTick> {
-        return this._lastTicks[symbol];
+        const lastTick: MidaSymbolTick = this._lastTicks[symbol];
+
+        if (!lastTick) {
+            throw new Error();
+        }
+
+        return lastTick;
     }
 
     /**
      * Used to elapse a given amount of time.
      * @param amount Amount of time to elapse in seconds.
-     * @returns The ticks that have been elapsed.
      */
     public async elapseTime (amount: number): Promise<MidaSymbolTick[]> {
         const previousDate: Date = this._localDate;
         const actualDate: Date = new Date(this._localDate.valueOf() + amount * 1000);
         const elapsedTicks: MidaSymbolTick[] = [];
 
-        for (const symbol in this._ticks) {
-            const ticks: MidaSymbolTick[] = this._ticks[symbol];
+        for (const symbol in this._localTicks) {
+            const ticks: MidaSymbolTick[] = this._localTicks[symbol];
 
             for (const tick of ticks) {
                 if (tick.date > previousDate && tick.date <= actualDate) {
@@ -157,13 +178,28 @@ export class PlaygroundBrokerAccount extends MidaBrokerAccount {
         return elapsedTicks;
     }
 
-    public async deposit (amount: number): Promise<void> {
+    public deposit (amount: number): void {
         this._balance += amount;
     }
 
+    public withdraw (amount: number): void {
+        this._balance -= amount;
+    }
+
+    public async loadTicks (symbol: string, ticks: MidaSymbolTick[]): Promise<void> {
+        const localTicks: MidaSymbolTick[] = this._localTicks[symbol] || [];
+        const updatedTicks: MidaSymbolTick[] = localTicks.concat(ticks);
+
+        updatedTicks.sort((a: MidaSymbolTick, b: MidaSymbolTick): number => a.date.valueOf() - b.date.valueOf());
+
+        this._localTicks[symbol] = updatedTicks;
+    }
+
     private async _onTick (tick: MidaSymbolTick): Promise<void> {
-        await this._updatePendingOrders(tick);
-        await this._updateOpenOrders(tick);
+        console.log(tick);
+        //const tasks: Promise<void>[] = [ this._updatePendingOrders(tick), this._updateOpenOrders(tick), ];
+
+        //await Promise.all(tasks);
     }
 
     private async _updatePendingOrders (tick: MidaSymbolTick): Promise<void> {

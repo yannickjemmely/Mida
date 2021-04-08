@@ -1,7 +1,7 @@
 import { MidaBroker } from "#brokers/MidaBroker";
 import { MidaError } from "#errors/MidaError";
 
-export class UnsupportedBrokerOperationError extends MidaError {
+export class MidaBrokerUnsupportedOperationError extends MidaError {
     private readonly _broker: MidaBroker;
 
     public constructor (broker: MidaBroker) {

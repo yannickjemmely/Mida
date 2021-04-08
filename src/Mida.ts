@@ -16,14 +16,22 @@ export class Mida {
     }
 }*/
 
-// <orders>
+// <brokers>
+export { MidaBroker } from "#brokers/MidaBroker";
+export { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
+export { MidaBrokerAccountParameters } from "#brokers/MidaBrokerAccountParameters";
+export { MidaBrokerAccountType } from "#brokers/MidaBrokerAccountType";
+export { MidaBrokerParameters } from "#brokers/MidaBrokerParameters";
+// </brokers>
+
+// <order>
 export { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
 export { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
 export { MidaBrokerOrderExecutionType } from "#orders/MidaBrokerOrderExecutionType";
 export { MidaBrokerOrderParameters } from "#orders/MidaBrokerOrderParameters";
 export { MidaBrokerOrderStatusType } from "#orders/MidaBrokerOrderStatusType";
 export { MidaBrokerOrderType } from "#orders/MidaBrokerOrderType";
-// </orders>
+// </order>
 
 // <events>
 export { MidaEvent } from "#events/MidaEvent";

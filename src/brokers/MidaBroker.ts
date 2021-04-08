@@ -24,7 +24,6 @@ export abstract class MidaBroker {
     /**
      * Used to login into an account.
      * @param parameters Login parameters.
-     * @returns Logged in account.
      */
     public abstract login (...parameters: any[]): Promise<MidaBrokerAccount>;
 
@@ -38,7 +37,6 @@ export abstract class MidaBroker {
      * Used to login into any integrated broker by its name.
      * @param name The broker name.
      * @param parameters Login parameters.
-     * @returns Logged in account.
      */
     public static async login (name: string, ...parameters: any[]): Promise<MidaBrokerAccount> {
         throw new Error(); // TODO: Implement.

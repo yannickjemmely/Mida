@@ -102,7 +102,7 @@ export abstract class MidaBrokerAccount {
     /**
      * Used to place an order.
      * @param directives The order directives.
-     * @returns The placed order. If the order has a market execution, the Promise
+     * @returns order The placed order. If the order has a market execution, the Promise
      * will resolve after order open (open state). If the order has a limit or
      * stop execution, the Promise will resolve after order creation (pending state).
      */

@@ -1,5 +1,4 @@
 import { MidaBrokerAccountParameters } from "#brokers/MidaBrokerAccountParameters";
-import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
 
 export type PlaygroundBrokerAccountParameters = MidaBrokerAccountParameters & {
     localDate: Date;
@@ -7,5 +6,4 @@ export type PlaygroundBrokerAccountParameters = MidaBrokerAccountParameters & {
     balance: number;
     negativeBalanceProtection?: boolean;
     fixedOrderCommission?: number;
-    ordersHistory?: MidaBrokerOrder[];
 };

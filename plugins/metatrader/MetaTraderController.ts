@@ -9,10 +9,13 @@ export class MetaTraderController {
     private _isLoggedIn: boolean;
     private readonly _emitter: MidaEmitter;
 
+    private _isHandlingOrder: boolean;
+
     public constructor (browserTab: MidaBrowserTab) {
         this._browserTab = browserTab;
         this._isLoggedIn = false;
         this._emitter = new MidaEmitter();
+        this._isHandlingOrder = false;
     }
 
     public async login ({ id, password, serverName, version = 4, }: MetaTraderBrokerLoginParameters): Promise<void> {
@@ -91,6 +94,12 @@ export class MetaTraderController {
     }
 
     public async placeOrder (directives: MidaBrokerOrderDirectives): Promise<any> {
+        if (this._isHandlingOrder) {
+            throw new Error();
+        }
+
+        this._isHandlingOrder = true;
+
         const orderDescriptor: any = await this._browserTab.evaluate(`((w) => {
             const orderInterface = w.document.querySelector("[external-order-wrapper]");
                         
@@ -121,6 +130,8 @@ export class MetaTraderController {
                 
             }
         })(window);`);
+
+        this._isHandlingOrder = false;
     }
 
     private async _appendListeners (): Promise<void> {
@@ -176,7 +187,7 @@ export class MetaTraderController {
         await this._browserTab.evaluate(`((w) => {
             w.document.querySelector('.page-block.bar > .page-block:first-child a[title="New Order"]').click();
             w.document.querySelector(".modal:not(.hidden)").setAttribute("${orderElementAttributeName}", "");
-            // w.document.querySelector("[${orderElementAttributeName}] > div > div:nth-child(2)").click();
+            w.document.querySelector("[${orderElementAttributeName}] > div > div:nth-child(2)").click();
         })(window);`);
         // </orders>
     }
