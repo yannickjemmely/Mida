@@ -17,20 +17,13 @@ Furthermore, Mida is free and open source.
 **This is a work in progress project, the API is not fully implemented, the NPM module is not published.<br>
 Please create an issue for questions.**
 
-## Disclaimer
-Operating in CFDs/Forex is highly speculative and carries a high level of risk.
-It's possible to lose all your capital. These products may not be suitable for everyone,
-you should ensure that you understand the risks involved. Furthermore, Mida is not responsible
-for: commissions or other taxes applied to your operations, they depend on your broker;
-and any technical inconvenience that may lead to money loss, for example a stop loss not being set.
-
 ## Usage
 For the complete documentation please refer to the [API documentation]().<br>
-Operating is possible with any MetaTrader 4/5 broker account.
+Operating is possible with any MetaTrader 4/5 broker account and any directly supported broker.
 
 ### Broker account login
 How to login into a MetaTrader 4 account.
-```typescript
+```javascript
 const myAccount = await MidaBroker.login("MT4", {
     id: "",
     password: "",
@@ -38,9 +31,9 @@ const myAccount = await MidaBroker.login("MT4", {
 });
 ```
 
-How to login into a broker directly supported by Mida.
-```typescript
-const myAccount = await MidaBroker.login("BDSwiss", {
+How to login into a directly supported broker.
+```javascript
+const myAccount = await MidaBroker.login("ICMarkets", {
     id: "",
     password: "",
 });
@@ -48,7 +41,7 @@ const myAccount = await MidaBroker.login("BDSwiss", {
 
 ### Broker orders and positions
 How top open a long position for Bitcoin against USD.
-```typescript
+```javascript
 const myOrder = await myAccount.placeOrder({
     symbol: "BTCUSD",
     type: MidaBrokerOrderType.BUY,
@@ -60,7 +53,7 @@ console.log(myOrder.openPrice);
 ```
 
 How to open a short position for EUR against USD.
-```typescript
+```javascript
 const myOrder = await myAccount.placeOrder({
     symbol: "EURUSD",
     type: MidaBrokerOrderType.SELL,
@@ -73,24 +66,27 @@ console.log(myOrder.openPrice);
 
 ### Symbols
 How to retrieve a symbol.
-```typescript
+```javascript
 const symbol = await myAccount.getSymbol("#AAPL");
 
 if (!symbol) {
     console.log("Apple stocks are not available for this account!");
 }
+
+console.log(symbol.digits);
+console.log(symbol.leverage);
 ```
 
 How to get the price of a symbol.
-```typescript
+```javascript
 const symbol = await myAccount.getSymbol("BTCUSD");
-const price: number = await symbol.getBid();
+const price = await symbol.getBid();
 
 console.log(`Bitcoin price is ${price} dollars.`);
 ```
 
 How to listen the ticks of a symbol.
-```typescript
+```javascript
 const symbol = await myAccount.getSymbol("#GME");
 
 symbol.on("tick", (event) => {
@@ -105,7 +101,7 @@ Examples of technical market analysis.
 
 #### Candlesticks
 How to get the candlesticks of a symbol (candlesticks and bars are referred as periods).
-```typescript
+```javascript
 const periods = await myAccount.getSymbolPeriods("EURUSD", MidaSymbolPeriodTimeframeType.M30);
 const lastPeriod = periods[periods.length - 1];
 
@@ -113,12 +109,19 @@ console.log("Last candlestick OHLC: " + lastPeriod.ohlc);
 console.log("Last candlestick close price: " + lastPeriod.close);
 ```
 
+## Disclaimer
+Operating in CFDs/Forex is highly speculative and carries a high level of risk.
+It's possible to lose all your capital. These products may not be suitable for everyone,
+you should ensure that you understand the risks involved. Furthermore, Mida is not responsible
+for: commissions or other taxes applied to your operations, they depend on your broker;
+and any technical inconvenience that may lead to money loss, for example a stop loss not being set.
+
 ## Why Mida and not MQL
 Nowadays MQL is an obsolete technology and a barrier between
 modern traders and algorithmic trading. The mission of Mida is allowing
 anyone to operate in financial markets without advanced programming skills or
 specific computer requirements. Furthermore, Mida allows operating with MetaTrader
-accounts without installing MetaTrader (which is available only for Windows).
+account without installing MetaTrader (which is available only for Windows).
 
 ## Contributors
 The author and maintainer of the project is [Vasile Pește](https://github.com/Vasile-Peste) (vasile.peste@protonmail.ch).

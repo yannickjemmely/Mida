@@ -156,14 +156,12 @@ export abstract class MidaBrokerAccount {
      * @param symbol The string representation of the symbol.
      * @param timeframe The periods timeframe.
      * @param priceType The periods price type.
-     * @returns The periods, length is decided by the broker.
      */
     public abstract getSymbolPeriods (symbol: string, timeframe: number, priceType?: MidaSymbolQuotationPriceType): Promise<MidaSymbolPeriod[]>;
 
     /**
      * Used to get the last market tick of a symbol.
      * @param symbol The string representation of the symbol.
-     * @returns The symbol last tick.
      */
     public abstract getSymbolLastTick (symbol: string): Promise<MidaSymbolTick>;
 
