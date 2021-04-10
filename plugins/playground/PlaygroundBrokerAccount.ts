@@ -49,7 +49,8 @@ export class PlaygroundBrokerAccount extends MidaBrokerAccount {
     }
 
     public async getUsedMargin (): Promise<number> {
-        throw new Error();
+        // throw new Error();
+        return 0;
     }
 
     public async getOrders (): Promise<MidaBrokerOrder[]> {
