@@ -88,7 +88,7 @@ export abstract class MidaBrokerAccount {
     public abstract getOrderNetProfit (ticket: number): Promise<number>;
 
     /**
-     * Used to get the swaps of an order (the order must be in open or closed state).
+     * Used to get the swap of an order (the order must be in open or closed state).
      * @param ticket The order ticket.
      */
     public abstract getOrderSwaps (ticket: number): Promise<number>;

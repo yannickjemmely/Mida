@@ -1,5 +1,6 @@
 import { MidaBroker } from "#brokers/MidaBroker";
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
+import { PlaygroundBrokerAccount } from "!plugins/playground/PlaygroundBrokerAccount";
 
 export class PlaygroundBroker extends MidaBroker {
     public constructor () {
@@ -10,6 +11,10 @@ export class PlaygroundBroker extends MidaBroker {
     }
 
     public async login (...parameters: any[]): Promise<MidaBrokerAccount> {
-        throw new Error();
+        // @ts-ignore
+        return new PlaygroundBrokerAccount({
+            id: "12345",
+            ownerName: "Vasile Alexandru Peste",
+        });
     }
 }

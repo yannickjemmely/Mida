@@ -1,6 +1,23 @@
 require("../../aliases.config");
+import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 
-import { GenericObject } from "#utilities/GenericObject";
+/*
+(async (): Promise<void> => {
+    await MetaTrader.login({
+        id: "30793695",
+        password: "gygw73",
+        serverName: "ICMarketsEU-Demo03",
+    });
+})();
+*/
+import { PlaygroundBroker } from "!plugins/playground/PlaygroundBroker";
+import { PlaygroundBrokerAccount } from "!plugins/playground/PlaygroundBrokerAccount";
+import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
+import { MidaSymbolQuotation } from "#quotations/MidaSymbolQuotation";
+import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
+import { MidaBrokerOrderType } from "#orders/MidaBrokerOrderType";
+
+
 
 /** Represents the module class. *//*
 export class Mida {
@@ -45,12 +62,52 @@ export { MidaSymbolPeriodParameters} from "#periods/MidaSymbolPeriodParameters";
 export { MidaSymbolPeriodTimeframeType } from "#periods/MidaSymbolPeriodTimeframeType";
 // </periods>
 
-import { MetaTrader } from "!plugins/metatrader/MetaTrader";
+const sumTicks: MidaSymbolTick[] = [
+    new MidaSymbolTick({
+        quotation: new MidaSymbolQuotation({
+            symbol: "EURUSD",
+            date: new Date("2021-04-10T10:05:26.787Z"),
+            bid: 5000,
+            ask: 5100,
+        }),
+    }),
+    new MidaSymbolTick({
+        quotation: new MidaSymbolQuotation({
+            symbol: "EURUSD",
+            date: new Date("2021-04-10T10:07:26.787Z"),
+            bid: 5100,
+            ask: 5200,
+        }),
+    }),
+];
 
 (async (): Promise<void> => {
-    await MetaTrader.login({
-        id: "30793695",
-        password: "gygw73",
-        serverName: "ICMarketsEU-Demo03",
+    const playground: PlaygroundBroker = new PlaygroundBroker();
+
+    const account: PlaygroundBrokerAccount = await playground.login({}) as PlaygroundBrokerAccount;
+
+    account.localDate = new Date("2021-04-10T10:03:25.787Z");
+
+    await account.loadTicks(sumTicks);
+
+    // @ts-ignore
+    await account.elapseTime(60 * 3 + 1);
+
+    const order: MidaBrokerOrder = await account.placeOrder({
+        symbol: "EURUSD",
+        type: MidaBrokerOrderType.BUY,
+        volume: 5,
     });
+    console.log(await order.getGrossProfit());
+    console.log(order.status);
+
+    await account.elapseTime(60 * 3);
+
+
+    console.log(await order.getGrossProfit());
+    console.log(order.status);
+
+    //console.log(await account.getSymbolLastTick("EURUSD"));
+
+    console.log("Done!");
 })();

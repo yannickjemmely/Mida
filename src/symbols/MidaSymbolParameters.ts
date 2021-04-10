@@ -11,6 +11,7 @@ export type MidaSymbolParameters = {
     digits: number;
     spreadType: MidaSymbolSpreadType;
     leverage: number;
-    minVolume: number;
-    maxVolume: number;
+    minLots: number;
+    maxLots: number;
+    lotUnits: number;
 };

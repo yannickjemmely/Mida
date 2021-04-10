@@ -15,8 +15,9 @@ export class MidaSymbol {
     private readonly _digits: number;
     private readonly _spreadType: MidaSymbolSpreadType;
     private readonly _leverage: number;
-    private readonly _minVolume: number;
-    private readonly _maxVolume: number;
+    private readonly _minLots: number;
+    private readonly _maxLots: number;
+    private readonly _lotUnits: number;
     private readonly _emitter: MidaEmitter;
 
     public constructor ({
@@ -27,8 +28,9 @@ export class MidaSymbol {
         digits,
         spreadType,
         leverage,
-        minVolume,
-        maxVolume,
+        minLots,
+        maxLots,
+        lotUnits,
     }: MidaSymbolParameters) {
         this._symbol = symbol;
         this._brokerAccount = brokerAccount;
@@ -37,8 +39,9 @@ export class MidaSymbol {
         this._digits = digits;
         this._spreadType = spreadType;
         this._leverage = leverage;
-        this._minVolume = minVolume;
-        this._maxVolume = maxVolume;
+        this._minLots = minLots;
+        this._maxLots = maxLots;
+        this._lotUnits = lotUnits;
         this._emitter = new MidaEmitter();
     }
 
@@ -72,6 +75,21 @@ export class MidaSymbol {
         return this._leverage;
     }
 
+    /** The symbol minimum lots order. */
+    public get minLots (): number {
+        return this._minLots;
+    }
+
+    /** The symbol maximum lots order. */
+    public get maxLots (): number {
+        return this._maxLots;
+    }
+
+    /** The symbol units for one lot. */
+    public get lotUnits (): number {
+        return this._lotUnits;
+    }
+
     /** Used to get the latest symbol tick. */
     public async getLastTick (): Promise<MidaSymbolTick> {
         return this._brokerAccount.getSymbolLastTick(this._symbol);
@@ -94,17 +112,17 @@ export class MidaSymbol {
     /**
      * Used to get the required margin for opening an order at the actual price.
      * @param type The order type.
-     * @param volume The order volume.
+     * @param lots The order lots.
      * @returns The required margin to open the order.
      */
-    public async getRequiredMargin (type: MidaBrokerOrderType, volume: number): Promise<number> {
+    public async getRequiredMargin (type: MidaBrokerOrderType, lots: number): Promise<number> {
         const lastTick: MidaSymbolTick = await this.getLastTick();
 
         if (type === MidaBrokerOrderType.SELL) {
-            return this._leverage * lastTick.bid * volume;
+            return this._leverage * lastTick.bid * lots;
         }
         else if (type === MidaBrokerOrderType.BUY) {
-            return this._leverage * lastTick.ask * volume;
+            return this._leverage * lastTick.ask * lots;
         }
 
         throw new Error();
