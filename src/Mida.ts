@@ -67,16 +67,16 @@ const sumTicks: MidaSymbolTick[] = [
         quotation: new MidaSymbolQuotation({
             symbol: "EURUSD",
             date: new Date("2021-04-10T10:05:26.787Z"),
-            bid: 5000,
-            ask: 5100,
+            bid: 1.17624,
+            ask: 1.17624,
         }),
     }),
     new MidaSymbolTick({
         quotation: new MidaSymbolQuotation({
             symbol: "EURUSD",
             date: new Date("2021-04-10T10:07:26.787Z"),
-            bid: 5100,
-            ask: 5200,
+            bid: 1.19007,
+            ask: 1.19017,
         }),
     }),
 ];
@@ -87,6 +87,7 @@ const sumTicks: MidaSymbolTick[] = [
     const account: PlaygroundBrokerAccount = await playground.login({}) as PlaygroundBrokerAccount;
 
     account.localDate = new Date("2021-04-10T10:03:25.787Z");
+    account.deposit(5000);
 
     await account.loadTicks(sumTicks);
 
@@ -96,15 +97,18 @@ const sumTicks: MidaSymbolTick[] = [
     const order: MidaBrokerOrder = await account.placeOrder({
         symbol: "EURUSD",
         type: MidaBrokerOrderType.BUY,
-        volume: 5,
+        lots: 0.2,
     });
-    console.log(await order.getGrossProfit());
+    console.log(await account.getEquity());
+    console.log(await order.getNetProfit());
     console.log(order.status);
+
+    //await account.closeOrder(order.ticket);
 
     await account.elapseTime(60 * 3);
 
-
-    console.log(await order.getGrossProfit());
+    console.log(await account.getEquity());
+    console.log(await order.getNetProfit());
     console.log(order.status);
 
     //console.log(await account.getSymbolLastTick("EURUSD"));

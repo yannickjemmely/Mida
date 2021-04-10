@@ -60,7 +60,7 @@ export class MetaTraderController {
         await this.placeOrder({
             type: MidaBrokerOrderType.SELL,
             symbol: "CHFJPY",
-            volume: 5,
+            lots: 5,
         });
 
         this._isLoggedIn = true;
@@ -104,7 +104,7 @@ export class MetaTraderController {
             const orderInterface = w.document.querySelector("[external-order-wrapper]");
                         
             orderInterface.querySelector("#symbol").value = "${directives.symbol}";
-            orderInterface.querySelector("#volume").value = ${directives.volume};
+            orderInterface.querySelector("#volume").value = ${directives.lots};
             
             if (${typeof directives.stopLoss === "number"}) {
                 orderInterface.querySelector("#sl").value = ${directives.stopLoss};

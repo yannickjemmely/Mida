@@ -6,4 +6,6 @@ export type PlaygroundBrokerAccountParameters = MidaBrokerAccountParameters & {
     balance: number;
     negativeBalanceProtection?: boolean;
     fixedOrderCommission?: number;
+    marginCallLevel?: number;
+    stopOutLevel?: number;
 };

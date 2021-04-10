@@ -9,7 +9,7 @@ A JavaScript framework to easily operate in financial markets.
 Mida is designed to:
 - Trade financial assets such as stocks, crypto, forex or commodities;
 - Operate with any MetaTrader broker account using only JavaScript/TypeScript;
-- Automate trading strategies through expert advisors and indicators;
+- Automate and backtest trading strategies through expert advisors and indicators;
 - Analyze markets and prices through indicators and analysis tools.
 
 Furthermore, Mida is free and open source.
@@ -45,7 +45,7 @@ How top open a long position for Bitcoin against USD.
 const myOrder = await myAccount.placeOrder({
     symbol: "BTCUSD",
     type: MidaBrokerOrderType.BUY,
-    volume: 1,
+    lots: 1,
 });
 
 console.log(myOrder.ticket);
@@ -57,7 +57,7 @@ How to open a short position for EUR against USD.
 const myOrder = await myAccount.placeOrder({
     symbol: "EURUSD",
     type: MidaBrokerOrderType.SELL,
-    volume: 0.1,
+    lots: 0.1,
 });
 
 console.log(myOrder.ticket);

@@ -100,10 +100,10 @@ export class PlaygroundBrokerAccount extends MidaBrokerAccount {
         }
 
         if (order.type === MidaBrokerOrderType.SELL) {
-            return (openPrice - closePrice) * order.volume * 100000;
+            return (openPrice - closePrice) * order.lots * 100000;
         }
         else if (order.type === MidaBrokerOrderType.BUY) {
-            return (closePrice - openPrice) * order.volume * 100000;
+            return (closePrice - openPrice) * order.lots * 100000;
         }
 
         throw new Error();
@@ -117,11 +117,11 @@ export class PlaygroundBrokerAccount extends MidaBrokerAccount {
     }
 
     public async getOrderSwaps (ticket: number): Promise<number> {
-        throw new Error();
+        return 0;
     }
 
     public async getOrderCommission (ticket: number): Promise<number> {
-        throw new Error();
+        return 0;
     }
 
     public async placeOrder (directives: MidaBrokerOrderDirectives): Promise<MidaBrokerOrder> {
@@ -157,7 +157,28 @@ export class PlaygroundBrokerAccount extends MidaBrokerAccount {
             throw new Error();
         }
 
-        this.notifyListeners("order-cancel", { date: this._localDate, price: 0, });
+        const lastTick: MidaSymbolTick = await this.getSymbolLastTick(order.symbol);
+        let cancelPrice: number | undefined;
+
+        if (order.type === MidaBrokerOrderType.SELL) {
+            cancelPrice = lastTick.ask;
+        }
+        else if (order.type === MidaBrokerOrderType.BUY) {
+            cancelPrice = lastTick.bid;
+        }
+        else {
+            throw new Error();
+        }
+
+        if (cancelPrice === undefined) {
+            throw new Error();
+        }
+
+        this.notifyListeners("order-cancel", {
+            ticket: order.ticket,
+            date: new Date(this._localDate),
+            price: cancelPrice,
+        });
     }
 
     public async closeOrder (ticket: number): Promise<void> {
@@ -187,6 +208,8 @@ export class PlaygroundBrokerAccount extends MidaBrokerAccount {
         if (closePrice === undefined) {
             throw new Error();
         }
+
+        this._balance += await order.getNetProfit();
 
         this.notifyListeners("order-close", {
             ticket: order.ticket,
@@ -277,27 +300,127 @@ export class PlaygroundBrokerAccount extends MidaBrokerAccount {
         this._localTicks[symbol] = updatedTicks;
     }
 
+    private async _openPendingOrder (ticket: number): Promise<void> {
+        const order: MidaBrokerOrder | undefined = this._orders.get(ticket);
+
+        if (!order) {
+            throw new Error();
+        }
+
+        if (order.status !== MidaBrokerOrderStatusType.PENDING) {
+            throw new Error();
+        }
+
+        const lastTick: MidaSymbolTick = await this.getSymbolLastTick(order.symbol);
+        let openPrice: number | undefined;
+
+        if (order.type === MidaBrokerOrderType.SELL) {
+            openPrice = lastTick.bid;
+        }
+        else if (order.type === MidaBrokerOrderType.BUY) {
+            openPrice = lastTick.ask;
+        }
+        else {
+            throw new Error();
+        }
+
+        if (openPrice === undefined) {
+            throw new Error();
+        }
+
+        this.notifyListeners("order-open", {
+            ticket: order.ticket,
+            date: new Date(this._localDate),
+            price: openPrice,
+        });
+    }
+
     private async _onTick (tick: MidaSymbolTick): Promise<void> {
         const tasks: Promise<void>[] = [ this._updatePendingOrders(tick), this._updateOpenOrders(tick), ];
 
         await Promise.all(tasks);
 
         this.notifyListeners("tick", { tick, });
+
+        // <margin-call>
+        const marginLevel: number = await this.getMarginLevel();
+
+        if (Number.isFinite(marginLevel) && marginLevel <= 100) {
+            this.notifyListeners("margin-call", {
+                marginLevel,
+            });
+        }
+        // </margin-call>
     }
 
+    // tslint:disable-next-line:cyclomatic-complexity
     private async _updatePendingOrders (tick: MidaSymbolTick): Promise<void> {
         const orders: MidaBrokerOrder[] = await this.getPendingOrders();
 
         for (const order of orders) {
+            // <limit>
+            if (order.limit !== undefined) {
+                if (
+                    (order.type === MidaBrokerOrderType.SELL && tick.bid >= order.limit)
+                    || (order.type === MidaBrokerOrderType.BUY && tick.ask <= order.limit)
+                ) {
+                    await this._openPendingOrder(order.ticket);
+                }
+            }
+            // </limit>
 
+            // <stop>
+            if (order.stop !== undefined) {
+                if (
+                    (order.type === MidaBrokerOrderType.SELL && tick.bid <= order.stop)
+                    || (order.type === MidaBrokerOrderType.BUY && tick.ask >= order.stop)
+                ) {
+                    await this._openPendingOrder(order.ticket);
+                }
+            }
+            // </stop>
         }
     }
 
+    // tslint:disable-next-line:cyclomatic-complexity
     private async _updateOpenOrders (tick: MidaSymbolTick): Promise<void> {
         const orders: MidaBrokerOrder[] = await this.getOpenOrders();
 
         for (const order of orders) {
+            // <stop-loss>
+            if (order.stopLoss !== undefined) {
+                if (
+                    (order.type === MidaBrokerOrderType.SELL && tick.ask >= order.stopLoss)
+                    || (order.type === MidaBrokerOrderType.BUY && tick.bid <= order.stopLoss)
+                ) {
+                    await order.close();
+                }
+            }
+            // </stop-loss>
 
+            // <take-profit>
+            if (order.takeProfit !== undefined) {
+                if (
+                    (order.type === MidaBrokerOrderType.SELL && tick.ask <= order.takeProfit)
+                    || (order.type === MidaBrokerOrderType.BUY && tick.bid >= order.takeProfit)
+                ) {
+                    await order.close();
+                }
+            }
+            // </take-profit>
+
+            // <stop-out>
+            const marginLevel: number = await this.getMarginLevel();
+
+            if (Number.isFinite(marginLevel) && marginLevel <= 50) {
+                await order.close();
+
+                this.notifyListeners("stop-out", {
+                    ticket: order.ticket,
+                    marginLevel,
+                });
+            }
+            // </stop-out>
         }
     }
 }

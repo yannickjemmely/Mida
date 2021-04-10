@@ -23,6 +23,10 @@ export class MidaBrokerOrder {
     private _cancelPrice?: number;
     private _openPrice?: number;
     private _closePrice?: number;
+    private _stopLoss?: number;
+    private _takeProfit?: number;
+    private _limit?: number;
+    private _stop?: number;
     private readonly _tags: Set<string>;
     private readonly _emitter: MidaEmitter;
 
@@ -53,6 +57,10 @@ export class MidaBrokerOrder {
         this._cancelPrice = cancelPrice;
         this._openPrice = openPrice;
         this._closePrice = closePrice;
+        this._stopLoss = requestDirectives.stopLoss;
+        this._takeProfit = requestDirectives.takeProfit;
+        this._limit = requestDirectives.limit;
+        this._stop = requestDirectives.stop;
         this._tags = new Set(tags);
         this._emitter = new MidaEmitter();
 
@@ -119,6 +127,26 @@ export class MidaBrokerOrder {
         return this._closePrice;
     }
 
+    /** The order stop loss. */
+    public get stopLoss (): number | undefined {
+        return this._stopLoss;
+    }
+
+    /** The order take profit. */
+    public get takeProfit (): number | undefined {
+        return this._takeProfit;
+    }
+
+    /** The order limit. */
+    public get limit (): number | undefined {
+        return this._limit;
+    }
+
+    /** The order stop. */
+    public get stop (): number | undefined {
+        return this._stop;
+    }
+
     /** The order tags (stored only locally). */
     public get tags (): string[] {
         return [ ...this._tags, ];
@@ -134,9 +162,9 @@ export class MidaBrokerOrder {
         return this._requestDirectives.type;
     }
 
-    /** The order volume. */
-    public get volume (): number {
-        return this._requestDirectives.volume;
+    /** The order lots. */
+    public get lots (): number {
+        return this._requestDirectives.lots;
     }
 
     /** The order status. */
@@ -200,7 +228,7 @@ export class MidaBrokerOrder {
             return;
         }
 
-        //return this._openPrice * this.volume / (await this.getLeverage());
+        // return this._openPrice * this.lots / (await this.getLeverage());
     }
 
     public async getSwaps (): Promise<number> {
@@ -210,12 +238,6 @@ export class MidaBrokerOrder {
     public async getCommission (): Promise<number> {
         return this._brokerAccount.getOrderCommission(this._ticket);
     }
-
-    /*
-    public async getStopLoss (): Promise<number> {
-        return this._brokerAccount.getOrderStopLoss(this._ticket);
-    }
-    */
 
     public on (type: string, listener?: MidaEventListener): Promise<MidaEvent> | string {
         return this._emitter.on(type, listener);
@@ -255,9 +277,41 @@ export class MidaBrokerOrder {
 
             case "order-close": {
                 this._closeDate = event.descriptor.date;
-                this._closePrice = event.descriptor.close;
+                this._closePrice = event.descriptor.price;
 
                 this._notifyListeners("close", event.descriptor);
+
+                break;
+            }
+
+            case "order-directives": {
+                const directives: GenericObject = event.descriptor.directives;
+
+                for (const directive of Object.keys(directives)) {
+                    switch (directive) {
+                        case "stopLoss":
+                            this._stopLoss = directives[directive];
+
+                            break;
+
+                        case "takeProfit":
+                            this._takeProfit = directives[directive];
+
+                            break;
+
+                        case "limit":
+                            this._limit = directives[directive];
+
+                            break;
+
+                        case "stop":
+                            this._stop = directives[directive];
+
+                            break;
+                    }
+                }
+
+                this._notifyListeners("directives", event.descriptor);
 
                 break;
             }
