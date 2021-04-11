@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1381px" height="779px" viewBox="0 0 1381 779" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Mida Scheme</title>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <rect id="Rectangle" fill="#FFFFFF" x="0" y="0" width="1381" height="779"></rect>
+        <rect id="Rectangle" stroke="#979797" fill="#D8D8D8" x="50.5" y="388.5" width="144" height="68"></rect>
+        <rect id="Rectangle" stroke="#979797" fill="#F2F2F2" x="402.5" y="166.5" width="672" height="512"></rect>
+        <text id="Mida-API" font-family="HelveticaNeue, Helvetica Neue" font-size="24" font-weight="normal" letter-spacing="1.125" fill="#000000">
+            <tspan x="69" y="431">Mida API</tspan>
+        </text>
+        <rect id="Rectangle" stroke="#979797" fill="#D8D8D8" x="507.5" y="216.5" width="197" height="68"></rect>
+        <text id="MetaTrader-4" font-family="HelveticaNeue, Helvetica Neue" font-size="24" font-weight="normal" letter-spacing="1.125" fill="#000000">
+            <tspan x="528" y="260">MetaTrader 4</tspan>
+        </text>
+        <rect id="Rectangle" stroke="#979797" fill="#D8D8D8" x="507.5" y="560.5" width="197" height="68"></rect>
+        <text id="cTrader" font-family="HelveticaNeue, Helvetica Neue" font-size="24" font-weight="normal" letter-spacing="1.125" fill="#000000">
+            <tspan x="562" y="603">cTrader</tspan>
+        </text>
+        <rect id="Rectangle" stroke="#979797" fill="#D8D8D8" x="848.5" y="388.5" width="144" height="68"></rect>
+        <text id="Brokers" font-family="HelveticaNeue, Helvetica Neue" font-size="24" font-weight="normal" letter-spacing="1.125" fill="#000000">
+            <tspan x="875" y="432">Brokers</tspan>
+        </text>
+        <rect id="Rectangle" stroke="#979797" fill="#D8D8D8" x="1175.5" y="388.5" width="155" height="68"></rect>
+        <text id="Markets" font-family="HelveticaNeue, Helvetica Neue" font-size="24" font-weight="normal" letter-spacing="1.125" fill="#000000">
+            <tspan x="1205" y="431">Markets</tspan>
+        </text>
+        <rect id="Rectangle" stroke="#979797" fill="#D8D8D8" x="507.5" y="388.5" width="197" height="68"></rect>
+        <text id="MetaTrader-5" font-family="HelveticaNeue, Helvetica Neue" font-size="24" font-weight="normal" letter-spacing="1.125" fill="#000000">
+            <tspan x="528" y="432">MetaTrader 5</tspan>
+        </text>
+        <path id="Line" d="M465,419 L474,423.5 L465,428 L465,424 L232,424 L232,423 L465,423 L465,419 Z" fill="#979797" fill-rule="nonzero"></path>
+        <path id="Line" d="M815,417 L824,421.5 L815,426 L815,422 L727,422 L727,421 L815,421 L815,417 Z" fill="#979797" fill-rule="nonzero"></path>
+        <path id="Line" d="M1132,417 L1141,421.5 L1132,426 L1132,422 L1014,422 L1014,421 L1132,421 L1132,417 Z" fill="#979797" fill-rule="nonzero"></path>
+        <line x1="721.5" y1="259.5" x2="769.5" y2="259.5" id="Line" stroke="#979797" stroke-linecap="square"></line>
+        <line x1="721.5" y1="586.5" x2="769.5" y2="586.5" id="Line" stroke="#979797" stroke-linecap="square"></line>
+        <path id="Line" d="M921,100 L921,351 L925,351 L920.5,360 L916,351 L920,351 L920,100 L921,100 Z" fill="#979797" fill-rule="nonzero"></path>
+        <line x1="332.5" y1="97.5" x2="920.5" y2="105.5" id="Line" stroke="#979797" stroke-linecap="square" transform="translate(626.500000, 101.500000) rotate(-1.000000) translate(-626.500000, -101.500000) "></line>
+        <line x1="332.5" y1="423.5" x2="332.5" y2="103.5" id="Line" stroke="#979797" stroke-linecap="square"></line>
+        <path id="Line" d="M491.848039,259.141017 L488.814192,268.735065 L485.942,265.95 L332.858983,423.848039 L332.510945,424.207022 L331.792978,423.510945 L332.141017,423.151961 L485.224,265.254 L482.352491,262.470368 L491.848039,259.141017 Z" fill="#979797" fill-rule="nonzero"></path>
+        <line x1="769.5" y1="260.5" x2="769.5" y2="586.5" id="Line" stroke="#979797" stroke-linecap="square"></line>
+        <path id="Line-2" d="M333.008811,423.292948 L333.357931,423.650879 L485.923,580.066 L488.78633,577.273083 L491.849121,586.857931 L482.343568,583.557254 L485.206,580.764 L332.642069,424.349121 L332.292948,423.991189 L333.008811,423.292948 Z" fill="#979797" fill-rule="nonzero"></path>
+    </g>
+</svg>

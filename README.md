@@ -14,6 +14,10 @@ Mida is designed to:
 
 Furthermore, Mida is free and open source.
 
+<p align="center"> 
+    <img src="images/introduction.svg" alt="Mida" width="660px">
+</p>
+
 **This is a work in progress project, the API is not fully implemented, the NPM module is not published.<br>
 Please create an issue for questions.**
 
@@ -121,7 +125,7 @@ symbol.on("tick", (event) => {
 });
 ```
 
-### Market analysis
+### Market analysis and indicators
 Examples of technical market analysis.
 
 #### Candlesticks
@@ -134,11 +138,8 @@ console.log("Last candlestick OHLC: " + lastPeriod.ohlc);
 console.log("Last candlestick close price: " + lastPeriod.close);
 ```
 
-#### Indicators
-How to calculate an indicator, more than 100 indicators are available, for the complete list
-or for creating your own indicators refer to the full documentation.
-
-##### Relative Strength Index
+#### Relative Strength Index
+How to calculate the RSI indicator.
 ```javascript
 const relativeStrengthIndex = await MidaIndicator.calculate({
     type: "RSI",
@@ -146,7 +147,8 @@ const relativeStrengthIndex = await MidaIndicator.calculate({
 });
 ```
 
-##### Bollinger Bands
+#### Bollinger Bands
+How to calculate the Bollinger Bands indicator.
 ```javascript
 const bollingerBands = await MidaIndicator.calculate({
     type: "BollingerBands",
@@ -154,8 +156,6 @@ const bollingerBands = await MidaIndicator.calculate({
     multiplier: 2,
 });
 ```
-
-For the complete list of indicators, refer to this part of the documentation.
 
 ## Disclaimer
 Operating in CFDs/Forex is highly speculative and carries a high level of risk.
