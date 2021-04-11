@@ -356,6 +356,10 @@ export class PlaygroundBrokerAccount extends MidaBrokerAccount {
         this._localTicks[symbol] = updatedTicks;
     }
 
+    public getSymbolTicks (symbol: string): MidaSymbolTick[] {
+        return this._localTicks[symbol] || [];
+    }
+
     private async _openPendingOrder (ticket: number): Promise<void> {
         const order: MidaBrokerOrder | undefined = this._orders.get(ticket);
 

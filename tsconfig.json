@@ -29,6 +29,9 @@
             "#events/*": [
                 "src/events/*"
             ],
+            "#indicators/*": [
+                "src/indicators/*"
+            ],
             "#orders/*": [
                 "src/orders/*"
             ],

@@ -3,12 +3,6 @@ import { PlaygroundBrokerAccount } from "!plugins/playground/PlaygroundBrokerAcc
 
 const broker: PlaygroundBroker = new PlaygroundBroker();
 
-async function createPlaygroundBrokerAccount (): Promise<PlaygroundBrokerAccount> {
-    return (await broker.login({
-
-    })) as PlaygroundBrokerAccount;
-}
-
 describe("PlaygroundBrokerAccount", () => {
     describe(".loadTicks", () => {
         it("loads ticks", () => {

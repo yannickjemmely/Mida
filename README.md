@@ -134,6 +134,29 @@ console.log("Last candlestick OHLC: " + lastPeriod.ohlc);
 console.log("Last candlestick close price: " + lastPeriod.close);
 ```
 
+#### Indicators
+How to calculate an indicator, more than 100 indicators are available, for the complete list
+or for creating your own indicators refer to the full documentation.
+
+##### Relative Strength Index
+```javascript
+const relativeStrengthIndex = await MidaIndicator.calculate({
+    type: "RSI",
+    periods: await myAccount.getSymbolPeriods("BTCUSD", MidaSymbolPeriodTimeframeType.H1),
+});
+```
+
+##### Bollinger Bands
+```javascript
+const bollingerBands = await MidaIndicator.calculate({
+    type: "BollingerBands",
+    periods: await myAccount.getSymbolPeriods("ETHUSD", MidaSymbolPeriodTimeframeType.M5),
+    multiplier: 2,
+});
+```
+
+For the complete list of indicators, refer to this part of the documentation.
+
 ## Disclaimer
 Operating in CFDs/Forex is highly speculative and carries a high level of risk.
 It's possible to lose all your capital. These products may not be suitable for everyone,
