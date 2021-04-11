@@ -84,10 +84,13 @@ const sumTicks: MidaSymbolTick[] = [
 (async (): Promise<void> => {
     const playground: PlaygroundBroker = new PlaygroundBroker();
 
-    const account: PlaygroundBrokerAccount = await playground.login({}) as PlaygroundBrokerAccount;
-
-    account.localDate = new Date("2021-04-10T10:03:25.787Z");
-    account.deposit(5000);
+    const account: PlaygroundBrokerAccount = await playground.login({
+        id: "1",
+        ownerName: "Vasile Alexandru Peste",
+        localDate: new Date("2021-04-10T10:03:25.787Z"),
+        balance: 5000,
+        currency: "USD",
+    }) as PlaygroundBrokerAccount;
 
     await account.loadTicks(sumTicks);
 
@@ -96,7 +99,7 @@ const sumTicks: MidaSymbolTick[] = [
 
     const order: MidaBrokerOrder = await account.placeOrder({
         symbol: "EURUSD",
-        type: MidaBrokerOrderType.BUY,
+        type: MidaBrokerOrderType.SELL,
         lots: 0.2,
     });
     console.log(await account.getEquity());
@@ -107,9 +110,18 @@ const sumTicks: MidaSymbolTick[] = [
 
     await account.elapseTime(60 * 3);
 
+    console.log(await account.getBalance());
     console.log(await account.getEquity());
     console.log(await order.getNetProfit());
     console.log(order.status);
+
+
+
+    console.log("...");
+    await order.close();
+    console.log(await account.getBalance());
+    console.log(await account.getEquity());
+    console.log(await order.getNetProfit());
 
     //console.log(await account.getSymbolLastTick("EURUSD"));
 

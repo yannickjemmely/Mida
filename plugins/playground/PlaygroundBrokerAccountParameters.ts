@@ -1,6 +1,9 @@
-import { MidaBrokerAccountParameters } from "#brokers/MidaBrokerAccountParameters";
+import { MidaBroker } from "#brokers/MidaBroker";
 
-export type PlaygroundBrokerAccountParameters = MidaBrokerAccountParameters & {
+export type PlaygroundBrokerAccountParameters = {
+    id: string;
+    ownerName: string;
+    broker: MidaBroker;
     localDate: Date;
     currency: string;
     balance: number;

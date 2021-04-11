@@ -10,11 +10,9 @@ export class PlaygroundBroker extends MidaBroker {
         });
     }
 
-    public async login (...parameters: any[]): Promise<MidaBrokerAccount> {
-        // @ts-ignore
-        return new PlaygroundBrokerAccount({
-            id: "12345",
-            ownerName: "Vasile Alexandru Peste",
-        });
+    public async login (parameters: any): Promise<MidaBrokerAccount> {
+        parameters.broker = this;
+
+        return new PlaygroundBrokerAccount(parameters);
     }
 }

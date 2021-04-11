@@ -1,5 +1,6 @@
 import { PlaygroundBrokerAccountParameters } from "./PlaygroundBrokerAccountParameters";
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
+import { MidaBrokerAccountType } from "#brokers/MidaBrokerAccountType";
 import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { MidaBrokerOrderStatusType } from "#orders/MidaBrokerOrderStatusType";
@@ -11,22 +12,44 @@ import { MidaSymbol } from "#symbols/MidaSymbol";
 
 export class PlaygroundBrokerAccount extends MidaBrokerAccount {
     private _localDate: Date;
-    private readonly _localTicks: { [symbol: string]: MidaSymbolTick[]; };
-    private readonly _lastTicks: { [symbol: string]: MidaSymbolTick; };
     private _balance: number;
     private _ticketsCounter: number;
-
     private readonly _orders: Map<number, MidaBrokerOrder>;
+    private _negativeBalanceProtection: boolean;
+    private _fixedOrderCommission: number;
+    private _marginCallLevel: number;
+    private _stopOutLevel: number;
+    private readonly _localTicks: {
+        [symbol: string]: MidaSymbolTick[];
+    };
+    private readonly _lastTicks: {
+        [symbol: string]: MidaSymbolTick;
+    };
 
-    public constructor ({ id, ownerName, type, broker, currency, }: PlaygroundBrokerAccountParameters) {
-        super({ id, ownerName, type, currency, broker, });
+    public constructor ({
+        id,
+        ownerName,
+        broker,
+        localDate,
+        currency,
+        balance,
+        negativeBalanceProtection = false,
+        fixedOrderCommission = 0,
+        marginCallLevel = 100,
+        stopOutLevel = 50,
+    }: PlaygroundBrokerAccountParameters) {
+        super({ id, ownerName, type: MidaBrokerAccountType.DEMO, currency, broker, });
 
-        this._localDate = new Date(0);
+        this._localDate = new Date(localDate);
         this._localTicks = {};
         this._lastTicks = {};
-        this._balance = 0;
+        this._balance = balance;
         this._ticketsCounter = 0;
         this._orders = new Map();
+        this._negativeBalanceProtection = negativeBalanceProtection;
+        this._fixedOrderCommission = fixedOrderCommission;
+        this._marginCallLevel = marginCallLevel;
+        this._stopOutLevel = stopOutLevel;
     }
 
     public get localDate (): Date {
@@ -35,6 +58,38 @@ export class PlaygroundBrokerAccount extends MidaBrokerAccount {
 
     public set localDate (value: Date) {
         this._localDate = new Date(value);
+    }
+
+    public get negativeBalanceProtection (): boolean {
+        return this._negativeBalanceProtection;
+    }
+
+    public set negativeBalanceProtection (value: boolean) {
+        this._negativeBalanceProtection = value;
+    }
+
+    public get fixedOrderCommission (): number {
+        return this._fixedOrderCommission;
+    }
+
+    public set fixedOrderCommission (value: number) {
+        this._fixedOrderCommission = Math.abs(value || 0);
+    }
+
+    public get marginCallLevel (): number {
+        return this._marginCallLevel;
+    }
+
+    public set marginCallLevel (value: number) {
+        this._marginCallLevel = value;
+    }
+
+    public get stopOutLevel (): number {
+        return this._stopOutLevel;
+    }
+
+    public set stopOutLevel (value: number) {
+        this._stopOutLevel = value;
     }
 
     public async getBalance (): Promise<number> {
@@ -122,7 +177,7 @@ export class PlaygroundBrokerAccount extends MidaBrokerAccount {
     }
 
     public async getOrderCommission (ticket: number): Promise<number> {
-        return 0;
+        return this._fixedOrderCommission;
     }
 
     public async placeOrder (directives: MidaBrokerOrderDirectives): Promise<MidaBrokerOrder> {
@@ -346,7 +401,7 @@ export class PlaygroundBrokerAccount extends MidaBrokerAccount {
         // <margin-call>
         const marginLevel: number = await this.getMarginLevel();
 
-        if (Number.isFinite(marginLevel) && marginLevel <= 100) {
+        if (Number.isFinite(marginLevel) && marginLevel <= this._marginCallLevel) {
             this.notifyListeners("margin-call", {
                 marginLevel,
             });
@@ -413,7 +468,7 @@ export class PlaygroundBrokerAccount extends MidaBrokerAccount {
             // <stop-out>
             const marginLevel: number = await this.getMarginLevel();
 
-            if (Number.isFinite(marginLevel) && marginLevel <= 50) {
+            if (Number.isFinite(marginLevel) && marginLevel <= this._stopOutLevel) {
                 await order.close();
 
                 this.notifyListeners("stop-out", {
