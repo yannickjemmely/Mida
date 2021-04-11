@@ -14,9 +14,11 @@ Mida is designed to:
 
 Furthermore, Mida is free and open source.
 
+<br>
 <p align="center"> 
-    <img src="images/introduction.svg" alt="Mida" width="660px">
+    <img src="images/introduction.svg" alt="Mida" width="860px">
 </p>
+<br>
 
 **This is a work in progress project, the API is not fully implemented, the NPM module is not published.<br>
 Please create an issue for questions.**
