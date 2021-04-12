@@ -1,21 +1,27 @@
-import { MidaBrowserTab } from "#utilities/browser/MidaBrowserTab";
-import { MetaTraderBrokerLoginParameters } from "!plugins/metatrader/MetaTraderBrokerLoginParameters";
-import { MidaEmitter } from "#utilities/emitter/MidaEmitter";
 import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
 import { MidaBrokerOrderType } from "#orders/MidaBrokerOrderType";
+import { MidaBrowserTab } from "#utilities/browser/MidaBrowserTab";
+import { MidaEmitter } from "#utilities/emitter/MidaEmitter";
+import { MetaTraderBrokerLoginParameters } from "!plugins/metatrader/MetaTraderBrokerLoginParameters";
 
 export class MetaTraderController {
     private readonly _browserTab: MidaBrowserTab;
+    private readonly _version: number;
     private _isLoggedIn: boolean;
     private readonly _emitter: MidaEmitter;
 
     private _isHandlingOrder: boolean;
 
-    public constructor (browserTab: MidaBrowserTab) {
+    public constructor (browserTab: MidaBrowserTab, version: number) {
         this._browserTab = browserTab;
+        this._version = version;
         this._isLoggedIn = false;
         this._emitter = new MidaEmitter();
         this._isHandlingOrder = false;
+    }
+
+    public get version (): number {
+        return this._version;
     }
 
     public async login ({ id, password, serverName, version = 4, }: MetaTraderBrokerLoginParameters): Promise<void> {

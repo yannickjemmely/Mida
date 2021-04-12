@@ -3,18 +3,20 @@ import { PlaygroundBrokerAccount } from "!plugins/playground/PlaygroundBrokerAcc
 
 describe("PlaygroundBroker", () => {
     describe(".login", () => {
-        it("returns an account with correct parameters", async () => {
+        it("returns a correctly configured account", async () => {
             const actualDate: Date = new Date();
+            const currency: string = "USD";
+            const balance: number = 10000;
             const broker: PlaygroundBroker = new PlaygroundBroker();
             const account: PlaygroundBrokerAccount = await broker.login({
                 localDate: actualDate,
-                currency: "USD",
-                balance: 10000,
-            }) as PlaygroundBrokerAccount;
+                currency,
+                balance,
+            });
 
-            expect(account.localDate.valueOf() === actualDate.valueOf()).toBe(true);
-            expect(account.currency).toBe("USD");
-            expect(await account.getBalance()).toBe(10000);
+            expect(account.localDate.valueOf()).toBe(actualDate.valueOf());
+            expect(account.currency).toBe(currency);
+            expect(await account.getBalance()).toBe(balance);
         });
     });
 });

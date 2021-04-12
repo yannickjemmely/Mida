@@ -1,6 +1,6 @@
-import { MetaTraderBrokerAccount } from "!plugins/metatrader/MetaTraderBrokerAccount";
 import { MidaBroker } from "#brokers/MidaBroker";
 import { MidaBrokerParameters } from "#brokers/MidaBrokerParameters";
+import { MetaTraderBrokerAccount } from "!plugins/metatrader/MetaTraderBrokerAccount";
 
 export class MetaTraderBroker extends MidaBroker {
     public constructor ({ name, websiteUri, }: MidaBrokerParameters) {
