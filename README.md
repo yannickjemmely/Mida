@@ -149,6 +149,8 @@ console.log("Last candlestick close price: " + lastPeriod.close);
 #### Relative Strength Index
 How to calculate the RSI indicator for Bitcoin on H1 chart.
 ```javascript
+const { MidaIndicator } = require("mida/indicators/MidaIndicator");
+
 const periods = await myAccount.getSymbolPeriods("BTCUSD", MidaSymbolPeriodTimeframeType.H1);
 const relativeStrengthIndex = await MidaIndicator.calculate({
     type: "RSI",
@@ -160,12 +162,13 @@ const relativeStrengthIndex = await MidaIndicator.calculate({
 #### Bollinger Bands
 How to calculate the Bollinger Bands indicator for Ethereum on M5 chart.
 ```javascript
+const { MidaIndicator } = require("mida/indicators/MidaIndicator");
+
 const periods = await myAccount.getSymbolPeriods("ETHUSD", MidaSymbolPeriodTimeframeType.M5);
 const bollingerBands = await MidaIndicator.calculate({
     type: "BollingerBands",
     prices: periods.map((period) => period.close),
     length: 20,
-    multiplier: 2,
 });
 ```
 

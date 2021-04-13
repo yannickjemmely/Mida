@@ -481,6 +481,14 @@ export class PlaygroundBrokerAccount extends MidaBrokerAccount {
                 });
             }
             // </stop-out>
+
+            // <negative-balance-protection>
+            const equity: number = await this.getEquity();
+
+            if (this._negativeBalanceProtection && equity < 0) {
+                await order.close();
+            }
+            // </negative-balance-protection>
         }
     }
 }
