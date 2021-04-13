@@ -1,5 +1,6 @@
 import { PlaygroundBroker } from "!plugins/playground/PlaygroundBroker";
 import { PlaygroundBrokerAccount } from "!plugins/playground/PlaygroundBrokerAccount";
+import { MidaEvent } from "#events/MidaEvent";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { MidaSymbolQuotation } from "#quotations/MidaSymbolQuotation";
 
@@ -179,35 +180,135 @@ describe("PlaygroundBrokerAccount", () => {
                 expect(accountTicks[i].equals(ticks[i])).toBe(true);
             }
         });
+    });
 
-        /*
-        it("correctly adds ticks multiple times to the same symbol", async () => {
+    describe(".elapseTime", () => {
+        it("increases local date", async () => {
+            const actualDate: Date = new Date();
             const account: PlaygroundBrokerAccount = await broker.login();
+            const timeToElapse: number = 60;
+
+            account.localDate = actualDate;
+
+            await account.elapseTime(timeToElapse);
+
+            expect(account.localDate.valueOf()).toBe(actualDate.valueOf() + timeToElapse * 1000);
+
+            await account.elapseTime(timeToElapse * 2);
+
+            expect(account.localDate.valueOf()).toBe(actualDate.valueOf() + timeToElapse * 1000 * 3);
+        });
+
+        it("triggers tick event for each elapsed tick", async () => {
+            const account: PlaygroundBrokerAccount = await broker.login();
+            const symbol: string = "TEST";
+            const actualDate: Date = new Date();
             const ticks: MidaSymbolTick[] = [
                 new MidaSymbolTick({
                     quotation: new MidaSymbolQuotation({
-                        symbol: "TEST",
-                        date: new Date(),
-                        bid: 200,
-                        ask: 200,
+                        symbol,
+                        date: actualDate,
+                        bid: 0,
+                        ask: 0,
+                    }),
+                }),
+                new MidaSymbolTick({
+                    quotation: new MidaSymbolQuotation({
+                        symbol,
+                        date: new Date(actualDate.valueOf() + 1000),
+                        bid: 1,
+                        ask: 3,
+                    }),
+                }),
+                new MidaSymbolTick({
+                    quotation: new MidaSymbolQuotation({
+                        symbol,
+                        date: new Date(actualDate.valueOf() + 2000),
+                        bid: 2,
+                        ask: 4,
                     }),
                 }),
             ];
 
+            let firstTickTriggered: boolean = false;
+            let secondTickTriggered: boolean = false;
+            let thirdTickTriggered: boolean = false;
+
+            account.localDate = new Date(actualDate.valueOf() - 500);
+
             await account.loadTicks(ticks);
 
-            const accountTicks: MidaSymbolTick[] = await account.getSymbolTicks("TEST");
+            account.on("tick", (event: MidaEvent): void => {
+                const tick: MidaSymbolTick = event.descriptor.tick;
 
-            expect(accountTicks.length).toBe(ticks.length);
+                if (tick.equals(ticks[0])) {
+                    firstTickTriggered = true;
+                }
+            });
 
-            for (let i: number = 0; i < ticks.length; ++i) {
-                expect(accountTicks[i].equals(ticks[i])).toBe(true);
-            }
-        });*/
+            await account.elapseTime(1);
+
+            account.on("tick", (event: MidaEvent): void => {
+                const tick: MidaSymbolTick = event.descriptor.tick;
+
+                if (tick.equals(ticks[1])) {
+                    secondTickTriggered = true;
+                }
+
+                if (tick.equals(ticks[2])) {
+                    thirdTickTriggered = true;
+                }
+            });
+
+            await account.elapseTime(5);
+
+            expect(firstTickTriggered).toBe(true);
+            expect(secondTickTriggered).toBe(true);
+            expect(thirdTickTriggered).toBe(true);
+        });
+
+        it("returns elapsed ticks", async () => {
+            const account: PlaygroundBrokerAccount = await broker.login();
+            const symbol: string = "TEST";
+            const actualDate: Date = new Date();
+            const ticks: MidaSymbolTick[] = [
+                new MidaSymbolTick({
+                    quotation: new MidaSymbolQuotation({
+                        symbol,
+                        date: actualDate,
+                        bid: 0,
+                        ask: 0,
+                    }),
+                }),
+                new MidaSymbolTick({
+                    quotation: new MidaSymbolQuotation({
+                        symbol,
+                        date: new Date(actualDate.valueOf() + 1000),
+                        bid: 1,
+                        ask: 3,
+                    }),
+                }),
+                new MidaSymbolTick({
+                    quotation: new MidaSymbolQuotation({
+                        symbol,
+                        date: new Date(actualDate.valueOf() + 2000),
+                        bid: 2,
+                        ask: 4,
+                    }),
+                }),
+            ];
+
+            account.localDate = new Date(actualDate.valueOf() + 500);
+
+            await account.loadTicks(ticks);
+
+            expect((await account.elapseTime(1))[0].equals(ticks[1])).toBe(true);
+            expect((await account.elapseTime(2))[0].equals(ticks[2])).toBe(true);
+        });
     });
 
     describe(".deposit", () => {
-        it("correctly increases balance", async () => {
+        it("increases balance", async () => {
             const initialBalance: number = 10000;
             const account: PlaygroundBrokerAccount = await broker.login({
                 balance: initialBalance,
@@ -224,7 +325,7 @@ describe("PlaygroundBrokerAccount", () => {
     });
 
     describe(".withdraw", () => {
-        it("correctly decreases balance", async () => {
+        it("decreases balance", async () => {
             const initialBalance: number = 10000;
             const account: PlaygroundBrokerAccount = await broker.login({
                 balance: initialBalance,

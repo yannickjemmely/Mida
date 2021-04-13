@@ -50,3 +50,6 @@ export { MidaSymbolType } from "#symbols/MidaSymbolType";
 export { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 export { MidaSymbolTickParameters } from "#ticks/MidaSymbolTickParameters";
 // </ticks>
+
+export { PlaygroundBroker } from "!plugins/playground/PlaygroundBroker";
+export { PlaygroundBrokerAccount } from "!plugins/playground/PlaygroundBrokerAccount";

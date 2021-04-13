@@ -21,15 +21,17 @@ Furthermore, Mida is free and open source.
 <br>
 
 **This is a work in progress project, the API is not fully implemented, the NPM module is not published.<br>
-Please create an issue for questions.**
+At this time only the Playground broker is fully supported. Please create an issue for questions.**
 
 ## Usage
-For the complete documentation please refer to the [API documentation]().<br>
+For the complete documentation please refer to the [API documentation]() (to be generated with typedoc).<br>
 Operating is possible with any MetaTrader 4/5 broker account and any directly supported broker.
 
 ### Broker account login
 How to login into a MetaTrader 4 account.
 ```javascript
+const { MidaBroker } = require("mida/brokers/MidaBroker");
+
 const myAccount = await MidaBroker.login("MT4", {
     id: "",
     password: "",
@@ -39,6 +41,8 @@ const myAccount = await MidaBroker.login("MT4", {
 
 How to login into a directly supported broker and listen a margin call event.
 ```javascript
+const { MidaBroker } = require("mida/brokers/MidaBroker");
+
 const myAccount = await MidaBroker.login("ICMarkets", {
     email: "",
     id: "",
@@ -53,6 +57,8 @@ myAccount.on("margin-call", (event) => {
 Playground is a local broker created for Mida, mainly to backtest strategies, expert advisors and ideas.
 This is the perfect solution for practicing with a local demo broker account without registering to any broker.
 ```javascript
+const { MidaBroker } = require("mida/brokers/MidaBroker");
+
 const myAccount = await MidaBroker.login("Playground", {
     localDate: new Date("2020-04-23"),
     currency: "USD",
