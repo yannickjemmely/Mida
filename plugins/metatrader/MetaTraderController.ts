@@ -2,7 +2,7 @@ import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
 import { MidaBrokerOrderType } from "#orders/MidaBrokerOrderType";
 import { MidaBrowserTab } from "#utilities/browsers/MidaBrowserTab";
 import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
-import { MetaTraderBrokerLoginParameters } from "!plugins/metatrader/MetaTraderBrokerLoginParameters";
+import { MetaTraderBrokerLoginParameters } from "&metatrader/MetaTraderBrokerLoginParameters";
 
 export class MetaTraderController {
     private readonly _browserTab: MidaBrowserTab;

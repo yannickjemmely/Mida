@@ -1,5 +1,5 @@
-import { PlaygroundBroker } from "!plugins/playground/PlaygroundBroker";
-import { PlaygroundBrokerAccount } from "!plugins/playground/PlaygroundBrokerAccount";
+import { PlaygroundBroker } from "&playground/PlaygroundBroker";
+import { PlaygroundBrokerAccount } from "&playground/PlaygroundBrokerAccount";
 import { MidaEvent } from "#events/MidaEvent";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { MidaSymbolQuotation } from "#quotations/MidaSymbolQuotation";

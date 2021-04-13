@@ -3,7 +3,7 @@ const jestConfiguration = {
     testEnvironment: "node",
     coverageProvider: "v8",
     roots: [
-        "./build/tests",
+        "./build/tests/",
     ],
     clearMocks: true,
     testMatch: [
@@ -13,7 +13,17 @@ const jestConfiguration = {
 };
 
 Object.keys(tsConfiguration.compilerOptions.paths).forEach((key) => {
-    const normalizedAlias = "^" + (key.endsWith("/*") ? key.substr(0, key.length - 2) : key) + "/(.*)";
+    let normalizedAlias;
+
+    if (key.endsWith("/*")) {
+        normalizedAlias = "^" + key.substr(0, key.length - 2) + "/(.*)";
+    }
+    else if (key.endsWith("*")) {
+        normalizedAlias = "^" + key.substr(0, key.length - 1) + "(.*)";
+    }
+    else {
+        normalizedAlias = "^" + key + "/(.*)";
+    }
 
     for (const plainPath of tsConfiguration.compilerOptions.paths[key]) {
         const normalizedPath = plainPath.endsWith("/*") ? plainPath.substr(0, plainPath.length - 2) : plainPath;

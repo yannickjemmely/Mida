@@ -9,46 +9,13 @@
         "outDir": "build",
         "paths": {
             "!/*": [
-                "*"
+                "./*"
             ],
-            "!plugins/*": [
-                "plugins/*"
+            "&*": [
+                "./plugins/*"
             ],
-            "#/*": [
-                "src/*"
-            ],
-            "#advisors/*": [
-                "src/advisors/*"
-            ],
-            "#brokers/*": [
-                "src/brokers/*"
-            ],
-            "#errors/*": [
-                "src/errors/*"
-            ],
-            "#events/*": [
-                "src/events/*"
-            ],
-            "#indicators/*": [
-                "src/indicators/*"
-            ],
-            "#orders/*": [
-                "src/orders/*"
-            ],
-            "#periods/*": [
-                "src/periods/*"
-            ],
-            "#quotations/*": [
-                "src/quotations/*"
-            ],
-            "#symbols/*": [
-                "src/symbols/*"
-            ],
-            "#ticks/*": [
-                "src/ticks/*"
-            ],
-            "#utilities/*": [
-                "src/utilities/*"
+            "#*": [
+                "./src/*"
             ]
         },
         "removeComments": true,

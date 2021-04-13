@@ -1,7 +1,7 @@
 import { MidaBrowser } from "#utilities/browsers/MidaBrowser";
 import { MidaBrowserTab } from "#utilities/browsers/MidaBrowserTab";
-import { MetaTraderBrokerLoginParameters } from "!plugins/metatrader/MetaTraderBrokerLoginParameters";
-import { MetaTraderController } from "!plugins/metatrader/MetaTraderController";
+import { MetaTraderBrokerLoginParameters } from "&metatrader/MetaTraderBrokerLoginParameters";
+import { MetaTraderController } from "&metatrader/MetaTraderController";
 
 export class MetaTrader {
     private static readonly _WEB_META_TRADER_URI: string = "https://trade.mql5.com/trade";
