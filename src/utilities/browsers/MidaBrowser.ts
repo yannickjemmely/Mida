@@ -1,5 +1,5 @@
 import * as Puppeteer from "puppeteer";
-import { MidaBrowserTab } from "#utilities/browser/MidaBrowserTab";
+import { MidaBrowserTab } from "#utilities/browsers/MidaBrowserTab";
 
 /** Represents a browser. */
 export class MidaBrowser {

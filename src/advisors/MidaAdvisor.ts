@@ -3,7 +3,7 @@ import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
 import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
-import { MidaEmitter } from "#utilities/emitter/MidaEmitter";
+import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 
 export abstract class MidaAdvisor {
     private readonly _brokerAccount: MidaBrokerAccount;

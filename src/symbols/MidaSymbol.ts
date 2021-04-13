@@ -4,7 +4,7 @@ import { MidaSymbolParameters } from "#symbols/MidaSymbolParameters";
 import { MidaSymbolSpreadType } from "#symbols/MidaSymbolSpreadType";
 import { MidaSymbolType } from "#symbols/MidaSymbolType";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
-import { MidaEmitter } from "#utilities/emitter/MidaEmitter";
+import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 
 /** Represents a symbol. */
 export class MidaSymbol {

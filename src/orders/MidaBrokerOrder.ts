@@ -6,7 +6,7 @@ import { MidaBrokerOrderExecutionType } from "#orders/MidaBrokerOrderExecutionTy
 import { MidaBrokerOrderParameters } from "#orders/MidaBrokerOrderParameters";
 import { MidaBrokerOrderStatusType } from "#orders/MidaBrokerOrderStatusType";
 import { MidaBrokerOrderType } from "#orders/MidaBrokerOrderType";
-import { MidaEmitter } from "#utilities/emitter/MidaEmitter";
+import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 import { GenericObject } from "#utilities/GenericObject";
 
 /** Represents a broker order. */

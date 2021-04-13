@@ -1,5 +1,5 @@
-import { MidaBrowser } from "#utilities/browser/MidaBrowser";
-import { MidaBrowserTab } from "#utilities/browser/MidaBrowserTab";
+import { MidaBrowser } from "#utilities/browsers/MidaBrowser";
+import { MidaBrowserTab } from "#utilities/browsers/MidaBrowserTab";
 import { MetaTraderBrokerLoginParameters } from "!plugins/metatrader/MetaTraderBrokerLoginParameters";
 import { MetaTraderController } from "!plugins/metatrader/MetaTraderController";
 

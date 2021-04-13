@@ -1,5 +1,5 @@
 import { MidaEvent } from "#events/MidaEvent";
-import { MidaEmitter } from "#utilities/emitter/MidaEmitter";
+import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 
 describe("MidaEmitter", () => {
     describe(".addEventListener", () => {
