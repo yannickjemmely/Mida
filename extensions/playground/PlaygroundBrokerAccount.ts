@@ -1,4 +1,3 @@
-import { PlaygroundBrokerAccountParameters } from "#extensions/playground/PlaygroundBrokerAccountParameters";
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 import { MidaBrokerAccountType } from "#brokers/MidaBrokerAccountType";
 import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
@@ -9,6 +8,8 @@ import { MidaBrokerOrderType } from "#orders/MidaBrokerOrderType";
 import { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
 import { MidaSymbolQuotationPriceType } from "#quotations/MidaSymbolQuotationPriceType";
 import { MidaSymbol } from "#symbols/MidaSymbol";
+
+import { PlaygroundBrokerAccountParameters } from "#../extensions/playground/PlaygroundBrokerAccountParameters";
 
 export class PlaygroundBrokerAccount extends MidaBrokerAccount {
     private _localDate: Date;

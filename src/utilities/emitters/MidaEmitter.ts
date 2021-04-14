@@ -1,9 +1,10 @@
 import { v1 as uuidV1 }  from "uuid";
+
 import { MidaEvent } from "#events/MidaEvent";
 import { MidaEventListener } from "#events/MidaEventListener";
 import { GenericObject } from "#utilities/GenericObject";
 
-/** Represents an entity that may emit events. */
+/** Represents an entity capable of emitting events to a its listeners. */
 export class MidaEmitter {
     private static readonly _ANY_TYPE_KEY: string = "*";
 
