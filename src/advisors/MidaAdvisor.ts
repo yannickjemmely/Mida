@@ -22,8 +22,6 @@ export abstract class MidaAdvisor {
         this._asyncTicks = [];
         this._asyncTickPromise = undefined;
         this._emitter = new MidaEmitter();
-
-        this._constructListeners();
     }
 
     public get brokerAccount (): MidaBrokerAccount {
@@ -58,6 +56,8 @@ export abstract class MidaAdvisor {
         this._isOperative = false;
     }
 
+    protected abstract onAwake (): Promise<void>;
+
     protected abstract onTick (tick: MidaSymbolTick): void;
 
     protected abstract onTickAsync (tick: MidaSymbolTick): Promise<void>;
@@ -68,10 +68,6 @@ export abstract class MidaAdvisor {
         this._orders.set(order.ticket, order);
 
         return order;
-    }
-
-    private _constructListeners (): void {
-
     }
 
     private _onTick (tick: MidaSymbolTick): void {
