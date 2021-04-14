@@ -1,5 +1,5 @@
 import { MidaBroker } from "#brokers/MidaBroker";
-import { PlaygroundBrokerAccount } from "&playground/PlaygroundBrokerAccount";
+import { PlaygroundBrokerAccount } from "#extensions/playground/PlaygroundBrokerAccount";
 
 export class PlaygroundBroker extends MidaBroker {
     public constructor () {

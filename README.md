@@ -39,7 +39,7 @@ const myAccount = await MidaBroker.login("MT4", {
 });
 ```
 
-How to login into a directly supported broker and listen a margin call event.
+How to login into a directly supported broker and listen a price break event for Bitcoin against USD.
 ```javascript
 const { MidaBroker } = require("mida/brokers/MidaBroker");
 
@@ -47,10 +47,6 @@ const myAccount = await MidaBroker.login("ICMarkets", {
     email: "",
     id: "",
     password: "",
-});
-
-myAccount.on("margin-call", (event) => {
-    console.log("You could be in trouble...");
 });
 ```
 

@@ -1,5 +1,5 @@
 import { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
-import { MidaIndicatorParameters } from "#indicators/MidaIndicatorParameters";
+import { MidaIndicatorParameters } from "#analysis/indicators/MidaIndicatorParameters";
 import { GenericObject } from "#utilities/GenericObject";
 
 const Tulind: GenericObject = require("tulind");

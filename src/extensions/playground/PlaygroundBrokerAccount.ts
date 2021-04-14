@@ -1,4 +1,4 @@
-import { PlaygroundBrokerAccountParameters } from "./PlaygroundBrokerAccountParameters";
+import { PlaygroundBrokerAccountParameters } from "#extensions/playground/PlaygroundBrokerAccountParameters";
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 import { MidaBrokerAccountType } from "#brokers/MidaBrokerAccountType";
 import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
