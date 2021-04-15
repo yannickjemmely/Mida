@@ -10,7 +10,7 @@ Mida is designed to:
 - Trade financial assets such as stocks, crypto, forex or commodities;
 - Operate with any MetaTrader broker account using only JavaScript/TypeScript;
 - Automate and backtest trading strategies through expert advisors and indicators;
-- Analyze markets and prices through indicators and analysis tools.
+- Analyze markets and prices through indicators and analysis interfaces.
 
 Furthermore, Mida is free and open source.
 

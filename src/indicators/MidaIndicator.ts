@@ -1,23 +1,25 @@
 import { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
-import { MidaIndicatorParameters } from "#analysis/indicators/MidaIndicatorParameters";
+import { MidaIndicatorParameters } from "#indicators/MidaIndicatorParameters";
 import { GenericObject } from "#utilities/GenericObject";
+import { MidaIndicatorMapper } from "#indicators/MidaIndicatorMapper";
 
 const Tulind: GenericObject = require("tulind");
 
 export abstract class MidaIndicator {
-    private readonly _type: string;
+    private readonly _name: string;
 
     protected constructor ({ type, }: MidaIndicatorParameters) {
-        this._type = type;
+        this._name = type;
     }
 
-    public get type (): string {
-        return this._type;
+    public get name (): string {
+        return this._name;
     }
 
-    public abstract calculate (parameters: any): Promise<any>;
+    public abstract calculate (parameters: GenericObject): Promise<any>;
 }
 
+/*
 export async function calculateRelativeStrengthIndex (prices: number[], length: number): Promise<number[]> {
     return new Promise((resolve: (...parameters: any[]) => void, reject: (...parameters: any[]) => void): void => {
         Tulind.indicators.rsi.indicator([ prices, ], [ length, ], (error: any, descriptor: any): void => {
@@ -109,3 +111,4 @@ export async function calculateStochastic (prices: number[][], length: number, k
         );
     });
 }
+*/
