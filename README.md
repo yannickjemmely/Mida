@@ -112,7 +112,9 @@ console.log(myOrder.ticket);
 console.log(myOrder.openPrice);
 ```
 
+<br>
 <details><summary>More examples</summary>
+<br>
 
 How to open a long position for GBP against USD with stop loss and take profit.
 ```javascript
