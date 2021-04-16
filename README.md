@@ -112,23 +112,25 @@ console.log(myOrder.ticket);
 console.log(myOrder.openPrice);
 ```
 
-More examples
-<details>
+<details><summary>More examples</summary>
+<br>
 
-How to open a short position for EUR against USD.
+How to open a long position for GBP against USD with stop loss and take profit.
 ```javascript
 const { MidaBrokerOrderType } = require("@reiryoku/mida/orders/MidaBrokerOrderType");
 
+const symbol = "GBPUSD";
+const lastTick = await myAccount.getSymbolLastTick(symbol);
 const myOrder = await myAccount.placeOrder({
-symbol: "EURUSD",
-type: MidaBrokerOrderType.SELL,
-lots: 0.1,
+    symbol,
+    type: MidaBrokerOrderType.BUY,
+    lots: 0.1,
+    stopLoss: lastTick.bid - 0.0010, // Stop loss of 10 pips.
+    takeProfit: lastTick.bid + 0.0030, // Take profit of 30 pips.
 });
-
-console.log(myOrder.ticket);
-console.log(myOrder.openPrice);
 ```
 
+<br>
 </details>
 
 ### Symbols
