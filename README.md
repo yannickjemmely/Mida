@@ -12,7 +12,7 @@ Mida is designed to:
 - Automate and backtest trading strategies through expert advisors and indicators;
 - Analyze markets and prices through indicators and analysis interfaces.
 
-Furthermore, Mida is free and open source.
+Furthermore, Mida is free and open source, join the [Discord community](https://discord.gg/cKyWTUsr3q).
 
 <br>
 <p align="center"> 
