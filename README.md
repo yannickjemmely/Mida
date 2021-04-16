@@ -51,14 +51,14 @@ How to login into an independent broker.
 const { MidaBroker } = require("@reiryoku/mida/brokers/MidaBroker");
 
 const myAccount = await MidaBroker.login("ICMarkets", {
-    email: "",
-    id: "",
-    password: "",
+    email: "foo@bar.com",
+    id: "foo",
+    password: "bar",
 });
 ```
 
 #### Playground
-Playground is a local broker created by Mida for paper trading (and to backtest expert advisors and strategies).
+Playground is a local broker created by Mida for paper trading.
 ```javascript
 const { MidaBroker } = require("@reiryoku/mida/brokers/MidaBroker");
 
