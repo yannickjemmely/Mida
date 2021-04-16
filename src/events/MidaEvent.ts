@@ -23,7 +23,7 @@ export class MidaEvent {
         return new Date(this._date);
     }
 
-    /** The event data. */
+    /** The event descriptor. */
     public get descriptor (): GenericObject {
         return { ...this._descriptor, };
     }

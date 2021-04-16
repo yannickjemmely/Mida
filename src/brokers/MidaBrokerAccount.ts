@@ -88,7 +88,7 @@ export abstract class MidaBrokerAccount {
     public abstract getOrderNetProfit (ticket: number): Promise<number>;
 
     /**
-     * Used to get the swap of an order (the order must be in open or closed state).
+     * Used to get the swaps of an order (the order must be in open or closed state).
      * @param ticket The order ticket.
      */
     public abstract getOrderSwaps (ticket: number): Promise<number>;
@@ -118,22 +118,44 @@ export abstract class MidaBrokerAccount {
     public abstract closeOrder (ticket: number): Promise<void>;
 
     /**
+     * Used to get the stop loss of an order.
+     * @param ticket The order ticket.
+     */
+    public abstract getOrderStopLoss (ticket: number): Promise<void>;
+
+    /**
      * Used to set the stop loss of an order.
      * @param ticket The order ticket.
      * @param stopLoss The stop loss.
      */
-    // public abstract setOrderStopLoss (ticket: number, stopLoss: number): Promise<void>;
+    public abstract setOrderStopLoss (ticket: number, stopLoss: number): Promise<void>;
+
+    /**
+     * Used to clear the stop loss of an order.
+     * @param ticket The order ticket.
+     */
+    public abstract clearOrderStopLoss (ticket: number): Promise<void>;
+
+    /**
+     * Used to get the take profit of an order.
+     * @param ticket The order ticket.
+     */
+    public abstract getOrderTakeProfit (ticket: number): Promise<void>;
 
     /**
      * Used to set the take profit of an order.
      * @param ticket The order ticket.
      * @param takeProfit The take profit.
      */
-    // public abstract setOrderTakeProfit (ticket: number, takeProfit: number): Promise<void>;
+    public abstract setOrderTakeProfit (ticket: number, takeProfit: number): Promise<void>;
 
     /**
-     * Used to get the account symbols.
+     * Used to clear the take profit of an order.
+     * @param ticket The order ticket.
      */
+    public abstract clearOrderTakeProfit (ticket: number): Promise<void>;
+
+    /** Used to get the account symbols. */
     public abstract getSymbols (): Promise<MidaSymbol[]>;
 
     /**
@@ -172,7 +194,6 @@ export abstract class MidaBrokerAccount {
 
     /**
      * Used to get the account margin level.
-     * @returns The margin level or `NaN` if no margin is used.
      */
     public async getMarginLevel (): Promise<number> {
         const tasks: Promise<number>[] = [ this.getEquity(), this.getUsedMargin(), ];

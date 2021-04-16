@@ -8,7 +8,7 @@ export class MidaSymbolQuotation implements IMidaCloneable, IMidaEquatable {
     private readonly _date: Date;
     private readonly _bid: number;
     private readonly _ask: number;
-    private readonly _exchangeName: string | undefined;
+    private readonly _exchangeName?: string;
 
     public constructor ({ symbol, date, bid, ask, exchangeName, }: MidaSymbolQuotationParameters) {
         this._symbol = symbol;
