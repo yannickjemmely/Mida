@@ -23,25 +23,32 @@ Furthermore, Mida is free and open source.
 **This is a work in progress project, the API is not fully implemented, the NPM module is not published.<br>
 At this time only the Playground broker is fully supported. Please create an issue for questions.**
 
+## Installation
+The easiest way to install Mida is using the following command in your project directory.
+```console
+npm install @reiryoku/mida
+```
+
 ## Usage
-For the complete documentation please refer to the [API documentation]() (to be generated with typedoc).<br>
-Operating is possible with any MetaTrader 4/5 broker account and any directly supported broker.
+This project is incomplete! Parts of the API may not be implemented or have different configurations.
+For contributions please create an issue.
+The objective is creating a common API allowing to operate in financial markets with MetaTrader, cTrader and the other independent brokers APIs.
 
 ### Broker account login
-How to login into a MetaTrader 4 account.
+How to login into a MetaTrader 4 broker.
 ```javascript
-const { MidaBroker } = require("mida/brokers/MidaBroker");
+const { MidaBroker } = require("@reiryoku/mida/brokers/MidaBroker");
 
 const myAccount = await MidaBroker.login("MT4", {
-    id: "",
-    password: "",
-    serverName: "",
+    id: "foo",
+    password: "bar",
+    serverName: "FooBar",
 });
 ```
 
-How to login into a directly supported broker and listen a price break event for Bitcoin against USD.
+How to login into an independent broker.
 ```javascript
-const { MidaBroker } = require("mida/brokers/MidaBroker");
+const { MidaBroker } = require("@reiryoku/mida/brokers/MidaBroker");
 
 const myAccount = await MidaBroker.login("ICMarkets", {
     email: "",
@@ -50,31 +57,37 @@ const myAccount = await MidaBroker.login("ICMarkets", {
 });
 ```
 
-Playground is a local broker created for Mida, mainly to backtest strategies, expert advisors and ideas.
-This is the perfect solution for practicing with a local demo broker account without registering to any broker.
+#### Playground
+Playground is a local broker created by Mida for paper trading (and to backtest expert advisors and strategies).
 ```javascript
-const { MidaBroker } = require("mida/brokers/MidaBroker");
+const { MidaBroker } = require("@reiryoku/mida/brokers/MidaBroker");
 
 const myAccount = await MidaBroker.login("Playground", {
-    localDate: new Date("2020-04-23"),
+    id: "test",
+    localDate: new Date("2020-04-23T00:00:00"),
     currency: "USD",
     balance: 10000,
     negativeBalanceProtection: true,
 });
 
+// Used to listen any market ticks.
 myAccount.on("tick", (event) => {
     const tick = event.descriptor.tick;
-
-    console.log(`A new tick for ${tick.symbol} => ${tick.bid} | ${tick.ask}`);
+    
+    console.log(`New tick for ${tick.symbol} => ${tick.bid} | ${tick.ask}`);
 });
 
 // Used to elapse a given amount of time in the local date, this will trigger ticks.
 await myAccount.elapseTime(60 * 10); // 60 seconds * 10 = 10 minutes.
+
+console.log(myAccount.localDate); // The local date is now 2020-04-23 00:10:00.
 ```
 
 ### Broker orders and positions
 How top open a long position for Bitcoin against USD.
 ```javascript
+const { MidaBrokerOrderType } = require("@reiryoku/mida/orders/MidaBrokerOrderType");
+
 const myOrder = await myAccount.placeOrder({
     symbol: "BTCUSD",
     type: MidaBrokerOrderType.BUY,
@@ -87,6 +100,8 @@ console.log(myOrder.openPrice);
 
 How to open a short position for EUR against USD.
 ```javascript
+const { MidaBrokerOrderType } = require("@reiryoku/mida/orders/MidaBrokerOrderType");
+
 const myOrder = await myAccount.placeOrder({
     symbol: "EURUSD",
     type: MidaBrokerOrderType.SELL,
@@ -97,6 +112,25 @@ console.log(myOrder.ticket);
 console.log(myOrder.openPrice);
 ```
 
+More examples
+<details>
+
+How to open a short position for EUR against USD.
+```javascript
+const { MidaBrokerOrderType } = require("@reiryoku/mida/orders/MidaBrokerOrderType");
+
+const myOrder = await myAccount.placeOrder({
+symbol: "EURUSD",
+type: MidaBrokerOrderType.SELL,
+lots: 0.1,
+});
+
+console.log(myOrder.ticket);
+console.log(myOrder.openPrice);
+```
+
+</details>
+
 ### Symbols
 How to retrieve a symbol.
 ```javascript
@@ -105,9 +139,10 @@ const symbol = await myAccount.getSymbol("#AAPL");
 if (!symbol) {
     console.log("Apple stocks are not available for this account!");
 }
-
-console.log(symbol.digits);
-console.log(symbol.leverage);
+else {
+    console.log(symbol.digits);
+    console.log(symbol.leverage);
+}
 ```
 
 How to get the price of a symbol.
@@ -133,11 +168,14 @@ symbol.on("tick", (event) => {
 Examples of technical market analysis.
 
 #### Candlesticks
-How to get the candlesticks of a symbol (candlesticks and bars are referred as periods).
+How to get the candlesticks of a symbol (in the code candlesticks and bars are generally referred as periods).
 ```javascript
+const { MidaSymbolPeriodTimeframeType } = require("@reiryoku/mida/periods/MidaSymbolPeriodTimeframeType");
+
 const periods = await myAccount.getSymbolPeriods("EURUSD", MidaSymbolPeriodTimeframeType.M30);
 const lastPeriod = periods[periods.length - 1];
 
+console.log("Last candlestick start time: " + lastPeriod.startTime);
 console.log("Last candlestick OHLC: " + lastPeriod.ohlc);
 console.log("Last candlestick close price: " + lastPeriod.close);
 ```
@@ -145,11 +183,11 @@ console.log("Last candlestick close price: " + lastPeriod.close);
 #### Relative Strength Index
 How to calculate the RSI indicator for Bitcoin on H1 chart.
 ```javascript
-const { MidaIndicator } = require("mida/indicators/MidaIndicator");
+const { MidaIndicator } = require("@reiryoku/mida/indicators/MidaIndicator");
+const { MidaSymbolPeriodTimeframeType } = require("@reiryoku/mida/periods/MidaSymbolPeriodTimeframeType");
 
 const periods = await myAccount.getSymbolPeriods("BTCUSD", MidaSymbolPeriodTimeframeType.H1);
-const relativeStrengthIndex = await MidaIndicator.calculate({
-    type: "RSI",
+const relativeStrengthIndex = await MidaIndicator.calculate("RSI", {
     prices: periods.map((period) => period.close),
     length: 14,
 });
@@ -158,11 +196,11 @@ const relativeStrengthIndex = await MidaIndicator.calculate({
 #### Bollinger Bands
 How to calculate the Bollinger Bands indicator for Ethereum on M5 chart.
 ```javascript
-const { MidaIndicator } = require("mida/indicators/MidaIndicator");
+const { MidaIndicator } = require("@reiryoku/mida/indicators/MidaIndicator");
+const { MidaSymbolPeriodTimeframeType } = require("@reiryoku/mida/periods/MidaSymbolPeriodTimeframeType");
 
 const periods = await myAccount.getSymbolPeriods("ETHUSD", MidaSymbolPeriodTimeframeType.M5);
-const bollingerBands = await MidaIndicator.calculate({
-    type: "BollingerBands",
+const bollingerBands = await MidaIndicator.calculate("BollingerBands", {
     prices: periods.map((period) => period.close),
     length: 20,
 });
@@ -172,17 +210,17 @@ const bollingerBands = await MidaIndicator.calculate({
 Operating in CFDs/Forex is highly speculative and carries a high level of risk.
 It's possible to lose all your capital. These products may not be suitable for everyone,
 you should ensure that you understand the risks involved. Furthermore, Mida is not responsible
-for: commissions or other taxes applied to your operations, they depend on your broker;
+for commissions or other taxes applied to your operations, they depend on your broker,
 and any technical inconvenience that may lead to money loss, for example a stop loss not being set.
 
 ## Why Mida and not MQL
-Nowadays MQL is an obsolete technology and a barrier between
+Nowadays MQL is a procedural technology and a barrier between
 modern traders and algorithmic trading. The mission of Mida is allowing
 anyone to operate in financial markets without advanced programming skills or
 specific computer requirements. Furthermore, Mida allows operating with MetaTrader
-account without installing MetaTrader (which is available only for Windows).
+accounts without installing MetaTrader (which is available only for Windows OS).
 
 ## Contributors
 The author and maintainer of the project is [Vasile Pește](https://github.com/Vasile-Peste) (vasile.peste@protonmail.ch).
 
-This project is still in alpha, please create an issue for contributions or any questions.
+This project is still in alpha, please create an issue for contributions and questions.
