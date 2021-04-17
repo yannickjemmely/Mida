@@ -4,6 +4,9 @@ import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
 import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
+import { MidaEventListener } from "#events/MidaEventListener";
+import { MidaEvent } from "#events/MidaEvent";
+import { GenericObject } from "#utilities/GenericObject";
 
 export abstract class MidaAdvisor {
     private readonly _brokerAccount: MidaBrokerAccount;
@@ -40,23 +43,29 @@ export abstract class MidaAdvisor {
         return this._capturedTicks;
     }
 
-    public start (): void {
+    public async start (): Promise<void> {
         if (this._isOperative) {
             return;
         }
 
         this._isOperative = true;
+
+        this.notifyListeners("start");
     }
 
-    public stop (): void {
+    public async stop (): Promise<void> {
         if (!this._isOperative) {
             return;
         }
 
         this._isOperative = false;
+
+        this.notifyListeners("stop");
     }
 
-    protected abstract onAwake (): Promise<void>;
+    public on (type: string, listener?: MidaEventListener): Promise<MidaEvent> | string {
+        return this._emitter.on(type, listener);
+    }
 
     protected abstract onTick (tick: MidaSymbolTick): void;
 
@@ -68,6 +77,10 @@ export abstract class MidaAdvisor {
         this._orders.set(order.ticket, order);
 
         return order;
+    }
+
+    protected notifyListeners (type: string, descriptor?: GenericObject): void {
+        this._emitter.notifyListeners(type, descriptor);
     }
 
     private _onTick (tick: MidaSymbolTick): void {

@@ -1,5 +1,5 @@
 {
-    "name": "mida",
+    "name": "@reiryoku/mida",
     "version": "1.0.0",
     "description": "A JavaScript framework to easily operate in financial markets.",
     "scripts": {
