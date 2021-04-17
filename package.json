@@ -6,7 +6,7 @@
         "lint": "tslint --project .",
         "build": "tsc",
         "test": "npm run build && jest --verbose",
-        "safe-build": "npm run lint && npm run build && jest",
+        "safe-build": "rm -rf ./build && npm run lint && npm run build && jest",
         "create-docs": "typedoc",
         "postinstall": "npm run build"
     },
