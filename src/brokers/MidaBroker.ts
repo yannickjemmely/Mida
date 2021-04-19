@@ -29,11 +29,9 @@ export abstract class MidaBroker {
     public abstract login (parameters: GenericObject): Promise<MidaBrokerAccount>;
 
     /*
-     *
      **
      *** Static
      **
-     *
     */
 
     private static readonly _installedBrokers: Map<string, MidaBroker> = new Map();
