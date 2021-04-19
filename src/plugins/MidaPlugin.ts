@@ -24,5 +24,7 @@ export abstract class MidaPlugin {
         return this._version;
     }
 
-    public abstract install (options?: GenericObject): void;
+    public install (options?: GenericObject): void {
+        // Silence is golden.
+    }
 }

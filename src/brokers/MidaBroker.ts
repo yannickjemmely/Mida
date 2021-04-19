@@ -27,4 +27,36 @@ export abstract class MidaBroker {
      * @param parameters The login parameters.
      */
     public abstract login (parameters: GenericObject): Promise<MidaBrokerAccount>;
+
+    /*
+     *
+     **
+     *** Static
+     **
+     *
+    */
+
+    private static readonly _installedBrokers: Map<string, MidaBroker> = new Map();
+
+    public static get installedBrokers (): readonly MidaBroker[] {
+        return [ ...MidaBroker._installedBrokers.values(), ];
+    }
+
+    public static add (broker: MidaBroker): void {
+        if (MidaBroker._installedBrokers.has(broker.name)) {
+            throw new Error();
+        }
+
+        MidaBroker._installedBrokers.set(broker.name, broker);
+    }
+
+    public static async login (name: string, parameters: GenericObject): Promise<MidaBrokerAccount> {
+        const broker: MidaBroker | undefined = MidaBroker._installedBrokers.get(name);
+
+        if (!broker) {
+            throw new Error();
+        }
+
+        return broker.login(parameters);
+    }
 }
