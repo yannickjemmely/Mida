@@ -14,11 +14,12 @@
         },
         "removeComments": true,
         "sourceMap": true,
+        "composite": true,
         "strict": true,
         "target": "es6"
     },
     "exclude": [
         "build",
         "node_modules"
-    ]
+    ],
 }

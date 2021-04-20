@@ -10,6 +10,7 @@
         "create-docs": "typedoc",
         "postinstall": "npm run build"
     },
+    "main": "./build/src/Mida.js",
     "imports": {
         "#*": "./build/src/*.js"
     },
