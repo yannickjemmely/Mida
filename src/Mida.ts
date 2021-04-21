@@ -22,3 +22,9 @@ export class Mida {
         plugin.install(options);
     }
 }
+
+export { MidaBroker } from "#brokers/MidaBroker";
+export { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
+export { MidaBrokerAccountParameters } from "#brokers/MidaBrokerAccountParameters";
+export { MidaBrokerAccountType } from "#brokers/MidaBrokerAccountType";
+export { MidaBrokerParameters } from "#brokers/MidaBrokerParameters";
