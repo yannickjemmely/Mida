@@ -22,4 +22,3 @@ export class Mida {
         plugin.install(options);
     }
 }
-
