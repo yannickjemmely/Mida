@@ -1,5 +1,4 @@
 {
-    "compileOnSave": true,
     "compilerOptions": {
         "baseUrl": ".",
         "declaration": true,
@@ -14,7 +13,6 @@
         },
         "removeComments": true,
         "sourceMap": true,
-        "composite": true,
         "strict": true,
         "target": "es6"
     },
