@@ -170,9 +170,9 @@ Examples of technical market analysis.
 #### Candlesticks
 How to get the candlesticks of a symbol (in the code candlesticks and bars are generally referred as periods).
 ```javascript
-const { MidaSymbolPeriodTimeframeType } = require("@reiryoku/mida/periods/MidaSymbolPeriodTimeframeType");
+const { MidaTimeframeType } = require("@reiryoku/mida/periods/MidaTimeframeType");
 
-const periods = await myAccount.getSymbolPeriods("EURUSD", MidaSymbolPeriodTimeframeType.M30);
+const periods = await myAccount.getSymbolPeriods("EURUSD", MidaTimeframeType.M30);
 const lastPeriod = periods[periods.length - 1];
 
 console.log("Last candlestick start time: " + lastPeriod.startTime);
@@ -184,9 +184,9 @@ console.log("Last candlestick close price: " + lastPeriod.close);
 How to calculate the RSI indicator for Bitcoin on H1 chart.
 ```javascript
 const { MidaIndicator } = require("@reiryoku/mida/indicators/MidaIndicator");
-const { MidaSymbolPeriodTimeframeType } = require("@reiryoku/mida/periods/MidaSymbolPeriodTimeframeType");
+const { MidaTimeframeType } = require("@reiryoku/mida/periods/MidaTimeframeType");
 
-const periods = await myAccount.getSymbolPeriods("BTCUSD", MidaSymbolPeriodTimeframeType.H1);
+const periods = await myAccount.getSymbolPeriods("BTCUSD", MidaTimeframeType.H1);
 const relativeStrengthIndex = await MidaIndicator.calculate("RSI", {
     prices: periods.map((period) => period.close),
     length: 14,
@@ -197,9 +197,9 @@ const relativeStrengthIndex = await MidaIndicator.calculate("RSI", {
 How to calculate the Bollinger Bands indicator for Ethereum on M5 chart.
 ```javascript
 const { MidaIndicator } = require("@reiryoku/mida/indicators/MidaIndicator");
-const { MidaSymbolPeriodTimeframeType } = require("@reiryoku/mida/periods/MidaSymbolPeriodTimeframeType");
+const { MidaTimeframeType } = require("@reiryoku/mida/periods/MidaTimeframeType");
 
-const periods = await myAccount.getSymbolPeriods("ETHUSD", MidaSymbolPeriodTimeframeType.M5);
+const periods = await myAccount.getSymbolPeriods("ETHUSD", MidaTimeframeType.M5);
 const bollingerBands = await MidaIndicator.calculate("BollingerBands", {
     prices: periods.map((period) => period.close),
     length: 20,

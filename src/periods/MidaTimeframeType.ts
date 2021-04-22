@@ -1,5 +1,5 @@
 /** The common timeframe types of a period. */
-export enum MidaSymbolPeriodTimeframeType {
+export enum MidaTimeframeType {
     /** 1 second. */
     S1 = 1,
     /** 1 minute. */
