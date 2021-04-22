@@ -14,17 +14,15 @@ export class Mida {
 
     public static use (plugin: MidaPlugin, options?: GenericObject): void {
         if (Mida._installedPlugins.has(plugin.name)) {
-            throw new Error();
+            return;
         }
 
         Mida._installedPlugins.set(plugin.name, plugin);
 
         plugin.install(options);
     }
-}
 
-export { MidaBroker } from "#brokers/MidaBroker";
-export { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
-export { MidaBrokerAccountParameters } from "#brokers/MidaBrokerAccountParameters";
-export { MidaBrokerAccountType } from "#brokers/MidaBrokerAccountType";
-export { MidaBrokerParameters } from "#brokers/MidaBrokerParameters";
+    public static useDefaultPlugins (): void {
+        // Silence is golden.
+    }
+}

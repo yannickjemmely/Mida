@@ -8,7 +8,7 @@
         "url": "https://github.com/Reiryoku-Technologies/Mida/issues"
     },
     "author": {
-        "name": "Vasile Pește, Reiryoku Technologies",
+        "name": "Vasile Pește / Reiryoku Technologies",
         "email": "vasile.peste@protonmail.ch"
     },
     "repository": {
@@ -22,10 +22,12 @@
         "safe-build": "rm -rf ./build && npm run lint && npm run build && jest",
         "create-docs": "typedoc"
     },
-    "main": "./build/src/Mida.js",
-    "types": "./build/src/Mida.d.ts",
     "imports": {
         "#*": "./build/src/*.js"
+    },
+    "exports": {
+        ".": "./build/src/Mida.js",
+        "./*": "./build/src/*.js"
     },
     "dependencies": {
         "puppeteer": "8.0.0",

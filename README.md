@@ -37,7 +37,7 @@ The objective is creating a common API allowing to operate in financial markets 
 ### Broker account login
 How to login into a MetaTrader 4 broker.
 ```javascript
-const { MidaBroker } = require("@reiryoku/mida/brokers/MidaBroker");
+const { MidaBroker } = require("@reiryoku/mida");
 
 const myAccount = await MidaBroker.login("MT4", {
     id: "foo",
@@ -48,7 +48,7 @@ const myAccount = await MidaBroker.login("MT4", {
 
 How to login into an independent broker.
 ```javascript
-const { MidaBroker } = require("@reiryoku/mida/brokers/MidaBroker");
+const { MidaBroker } = require("@reiryoku/mida");
 
 const myAccount = await MidaBroker.login("ICMarkets", {
     email: "foo@bar.com",
@@ -60,7 +60,7 @@ const myAccount = await MidaBroker.login("ICMarkets", {
 #### Playground
 Playground is a local broker created by Mida for paper trading.
 ```javascript
-const { MidaBroker } = require("@reiryoku/mida/brokers/MidaBroker");
+const { MidaBroker } = require("@reiryoku/mida");
 
 const myAccount = await MidaBroker.login("Playground", {
     id: "test",
@@ -86,7 +86,7 @@ console.log(myAccount.localDate); // The local date is now 2020-04-23 00:10:00.
 ### Broker orders and positions
 How top open a long position for Bitcoin against USD.
 ```javascript
-const { MidaBrokerOrderType } = require("@reiryoku/mida/orders/MidaBrokerOrderType");
+const { MidaBrokerOrderType } = require("@reiryoku/mida");
 
 const myOrder = await myAccount.placeOrder({
     symbol: "BTCUSD",
@@ -100,7 +100,7 @@ console.log(myOrder.openPrice);
 
 How to open a short position for EUR against USD.
 ```javascript
-const { MidaBrokerOrderType } = require("@reiryoku/mida/orders/MidaBrokerOrderType");
+const { MidaBrokerOrderType } = require("@reiryoku/mida");
 
 const myOrder = await myAccount.placeOrder({
     symbol: "EURUSD",
@@ -116,7 +116,7 @@ console.log(myOrder.openPrice);
 
 How to open a long position for GBP against USD with stop loss and take profit.
 ```javascript
-const { MidaBrokerOrderType } = require("@reiryoku/mida/orders/MidaBrokerOrderType");
+const { MidaBrokerOrderType } = require("@reiryoku/mida");
 
 const symbol = "GBPUSD";
 const lastTick = await myAccount.getSymbolLastTick(symbol);
