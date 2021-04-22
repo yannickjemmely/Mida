@@ -21,8 +21,4 @@ export class Mida {
 
         plugin.install(options);
     }
-
-    public static useDefaultPlugins (): void {
-        // Silence is golden.
-    }
 }
