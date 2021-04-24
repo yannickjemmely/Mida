@@ -22,8 +22,8 @@
         "safe-build": "rm -rf ./build && npm run lint && npm run build && jest",
         "create-docs": "typedoc"
     },
-    "main": "./build/src/Mida.js",
-    "types": "./build/src/Mida.d.ts",
+    "main": "./build/src/entry/node/main.js",
+    "types": "./build/src/entry/node/main.d.ts",
     "dependencies": {
         "puppeteer": "8.0.0",
         "uuid": "8.3.2"
