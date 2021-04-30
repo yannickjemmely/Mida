@@ -12,7 +12,13 @@ export class Mida {
         return [ ...Mida._installedPlugins.values(), ];
     }
 
-    public static use (plugin: MidaPlugin, options?: GenericObject): void {
+    public static use (module: any, options?: GenericObject): void {
+        const plugin: MidaPlugin = module.plugin;
+
+        if (!plugin) {
+            return;
+        }
+
         if (Mida._installedPlugins.has(plugin.name)) {
             return;
         }
