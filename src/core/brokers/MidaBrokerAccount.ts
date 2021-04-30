@@ -184,9 +184,6 @@ export abstract class MidaBrokerAccount {
      */
     public abstract getSymbolLastTick (symbol: string): Promise<MidaSymbolTick>;
 
-    /** Used to disconnect the account. */
-    public abstract disconnect (): Promise<void>;
-
     /** Used to get the account free margin. */
     public async getFreeMargin (): Promise<number> {
         const tasks: Promise<number>[] = [ this.getEquity(), this.getUsedMargin(), ];
