@@ -1,6 +1,6 @@
+import { MidaBroker } from "#brokers/MidaBroker";
 import { MidaPlugin } from "#plugins/MidaPlugin";
 import { GenericObject } from "#utilities/GenericObject";
-import { MidaBroker } from "#brokers/MidaBroker";
 
 export class Mida {
     private static readonly _installedPlugins: Map<string, MidaPlugin> = new Map();
