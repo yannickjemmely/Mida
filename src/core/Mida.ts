@@ -35,6 +35,10 @@ export { MidaBrokerAccountParameters } from "#brokers/MidaBrokerAccountParameter
 export { MidaBrokerAccountType } from "#brokers/MidaBrokerAccountType";
 export { MidaBrokerParameters } from "#brokers/MidaBrokerParameters";
 
+export { MidaEvent } from "#events/MidaEvent";
+export { MidaEventListener } from "#events/MidaEventListener";
+export { MidaEventParameters } from "#events/MidaEventParameters";
+
 export { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
 export { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
 export { MidaBrokerOrderExecutionType } from "#orders/MidaBrokerOrderExecutionType";
