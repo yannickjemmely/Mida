@@ -1,5 +1,6 @@
 import { MidaPlugin } from "#plugins/MidaPlugin";
 import { GenericObject } from "#utilities/GenericObject";
+import { MidaBroker } from "#brokers/MidaBroker";
 
 export class Mida {
     private static readonly _installedPlugins: Map<string, MidaPlugin> = new Map();
@@ -25,7 +26,11 @@ export class Mida {
 
         Mida._installedPlugins.set(plugin.name, plugin);
 
-        plugin.install(options);
+        plugin.install({
+            addBroker (broker: MidaBroker): void {
+                MidaBroker.add(broker);
+            },
+        }, options);
     }
 }
 
@@ -63,4 +68,5 @@ export { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 export { MidaSymbolTickParameters } from "#ticks/MidaSymbolTickParameters";
 
 export { MidaPlugin } from "#plugins/MidaPlugin";
+export { MidaPluginActions } from "#plugins/MidaPluginActions";
 export { MidaPluginParameters } from "#plugins/MidaPluginParameters";

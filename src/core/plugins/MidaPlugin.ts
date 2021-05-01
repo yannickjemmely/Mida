@@ -1,3 +1,4 @@
+import { MidaPluginActions } from "#plugins/MidaPluginActions";
 import { MidaPluginParameters } from "#plugins/MidaPluginParameters";
 import { GenericObject } from "#utilities/GenericObject";
 
@@ -5,7 +6,7 @@ export class MidaPlugin {
     private readonly _name: string;
     private readonly _description: string;
     private readonly _version: string;
-    private readonly _install?: (options?: GenericObject) => void;
+    private readonly _install?: (actions: MidaPluginActions, options?: GenericObject) => void;
 
     public constructor ({ name, description = "", version, install, }: MidaPluginParameters) {
         this._name = name;
@@ -26,9 +27,9 @@ export class MidaPlugin {
         return this._version;
     }
 
-    public install (options?: GenericObject): void {
+    public install (actions: MidaPluginActions, options?: GenericObject): void {
         if (this._install) {
-            this._install(options);
+            this._install(actions, options);
         }
     }
 }
