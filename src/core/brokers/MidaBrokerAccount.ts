@@ -121,7 +121,7 @@ export abstract class MidaBrokerAccount {
      * Used to get the stop loss of an order.
      * @param ticket The order ticket.
      */
-    public abstract getOrderStopLoss (ticket: number): Promise<void>;
+    public abstract getOrderStopLoss (ticket: number): Promise<number | undefined>;
 
     /**
      * Used to set the stop loss of an order.
@@ -140,7 +140,7 @@ export abstract class MidaBrokerAccount {
      * Used to get the take profit of an order.
      * @param ticket The order ticket.
      */
-    public abstract getOrderTakeProfit (ticket: number): Promise<void>;
+    public abstract getOrderTakeProfit (ticket: number): Promise<number | undefined>;
 
     /**
      * Used to set the take profit of an order.
