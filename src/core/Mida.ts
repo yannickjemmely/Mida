@@ -40,6 +40,8 @@ export { MidaBrokerAccountParameters } from "#brokers/MidaBrokerAccountParameter
 export { MidaBrokerAccountType } from "#brokers/MidaBrokerAccountType";
 export { MidaBrokerParameters } from "#brokers/MidaBrokerParameters";
 
+export { MidaError } from "#errors/MidaError";
+
 export { MidaEvent } from "#events/MidaEvent";
 export { MidaEventListener } from "#events/MidaEventListener";
 export { MidaEventParameters } from "#events/MidaEventParameters";
