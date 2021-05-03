@@ -3,7 +3,7 @@
     "includeVersion": true,
     "excludePrivate": true,
     "entryPoints": [
-        "./src/core"
+        "./entry/node/main.ts"
     ],
     "out": "docs/typedoc"
 }
