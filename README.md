@@ -9,8 +9,7 @@ A JavaScript framework to easily operate in global financial markets.
 Mida is designed to:
 - Trade financial assets such as stocks, crypto, forex or commodities;
 - Operate with any broker account using only JavaScript/TypeScript;
-- Automate and backtest trading strategies through expert advisors and indicators;
-- Analyze markets and prices through indicators and analysis interfaces.
+- Automate and backtest trading strategies through expert advisors and indicators.
 
 Furthermore, Mida is free and open source, join the [Discord community](https://discord.gg/cKyWTUsr3q).
 
@@ -20,9 +19,6 @@ Furthermore, Mida is free and open source, join the [Discord community](https://
 </p>
 <br>
 
-**This is a work in progress project, the API is not fully implemented, the NPM module is not published.<br>
-At this time only the Playground broker is fully supported. Please create an issue for questions.**
-
 ## Installation
 The easiest way to install Mida is using the following command in your project directory.
 ```console
@@ -30,9 +26,7 @@ npm install @reiryoku/mida
 ```
 
 ## Usage
-This project is incomplete! Parts of the API may not be implemented or have different configurations.
-For contributions please create an issue.
-The objective is creating a common API allowing to operate in financial markets with MetaTrader, cTrader and the other independent brokers APIs.
+Mida is creating a common API allowing to operate in global financial markets with MetaTrader, cTrader and the other independent brokers APIs.
 
 ### Broker account login
 How to login into a MetaTrader 4 broker.
@@ -58,7 +52,7 @@ const myAccount = await MidaBroker.login("ICMarkets", {
 ```
 
 #### Playground
-Playground is a local broker created by Mida for paper trading.
+Playground is a local broker created by Mida for paper trading and backtesting.
 ```javascript
 const { MidaBroker } = require("@reiryoku/mida");
 
@@ -222,5 +216,3 @@ accounts without installing MetaTrader (which is available only for Windows OS).
 
 ## Contributors
 The author and maintainer of the project is [Vasile Pește](https://github.com/Vasile-Peste) (vasile.peste@protonmail.ch).
-
-This project is still in alpha, please create an issue for contributions and questions.
