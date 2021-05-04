@@ -53,14 +53,29 @@ const myAccount = await MidaBroker.login("ICMarkets", {
 
 #### Playground
 Playground is a local broker created by Mida for paper trading and backtesting.
+To use Playground first add the plugin to your dependencies.
+```json
+{
+    "dependencies": {
+        "@reiryoku/mida-playground": "1.0.0"
+    }
+}
+```
+
 ```javascript
-const { MidaBroker } = require("@reiryoku/mida");
+const {
+    Mida,
+    MidaBroker,
+} = require("@reiryoku/mida");
+
+// Use the Mida Playground plugin.
+Mida.use(require("@reiryoku/mida-playground"));
 
 const myAccount = await MidaBroker.login("Playground", {
-    id: "test",
-    localDate: new Date("2020-04-23T00:00:00"),
-    currency: "USD",
-    balance: 10000,
+    id: "test", // The account id.
+    localDate: new Date("2020-04-23T00:00:00"), // The broker local date.
+    currency: "USD", // The account currency.
+    balance: 10000, // The account initial balance.
     negativeBalanceProtection: true,
 });
 
@@ -164,7 +179,7 @@ Examples of technical market analysis.
 #### Candlesticks
 How to get the candlesticks of a symbol (in the code candlesticks and bars are generally referred as periods).
 ```javascript
-const { MidaTimeframeType } = require("@reiryoku/mida/periods/MidaTimeframeType");
+const { MidaTimeframeType } = require("@reiryoku/mida");
 
 const periods = await myAccount.getSymbolPeriods("EURUSD", MidaTimeframeType.M30);
 const lastPeriod = periods[periods.length - 1];
@@ -177,8 +192,10 @@ console.log("Last candlestick close price: " + lastPeriod.close);
 #### Relative Strength Index
 How to calculate the RSI indicator for Bitcoin on H1 chart.
 ```javascript
-const { MidaIndicator } = require("@reiryoku/mida/indicators/MidaIndicator");
-const { MidaTimeframeType } = require("@reiryoku/mida/periods/MidaTimeframeType");
+const {
+    MidaIndicator,
+    MidaTimeframeType,
+} = require("@reiryoku/mida");
 
 const periods = await myAccount.getSymbolPeriods("BTCUSD", MidaTimeframeType.H1);
 const relativeStrengthIndex = await MidaIndicator.calculate("RSI", {
@@ -190,8 +207,10 @@ const relativeStrengthIndex = await MidaIndicator.calculate("RSI", {
 #### Bollinger Bands
 How to calculate the Bollinger Bands indicator for Ethereum on M5 chart.
 ```javascript
-const { MidaIndicator } = require("@reiryoku/mida/indicators/MidaIndicator");
-const { MidaTimeframeType } = require("@reiryoku/mida/periods/MidaTimeframeType");
+const {
+    MidaIndicator,
+    MidaTimeframeType,
+} = require("@reiryoku/mida");
 
 const periods = await myAccount.getSymbolPeriods("ETHUSD", MidaTimeframeType.M5);
 const bollingerBands = await MidaIndicator.calculate("BollingerBands", {

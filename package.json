@@ -19,8 +19,8 @@
         "lint": "tslint --project .",
         "build": "ttsc",
         "test": "npm run build && jest --verbose",
-        "safe-build": "rm -rf ./build && npm run lint && npm run build && npm run create-docs && jest",
         "create-docs": "typedoc",
+        "safe-build": "rm -rf ./build && npm run lint && npm run build && jest && npm run create-docs",
         "prepublishOnly": "npm run safe-build"
     },
     "main": "./build/entry/node/main.js",
