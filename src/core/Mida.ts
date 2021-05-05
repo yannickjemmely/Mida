@@ -75,3 +75,5 @@ export { MidaPluginParameters } from "#plugins/MidaPluginParameters";
 
 export { MidaBrowser } from "#utilities/browsers/MidaBrowser";
 export { MidaBrowserTab } from "#utilities/browsers/MidaBrowserTab";
+
+export { MidaEmitter } from "#utilities/emitters/MidaEmitter";
