@@ -20,13 +20,13 @@
         "build": "ttsc",
         "test": "npm run build && jest --verbose",
         "create-docs": "typedoc",
-        "safe-build": "rm -rf ./build && npm run lint && npm run build && jest && npm run create-docs",
+        "safe-build": "rm -rf ./build && npm run lint && npm run build && jest",
         "prepublishOnly": "npm run safe-build"
     },
     "main": "./build/entry/node/main.js",
     "types": "./build/entry/node/main.d.ts",
     "files": [
-        "*"
+        "build"
     ],
     "dependencies": {
         "puppeteer": "8.0.0",
