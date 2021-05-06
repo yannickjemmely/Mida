@@ -26,6 +26,7 @@
     "main": "./build/entry/node/main.js",
     "types": "./build/entry/node/main.d.ts",
     "files": [
+        "*",
         "build"
     ],
     "dependencies": {
