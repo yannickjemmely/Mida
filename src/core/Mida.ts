@@ -16,7 +16,7 @@ export class Mida {
     public static use (module: any, options?: GenericObject): void {
         const plugin: MidaPlugin = module.plugin;
 
-        if (!plugin) {
+        if (!plugin || plugin.constructor.name !== MidaPlugin.name) {
             return;
         }
 
@@ -77,3 +77,5 @@ export { MidaBrowser } from "#utilities/browsers/MidaBrowser";
 export { MidaBrowserTab } from "#utilities/browsers/MidaBrowserTab";
 
 export { MidaEmitter } from "#utilities/emitters/MidaEmitter";
+
+export { GenericObject } from "#utilities/GenericObject";
