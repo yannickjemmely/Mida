@@ -26,8 +26,7 @@
     "main": "./build/entry/node/main.js",
     "types": "./build/entry/node/main.d.ts",
     "files": [
-        "build",
-        "docs"
+        "*"
     ],
     "dependencies": {
         "puppeteer": "8.0.0",
