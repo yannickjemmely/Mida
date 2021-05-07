@@ -32,6 +32,10 @@ export class Mida {
             },
         }, options);
     }
+
+    public static isPluginInstalled (name: string): boolean {
+        return Mida.installedPlugins.some((plugin: MidaPlugin): boolean => plugin.name === name);
+    }
 }
 
 export { MidaBroker } from "#brokers/MidaBroker";
