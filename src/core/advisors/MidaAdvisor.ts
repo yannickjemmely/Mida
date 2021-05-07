@@ -1,11 +1,11 @@
 import { MidaAdvisorParameters } from "#advisors/MidaAdvisorParameters";
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
+import { MidaEvent } from "#events/MidaEvent";
+import { MidaEventListener } from "#events/MidaEventListener";
 import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
 import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
-import { MidaEventListener } from "#events/MidaEventListener";
-import { MidaEvent } from "#events/MidaEvent";
 import { GenericObject } from "#utilities/GenericObject";
 
 export abstract class MidaAdvisor {
