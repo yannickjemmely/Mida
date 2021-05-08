@@ -15,7 +15,7 @@ Furthermore, Mida is free and open source, join the [Discord community](https://
 
 <br>
 <p align="center"> 
-    <img src="images/introduction.svg" alt="Mida" width="860px">
+    <img src="images/introduction.svg" alt="" width="860px">
 </p>
 <br>
 
@@ -49,47 +49,6 @@ const myAccount = await MidaBroker.login("ICMarkets", {
     id: "foo",
     password: "bar",
 });
-```
-
-#### Playground
-Playground is a local broker created by Mida for paper trading and backtesting.
-To use Playground first add the plugin to your dependencies.
-```json
-{
-    "dependencies": {
-        "@reiryoku/mida-playground": "1.0.0"
-    }
-}
-```
-
-```javascript
-const {
-    Mida,
-    MidaBroker,
-} = require("@reiryoku/mida");
-
-// Use the Mida Playground plugin.
-Mida.use(require("@reiryoku/mida-playground"));
-
-const myAccount = await MidaBroker.login("Playground", {
-    id: "test", // The account id.
-    localDate: new Date("2020-04-23T00:00:00"), // The broker local date.
-    currency: "USD", // The account currency.
-    balance: 10000, // The account initial balance.
-    negativeBalanceProtection: true,
-});
-
-// Used to listen any market ticks.
-myAccount.on("tick", (event) => {
-    const tick = event.descriptor.tick;
-    
-    console.log(`New tick for ${tick.symbol} => ${tick.bid} | ${tick.ask}`);
-});
-
-// Used to elapse a given amount of time in the local date, this will trigger ticks.
-await myAccount.elapseTime(60 * 10); // 60 seconds * 10 = 10 minutes.
-
-console.log(myAccount.localDate); // The local date is now 2020-04-23 00:10:00.
 ```
 
 ### Broker orders and positions
@@ -217,6 +176,65 @@ const bollingerBands = await MidaIndicator.calculate("BollingerBands", {
     prices: periods.map((period) => period.close),
     length: 20,
 });
+```
+
+### Practice and backtest
+Playground is a local broker created for paper trading and backtesting.
+To use Playground first add the plugin to your dependencies.
+```json
+{
+    "dependencies": {
+        "@reiryoku/mida": "1.0.0",
+        "@reiryoku/mida-playground": "1.0.0"
+    }
+}
+```
+
+```javascript
+const {
+    Mida,
+    MidaBroker,
+} = require("@reiryoku/mida");
+
+// Use the Mida Playground plugin.
+Mida.use(require("@reiryoku/mida-playground"));
+
+const myAccount = await MidaBroker.login("Playground", {
+    id: "test", // The account id.
+    localDate: new Date("2020-04-23"), // The broker local date.
+    currency: "USD", // The account currency.
+    balance: 10000, // The account initial balance.
+    negativeBalanceProtection: true,
+});
+
+// Used to listen any market ticks.
+myAccount.on("tick", (event) => {
+    const tick = event.descriptor.tick;
+    
+    console.log(`New tick for ${tick.symbol} => ${tick.bid} | ${tick.ask}`);
+});
+
+// Used to elapse a given amount of time in the local date, this will trigger ticks.
+await myAccount.elapseTime(60 * 10); // 60 seconds * 10 = 10 minutes.
+
+console.log(myAccount.localDate); // The local date is now 2020-04-23 00:10:00.
+```
+
+#### Backtest expert advisors
+If you have created an expert advisor, you can easily backtest it by just assigning
+the playground broker to it.
+
+```javascript
+import { MyExpertAdvisor } from "./my-expert-advisor";
+
+const myAdvisor = new MyExpertAdvisor({
+    brokerAccount: myAccount,
+});
+
+await myAdvisor.start();
+await myAccount.elapseTime(60 * 60 * 24); // Elapse 1 hour, this will trigger ticks and candles.
+
+console.log(myAdvisor.orders); // The orders created by the EA in one hour.
 ```
 
 ## Disclaimer
