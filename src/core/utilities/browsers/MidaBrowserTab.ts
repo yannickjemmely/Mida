@@ -40,6 +40,10 @@ export class MidaBrowserTab {
         return this._puppeteerPage.evaluate(text);
     }
 
+    public async evaluateOnNewDocument (text: string): Promise<any> {
+        return this._puppeteerPage.evaluateOnNewDocument(text);
+    }
+
     public async focus (selector: string): Promise<void> {
         try {
             await this._puppeteerPage.focus(selector);
