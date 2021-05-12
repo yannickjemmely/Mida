@@ -73,6 +73,18 @@ export class MidaBrowserTab {
         }
     }
 
+    public async rightClick (selector: string, count: number = 1): Promise<void> {
+        try {
+            await this._puppeteerPage.click(selector, {
+                clickCount: count,
+                button: "right",
+            });
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
     public async waitForSelector (selector: string): Promise<void> {
         try {
             await this._puppeteerPage.waitForSelector(selector);
