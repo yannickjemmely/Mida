@@ -18,4 +18,6 @@ export enum MidaTimeframeType {
     D1 = 86400,
     /** 1 week. */
     W1 = 604800,
+    /** 1 month. */
+    MO1 = 2592000,
 }

@@ -1,3 +1,4 @@
+* Define monthly timeframe type.
 * Create "rightClick" method for browser tabs.
 * Create "evaluateOnNewDocument" method for browser tabs.
 
