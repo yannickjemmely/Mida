@@ -16,6 +16,10 @@ export class MidaBrowserTab {
         return this._browser;
     }
 
+    public get puppeteerPage (): Puppeteer.Page {
+        return this._puppeteerPage;
+    }
+
     public async setUserAgent (userAgent: string): Promise<void> {
         return this._puppeteerPage.setUserAgent(userAgent);
     }
