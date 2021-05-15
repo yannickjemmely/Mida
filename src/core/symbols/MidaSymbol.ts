@@ -1,7 +1,6 @@
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 import { MidaBrokerOrderType } from "#orders/MidaBrokerOrderType";
 import { MidaSymbolParameters } from "#symbols/MidaSymbolParameters";
-import { MidaSymbolSpreadType } from "#symbols/MidaSymbolSpreadType";
 import { MidaSymbolType } from "#symbols/MidaSymbolType";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
@@ -13,7 +12,6 @@ export class MidaSymbol {
     private readonly _description: string;
     private readonly _type: MidaSymbolType;
     private readonly _digits: number;
-    private readonly _spreadType: MidaSymbolSpreadType;
     private readonly _leverage: number;
     private readonly _minLots: number;
     private readonly _maxLots: number;
@@ -26,7 +24,6 @@ export class MidaSymbol {
         description,
         type,
         digits,
-        spreadType,
         leverage,
         minLots,
         maxLots,
@@ -37,7 +34,6 @@ export class MidaSymbol {
         this._description = description;
         this._type = type;
         this._digits = digits;
-        this._spreadType = spreadType;
         this._leverage = leverage;
         this._minLots = minLots;
         this._maxLots = maxLots;
@@ -63,11 +59,6 @@ export class MidaSymbol {
     /** The symbol digits. */
     public get digits (): number {
         return this._digits;
-    }
-
-    /** The symbol spread type. */
-    public get spreadType (): MidaSymbolSpreadType {
-        return this._spreadType;
     }
 
     /** The symbol leverage. */
