@@ -156,7 +156,7 @@ export abstract class MidaBrokerAccount {
     public abstract clearOrderTakeProfit (ticket: number): Promise<void>;
 
     /** Used to get the account symbols. */
-    public abstract getSymbols (): Promise<MidaSymbol[]>;
+    public abstract getSymbols (): Promise<string[]>;
 
     /**
      * Used to get a symbol by its string representation.
@@ -226,12 +226,6 @@ export abstract class MidaBrokerAccount {
 
     public async getClosedOrders (): Promise<MidaBrokerOrder[]> {
         return this.getOrdersByStatus(MidaBrokerOrderStatusType.CLOSED);
-    }
-
-    public async getSymbolsByType (type: MidaSymbolType): Promise<MidaSymbol[]> {
-        const symbols: MidaSymbol[] = await this.getSymbols();
-
-        return symbols.filter((symbol: MidaSymbol): boolean => symbol.type === type);
     }
 
     public on (type: string, listener?: MidaEventListener): Promise<MidaEvent> | string {

@@ -67,7 +67,6 @@ export { MidaSymbolQuotationPriceType } from "#quotations/MidaSymbolQuotationPri
 
 export { MidaSymbol } from "#symbols/MidaSymbol";
 export { MidaSymbolParameters } from "#symbols/MidaSymbolParameters";
-export { MidaSymbolSpreadType } from "#symbols/MidaSymbolSpreadType";
 export { MidaSymbolType } from "#symbols/MidaSymbolType";
 
 export { MidaSymbolTick } from "#ticks/MidaSymbolTick";
