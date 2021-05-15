@@ -9,7 +9,8 @@ A JavaScript framework to easily operate in global financial markets.
 Mida is designed to:
 - Trade financial assets such as stocks, crypto, forex or commodities;
 - Operate with any broker account using only JavaScript/TypeScript;
-- Automate and backtest trading strategies through expert advisors and indicators.
+- Automate and backtest trading strategies through expert advisors.
+- Analyze price movements and markets with indicators and analysis interfaces.
 
 Furthermore, Mida is free and open source, join the [Discord community](https://discord.gg/cKyWTUsr3q).
 
@@ -26,14 +27,14 @@ npm install @reiryoku/mida
 ```
 
 ## Usage
-Mida is creating a common API allowing to operate in global financial markets with MetaTrader, cTrader and the other independent brokers APIs.
+Mida is creating a common API to operate in global financial markets with MetaTrader, cTrader and other brokers/exchanges APIs.
 
 ### Broker account login
-How to login into a MetaTrader 4 broker.
+How to login into a MetaTrader 5 broker.
 ```javascript
 const { MidaBroker } = require("@reiryoku/mida");
 
-const myAccount = await MidaBroker.login("MT4", {
+const myAccount = await MidaBroker.login("MT5", {
     id: "foo",
     password: "bar",
     serverName: "FooBar",
