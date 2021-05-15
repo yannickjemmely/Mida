@@ -1,3 +1,4 @@
+* Plugins installations are now based on ids.
 * Remove right click method from browser tabs and create options object in the click method.
 * Return string symbols instead of objects when requesting the account symbols.
 * Remove export of spread type.

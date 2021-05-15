@@ -20,11 +20,11 @@ export class Mida {
             return;
         }
 
-        if (Mida._installedPlugins.has(plugin.name)) {
+        if (Mida.isPluginInstalled(plugin.id)) {
             return;
         }
 
-        Mida._installedPlugins.set(plugin.name, plugin);
+        Mida._installedPlugins.set(plugin.id, plugin);
 
         plugin.install({
             addBroker (broker: MidaBroker): void {
@@ -33,8 +33,8 @@ export class Mida {
         }, options);
     }
 
-    public static isPluginInstalled (name: string): boolean {
-        return Mida.installedPlugins.some((plugin: MidaPlugin): boolean => plugin.name === name);
+    public static isPluginInstalled (id: string): boolean {
+        return Mida._installedPlugins.has(id);
     }
 }
 

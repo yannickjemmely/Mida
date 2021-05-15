@@ -3,16 +3,22 @@ import { MidaPluginParameters } from "#plugins/MidaPluginParameters";
 import { GenericObject } from "#utilities/GenericObject";
 
 export class MidaPlugin {
+    private readonly _id: string;
     private readonly _name: string;
     private readonly _description: string;
     private readonly _version: string;
     private readonly _install?: (actions: MidaPluginActions, options?: GenericObject) => void;
 
-    public constructor ({ name, description = "", version, install, }: MidaPluginParameters) {
+    public constructor ({ id, name, description = "", version, install, }: MidaPluginParameters) {
+        this._id = id;
         this._name = name;
         this._description = description;
         this._version = version;
         this._install = install;
+    }
+
+    public get id (): string {
+        return this._id;
     }
 
     public get name (): string {
