@@ -1,6 +1,6 @@
 import * as Puppeteer from "puppeteer";
-
 import { MidaBrowser } from "#utilities/browsers/MidaBrowser";
+import { GenericObject } from "#utilities/GenericObject";
 
 /** Represents a browser tab. */
 export class MidaBrowserTab {
@@ -66,22 +66,11 @@ export class MidaBrowserTab {
         }
     }
 
-    public async click (selector: string, count: number = 1): Promise<void> {
+    public async click (selector: string, options: GenericObject = {}): Promise<void> {
         try {
             await this._puppeteerPage.click(selector, {
-                clickCount: count,
-            });
-        }
-        catch (error) {
-            console.log(error);
-        }
-    }
-
-    public async rightClick (selector: string, count: number = 1): Promise<void> {
-        try {
-            await this._puppeteerPage.click(selector, {
-                clickCount: count,
-                button: "right",
+                clickCount: options.count,
+                button: options.button,
             });
         }
         catch (error) {
