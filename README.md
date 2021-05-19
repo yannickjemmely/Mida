@@ -1,8 +1,6 @@
-<br>
 <p align="center"> 
-    <img src="images/logo.svg" alt="Mida" width="330px">
+    <img src="images/logo.svg" alt="Mida" width="360px">
 </p>
-<br>
 
 A JavaScript framework to easily operate in global financial markets.
 
