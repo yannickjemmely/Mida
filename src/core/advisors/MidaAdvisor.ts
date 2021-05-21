@@ -4,6 +4,7 @@ import { MidaEvent } from "#events/MidaEvent";
 import { MidaEventListener } from "#events/MidaEventListener";
 import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
 import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
+import { MidaBrokerOrderStatusType } from "#orders/MidaBrokerOrderStatusType";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 import { GenericObject } from "#utilities/GenericObject";
@@ -37,6 +38,10 @@ export abstract class MidaAdvisor {
 
     public get orders (): MidaBrokerOrder[] {
         return [ ...this._orders.values(), ];
+    }
+
+    public get openOrders (): MidaBrokerOrder[] {
+        return this.orders.filter((order: MidaBrokerOrder): boolean => order.status === MidaBrokerOrderStatusType.OPEN);
     }
 
     protected get capturedTicks (): readonly MidaSymbolTick[] {
