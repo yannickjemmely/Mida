@@ -20,8 +20,12 @@ export class MidaBrowserTab {
         return this._puppeteerPage;
     }
 
+    public async setViewport (width: number, height: number): Promise<void> {
+        await this._puppeteerPage.setViewport({ width, height, });
+    }
+
     public async setUserAgent (userAgent: string): Promise<void> {
-        return this._puppeteerPage.setUserAgent(userAgent);
+        await this._puppeteerPage.setUserAgent(userAgent);
     }
 
     public async goto (uri: string): Promise<any> {
