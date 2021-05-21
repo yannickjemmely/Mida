@@ -227,6 +227,15 @@ export abstract class MidaBrokerAccount {
         return this.getOrdersByStatus(MidaBrokerOrderStatusType.CLOSED);
     }
 
+    public async tryPlaceOrder (directives: MidaBrokerOrderDirectives): Promise<MidaBrokerOrder | undefined> {
+        try {
+            return (await this.placeOrder(directives));
+        }
+        catch {
+            return undefined;
+        }
+    }
+
     public on (type: string, listener?: MidaEventListener): Promise<MidaEvent> | string {
         return this._emitter.on(type, listener);
     }

@@ -1,3 +1,5 @@
+* Create "tryPlaceOrder" method for broker accounts.
+* Create "openOrders" property for expert advisors.
 * Create "setViewport" method for browser tabs.
 * Plugins installations are now based on ids.
 * Remove right click method from browser tabs and create options object in the click method.
