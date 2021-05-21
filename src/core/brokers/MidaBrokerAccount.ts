@@ -229,7 +229,7 @@ export abstract class MidaBrokerAccount {
 
     public async tryPlaceOrder (directives: MidaBrokerOrderDirectives): Promise<MidaBrokerOrder | undefined> {
         try {
-            return (await this.placeOrder(directives));
+            return await this.placeOrder(directives);
         }
         catch {
             return undefined;
