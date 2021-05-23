@@ -7,5 +7,7 @@ export enum MidaBrokerErrorType {
     INVALID_LOTS = "invalid-lots",
     INVALID_STOP_LOSS = "invalid-stop-loss",
     INVALID_TAKE_PROFIT = "invalid-take-profit",
+    INVALID_TIMEFRAME = "invalid-timeframe",
     NOT_ENOUGH_MONEY = "not-enough-money",
+    ORDER_NOT_FOUND = "order-not-found",
 }
