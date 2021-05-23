@@ -1,3 +1,6 @@
+* Create "canPlaceOrder" method for broker accounts, to check if the place order obstacles are equal to zero.
+* Create "getPlaceOrderObstacles" method for broker accounts, to get the possible list of errors when placing an order (for example market closed).
+* Create error types enumeration.
 * Create "tryPlaceOrder" method for broker accounts.
 * Create "openOrders" property for expert advisors.
 * Create "setViewport" method for browser tabs.

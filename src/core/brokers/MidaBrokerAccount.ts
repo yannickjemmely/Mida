@@ -1,6 +1,7 @@
 import { MidaBroker } from "#brokers/MidaBroker";
 import { MidaBrokerAccountParameters } from "#brokers/MidaBrokerAccountParameters";
 import { MidaBrokerAccountType } from "#brokers/MidaBrokerAccountType";
+import { MidaBrokerErrorType } from "#brokers/MidaBrokerErrorType";
 import { MidaEvent } from "#events/MidaEvent";
 import { MidaEventListener } from "#events/MidaEventListener";
 import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
@@ -225,6 +226,42 @@ export abstract class MidaBrokerAccount {
 
     public async getClosedOrders (): Promise<MidaBrokerOrder[]> {
         return this.getOrdersByStatus(MidaBrokerOrderStatusType.CLOSED);
+    }
+
+    public async getPlaceOrderObstacles (directives: MidaBrokerOrderDirectives): Promise<MidaBrokerErrorType[]> {
+        const obstacles: MidaBrokerErrorType[] = [];
+        const symbol: MidaSymbol | undefined = await this.getSymbol(directives.symbol);
+
+        if (!symbol) {
+            obstacles.push(MidaBrokerErrorType.INVALID_SYMBOL);
+
+            return obstacles;
+        }
+
+        const isMarketOpen: boolean = await symbol.isMarketOpen();
+
+        if (!isMarketOpen) {
+            obstacles.push(MidaBrokerErrorType.SYMBOL_MARKET_CLOSED);
+        }
+
+        if (directives.lots < symbol.minLots || directives.lots > symbol.maxLots) {
+            obstacles.push(MidaBrokerErrorType.INVALID_LOTS);
+        }
+
+        const freeMargin: number = await this.getFreeMargin();
+        const requiredMargin: number = await symbol.getRequiredMargin(directives.type, directives.lots);
+
+        if (freeMargin < requiredMargin) {
+            obstacles.push(MidaBrokerErrorType.NOT_ENOUGH_MONEY);
+        }
+
+        return obstacles;
+    }
+
+    public async canPlaceOrder (directives: MidaBrokerOrderDirectives): Promise<boolean> {
+        const obstacles: MidaBrokerErrorType[] = await this.getPlaceOrderObstacles(directives);
+
+        return obstacles.length === 0;
     }
 
     public async tryPlaceOrder (directives: MidaBrokerOrderDirectives): Promise<MidaBrokerOrder | undefined> {

@@ -1,4 +1,4 @@
-/** The type of a broker account. */
+/** The types of a broker account. */
 export enum MidaBrokerAccountType {
     DEMO = "demo",
     REAL = "real",

@@ -42,9 +42,12 @@ export { MidaBroker } from "#brokers/MidaBroker";
 export { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 export { MidaBrokerAccountParameters } from "#brokers/MidaBrokerAccountParameters";
 export { MidaBrokerAccountType } from "#brokers/MidaBrokerAccountType";
+export { MidaBrokerErrorType } from "#brokers/MidaBrokerErrorType";
 export { MidaBrokerParameters } from "#brokers/MidaBrokerParameters";
 
 export { MidaError } from "#errors/MidaError";
+export { MidaErrorParameters } from "#errors/MidaErrorParameters";
+export { MidaErrorType } from "#errors/MidaErrorType";
 
 export { MidaEvent } from "#events/MidaEvent";
 export { MidaEventListener } from "#events/MidaEventListener";
