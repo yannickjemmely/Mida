@@ -61,12 +61,12 @@ try {
 catch (error) {
     switch (error.type) {
         case MidaBrokerErrorType.INVALID_LOGIN_CREDENTIALS:
-            console.log("This login credentials do not match any account!");
+            console.log("The login credentials are wrong!");
             
             break;
             
         case MidaBrokerErrorType.TIMEOUT:
-            console.log("The MetaTrader 5 servers failed to respond.");
+            console.log("The MetaTrader 5 servers failed to respond!");
             
             break;
     }

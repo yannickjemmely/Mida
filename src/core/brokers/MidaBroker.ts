@@ -57,7 +57,12 @@ export abstract class MidaBroker {
 
     public static add (broker: MidaBroker): void {
         if (MidaBroker._installedBrokers.has(broker.name)) {
-            throw new MidaError({ type: MidaBrokerErrorType.BROKER_ALREADY_INSTALLED, });
+            throw new MidaError({
+                type: MidaBrokerErrorType.BROKER_ALREADY_INSTALLED,
+                descriptor: {
+                    brokerName: broker.name,
+                },
+            });
         }
 
         MidaBroker._installedBrokers.set(broker.name, broker);
@@ -67,7 +72,12 @@ export abstract class MidaBroker {
         const broker: MidaBroker | undefined = MidaBroker._installedBrokers.get(name);
 
         if (!broker) {
-            throw new MidaError({ type: MidaBrokerErrorType.BROKER_NOT_INSTALLED, });
+            throw new MidaError({
+                type: MidaBrokerErrorType.BROKER_NOT_INSTALLED,
+                descriptor: {
+                    brokerName: name,
+                },
+            });
         }
 
         return broker.login(parameters);
