@@ -163,7 +163,7 @@ if (!myOrder) {
 ```
 
 In addition, `canPlaceOrder` or `getPlaceOrderObstacles` can be used to know if an order can be placed without errors.
-Due to the high volatility of the financial markets, these methods can't guarantee that the order is going to be placed without errors being thrown.
+Due to the high volatility of financial markets, these methods can't guarantee that the order is going to be placed without errors being thrown.
 ```javascript
 const orderDirectives = {
     symbol: "#AAPL",
@@ -171,8 +171,10 @@ const orderDirectives = {
     lots: 1,
 };
 
-const canPlaceOrder = await myAccount.canPlaceOrder(orderDirectives); // => true | false
-const placeOrderObstacles = await myAccount.getPlaceOrderObstacles(orderDirectives); // => MidaBrokerErrorType[]
+// => true | false
+const canPlaceOrder = await myAccount.canPlaceOrder(orderDirectives);
+// => MidaBrokerErrorType[]
+const placeOrderObstacles = await myAccount.getPlaceOrderObstacles(orderDirectives);
 
 if (placeOrderObstacles.includes(MidaBrokerErrorType.MARKET_CLOSED)) {
     console.log("#AAPL market is closed!");
@@ -233,6 +235,38 @@ symbol.on("tick", (event) => {
     
     console.log(`GameStop share price is now ${tick.bid} dollars.`);
 });
+```
+
+### Expert advisors
+How to create an expert advisor.
+```javascript
+const { MidaExpertAdvisor } = require("@reiryoku/mida");
+
+class MyExpertAdvisor extends MidaExpertAdvisor {
+    constructor (brokerAccount) {
+        super({ brokerAccount, });
+    }
+    
+    async setup () {
+        this.watchSymbol("EURUSD");
+    }
+
+    async onTick (tick) {
+        // Implement your strategy.
+    }
+}
+```
+
+How to execute an expert advisor.
+```javascript
+const { MidaBroker } = require("@reiryoku/mida");
+const { MyExpertAdvisor } = require("./my-expert-advisor"); 
+
+const myAccount = await MidaBroker.login(/* ... */);
+const myAdvisor = new MyExpertAdvisor(myAccount);
+
+myAdvisor.on("order-open", (event) => console.log(`New order opened with ticket => ${event.descriptor.ticket}`));
+myAdvisor.start();
 ```
 
 ### Market analysis and indicators
