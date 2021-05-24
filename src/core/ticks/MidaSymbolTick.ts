@@ -18,6 +18,7 @@ export class MidaSymbolTick implements IMidaCloneable {
                 symbol,
                 bid,
                 ask,
+                date,
             });
         }
         else {
@@ -25,10 +26,20 @@ export class MidaSymbolTick implements IMidaCloneable {
                 symbol: "",
                 bid: NaN,
                 ask: NaN,
+                date,
             });
         }
 
-        this._date = date ? new Date(date) : undefined;
+        if (date) {
+            this._date = new Date(date);
+        }
+        else if (this._quotation.date) {
+            this._date = new Date(this._quotation.date);
+        }
+        else {
+            this._date = undefined;
+        }
+
         this._previousTick = previousTick;
         this._nextTick = nextTick;
     }
