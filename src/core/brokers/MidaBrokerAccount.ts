@@ -241,7 +241,7 @@ export abstract class MidaBrokerAccount {
         const isMarketOpen: boolean = await symbol.isMarketOpen();
 
         if (!isMarketOpen) {
-            obstacles.push(MidaBrokerErrorType.SYMBOL_MARKET_CLOSED);
+            obstacles.push(MidaBrokerErrorType.MARKET_CLOSED);
         }
 
         if (directives.lots < symbol.minLots || directives.lots > symbol.maxLots) {

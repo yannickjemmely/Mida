@@ -1,5 +1,7 @@
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
+import { MidaBrokerErrorType } from "#brokers/MidaBrokerErrorType";
 import { MidaBrokerParameters } from "#brokers/MidaBrokerParameters";
+import { MidaError } from "#errors/MidaError";
 import { GenericObject } from "#utilities/GenericObject";
 
 /** Represents a broker. */
@@ -28,6 +30,19 @@ export abstract class MidaBroker {
      */
     public abstract login (parameters: GenericObject): Promise<MidaBrokerAccount>;
 
+    /**
+     * Used to login into an account without throwing errors.
+     * @param parameters The login parameters.
+     */
+    public async tryLogin (parameters: GenericObject): Promise<MidaBrokerAccount | undefined> {
+        try {
+            return await this.login(parameters);
+        }
+        catch {
+            return undefined;
+        }
+    }
+
     /*
      **
      *** Static
@@ -42,7 +57,7 @@ export abstract class MidaBroker {
 
     public static add (broker: MidaBroker): void {
         if (MidaBroker._installedBrokers.has(broker.name)) {
-            throw new Error();
+            throw new MidaError({ type: MidaBrokerErrorType.BROKER_ALREADY_INSTALLED, });
         }
 
         MidaBroker._installedBrokers.set(broker.name, broker);
@@ -52,7 +67,7 @@ export abstract class MidaBroker {
         const broker: MidaBroker | undefined = MidaBroker._installedBrokers.get(name);
 
         if (!broker) {
-            throw new Error();
+            throw new MidaError({ type: MidaBrokerErrorType.BROKER_NOT_INSTALLED, });
         }
 
         return broker.login(parameters);

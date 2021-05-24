@@ -1,3 +1,5 @@
+* Extend error types enumeration.
+* Create "tryLogin" method for brokers.
 * Create "canPlaceOrder" method for broker accounts, to check if the place order obstacles are equal to zero.
 * Create "getPlaceOrderObstacles" method for broker accounts, to get the possible list of errors when placing an order (for example market closed).
 * Create error types enumeration.
