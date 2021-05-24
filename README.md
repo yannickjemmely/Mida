@@ -8,7 +8,7 @@ A JavaScript framework to easily operate in global financial markets.
 
 Mida is designed to:
 - Trade financial assets such as stocks, crypto, forex or commodities;
-- Operate with any broker account using only JavaScript/TypeScript;
+- Operate with any broker and exchange account using only JavaScript/TypeScript;
 - Automate and backtest trading strategies through expert advisors;
 - Analyze market prices with indicators and analysis interfaces.
 
@@ -21,13 +21,14 @@ Furthermore, Mida is free and open source, join the [Discord community](https://
 <br>
 
 ## Installation
+**WARNING: This project is work in progress! Join the Discord server for more information.**
+
 The easiest way to install Mida is using the following command in your project directory.
 ```console
 npm install @reiryoku/mida
 ```
 
 ## Usage
-Mida is creating a common API to operate in global financial markets with MetaTrader, cTrader and other brokers/exchanges APIs.
 
 ### Broker account login
 How to login into a MetaTrader 5 broker.
@@ -39,6 +40,37 @@ const myAccount = await MidaBroker.login("MT5", {
     password: "bar",
     serverName: "FooBar",
 });
+```
+
+How to login into a MetaTrader 5 broker with errors handler.
+```javascript
+const {
+    MidaBroker,
+    MidaBrokerErrorType,
+} = require("@reiryoku/mida");
+
+let myAccount;
+
+try {
+    myAccount = await MidaBroker.login("MT5", {
+        id: "foo",
+        password: "bar",
+        serverName: "FooBar",
+    });
+}
+catch (error) {
+    switch (error.type) {
+        case MidaBrokerErrorType.INVALID_LOGIN_CREDENTIALS:
+            console.log("This login credentials do not match any account!");
+            
+            break;
+            
+        case MidaBrokerErrorType.TIMEOUT:
+            console.log("The MetaTrader 5 servers failed to respond.");
+            
+            break;
+    }
+}
 ```
 
 How to login into an independent broker.
@@ -81,6 +113,76 @@ console.log(myOrder.ticket);
 console.log(myOrder.openPrice);
 ```
 
+How to open a short position for Apple stocks with errors handler.
+```javascript
+const {
+    MidaBrokerOrderType,
+    MidaBrokerErrorType,
+} = require("@reiryoku/mida");
+
+let myOrder;
+
+try {
+    myOrder = await myAccount.placeOrder({
+        symbol: "#AAPL",
+        type: MidaBrokerOrderType.SELL,
+        lots: 1,
+    });
+}
+catch (error) {
+    switch (error.type) {
+        case MidaBrokerErrorType.MARKET_CLOSED:
+            console.log("#AAPL market is closed!");
+            
+            break;
+            
+        case MidaBrokerErrorType.NOT_ENOUGH_MONEY:
+            console.log("You don't have enough money in your account!");
+            
+            break;
+            
+        case MidaBrokerErrorType.INVALID_SYMBOL:
+            console.log("Your broker account doesn't support trading Apple stocks.");
+            
+            break;
+    }
+}
+```
+
+In case you don't want to handle errors you can use `tryPlaceOrder` which returns `undefined` in case of error.
+```javascript
+const myOrder = await myAccount.tryPlaceOrder({
+    symbol: "#AAPL",
+    type: MidaBrokerOrderType.SELL,
+    lots: 1,
+});
+
+if (!myOrder) {
+    console.log("Order not placed.");
+}
+```
+
+In addition, `canPlaceOrder` or `getPlaceOrderObstacles` can be used to know if an order can be placed without errors.
+Due to the high volatility of the financial markets, these methods can't guarantee that the order is going to be placed without errors being thrown.
+```javascript
+const orderDirectives = {
+    symbol: "#AAPL",
+    type: MidaBrokerOrderType.SELL,
+    lots: 1,
+};
+
+const canPlaceOrder = await myAccount.canPlaceOrder(orderDirectives); // => true | false
+const placeOrderObstacles = await myAccount.getPlaceOrderObstacles(orderDirectives); // => MidaBrokerErrorType[]
+
+if (placeOrderObstacles.includes(MidaBrokerErrorType.MARKET_CLOSED)) {
+    console.log("#AAPL market is closed!");
+}
+
+if (placeOrderObstacles.includes(MidaBrokerErrorType.NOT_ENOUGH_MONEY)) {
+    console.log("You don't have enough money in your account!");
+}
+```
+
 <details><summary>More examples</summary>
 
 How to open a long position for GBP against USD with stop loss and take profit.
@@ -93,8 +195,8 @@ const myOrder = await myAccount.placeOrder({
     symbol,
     type: MidaBrokerOrderType.BUY,
     lots: 0.1,
-    stopLoss: lastTick.bid - 0.0010, // Stop loss of 10 pips.
-    takeProfit: lastTick.bid + 0.0030, // Take profit of 30 pips.
+    stopLoss: lastTick.bid - 0.0010, // <= SL 10 pips
+    takeProfit: lastTick.bid + 0.0030, // <= TP 30 pips
 });
 ```
 
