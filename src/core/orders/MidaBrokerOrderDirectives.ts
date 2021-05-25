@@ -11,4 +11,5 @@ export type MidaBrokerOrderDirectives = {
     stop?: number;
     // openExpirationDate?: Date;
     // closeExpirationDate?: Date;
+    // other?: GenericObject;
 };
