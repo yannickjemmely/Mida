@@ -8,6 +8,7 @@ import { MidaBrokerOrderStatusType } from "#orders/MidaBrokerOrderStatusType";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 import { GenericObject } from "#utilities/GenericObject";
+import { MidaSymbol } from "#symbols/MidaSymbol";
 
 export abstract class MidaAdvisor {
     private readonly _brokerAccount: MidaBrokerAccount;
@@ -16,6 +17,7 @@ export abstract class MidaAdvisor {
     private readonly _capturedTicks: MidaSymbolTick[];
     private readonly _asyncTicks: MidaSymbolTick[];
     private _asyncTickPromise: Promise<void> | undefined;
+    private readonly _watchedSymbols: Map<string, string>;
     private readonly _emitter: MidaEmitter;
 
     protected constructor ({ brokerAccount, }: MidaAdvisorParameters) {
@@ -25,6 +27,7 @@ export abstract class MidaAdvisor {
         this._capturedTicks = [];
         this._asyncTicks = [];
         this._asyncTickPromise = undefined;
+        this._watchedSymbols = new Map();
         this._emitter = new MidaEmitter();
     }
 
@@ -68,9 +71,19 @@ export abstract class MidaAdvisor {
         this.notifyListeners("stop");
     }
 
+    public async watchSymbol (symbol: string): Promise<void> {
+
+    }
+
+    public async unwatchSymbol (symbol: string): Promise<void> {
+
+    }
+
     public on (type: string, listener?: MidaEventListener): Promise<MidaEvent> | string {
         return this._emitter.on(type, listener);
     }
+
+    protected abstract setup (): Promise<void>;
 
     protected abstract onTick (tick: MidaSymbolTick): void;
 
