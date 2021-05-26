@@ -5,10 +5,10 @@ import { MidaEventListener } from "#events/MidaEventListener";
 import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
 import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
 import { MidaBrokerOrderStatusType } from "#orders/MidaBrokerOrderStatusType";
+import { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 import { GenericObject } from "#utilities/GenericObject";
-import { MidaSymbol } from "#symbols/MidaSymbol";
 
 export abstract class MidaAdvisor {
     private readonly _brokerAccount: MidaBrokerAccount;
@@ -18,6 +18,7 @@ export abstract class MidaAdvisor {
     private readonly _asyncTicks: MidaSymbolTick[];
     private _asyncTickPromise: Promise<void> | undefined;
     private readonly _watchedSymbols: Map<string, string>;
+    private _isConfigured: boolean;
     private readonly _emitter: MidaEmitter;
 
     protected constructor ({ brokerAccount, }: MidaAdvisorParameters) {
@@ -28,6 +29,7 @@ export abstract class MidaAdvisor {
         this._asyncTicks = [];
         this._asyncTickPromise = undefined;
         this._watchedSymbols = new Map();
+        this._isConfigured = false;
         this._emitter = new MidaEmitter();
     }
 
@@ -56,8 +58,15 @@ export abstract class MidaAdvisor {
             return;
         }
 
+        if (!this._isConfigured) {
+            await this.configure();
+
+            this._isConfigured = true;
+        }
+
         this._isOperative = true;
 
+        await this.onStart();
         this.notifyListeners("start");
     }
 
@@ -68,6 +77,7 @@ export abstract class MidaAdvisor {
 
         this._isOperative = false;
 
+        await this.onStop();
         this.notifyListeners("stop");
     }
 
@@ -83,11 +93,23 @@ export abstract class MidaAdvisor {
         return this._emitter.on(type, listener);
     }
 
-    protected abstract setup (): Promise<void>;
+    protected async onStart (): Promise<void> {
+        // Silence is golden.
+    }
+
+    protected abstract configure (): Promise<void>;
 
     protected abstract onTick (tick: MidaSymbolTick): void;
 
     protected abstract onTickAsync (tick: MidaSymbolTick): Promise<void>;
+
+    protected async onPeriod (period: MidaSymbolPeriod): Promise<void> {
+        // Silence is golden.
+    }
+
+    protected async onStop (): Promise<void> {
+        // Silence is golden.
+    }
 
     protected async placeOrder (directives: MidaBrokerOrderDirectives): Promise<MidaBrokerOrder> {
         const order: MidaBrokerOrder = await this._brokerAccount.placeOrder(directives);
