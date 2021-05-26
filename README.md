@@ -240,19 +240,28 @@ symbol.on("tick", (event) => {
 ### Expert advisors
 How to create an expert advisor.
 ```javascript
-const { MidaExpertAdvisor } = require("@reiryoku/mida");
+const {
+    MidaExpertAdvisor,
+    MidaTimeframeType,
+} = require("@reiryoku/mida");
 
 class MyExpertAdvisor extends MidaExpertAdvisor {
     constructor (brokerAccount) {
         super({ brokerAccount, });
     }
     
-    async setup () {
+    async configure () {
         this.watchSymbol("EURUSD");
     }
 
     async onTick (tick) {
         // Implement your strategy.
+    }
+    
+    async onPeriod (period) {
+        if (period.timeframe === MidaTimeframeType.H1) {
+            console.log(`New H1 candlestick with open price => ${period.open}.`);
+        }
     }
 }
 ```
@@ -263,7 +272,7 @@ const { MidaBroker } = require("@reiryoku/mida");
 const { MyExpertAdvisor } = require("./my-expert-advisor"); 
 
 const myAccount = await MidaBroker.login(/* ... */);
-const myAdvisor = new MyExpertAdvisor(myAccount);
+const myAdvisor = new MyExpertAdvisor({ brokerAccount: myAccount, });
 
 myAdvisor.on("order-open", (event) => console.log(`New order opened with ticket => ${event.descriptor.ticket}`));
 myAdvisor.start();
@@ -364,9 +373,7 @@ the playground broker to it.
 ```javascript
 import { MyExpertAdvisor } from "./my-expert-advisor";
 
-const myAdvisor = new MyExpertAdvisor({
-    brokerAccount: myAccount,
-});
+const myAdvisor = new MyExpertAdvisor({ brokerAccount: myAccount, });
 
 await myAdvisor.start();
 await myAccount.elapseTime(60 * 60 * 24); // Elapse 1 hour, this will trigger ticks and candles.
