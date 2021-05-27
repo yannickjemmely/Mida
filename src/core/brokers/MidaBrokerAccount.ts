@@ -179,10 +179,22 @@ export abstract class MidaBrokerAccount {
     public abstract getSymbolPeriods (symbol: string, timeframe: number, priceType?: MidaSymbolQuotationPriceType): Promise<MidaSymbolPeriod[]>;
 
     /**
-     * Used to get the last market tick of a symbol.
+     * Used to get the latest symbol tick.
      * @param symbol The string representation of the symbol.
      */
-    public abstract getSymbolLastTick (symbol: string): Promise<MidaSymbolTick>;
+    public abstract getSymbolLastTick (symbol: string): Promise<MidaSymbolTick | undefined>;
+
+    /**
+     * Used to get the latest symbol bid quote.
+     * @param symbol The string representation of the symbol.
+     */
+    public abstract getSymbolBid (symbol: string): Promise<number>;
+
+    /**
+     * Used to get the latest symbol ask quote.
+     * @param symbol The string representation of the symbol.
+     */
+    public abstract getSymbolAsk (symbol: string): Promise<number>;
 
     /** Used to get the account free margin. */
     public async getFreeMargin (): Promise<number> {

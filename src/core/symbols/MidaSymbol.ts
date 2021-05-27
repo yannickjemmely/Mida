@@ -1,4 +1,6 @@
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
+import { MidaBrokerErrorType } from "#brokers/MidaBrokerErrorType";
+import { MidaError } from "#errors/MidaError";
 import { MidaBrokerOrderType } from "#orders/MidaBrokerOrderType";
 import { MidaSymbolParameters } from "#symbols/MidaSymbolParameters";
 import { MidaSymbolType } from "#symbols/MidaSymbolType";
@@ -82,41 +84,34 @@ export class MidaSymbol {
     }
 
     /** Used to get the latest symbol tick. */
-    public async getLastTick (): Promise<MidaSymbolTick> {
+    public async getLastTick (): Promise<MidaSymbolTick | undefined> {
         return this._brokerAccount.getSymbolLastTick(this._symbol);
     }
 
     /** Used to get the latest symbol bid quote. */
     public async getBid (): Promise<number> {
-        const lastTick: MidaSymbolTick = await this.getLastTick();
-
-        return lastTick.bid;
+        return this._brokerAccount.getSymbolBid(this._symbol);
     }
 
     /** Used to get the latest symbol ask quote. */
     public async getAsk (): Promise<number> {
-        const lastTick: MidaSymbolTick = await this.getLastTick();
-
-        return lastTick.ask;
+        return this._brokerAccount.getSymbolAsk(this._symbol);
     }
 
     /**
-     * Used to get the required margin for opening an order at the actual price.
+     * Used to get the required margin for opening an order at the latest quote.
      * @param type The order type.
      * @param lots The order lots.
-     * @returns The required margin to open the order.
      */
     public async getRequiredMargin (type: MidaBrokerOrderType, lots: number): Promise<number> {
-        const lastTick: MidaSymbolTick = await this.getLastTick();
-
         if (type === MidaBrokerOrderType.SELL) {
-            return this._leverage * lastTick.bid * lots;
+            return this._leverage * (await this.getBid()) * lots;
         }
         else if (type === MidaBrokerOrderType.BUY) {
-            return this._leverage * lastTick.ask * lots;
+            return this._leverage * (await this.getAsk())  * lots;
         }
 
-        throw new Error();
+        throw new MidaError({ type: MidaBrokerErrorType.INVALID_ORDER_DIRECTIVES, });
     }
 
     /** Used to know if the symbol market is open. */
