@@ -6,6 +6,7 @@ import { MidaBrokerOrderExecutionType } from "#orders/MidaBrokerOrderExecutionTy
 import { MidaBrokerOrderParameters } from "#orders/MidaBrokerOrderParameters";
 import { MidaBrokerOrderStatusType } from "#orders/MidaBrokerOrderStatusType";
 import { MidaBrokerOrderType } from "#orders/MidaBrokerOrderType";
+import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 import { GenericObject } from "#utilities/GenericObject";
 
@@ -256,13 +257,10 @@ export class MidaBrokerOrder {
     }
 
     private _configureListeners (): void {
-        this._brokerAccount.on("*", (event: MidaEvent) => {
-            if (event.descriptor && event.descriptor.ticket && event.descriptor.ticket === this._ticket) {
-                this._onEvent(event);
-            }
-        });
+        this._brokerAccount.on("*", (event: MidaEvent) => this._onEvent(event));
     }
 
+    // tslint:disable-next-line:cyclomatic-complexity
     private _onEvent (event: MidaEvent): void {
         switch (event.type) {
             case "order-cancel": {
@@ -320,6 +318,16 @@ export class MidaBrokerOrder {
                 }
 
                 this._notifyListeners("directives", event.descriptor);
+
+                break;
+            }
+
+            case "tick": {
+                const tick: MidaSymbolTick = event.descriptor.tick;
+
+                if (tick.symbol === this.symbol) {
+                    this._notifyListeners("tick", event.descriptor);
+                }
 
                 break;
             }

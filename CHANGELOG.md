@@ -1,3 +1,5 @@
+* Create "tick" event for broker orders.
+* Create "initiator" field for broker orders.
 * Extend error types enumeration.
 * Create "tryLogin" method for brokers.
 * Create "canPlaceOrder" method for broker accounts, to check if the place order obstacles are equal to zero.
