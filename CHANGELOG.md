@@ -1,3 +1,4 @@
+* Create new logo.
 * Now the broker accounts "getSymbolLastTick" method can return undefined.
 * Create "getSymbolBid" and "getSymbolAsk" methods for broker accounts.
 * Create "tick" event for broker orders.
