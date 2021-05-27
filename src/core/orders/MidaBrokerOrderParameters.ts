@@ -6,8 +6,8 @@ export type MidaBrokerOrderParameters = {
     ticket: number;
     brokerAccount: MidaBrokerAccount;
     requestDirectives: MidaBrokerOrderDirectives;
-    requestDate: Date;
-    creationDate: Date;
+    requestDate?: Date;
+    creationDate?: Date;
     cancelDate?: Date;
     openDate?: Date;
     closeDate?: Date;
@@ -16,4 +16,5 @@ export type MidaBrokerOrderParameters = {
     openPrice?: number;
     closePrice?: number;
     tags?: string[];
+    initiator?: string;
 };

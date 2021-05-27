@@ -14,8 +14,8 @@ export class MidaBrokerOrder {
     private readonly _ticket: number;
     private readonly _brokerAccount: MidaBrokerAccount;
     private readonly _requestDirectives: MidaBrokerOrderDirectives;
-    private readonly _requestDate: Date;
-    private readonly _creationDate: Date;
+    private readonly _requestDate?: Date;
+    private readonly _creationDate?: Date;
     private _cancelDate?: Date;
     private _openDate?: Date;
     private _closeDate?: Date;
@@ -28,6 +28,7 @@ export class MidaBrokerOrder {
     private _limit?: number;
     private _stop?: number;
     private readonly _tags: Set<string>;
+    private readonly _initiator?: string;
     private readonly _emitter: MidaEmitter;
 
     public constructor ({
@@ -44,12 +45,13 @@ export class MidaBrokerOrder {
         openPrice,
         closePrice,
         tags = [],
+        initiator,
     }: MidaBrokerOrderParameters) {
         this._ticket = ticket;
         this._brokerAccount = brokerAccount;
         this._requestDirectives = { ...requestDirectives, };
-        this._requestDate = new Date(requestDate);
-        this._creationDate = new Date(creationDate);
+        this._requestDate = requestDate ? new Date(requestDate) : undefined;
+        this._creationDate = creationDate ? new Date(creationDate) : undefined;
         this._cancelDate = cancelDate ? new Date(cancelDate) : undefined;
         this._openDate = openDate ? new Date(openDate) : undefined;
         this._closeDate = closeDate ? new Date(closeDate) : undefined;
@@ -62,6 +64,7 @@ export class MidaBrokerOrder {
         this._limit = requestDirectives.limit;
         this._stop = requestDirectives.stop;
         this._tags = new Set(tags);
+        this._initiator = initiator;
         this._emitter = new MidaEmitter();
 
         this._configureListeners();
@@ -83,13 +86,13 @@ export class MidaBrokerOrder {
     }
 
     /** The order request date. */
-    public get requestDate (): Date {
-        return new Date(this._requestDate);
+    public get requestDate (): Date | undefined {
+        return this._requestDate ? new Date(this._requestDate) : undefined;
     }
 
     /** The order creation date. */
-    public get creationDate (): Date {
-        return new Date(this._creationDate);
+    public get creationDate (): Date | undefined {
+        return this._creationDate ? new Date(this._creationDate) : undefined;
     }
 
     /** The order cancel date, undefined if the order is not canceled. */
@@ -150,6 +153,11 @@ export class MidaBrokerOrder {
     /** The order tags (stored only locally). */
     public get tags (): string[] {
         return [ ...this._tags, ];
+    }
+
+    /** The order initiator. */
+    public get initiator (): string | undefined {
+        return this._initiator;
     }
 
     /** The order symbol. */
