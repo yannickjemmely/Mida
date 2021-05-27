@@ -1,5 +1,6 @@
 import * as Puppeteer from "puppeteer";
 import { MidaBrowserTab } from "#utilities/browsers/MidaBrowserTab";
+import { GenericObject } from "#utilities/GenericObject";
 
 /** Represents a browser. */
 export class MidaBrowser {
@@ -19,7 +20,7 @@ export class MidaBrowser {
         return this._pid !== -1;
     }
 
-    public async open (): Promise<void> {
+    public async open ({ headless = true, }: GenericObject): Promise<void> {
         if (!this._puppeteerBrowser) {
             const browserArguments: string[] = [
                 "--no-sandbox",
@@ -34,7 +35,7 @@ export class MidaBrowser {
             ];
 
             this._puppeteerBrowser = await Puppeteer.launch({
-                headless: false,
+                headless,
                 devtools: false,
                 ignoreHTTPSErrors: true,
                 args: browserArguments,
