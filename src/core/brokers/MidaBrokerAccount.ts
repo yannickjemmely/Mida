@@ -196,6 +196,10 @@ export abstract class MidaBrokerAccount {
      */
     public abstract getSymbolAsk (symbol: string): Promise<number>;
 
+    // public abstract watchSymbol (symbol: string): Promise<void>;
+    // public abstract getWatchedSymbols (): Promise<string[]>;
+    // public abstract unwatchSymbol (symbol: string): Promise<void>;
+
     /** Used to get the account free margin. */
     public async getFreeMargin (): Promise<number> {
         const tasks: Promise<number>[] = [ this.getEquity(), this.getUsedMargin(), ];
