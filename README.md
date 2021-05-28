@@ -8,9 +8,9 @@ A JavaScript framework to easily operate in global financial markets.
 
 Mida is designed to:
 - Trade financial assets such as stocks, crypto, forex or commodities;
-- Operate with any broker and exchange account using only JavaScript/TypeScript;
+- Operate with any broker and exchange using only JavaScript/TypeScript;
 - Automate and backtest trading strategies through expert advisors;
-- Analyze market prices with indicators and analysis interfaces.
+- Analyze markets and prices with indicators and analysis interfaces.
 
 Furthermore, Mida is free and open source, join the [Discord community](https://discord.gg/cKyWTUsr3q).
 
@@ -50,6 +50,19 @@ const myAccount = await MidaBroker.login("MT5", {
 });
 ```
 
+How to login into an independent broker.
+```javascript
+const { MidaBroker } = require("@reiryoku/mida");
+
+const myAccount = await MidaBroker.login("ICMarkets", {
+    email: "foo@bar.com",
+    id: "foo",
+    password: "bar",
+});
+```
+
+<details><summary>More examples</summary>
+
 How to login into a MetaTrader 5 broker with errors handler.
 ```javascript
 const {
@@ -81,16 +94,7 @@ catch (error) {
 }
 ```
 
-How to login into an independent broker.
-```javascript
-const { MidaBroker } = require("@reiryoku/mida");
-
-const myAccount = await MidaBroker.login("ICMarkets", {
-    email: "foo@bar.com",
-    id: "foo",
-    password: "bar",
-});
-```
+</details>
 
 ### Broker orders and positions
 How top open a long position for Bitcoin against USD.
@@ -120,6 +124,8 @@ const myOrder = await myAccount.placeOrder({
 console.log(myOrder.ticket);
 console.log(myOrder.openPrice);
 ```
+
+<details><summary>More examples</summary>
 
 How to open a short position for Apple stocks with errors handler.
 ```javascript
@@ -192,8 +198,6 @@ if (placeOrderObstacles.includes(MidaBrokerErrorType.NOT_ENOUGH_MONEY)) {
     console.log("You don't have enough money in your account!");
 }
 ```
-
-<details><summary>More examples</summary>
 
 How to open a long position for GBP against USD with stop loss and take profit.
 ```javascript
