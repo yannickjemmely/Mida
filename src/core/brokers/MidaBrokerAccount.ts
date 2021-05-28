@@ -289,6 +289,10 @@ export abstract class MidaBrokerAccount {
         return this._emitter.on(type, listener);
     }
 
+    public removeEventListener (uuid: string): void {
+        this._emitter.removeEventListener(uuid);
+    }
+
     protected notifyListeners (type: string, descriptor?: GenericObject): void {
         this._emitter.notifyListeners(type, descriptor);
     }

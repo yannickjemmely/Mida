@@ -1,3 +1,4 @@
+* Create "removeEventListener" method for broker accounts and broker orders.
 * Create new logo.
 * Now the broker accounts "getSymbolLastTick" method can return undefined.
 * Create "getSymbolBid" and "getSymbolAsk" methods for broker accounts.
