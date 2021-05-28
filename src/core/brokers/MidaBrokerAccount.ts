@@ -196,10 +196,21 @@ export abstract class MidaBrokerAccount {
      */
     public abstract getSymbolAsk (symbol: string): Promise<number>;
 
+    /**
+     * Used to add a symbol to the symbols watch list.
+     * @param symbol The string representation of the symbol.
+     */
     public abstract watchSymbol (symbol: string): Promise<void>;
 
+    /**
+     * Used to get the symbols in the symbols watch list.
+     */
     public abstract getWatchedSymbols (): Promise<string[]>;
 
+    /**
+     * Used to remove a symbol from the symbols watch list.
+     * @param symbol The string representation of the symbol.
+     */
     public abstract unwatchSymbol (symbol: string): Promise<void>;
 
     /** Used to get the account free margin. */
