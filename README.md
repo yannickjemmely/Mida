@@ -39,7 +39,7 @@ The sample project contains an example of broker login and expert advisor execut
 ## Usage
 
 ### Broker account login
-How to login into a MetaTrader 5 broker.
+How to login into a MetaTrader 5 broker account.
 ```javascript
 const { MidaBroker } = require("@reiryoku/mida");
 
@@ -50,7 +50,7 @@ const myAccount = await MidaBroker.login("MT5", {
 });
 ```
 
-How to login into an independent broker.
+How to login into an independent broker account.
 ```javascript
 const { MidaBroker } = require("@reiryoku/mida");
 
@@ -63,7 +63,7 @@ const myAccount = await MidaBroker.login("ICMarkets", {
 
 <details><summary>More examples</summary>
 
-How to login into a MetaTrader 5 broker with errors handler.
+How to login into a MetaTrader 5 broker account with errors handler.
 ```javascript
 const {
     MidaBroker,
