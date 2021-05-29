@@ -21,20 +21,11 @@ Furthermore, Mida is free and open source, join the [Discord community](https://
 <br>
 
 ## Installation
-**WARNING: This project is work in progress! Join the Discord server for more information.**
-
 The easiest way to start out with Mida is cloning the sample project.
 ```console
 git clone https://github.com/Reiryoku-Technologies/Mida-Boilerplate.git
 ```
-
-Don't forget to install the dependencies once you are in the project directory.
-```
-cd Mida-Boilerplate
-npm run install
-```
-
-The sample project contains an example of broker login and expert advisor execution.
+The sample project contains an example of broker login and ticks listener.
 
 ## Usage
 
