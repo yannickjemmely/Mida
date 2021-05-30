@@ -1,3 +1,5 @@
+* Improve README.md documentation.
+
 2.0.0 - 28-05-2021
 ===================
 * Create "removeEventListener" method for broker accounts and broker orders.
