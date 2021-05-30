@@ -1,4 +1,4 @@
-import { MidaAdvisorParameters } from "#advisors/MidaAdvisorParameters";
+import { MidaExpertAdvisorParameters } from "#advisors/MidaExpertAdvisorParameters";
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 import { MidaEvent } from "#events/MidaEvent";
 import { MidaEventListener } from "#events/MidaEventListener";
@@ -10,25 +10,23 @@ import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 import { GenericObject } from "#utilities/GenericObject";
 
-export abstract class MidaAdvisor {
+export abstract class MidaExpertAdvisor {
     private readonly _brokerAccount: MidaBrokerAccount;
     private _isOperative: boolean;
     private readonly _orders: Map<number, MidaBrokerOrder>;
     private readonly _capturedTicks: MidaSymbolTick[];
     private readonly _asyncTicks: MidaSymbolTick[];
     private _asyncTickPromise: Promise<void> | undefined;
-    private readonly _watchedSymbols: Map<string, string>;
     private _isConfigured: boolean;
     private readonly _emitter: MidaEmitter;
 
-    protected constructor ({ brokerAccount, }: MidaAdvisorParameters) {
+    protected constructor ({ brokerAccount, }: MidaExpertAdvisorParameters) {
         this._brokerAccount = brokerAccount;
         this._orders = new Map();
         this._isOperative = false;
         this._capturedTicks = [];
         this._asyncTicks = [];
         this._asyncTickPromise = undefined;
-        this._watchedSymbols = new Map();
         this._isConfigured = false;
         this._emitter = new MidaEmitter();
     }
@@ -45,8 +43,16 @@ export abstract class MidaAdvisor {
         return [ ...this._orders.values(), ];
     }
 
+    public get pendingOrders (): MidaBrokerOrder[] {
+        return this.orders.filter((order: MidaBrokerOrder): boolean => order.status === MidaBrokerOrderStatusType.PENDING);
+    }
+
     public get openOrders (): MidaBrokerOrder[] {
         return this.orders.filter((order: MidaBrokerOrder): boolean => order.status === MidaBrokerOrderStatusType.OPEN);
+    }
+
+    public get closedOrders (): MidaBrokerOrder[] {
+        return this.orders.filter((order: MidaBrokerOrder): boolean => order.status === MidaBrokerOrderStatusType.CLOSED);
     }
 
     protected get capturedTicks (): readonly MidaSymbolTick[] {
@@ -81,14 +87,6 @@ export abstract class MidaAdvisor {
         this.notifyListeners("stop");
     }
 
-    public async watchSymbol (symbol: string): Promise<void> {
-
-    }
-
-    public async unwatchSymbol (symbol: string): Promise<void> {
-
-    }
-
     public on (type: string, listener?: MidaEventListener): Promise<MidaEvent> | string {
         return this._emitter.on(type, listener);
     }
@@ -103,7 +101,7 @@ export abstract class MidaAdvisor {
 
     protected abstract onTickAsync (tick: MidaSymbolTick): Promise<void>;
 
-    protected async onPeriod (period: MidaSymbolPeriod): Promise<void> {
+    protected async onPeriodAsync (period: MidaSymbolPeriod): Promise<void> {
         // Silence is golden.
     }
 
