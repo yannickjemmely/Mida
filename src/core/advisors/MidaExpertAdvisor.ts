@@ -19,7 +19,7 @@ export abstract class MidaExpertAdvisor {
     private readonly _asyncTicks: MidaSymbolTick[];
     private _asyncTickPromise: Promise<void> | undefined;
     private _isConfigured: boolean;
-    private _marketWatcher: MidaMarketWatcher;
+    private readonly _marketWatcher: MidaMarketWatcher;
     private readonly _emitter: MidaEmitter;
 
     protected constructor ({ brokerAccount, }: MidaExpertAdvisorParameters) {
@@ -109,6 +109,10 @@ export abstract class MidaExpertAdvisor {
         this._emitter.removeEventListener(uuid);
     }
 
+    protected get marketWatcher (): MidaMarketWatcher {
+        return this._marketWatcher;
+    }
+
     protected abstract configure (): Promise<void>;
 
     protected async onStart (): Promise<void> {
@@ -123,11 +127,11 @@ export abstract class MidaExpertAdvisor {
         // Silence is golden.
     }
 
-    protected async onPeriod (period: MidaSymbolPeriod): Promise<void> {
+    protected async onPeriod (period: MidaSymbolPeriod, previousPeriod: MidaSymbolPeriod): Promise<void> {
         // Silence is golden.
     }
 
-    protected async onCandlestick (candlestick: MidaSymbolPeriod): Promise<void> {
+    protected async onCandlestick (candlestick: MidaSymbolPeriod, previousCandlestick: MidaSymbolPeriod): Promise<void> {
         // Silence is golden.
     }
 
@@ -197,10 +201,10 @@ export abstract class MidaExpertAdvisor {
         }
     }
 
-    private _onPeriod (period: MidaSymbolPeriod): void {
+    private _onPeriod (period: MidaSymbolPeriod, previousPeriod: MidaSymbolPeriod): void {
         try {
-            this.onPeriod(period);
-            this.onCandlestick(period);
+            this.onPeriod(period, previousPeriod);
+            this.onCandlestick(period, previousPeriod);
         }
         catch (error) {
             console.log(error);
@@ -209,6 +213,6 @@ export abstract class MidaExpertAdvisor {
 
     private _configureListeners (): void {
         this._marketWatcher.on("tick", (event: MidaEvent): void => this._onTick(event.descriptor.tick));
-        this._marketWatcher.on("period", (event: MidaEvent): void => this._onPeriod(event.descriptor.period));
+        this._marketWatcher.on("period", (event: MidaEvent): void => this._onPeriod(event.descriptor.period, event.descriptor.previousPeriod));
     }
 }
