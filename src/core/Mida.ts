@@ -85,3 +85,6 @@ export { MidaBrowserTab } from "#utilities/browsers/MidaBrowserTab";
 export { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 
 export { GenericObject } from "#utilities/GenericObject";
+
+export { MidaMarketWatcher } from "#watcher/MidaMarketWatcher";
+export { MidaMarketWatcherParameters } from "#watcher/MidaMarketWatcherParameters";

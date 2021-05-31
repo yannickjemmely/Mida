@@ -6,6 +6,7 @@ import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 import { GenericObject } from "#utilities/GenericObject";
 import { MidaMarketWatcherParameters } from "#watcher/MidaMarketWatcherParameters";
+import { MidaEventListener } from "#events/MidaEventListener";
 
 export class MidaMarketWatcher {
     private readonly _brokerAccount: MidaBrokerAccount;
@@ -40,6 +41,14 @@ export class MidaMarketWatcher {
         this._watchedSymbols.delete(symbol);
     }
 
+    public on (type: string, listener?: MidaEventListener): Promise<MidaEvent> | string {
+        return this._emitter.on(type, listener);
+    }
+
+    public removeEventListener (uuid: string): void {
+        this._emitter.removeEventListener(uuid);
+    }
+
     protected notifyListeners (type: string, descriptor?: GenericObject): void {
         this._emitter.notifyListeners(type, descriptor);
     }
@@ -52,6 +61,7 @@ export class MidaMarketWatcher {
 
     private _onPeriod (period: MidaSymbolPeriod): void {
         this.notifyListeners("period", { period, });
+        this.notifyListeners("candlestick", { period, });
     }
 
     private async _checkNewPeriods (): Promise<void> {
@@ -84,7 +94,7 @@ export class MidaMarketWatcher {
 
         setTimeout((): void => {
             this._checkNewPeriods();
-            setInterval(() => this._checkNewPeriods, 60000); // Invoke the function each next round minute plus 2s of margin.
-        }, (roundMinute.valueOf() + 60000) - actualDate.valueOf() + 2000); // Invoke the function the next round minute plus 2s of margin.
+            setInterval(() => this._checkNewPeriods(), 60000); // Invoke the function each next round minute plus 2s of margin.
+        }, (roundMinute.valueOf() + 60000) - actualDate.valueOf() + 1000); // Invoke the function the next round minute plus 2s of margin.
     }
 }
