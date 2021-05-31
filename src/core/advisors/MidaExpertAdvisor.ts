@@ -9,6 +9,7 @@ import { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 import { GenericObject } from "#utilities/GenericObject";
+import { MidaMarketWatcher } from "#watcher/MidaMarketWatcher";
 
 export abstract class MidaExpertAdvisor {
     private readonly _brokerAccount: MidaBrokerAccount;
@@ -18,6 +19,7 @@ export abstract class MidaExpertAdvisor {
     private readonly _asyncTicks: MidaSymbolTick[];
     private _asyncTickPromise: Promise<void> | undefined;
     private _isConfigured: boolean;
+    private _marketWatcher: MidaMarketWatcher;
     private readonly _emitter: MidaEmitter;
 
     protected constructor ({ brokerAccount, }: MidaExpertAdvisorParameters) {
@@ -28,7 +30,10 @@ export abstract class MidaExpertAdvisor {
         this._asyncTicks = [];
         this._asyncTickPromise = undefined;
         this._isConfigured = false;
+        this._marketWatcher = new MidaMarketWatcher({ brokerAccount, });
         this._emitter = new MidaEmitter();
+
+        this._configureListeners();
     }
 
     public get brokerAccount (): MidaBrokerAccount {
@@ -59,15 +64,24 @@ export abstract class MidaExpertAdvisor {
         return this._capturedTicks;
     }
 
+    protected get watchedSymbols (): string[] {
+        return this._marketWatcher.watchedSymbols;
+    }
+
     public async start (): Promise<void> {
         if (this._isOperative) {
             return;
         }
 
         if (!this._isConfigured) {
-            await this.configure();
+            try {
+                await this.configure();
 
-            this._isConfigured = true;
+                this._isConfigured = true;
+            }
+            catch (error) {
+                console.log(error);
+            }
         }
 
         this._isOperative = true;
@@ -91,17 +105,29 @@ export abstract class MidaExpertAdvisor {
         return this._emitter.on(type, listener);
     }
 
-    protected async onStart (): Promise<void> {
-        // Silence is golden.
+    public removeEventListener (uuid: string): void {
+        this._emitter.removeEventListener(uuid);
     }
 
     protected abstract configure (): Promise<void>;
 
-    protected abstract onTick (tick: MidaSymbolTick): void;
+    protected async onStart (): Promise<void> {
+        // Silence is golden.
+    }
 
-    protected abstract onTickAsync (tick: MidaSymbolTick): Promise<void>;
+    protected onTick (tick: MidaSymbolTick): void {
+        // Silence is golden.
+    }
 
-    protected async onPeriodAsync (period: MidaSymbolPeriod): Promise<void> {
+    protected async onTickAsync (tick: MidaSymbolTick): Promise<void> {
+        // Silence is golden.
+    }
+
+    protected async onPeriod (period: MidaSymbolPeriod): Promise<void> {
+        // Silence is golden.
+    }
+
+    protected async onCandlestick (candlestick: MidaSymbolPeriod): Promise<void> {
         // Silence is golden.
     }
 
@@ -115,6 +141,14 @@ export abstract class MidaExpertAdvisor {
         this._orders.set(order.ticket, order);
 
         return order;
+    }
+
+    protected async watchSymbol (symbol: string): Promise<void> {
+        await this._marketWatcher.watchSymbol(symbol);
+    }
+
+    protected async unwatchSymbol (symbol: string): Promise<void> {
+        await this._marketWatcher.unwatchSymbol(symbol);
     }
 
     protected notifyListeners (type: string, descriptor?: GenericObject): void {
@@ -161,5 +195,20 @@ export abstract class MidaExpertAdvisor {
         else {
             this._asyncTickPromise = undefined;
         }
+    }
+
+    private _onPeriod (period: MidaSymbolPeriod): void {
+        try {
+            this.onPeriod(period);
+            this.onCandlestick(period);
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
+    private _configureListeners (): void {
+        this._marketWatcher.on("tick", (event: MidaEvent): void => this._onTick(event.descriptor.tick));
+        this._marketWatcher.on("period", (event: MidaEvent): void => this._onPeriod(event.descriptor.period));
     }
 }

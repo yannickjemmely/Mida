@@ -25,12 +25,12 @@ The easiest way to start out with Mida is cloning the sample project.
 ```console
 git clone https://github.com/Reiryoku-Technologies/Mida-Boilerplate.git
 ```
-The project contains an example of MetaTrader broker login and Bitcoin price/ticks listener.
+The project contains an example of broker login and Bitcoin price/ticks listener.
 
 ## Usage
 
 ### Broker account login
-How to login into a MetaTrader 5 broker account.
+How to login into a MT5 broker account.
 ```javascript
 const { MidaBroker } = require("@reiryoku/mida");
 
@@ -54,7 +54,7 @@ const myAccount = await MidaBroker.login("ICMarkets", {
 
 <details><summary>More examples</summary>
 
-How to login into a MetaTrader 5 broker account with errors handler.
+How to login into a MT5 broker account with errors handler.
 ```javascript
 const {
     MidaBroker,
@@ -78,7 +78,7 @@ catch (error) {
             break;
             
         case MidaBrokerErrorType.TIMEOUT:
-            console.log("The MetaTrader 5 servers failed to respond!");
+            console.log("The MT5 servers failed to respond!");
             
             break;
     }
