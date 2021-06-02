@@ -38,6 +38,9 @@ export class Mida {
     }
 }
 
+export { MidaExpertAdvisor } from "#advisors/MidaExpertAdvisor";
+export { MidaExpertAdvisorParameters } from "#advisors/MidaExpertAdvisorParameters";
+
 export { MidaBroker } from "#brokers/MidaBroker";
 export { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 export { MidaBrokerAccountParameters } from "#brokers/MidaBrokerAccountParameters";

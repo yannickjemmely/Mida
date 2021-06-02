@@ -121,6 +121,7 @@ export class MidaMarketWatcher {
         }
     }
 
+    // Used to check if the last known period of a symbol has been closed. Must be called each minute.
     private async _checkTimeframe (symbol: string, timeframe: number): Promise<void> {
         const periods: MidaSymbolPeriod[] = await this._brokerAccount.getSymbolPeriods(symbol, timeframe);
         const lastPeriod: MidaSymbolPeriod = periods[periods.length - 1];
@@ -138,8 +139,11 @@ export class MidaMarketWatcher {
     }
 
     private _configureListeners (): void {
+        // <ticks>
         this._brokerAccount.on("tick", (event: MidaEvent): void => this._onTick(event.descriptor.tick));
+        // </ticks>
 
+        // <periods>
         const actualDate: Date = new Date();
         const roundMinute: Date = new Date(actualDate);
 
@@ -149,5 +153,6 @@ export class MidaMarketWatcher {
             this._checkNewPeriods();
             setInterval(() => this._checkNewPeriods(), 60000); // Invoke the function each next round minute plus ~0.1s of margin.
         }, (roundMinute.valueOf() + 60000) - actualDate.valueOf() + 100); // Invoke the function the next round minute plus ~0.1s of margin.
+        // </periods>
     }
 }

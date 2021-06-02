@@ -16,7 +16,7 @@ export class MidaUtilities {
         return Math.floor(Math.abs((sanitizedLeftDate - sanitizedRightDate) / (1000 * 60 * 60 * 24)));
     }
 
-    // Used to create a Promise, resolved after a given number of milliseconds.
+    // Used to create a Promise resolved after a given number of milliseconds.
     public static async wait (milliseconds: number): Promise<void> {
         await new Promise((resolve: (value?: any) => void): any => setTimeout(resolve, milliseconds));
     }
@@ -52,7 +52,7 @@ export class MidaUtilities {
             if (!initial.hasOwnProperty(name) || !primary.hasOwnProperty(name)) {
                 continue;
             }
-            
+
             const initialValue: any = initial[name];
             const userValue: any = primary[name];
 
