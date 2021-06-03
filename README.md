@@ -41,17 +41,6 @@ const myAccount = await MidaBroker.login("MT5", {
 });
 ```
 
-How to login into an independent broker account.
-```javascript
-const { MidaBroker } = require("@reiryoku/mida");
-
-const myAccount = await MidaBroker.login("ICMarkets", {
-    email: "foo@bar.com",
-    id: "foo",
-    password: "bar",
-});
-```
-
 <details><summary>More examples</summary>
 
 How to login into a MT5 broker account with errors handler.
