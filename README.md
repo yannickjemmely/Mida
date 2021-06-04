@@ -28,53 +28,20 @@ git clone https://github.com/Reiryoku-Technologies/Mida-Boilerplate.git
 The project contains an example of broker login and Bitcoin price/ticks listener.
 
 ## Usage
+Note: this project is work in progress, part of this API has not been implemented yet.
 
 ### Broker account login
-How to login into a MT5 broker account.
+How to login into a cTrader broker account.
 ```javascript
 const { MidaBroker } = require("@reiryoku/mida");
 
-const myAccount = await MidaBroker.login("MT5", {
-    id: "foo",
-    password: "bar",
-    serverName: "FooBar",
+const myAccount = await MidaBroker.login("cTrader", {
+    clientId: "",
+    clientSecret: "",
+    accessToken: "",
+    accountId: "",
 });
 ```
-
-<details><summary>More examples</summary>
-
-How to login into a MT5 broker account with errors handler.
-```javascript
-const {
-    MidaBroker,
-    MidaBrokerErrorType,
-} = require("@reiryoku/mida");
-
-let myAccount;
-
-try {
-    myAccount = await MidaBroker.login("MT5", {
-        id: "foo",
-        password: "bar",
-        serverName: "FooBar",
-    });
-}
-catch (error) {
-    switch (error.type) {
-        case MidaBrokerErrorType.INVALID_LOGIN_CREDENTIALS:
-            console.log("The login credentials are wrong!");
-            
-            break;
-            
-        case MidaBrokerErrorType.TIMEOUT:
-            console.log("The MT5 servers failed to respond!");
-            
-            break;
-    }
-}
-```
-
-</details>
 
 ### Broker orders and positions
 How top open a long position for Bitcoin against USD.
