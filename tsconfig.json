@@ -5,6 +5,8 @@
         "incremental": true,
         "inlineSources": true,
         "module": "commonjs",
+        "noImplicitReturns": true,
+        "noImplicitOverride": true,
         "outDir": "build",
         "paths": {
             "!/*": [

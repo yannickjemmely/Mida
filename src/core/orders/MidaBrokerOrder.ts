@@ -232,6 +232,7 @@ export class MidaBrokerOrder {
         return this._brokerAccount.getOrderNetProfit(this._ticket);
     }
 
+    /*
     public async getUsedMargin (): Promise<number | undefined> {
         if (this._openPrice === undefined) {
             return;
@@ -239,6 +240,7 @@ export class MidaBrokerOrder {
 
         // return this._openPrice * this.lots / (await this.getLeverage());
     }
+    */
 
     public async getSwaps (): Promise<number> {
         return this._brokerAccount.getOrderSwaps(this._ticket);

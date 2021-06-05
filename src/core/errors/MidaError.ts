@@ -22,7 +22,7 @@ export class MidaError extends Error {
         return { ...this._descriptor, };
     }
 
-    public toString (): string {
+    public override toString (): string {
         return ""; // TODO: TODO.
     }
 }
