@@ -1,3 +1,6 @@
+* Remove the "getRequiredMargin" method from symbols.
+* Remove the "MidaBrowser" and "MidaBrowserTab" APIs.
+* Refactor codebase and update to the latest TypeScript version.
 * Improve README.md documentation.
 
 2.0.0 - 28-05-2021

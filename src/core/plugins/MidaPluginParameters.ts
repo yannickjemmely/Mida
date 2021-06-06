@@ -4,7 +4,7 @@ import { GenericObject } from "#utilities/GenericObject";
 export type MidaPluginParameters = {
     id: string;
     name: string;
-    description?: string;
     version: string;
+    description?: string;
     install?: (actions: MidaPluginActions, options?: GenericObject) => void;
 };

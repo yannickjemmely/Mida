@@ -1,7 +1,6 @@
 import { MidaBroker } from "#brokers/MidaBroker";
 import { MidaBrokerAccountParameters } from "#brokers/MidaBrokerAccountParameters";
 import { MidaBrokerAccountType } from "#brokers/MidaBrokerAccountType";
-import { MidaBrokerErrorType } from "#brokers/MidaBrokerErrorType";
 import { MidaEvent } from "#events/MidaEvent";
 import { MidaEventListener } from "#events/MidaEventListener";
 import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
@@ -16,45 +15,51 @@ import { GenericObject } from "#utilities/GenericObject";
 
 /** Represents a broker account. */
 export abstract class MidaBrokerAccount {
-    private readonly _id: string;
-    private readonly _ownerName: string;
-    private readonly _type: MidaBrokerAccountType;
-    private readonly _currency: string;
-    private readonly _broker: MidaBroker;
-    private readonly _emitter: MidaEmitter;
+    readonly #id: string;
+    readonly #ownerName: string;
+    readonly #type: MidaBrokerAccountType;
+    readonly #currency: string;
+    readonly #broker: MidaBroker;
+    readonly #emitter: MidaEmitter;
 
-    protected constructor ({ id, ownerName, type, currency, broker, }: MidaBrokerAccountParameters) {
-        this._id = id;
-        this._ownerName = ownerName;
-        this._type = type;
-        this._currency = currency;
-        this._broker = broker;
-        this._emitter = new MidaEmitter();
+    protected constructor ({
+        id,
+        ownerName,
+        type,
+        currency,
+        broker,
+    }: MidaBrokerAccountParameters) {
+        this.#id = id;
+        this.#ownerName = ownerName;
+        this.#type = type;
+        this.#currency = currency;
+        this.#broker = broker;
+        this.#emitter = new MidaEmitter();
     }
 
     /** The account id. */
     public get id (): string {
-        return this._id;
+        return this.#id;
     }
 
     /** The account owner name. */
     public get ownerName (): string {
-        return this._ownerName;
+        return this.#ownerName;
     }
 
     /** The account type (demo or real). */
     public get type (): MidaBrokerAccountType {
-        return this._type;
+        return this.#type;
     }
 
     /** The account currency (ISO code). */
     public get currency (): string {
-        return this._currency;
+        return this.#currency;
     }
 
     /** The account broker. */
     public get broker (): MidaBroker {
-        return this._broker;
+        return this.#broker;
     }
 
     /** Used to get the account balance. */
@@ -73,31 +78,31 @@ export abstract class MidaBrokerAccount {
      * Used to get an order.
      * @param ticket The order ticket.
      */
-    public abstract getOrder (ticket: number): Promise<MidaBrokerOrder | undefined>;
+    public abstract getOrder (ticket: string): Promise<MidaBrokerOrder | undefined>;
 
     /**
      * Used to get the gross profit of an order (the order must be in open or closed state).
      * @param ticket The order ticket.
      */
-    public abstract getOrderGrossProfit (ticket: number): Promise<number>;
+    public abstract getOrderGrossProfit (ticket: string): Promise<number>;
 
     /**
      * Used to get the net profit of an order (the order must be in open or closed state).
      * @param ticket The order ticket.
      */
-    public abstract getOrderNetProfit (ticket: number): Promise<number>;
+    public abstract getOrderNetProfit (ticket: string): Promise<number>;
 
     /**
      * Used to get the swaps of an order (the order must be in open or closed state).
      * @param ticket The order ticket.
      */
-    public abstract getOrderSwaps (ticket: number): Promise<number>;
+    public abstract getOrderSwaps (ticket: string): Promise<number>;
 
     /**
      * Used to get the commission of an order.
      * @param ticket The order ticket.
      */
-    public abstract getOrderCommission (ticket: number): Promise<number>;
+    public abstract getOrderCommission (ticket: string): Promise<number>;
 
     /**
      * Used to place an order.
@@ -109,51 +114,51 @@ export abstract class MidaBrokerAccount {
      * Used to cancel an order (the order must be in pending state).
      * @param ticket The order ticket.
      */
-    public abstract cancelOrder (ticket: number): Promise<void>;
+    public abstract cancelOrder (ticket: string): Promise<void>;
 
     /**
      * Used to close an order (the order must be in open state).
      * @param ticket The order ticket.
      */
-    public abstract closeOrder (ticket: number): Promise<void>;
+    public abstract closeOrder (ticket: string): Promise<void>;
 
     /**
      * Used to get the stop loss of an order.
      * @param ticket The order ticket.
      */
-    public abstract getOrderStopLoss (ticket: number): Promise<number | undefined>;
+    public abstract getOrderStopLoss (ticket: string): Promise<number | undefined>;
 
     /**
      * Used to set the stop loss of an order.
      * @param ticket The order ticket.
      * @param stopLoss The stop loss.
      */
-    public abstract setOrderStopLoss (ticket: number, stopLoss: number): Promise<void>;
+    public abstract setOrderStopLoss (ticket: string, stopLoss: number): Promise<void>;
 
     /**
      * Used to clear the stop loss of an order.
      * @param ticket The order ticket.
      */
-    public abstract clearOrderStopLoss (ticket: number): Promise<void>;
+    public abstract clearOrderStopLoss (ticket: string): Promise<void>;
 
     /**
      * Used to get the take profit of an order.
      * @param ticket The order ticket.
      */
-    public abstract getOrderTakeProfit (ticket: number): Promise<number | undefined>;
+    public abstract getOrderTakeProfit (ticket: string): Promise<number | undefined>;
 
     /**
      * Used to set the take profit of an order.
      * @param ticket The order ticket.
      * @param takeProfit The take profit.
      */
-    public abstract setOrderTakeProfit (ticket: number, takeProfit: number): Promise<void>;
+    public abstract setOrderTakeProfit (ticket: string, takeProfit: number): Promise<void>;
 
     /**
      * Used to clear the take profit of an order.
      * @param ticket The order ticket.
      */
-    public abstract clearOrderTakeProfit (ticket: number): Promise<void>;
+    public abstract clearOrderTakeProfit (ticket: string): Promise<void>;
 
     /** Used to get the account symbols. */
     public abstract getSymbols (): Promise<string[]>;
@@ -257,6 +262,7 @@ export abstract class MidaBrokerAccount {
         return this.getOrdersByStatus(MidaBrokerOrderStatusType.CLOSED);
     }
 
+    /* To implement later.
     public async getPlaceOrderObstacles (directives: MidaBrokerOrderDirectives): Promise<MidaBrokerErrorType[]> {
         const obstacles: MidaBrokerErrorType[] = [];
         const symbol: MidaSymbol | undefined = await this.getSymbol(directives.symbol);
@@ -292,6 +298,7 @@ export abstract class MidaBrokerAccount {
 
         return obstacles.length === 0;
     }
+    */
 
     public async tryPlaceOrder (directives: MidaBrokerOrderDirectives): Promise<MidaBrokerOrder | undefined> {
         try {
@@ -302,15 +309,21 @@ export abstract class MidaBrokerAccount {
         }
     }
 
+    public on (type: string): Promise<MidaEvent>
+    public on (type: string, listener: MidaEventListener): string
     public on (type: string, listener?: MidaEventListener): Promise<MidaEvent> | string {
-        return this._emitter.on(type, listener);
+        if (!listener) {
+            return this.#emitter.on(type);
+        }
+
+        return this.#emitter.on(type, listener);
     }
 
     public removeEventListener (uuid: string): void {
-        this._emitter.removeEventListener(uuid);
+        this.#emitter.removeEventListener(uuid);
     }
 
     protected notifyListeners (type: string, descriptor?: GenericObject): void {
-        this._emitter.notifyListeners(type, descriptor);
+        this.#emitter.notifyListeners(type, descriptor);
     }
 }

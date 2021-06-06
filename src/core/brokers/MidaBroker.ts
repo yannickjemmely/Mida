@@ -6,22 +6,22 @@ import { GenericObject } from "#utilities/GenericObject";
 
 /** Represents a broker. */
 export abstract class MidaBroker {
-    private readonly _name: string;
-    private readonly _websiteUri: string;
+    readonly #name: string;
+    readonly #websiteUri: string;
 
     protected constructor ({ name, websiteUri, }: MidaBrokerParameters) {
-        this._name = name;
-        this._websiteUri = websiteUri;
+        this.#name = name;
+        this.#websiteUri = websiteUri;
     }
 
     /** The broker name. */
     public get name (): string {
-        return this._name;
+        return this.#name;
     }
 
     /** The broker website address. */
     public get websiteUri (): string {
-        return this._websiteUri;
+        return this.#websiteUri;
     }
 
     /**
@@ -49,14 +49,14 @@ export abstract class MidaBroker {
      **
     */
 
-    private static readonly _installedBrokers: Map<string, MidaBroker> = new Map();
+    static readonly #installedBrokers: Map<string, MidaBroker> = new Map();
 
     public static get installedBrokers (): readonly MidaBroker[] {
-        return [ ...MidaBroker._installedBrokers.values(), ];
+        return [ ...MidaBroker.#installedBrokers.values(), ];
     }
 
     public static add (broker: MidaBroker): void {
-        if (MidaBroker._installedBrokers.has(broker.name)) {
+        if (MidaBroker.#installedBrokers.has(broker.name)) {
             throw new MidaError({
                 type: MidaBrokerErrorType.BROKER_ALREADY_INSTALLED,
                 descriptor: {
@@ -65,11 +65,11 @@ export abstract class MidaBroker {
             });
         }
 
-        MidaBroker._installedBrokers.set(broker.name, broker);
+        MidaBroker.#installedBrokers.set(broker.name, broker);
     }
 
     public static async login (name: string, parameters: GenericObject): Promise<MidaBrokerAccount> {
-        const broker: MidaBroker | undefined = MidaBroker._installedBrokers.get(name);
+        const broker: MidaBroker | undefined = MidaBroker.#installedBrokers.get(name);
 
         if (!broker) {
             throw new MidaError({

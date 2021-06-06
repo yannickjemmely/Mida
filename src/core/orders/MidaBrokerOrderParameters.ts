@@ -3,7 +3,7 @@ import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
 
 /** The parameters of the broker order constructor. */
 export type MidaBrokerOrderParameters = {
-    ticket: number;
+    ticket: string;
     brokerAccount: MidaBrokerAccount;
     requestDirectives: MidaBrokerOrderDirectives;
     requestDate?: Date;

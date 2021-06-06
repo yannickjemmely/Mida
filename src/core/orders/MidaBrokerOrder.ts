@@ -12,25 +12,25 @@ import { GenericObject } from "#utilities/GenericObject";
 
 /** Represents a broker order. */
 export class MidaBrokerOrder {
-    private readonly _ticket: number;
-    private readonly _brokerAccount: MidaBrokerAccount;
-    private readonly _requestDirectives: MidaBrokerOrderDirectives;
-    private readonly _requestDate?: Date;
-    private readonly _creationDate?: Date;
-    private _cancelDate?: Date;
-    private _openDate?: Date;
-    private _closeDate?: Date;
-    private readonly _creationPrice: number;
-    private _cancelPrice?: number;
-    private _openPrice?: number;
-    private _closePrice?: number;
-    private _stopLoss?: number;
-    private _takeProfit?: number;
-    private _limit?: number;
-    private _stop?: number;
-    private readonly _tags: Set<string>;
-    private readonly _initiator?: string;
-    private readonly _emitter: MidaEmitter;
+    readonly #ticket: string;
+    readonly #brokerAccount: MidaBrokerAccount;
+    readonly #requestDirectives: MidaBrokerOrderDirectives;
+    readonly #requestDate?: Date;
+    readonly #creationDate?: Date;
+    #cancelDate?: Date;
+    #openDate?: Date;
+    #closeDate?: Date;
+    readonly #creationPrice: number;
+    #cancelPrice?: number;
+    #openPrice?: number;
+    #closePrice?: number;
+    #stopLoss?: number;
+    #takeProfit?: number;
+    #limit?: number;
+    #stop?: number;
+    readonly #tags: Set<string>;
+    readonly #initiator?: string;
+    readonly #emitter: MidaEmitter;
 
     public constructor ({
         ticket,
@@ -48,143 +48,143 @@ export class MidaBrokerOrder {
         tags = [],
         initiator,
     }: MidaBrokerOrderParameters) {
-        this._ticket = ticket;
-        this._brokerAccount = brokerAccount;
-        this._requestDirectives = { ...requestDirectives, };
-        this._requestDate = requestDate ? new Date(requestDate) : undefined;
-        this._creationDate = creationDate ? new Date(creationDate) : undefined;
-        this._cancelDate = cancelDate ? new Date(cancelDate) : undefined;
-        this._openDate = openDate ? new Date(openDate) : undefined;
-        this._closeDate = closeDate ? new Date(closeDate) : undefined;
-        this._creationPrice = creationPrice;
-        this._cancelPrice = cancelPrice;
-        this._openPrice = openPrice;
-        this._closePrice = closePrice;
-        this._stopLoss = requestDirectives.stopLoss;
-        this._takeProfit = requestDirectives.takeProfit;
-        this._limit = requestDirectives.limit;
-        this._stop = requestDirectives.stop;
-        this._tags = new Set(tags);
-        this._initiator = initiator;
-        this._emitter = new MidaEmitter();
+        this.#ticket = ticket;
+        this.#brokerAccount = brokerAccount;
+        this.#requestDirectives = { ...requestDirectives, };
+        this.#requestDate = requestDate ? new Date(requestDate) : undefined;
+        this.#creationDate = creationDate ? new Date(creationDate) : undefined;
+        this.#cancelDate = cancelDate ? new Date(cancelDate) : undefined;
+        this.#openDate = openDate ? new Date(openDate) : undefined;
+        this.#closeDate = closeDate ? new Date(closeDate) : undefined;
+        this.#creationPrice = creationPrice;
+        this.#cancelPrice = cancelPrice;
+        this.#openPrice = openPrice;
+        this.#closePrice = closePrice;
+        this.#stopLoss = requestDirectives.stopLoss;
+        this.#takeProfit = requestDirectives.takeProfit;
+        this.#limit = requestDirectives.limit;
+        this.#stop = requestDirectives.stop;
+        this.#tags = new Set(tags);
+        this.#initiator = initiator;
+        this.#emitter = new MidaEmitter();
 
-        this._configureListeners();
+        this.#configureListeners();
     }
 
     /** The order ticket. */
-    public get ticket (): number {
-        return this._ticket;
+    public get ticket (): string {
+        return this.#ticket;
     }
 
     /** The order broker account. */
     public get brokerAccount (): MidaBrokerAccount {
-        return this._brokerAccount;
+        return this.#brokerAccount;
     }
 
     /** The order request directives. */
     public get requestDirectives (): MidaBrokerOrderDirectives {
-        return { ...this._requestDirectives, };
+        return { ...this.#requestDirectives, };
     }
 
     /** The order request date. */
     public get requestDate (): Date | undefined {
-        return this._requestDate ? new Date(this._requestDate) : undefined;
+        return this.#requestDate ? new Date(this.#requestDate) : undefined;
     }
 
     /** The order creation date. */
     public get creationDate (): Date | undefined {
-        return this._creationDate ? new Date(this._creationDate) : undefined;
+        return this.#creationDate ? new Date(this.#creationDate) : undefined;
     }
 
     /** The order cancel date, undefined if the order is not canceled. */
     public get cancelDate (): Date | undefined {
-        return this._cancelDate ? new Date(this._cancelDate) : undefined;
+        return this.#cancelDate ? new Date(this.#cancelDate) : undefined;
     }
 
     /** The order open date, undefined if the order is not open. */
     public get openDate (): Date | undefined {
-        return this._openDate ? new Date(this._openDate) : undefined;
+        return this.#openDate ? new Date(this.#openDate) : undefined;
     }
 
     /** The order close date, undefined if the order is not closed. */
     public get closeDate (): Date | undefined {
-        return this._closeDate ? new Date(this._closeDate) : undefined;
+        return this.#closeDate ? new Date(this.#closeDate) : undefined;
     }
 
     /** The order creation price. */
     public get creationPrice (): number {
-        return this._creationPrice;
+        return this.#creationPrice;
     }
 
     /** The order cancel price, undefined if the order is not canceled. */
     public get cancelPrice (): number | undefined {
-        return this._cancelPrice;
+        return this.#cancelPrice;
     }
 
     /** The order open price, undefined if the order is not open. */
     public get openPrice (): number | undefined {
-        return this._openPrice;
+        return this.#openPrice;
     }
 
     /** The order close price, undefined if the order is not closed. */
     public get closePrice (): number | undefined {
-        return this._closePrice;
+        return this.#closePrice;
     }
 
     /** The order stop loss. */
     public get stopLoss (): number | undefined {
-        return this._stopLoss;
+        return this.#stopLoss;
     }
 
     /** The order take profit. */
     public get takeProfit (): number | undefined {
-        return this._takeProfit;
+        return this.#takeProfit;
     }
 
     /** The order limit. */
     public get limit (): number | undefined {
-        return this._limit;
+        return this.#limit;
     }
 
     /** The order stop. */
     public get stop (): number | undefined {
-        return this._stop;
+        return this.#stop;
     }
 
     /** The order tags (stored only locally). */
     public get tags (): string[] {
-        return [ ...this._tags, ];
+        return [ ...this.#tags, ];
     }
 
     /** The order initiator. */
     public get initiator (): string | undefined {
-        return this._initiator;
+        return this.#initiator;
     }
 
     /** The order symbol. */
     public get symbol (): string {
-        return this._requestDirectives.symbol;
+        return this.#requestDirectives.symbol;
     }
 
     /** The order type. */
     public get type (): MidaBrokerOrderType {
-        return this._requestDirectives.type;
+        return this.#requestDirectives.type;
     }
 
     /** The order lots. */
     public get lots (): number {
-        return this._requestDirectives.lots;
+        return this.#requestDirectives.lots;
     }
 
     /** The order status. */
     public get status (): MidaBrokerOrderStatusType {
-        if (this._cancelDate) {
+        if (this.#cancelDate) {
             return MidaBrokerOrderStatusType.CANCELED;
         }
-        else if (this._closeDate) {
+        else if (this.#closeDate) {
             return MidaBrokerOrderStatusType.CLOSED;
         }
-        else if (this._openDate) {
+        else if (this.#openDate) {
             return MidaBrokerOrderStatusType.OPEN;
         }
 
@@ -193,11 +193,11 @@ export class MidaBrokerOrder {
 
     /** The order execution type. */
     public get executionType (): any {
-        if (Number.isFinite(this._requestDirectives.limit)) {
+        if (Number.isFinite(this.#requestDirectives.limit)) {
             return MidaBrokerOrderExecutionType.LIMIT;
         }
 
-        if (Number.isFinite(this._requestDirectives.stop)) {
+        if (Number.isFinite(this.#requestDirectives.stop)) {
             return MidaBrokerOrderExecutionType.STOP;
         }
 
@@ -205,34 +205,34 @@ export class MidaBrokerOrder {
     }
 
     public addTag (tag: string): void {
-        this._tags.add(tag);
+        this.#tags.add(tag);
     }
 
     public hasTag (tag: string): boolean {
-        return this._tags.has(tag);
+        return this.#tags.has(tag);
     }
 
     public removeTag (tag: string): void {
-        this._tags.delete(tag);
+        this.#tags.delete(tag);
     }
 
     public async cancel (): Promise<void> {
-        await this._brokerAccount.cancelOrder(this._ticket);
+        await this.#brokerAccount.cancelOrder(this.#ticket);
     }
 
     public async close (): Promise<void> {
-        await this._brokerAccount.closeOrder(this._ticket);
+        await this.#brokerAccount.closeOrder(this.#ticket);
     }
 
     public async getGrossProfit (): Promise<number> {
-        return this._brokerAccount.getOrderGrossProfit(this._ticket);
+        return this.#brokerAccount.getOrderGrossProfit(this.#ticket);
     }
 
     public async getNetProfit (): Promise<number> {
-        return this._brokerAccount.getOrderNetProfit(this._ticket);
+        return this.#brokerAccount.getOrderNetProfit(this.#ticket);
     }
 
-    /*
+    /* To implement later.
     public async getUsedMargin (): Promise<number | undefined> {
         if (this._openPrice === undefined) {
             return;
@@ -243,55 +243,61 @@ export class MidaBrokerOrder {
     */
 
     public async getSwaps (): Promise<number> {
-        return this._brokerAccount.getOrderSwaps(this._ticket);
+        return this.#brokerAccount.getOrderSwaps(this.#ticket);
     }
 
     public async getCommission (): Promise<number> {
-        return this._brokerAccount.getOrderCommission(this._ticket);
+        return this.#brokerAccount.getOrderCommission(this.#ticket);
     }
 
+    public on (type: string): Promise<MidaEvent>
+    public on (type: string, listener: MidaEventListener): string
     public on (type: string, listener?: MidaEventListener): Promise<MidaEvent> | string {
-        return this._emitter.on(type, listener);
+        if (!listener) {
+            return this.#emitter.on(type);
+        }
+
+        return this.#emitter.on(type, listener);
     }
 
     public removeEventListener (uuid: string): void {
-        this._emitter.removeEventListener(uuid);
+        this.#emitter.removeEventListener(uuid);
     }
 
-    private _notifyListeners (type: string, descriptor?: GenericObject): void {
-        this._emitter.notifyListeners(type, descriptor);
+    #notifyListeners (type: string, descriptor?: GenericObject): void {
+        this.#emitter.notifyListeners(type, descriptor);
     }
 
-    private _configureListeners (): void {
-        this._brokerAccount.on("*", (event: MidaEvent) => this._onEvent(event));
+    #configureListeners (): void {
+        this.#brokerAccount.on("*", async (event: MidaEvent) => this.#onEvent(event));
     }
 
-    // tslint:disable-next-line:cyclomatic-complexity
-    private _onEvent (event: MidaEvent): void {
+    // eslint-disable-next-line max-lines-per-function
+    #onEvent (event: MidaEvent): void {
         switch (event.type) {
             case "order-cancel": {
-                this._cancelDate = event.descriptor.date;
-                this._cancelPrice = event.descriptor.price;
+                this.#cancelDate = event.descriptor.cancelDate;
+                this.#cancelPrice = event.descriptor.cancelPrice;
 
-                this._notifyListeners("cancel", event.descriptor);
+                this.#notifyListeners("cancel", event.descriptor);
 
                 break;
             }
 
             case "order-open": {
-                this._openDate = event.descriptor.date;
-                this._openPrice = event.descriptor.price;
+                this.#openDate = event.descriptor.openDate;
+                this.#openPrice = event.descriptor.openPrice;
 
-                this._notifyListeners("open", event.descriptor);
+                this.#notifyListeners("open", event.descriptor);
 
                 break;
             }
 
             case "order-close": {
-                this._closeDate = event.descriptor.date;
-                this._closePrice = event.descriptor.price;
+                this.#closeDate = event.descriptor.closeDate;
+                this.#closePrice = event.descriptor.closePrice;
 
-                this._notifyListeners("close", event.descriptor);
+                this.#notifyListeners("close", event.descriptor);
 
                 break;
             }
@@ -302,28 +308,28 @@ export class MidaBrokerOrder {
                 for (const directive of Object.keys(directives)) {
                     switch (directive) {
                         case "stopLoss":
-                            this._stopLoss = directives[directive];
+                            this.#stopLoss = directives[directive];
 
                             break;
 
                         case "takeProfit":
-                            this._takeProfit = directives[directive];
+                            this.#takeProfit = directives[directive];
 
                             break;
 
                         case "limit":
-                            this._limit = directives[directive];
+                            this.#limit = directives[directive];
 
                             break;
 
                         case "stop":
-                            this._stop = directives[directive];
+                            this.#stop = directives[directive];
 
                             break;
                     }
                 }
 
-                this._notifyListeners("directives", event.descriptor);
+                this.#notifyListeners("directives", event.descriptor);
 
                 break;
             }
@@ -332,7 +338,7 @@ export class MidaBrokerOrder {
                 const tick: MidaSymbolTick = event.descriptor.tick;
 
                 if (tick.symbol === this.symbol) {
-                    this._notifyListeners("tick", event.descriptor);
+                    this.#notifyListeners("tick", event.descriptor);
                 }
 
                 break;

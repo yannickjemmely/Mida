@@ -1,42 +1,40 @@
 import { MidaBroker } from "#brokers/MidaBroker";
 import { MidaPlugin } from "#plugins/MidaPlugin";
+import { MidaPluginActions } from "#plugins/MidaPluginActions";
 import { GenericObject } from "#utilities/GenericObject";
 
-export class Mida {
-    private static readonly _installedPlugins: Map<string, MidaPlugin> = new Map();
+class Mida {
+    static readonly #installedPlugins: Map<string, MidaPlugin> = new Map();
+    static readonly #pluginActions: MidaPluginActions = {
+        addBroker (broker: MidaBroker): void {
+            MidaBroker.add(broker);
+        },
+    };
 
     private constructor () {
         // Silence is golden.
     }
 
     public static get installedPlugins (): readonly MidaPlugin[] {
-        return [ ...Mida._installedPlugins.values(), ];
+        return [ ...Mida.#installedPlugins.values(), ];
     }
 
-    public static use (module: any, options?: GenericObject): void {
-        const plugin: MidaPlugin = module.plugin;
-
-        if (!plugin || plugin.constructor.name !== MidaPlugin.name) {
+    public static use (plugin: MidaPlugin, options?: GenericObject): void {
+        if (!plugin || Mida.isPluginInstalled(plugin.id)) {
             return;
         }
 
-        if (Mida.isPluginInstalled(plugin.id)) {
-            return;
-        }
-
-        Mida._installedPlugins.set(plugin.id, plugin);
-
-        plugin.install({
-            addBroker (broker: MidaBroker): void {
-                MidaBroker.add(broker);
-            },
-        }, options);
+        Mida.#installedPlugins.set(plugin.id, plugin);
+        plugin.install(Mida.#pluginActions, options);
     }
 
     public static isPluginInstalled (id: string): boolean {
-        return Mida._installedPlugins.has(id);
+        return Mida.#installedPlugins.has(id);
     }
 }
+
+// <public-api>
+export { Mida };
 
 export { MidaExpertAdvisor } from "#advisors/MidaExpertAdvisor";
 export { MidaExpertAdvisorParameters } from "#advisors/MidaExpertAdvisorParameters";
@@ -82,12 +80,10 @@ export { MidaPlugin } from "#plugins/MidaPlugin";
 export { MidaPluginActions } from "#plugins/MidaPluginActions";
 export { MidaPluginParameters } from "#plugins/MidaPluginParameters";
 
-export { MidaBrowser } from "#utilities/browsers/MidaBrowser";
-export { MidaBrowserTab } from "#utilities/browsers/MidaBrowserTab";
-
 export { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 
 export { GenericObject } from "#utilities/GenericObject";
 
 export { MidaMarketWatcher } from "#watcher/MidaMarketWatcher";
 export { MidaMarketWatcherParameters } from "#watcher/MidaMarketWatcherParameters";
+// </public-api>

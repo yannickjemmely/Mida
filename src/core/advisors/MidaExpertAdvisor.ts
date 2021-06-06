@@ -12,40 +12,40 @@ import { GenericObject } from "#utilities/GenericObject";
 import { MidaMarketWatcher } from "#watcher/MidaMarketWatcher";
 
 export abstract class MidaExpertAdvisor {
-    private readonly _brokerAccount: MidaBrokerAccount;
-    private _isOperative: boolean;
-    private readonly _orders: Map<number, MidaBrokerOrder>;
-    private readonly _capturedTicks: MidaSymbolTick[];
-    private readonly _asyncTicks: MidaSymbolTick[];
-    private _asyncTickPromise: Promise<void> | undefined;
-    private _isConfigured: boolean;
-    private readonly _marketWatcher: MidaMarketWatcher;
-    private readonly _emitter: MidaEmitter;
+    readonly #brokerAccount: MidaBrokerAccount;
+    #isOperative: boolean;
+    readonly #orders: Map<number, MidaBrokerOrder>;
+    readonly #capturedTicks: MidaSymbolTick[];
+    readonly #asyncTicks: MidaSymbolTick[];
+    #asyncTickPromise?: Promise<void>;
+    #isConfigured: boolean;
+    readonly #marketWatcher: MidaMarketWatcher;
+    readonly #emitter: MidaEmitter;
 
     protected constructor ({ brokerAccount, }: MidaExpertAdvisorParameters) {
-        this._brokerAccount = brokerAccount;
-        this._orders = new Map();
-        this._isOperative = false;
-        this._capturedTicks = [];
-        this._asyncTicks = [];
-        this._asyncTickPromise = undefined;
-        this._isConfigured = false;
-        this._marketWatcher = new MidaMarketWatcher({ brokerAccount, });
-        this._emitter = new MidaEmitter();
+        this.#brokerAccount = brokerAccount;
+        this.#orders = new Map();
+        this.#isOperative = false;
+        this.#capturedTicks = [];
+        this.#asyncTicks = [];
+        this.#asyncTickPromise = undefined;
+        this.#isConfigured = false;
+        this.#marketWatcher = new MidaMarketWatcher({ brokerAccount, });
+        this.#emitter = new MidaEmitter();
 
-        this._configureListeners();
+        this.#configureListeners();
     }
 
     public get brokerAccount (): MidaBrokerAccount {
-        return this._brokerAccount;
+        return this.#brokerAccount;
     }
 
     public get isOperative (): boolean {
-        return this._isOperative;
+        return this.#isOperative;
     }
 
     public get orders (): MidaBrokerOrder[] {
-        return [ ...this._orders.values(), ];
+        return [ ...this.#orders.values(), ];
     }
 
     public get pendingOrders (): MidaBrokerOrder[] {
@@ -61,56 +61,62 @@ export abstract class MidaExpertAdvisor {
     }
 
     protected get capturedTicks (): readonly MidaSymbolTick[] {
-        return this._capturedTicks;
+        return this.#capturedTicks;
     }
 
     protected get watchedSymbols (): string[] {
-        return this._marketWatcher.watchedSymbols;
+        return this.#marketWatcher.watchedSymbols;
     }
 
     public async start (): Promise<void> {
-        if (this._isOperative) {
+        if (this.#isOperative) {
             return;
         }
 
-        if (!this._isConfigured) {
+        if (!this.#isConfigured) {
             try {
                 await this.configure();
 
-                this._isConfigured = true;
+                this.#isConfigured = true;
             }
             catch (error) {
                 console.log(error);
             }
         }
 
-        this._isOperative = true;
+        this.#isOperative = true;
 
         await this.onStart();
         this.notifyListeners("start");
     }
 
     public async stop (): Promise<void> {
-        if (!this._isOperative) {
+        if (!this.#isOperative) {
             return;
         }
 
-        this._isOperative = false;
+        this.#isOperative = false;
 
         await this.onStop();
         this.notifyListeners("stop");
     }
 
+    public on (type: string): Promise<MidaEvent>
+    public on (type: string, listener: MidaEventListener): string
     public on (type: string, listener?: MidaEventListener): Promise<MidaEvent> | string {
-        return this._emitter.on(type, listener);
+        if (!listener) {
+            return this.#emitter.on(type);
+        }
+
+        return this.#emitter.on(type, listener);
     }
 
     public removeEventListener (uuid: string): void {
-        this._emitter.removeEventListener(uuid);
+        this.#emitter.removeEventListener(uuid);
     }
 
     protected get marketWatcher (): MidaMarketWatcher {
-        return this._marketWatcher;
+        return this.#marketWatcher;
     }
 
     protected abstract configure (): Promise<void>;
@@ -140,37 +146,37 @@ export abstract class MidaExpertAdvisor {
     }
 
     protected async placeOrder (directives: MidaBrokerOrderDirectives): Promise<MidaBrokerOrder> {
-        const order: MidaBrokerOrder = await this._brokerAccount.placeOrder(directives);
+        const order: MidaBrokerOrder = await this.#brokerAccount.placeOrder(directives);
 
-        this._orders.set(order.ticket, order);
+        this.#orders.set(order.ticket, order);
 
         return order;
     }
 
     protected async watchSymbol (symbol: string): Promise<void> {
-        await this._marketWatcher.watchSymbol(symbol);
+        await this.#marketWatcher.watchSymbol(symbol);
     }
 
     protected async unwatchSymbol (symbol: string): Promise<void> {
-        await this._marketWatcher.unwatchSymbol(symbol);
+        await this.#marketWatcher.unwatchSymbol(symbol);
     }
 
     protected notifyListeners (type: string, descriptor?: GenericObject): void {
-        this._emitter.notifyListeners(type, descriptor);
+        this.#emitter.notifyListeners(type, descriptor);
     }
 
-    private _onTick (tick: MidaSymbolTick): void {
-        if (!this._isOperative) {
+    #onTick (tick: MidaSymbolTick): void {
+        if (!this.#isOperative) {
             return;
         }
 
-        this._capturedTicks.push(tick);
+        this.#capturedTicks.push(tick);
 
-        if (this._asyncTickPromise) {
-            this._asyncTicks.push(tick);
+        if (this.#asyncTickPromise) {
+            this.#asyncTicks.push(tick);
         }
         else {
-            this._onTickAsync(tick);
+            this.#onTickAsync(tick);
         }
 
         try {
@@ -181,27 +187,27 @@ export abstract class MidaExpertAdvisor {
         }
     }
 
-    private async _onTickAsync (tick: MidaSymbolTick): Promise<void> {
+    async #onTickAsync (tick: MidaSymbolTick): Promise<void> {
         try {
-            this._asyncTickPromise = this.onTickAsync(tick);
+            this.#asyncTickPromise = this.onTickAsync(tick);
 
-            await this._asyncTickPromise;
+            await this.#asyncTickPromise;
         }
         catch (error) {
             console.error(error);
         }
 
-        const nextTick: MidaSymbolTick | undefined = this._asyncTicks.shift();
+        const nextTick: MidaSymbolTick | undefined = this.#asyncTicks.shift();
 
         if (nextTick) {
-            this._onTickAsync(nextTick);
+            this.#onTickAsync(nextTick);
         }
         else {
-            this._asyncTickPromise = undefined;
+            this.#asyncTickPromise = undefined;
         }
     }
 
-    private _onPeriod (period: MidaSymbolPeriod, previousPeriod: MidaSymbolPeriod): void {
+    #onPeriod (period: MidaSymbolPeriod, previousPeriod: MidaSymbolPeriod): void {
         try {
             this.onPeriod(period, previousPeriod);
             this.onCandlestick(period, previousPeriod);
@@ -211,8 +217,8 @@ export abstract class MidaExpertAdvisor {
         }
     }
 
-    private _configureListeners (): void {
-        this._marketWatcher.on("tick", (event: MidaEvent): void => this._onTick(event.descriptor.tick));
-        this._marketWatcher.on("period", (event: MidaEvent): void => this._onPeriod(event.descriptor.period, event.descriptor.previousPeriod));
+    #configureListeners (): void {
+        this.#marketWatcher.on("tick", async (event: MidaEvent): Promise<void> => this.#onTick(event.descriptor.tick));
+        this.#marketWatcher.on("period", async (event: MidaEvent): Promise<void> => this.#onPeriod(event.descriptor.period, event.descriptor.previousPeriod));
     }
 }

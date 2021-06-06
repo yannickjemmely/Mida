@@ -9,7 +9,4 @@ export type MidaBrokerOrderDirectives = {
     takeProfit?: number;
     limit?: number;
     stop?: number;
-    // openExpirationDate?: Date;
-    // closeExpirationDate?: Date;
-    // other?: GenericObject;
 };
