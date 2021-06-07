@@ -6,19 +6,21 @@ import { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 import { GenericObject } from "#utilities/GenericObject";
+import { MidaUtilities } from "#utilities/MidaUtilities";
+import { MidaMarketWatcherDirectives } from "#watcher/MidaMarketWatcherDirectives";
 import { MidaMarketWatcherParameters } from "#watcher/MidaMarketWatcherParameters";
 
 // TODO: Implement "watchSymbolPriceBreak" functionality.
 export class MidaMarketWatcher {
     readonly #brokerAccount: MidaBrokerAccount;
-    readonly #watchedSymbols: Set<string>;
+    readonly #watchedSymbols: Map<string, MidaMarketWatcherDirectives>
     readonly #watchedSymbolsTimeframes: Map<string, Set<number>>;
     readonly #lastPeriods: Map<string, Map<number, MidaSymbolPeriod>>;
     readonly #emitter: MidaEmitter;
 
     public constructor ({ brokerAccount, }: MidaMarketWatcherParameters) {
         this.#brokerAccount = brokerAccount;
-        this.#watchedSymbols = new Set();
+        this.#watchedSymbols = new Map();
         this.#watchedSymbolsTimeframes = new Map();
         this.#lastPeriods = new Map();
         this.#emitter = new MidaEmitter();
@@ -31,21 +33,25 @@ export class MidaMarketWatcher {
     }
 
     public get watchedSymbols (): string[] {
-        return [ ...this.#watchedSymbols.values(), ];
+        return [ ...this.#watchedSymbols.keys(), ];
     }
 
-    public async watchSymbol (symbol: string): Promise<void> {
-        await this.#brokerAccount.watchSymbol(symbol);
-
-        this.#watchedSymbols.add(symbol);
+    public async watch (symbol: string, directives: MidaMarketWatcherDirectives): Promise<void> {
+        this.#watchedSymbols.set(symbol, directives);
     }
 
-    public async unwatchSymbol (symbol: string): Promise<void> {
+    public async modifyDirectives (symbol: string, directives: MidaMarketWatcherDirectives): Promise<void> {
+        const actualDirectives: MidaMarketWatcherDirectives | undefined = this.#watchedSymbols.get(symbol);
+
+        if (!actualDirectives) {
+            return;
+        }
+
+        this.#watchedSymbols.set(symbol, MidaUtilities.mergeOptions(actualDirectives, directives));
+    }
+
+    public async unwatch (symbol: string): Promise<void> {
         this.#watchedSymbols.delete(symbol);
-    }
-
-    public getSymbolWatchedTimeframes (symbol: string): number[] {
-        return [ ...this.#watchedSymbolsTimeframes.get(symbol)?.values() ?? [], ];
     }
 
     public async watchSymbolTimeframe (symbol: string, timeframe: number): Promise<void> {

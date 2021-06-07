@@ -9,7 +9,6 @@ import { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 import { GenericObject } from "#utilities/GenericObject";
-import { MidaMarketWatcher } from "#watcher/MidaMarketWatcher";
 
 export abstract class MidaExpertAdvisor {
     readonly #brokerAccount: MidaBrokerAccount;
@@ -19,7 +18,7 @@ export abstract class MidaExpertAdvisor {
     readonly #asyncTicks: MidaSymbolTick[];
     #asyncTickPromise?: Promise<void>;
     #isConfigured: boolean;
-    readonly #marketWatcher: MidaMarketWatcher;
+    #lastStartDate?: Date;
     readonly #emitter: MidaEmitter;
 
     protected constructor ({ brokerAccount, }: MidaExpertAdvisorParameters) {
@@ -30,7 +29,7 @@ export abstract class MidaExpertAdvisor {
         this.#asyncTicks = [];
         this.#asyncTickPromise = undefined;
         this.#isConfigured = false;
-        this.#marketWatcher = new MidaMarketWatcher({ brokerAccount, });
+        this.#lastStartDate = undefined;
         this.#emitter = new MidaEmitter();
 
         this.#configureListeners();
@@ -48,6 +47,10 @@ export abstract class MidaExpertAdvisor {
         return [ ...this.#orders.values(), ];
     }
 
+    public get lastStartDate (): Date | undefined {
+        return this.#lastStartDate ? new Date(this.#lastStartDate) : undefined;
+    }
+
     public get pendingOrders (): MidaBrokerOrder[] {
         return this.orders.filter((order: MidaBrokerOrder): boolean => order.status === MidaBrokerOrderStatusType.PENDING);
     }
@@ -62,10 +65,6 @@ export abstract class MidaExpertAdvisor {
 
     protected get capturedTicks (): readonly MidaSymbolTick[] {
         return this.#capturedTicks;
-    }
-
-    protected get watchedSymbols (): string[] {
-        return this.#marketWatcher.watchedSymbols;
     }
 
     public async start (): Promise<void> {
@@ -85,6 +84,7 @@ export abstract class MidaExpertAdvisor {
         }
 
         this.#isOperative = true;
+        this.#lastStartDate = new Date();
 
         await this.onStart();
         this.notifyListeners("start");
@@ -113,10 +113,6 @@ export abstract class MidaExpertAdvisor {
 
     public removeEventListener (uuid: string): void {
         this.#emitter.removeEventListener(uuid);
-    }
-
-    protected get marketWatcher (): MidaMarketWatcher {
-        return this.#marketWatcher;
     }
 
     protected abstract configure (): Promise<void>;
@@ -148,21 +144,13 @@ export abstract class MidaExpertAdvisor {
     protected async placeOrder (directives: MidaBrokerOrderDirectives): Promise<MidaBrokerOrder> {
         const order: MidaBrokerOrder = await this.#brokerAccount.placeOrder(directives);
 
-        this.#orders.set(order.ticket, order);
+        this.#orders.set(order.id, order);
 
         return order;
     }
 
-    protected async watchSymbol (symbol: string): Promise<void> {
-        await this.#marketWatcher.watchSymbol(symbol);
-    }
-
-    protected async unwatchSymbol (symbol: string): Promise<void> {
-        await this.#marketWatcher.unwatchSymbol(symbol);
-    }
-
     protected addOrder (order: MidaBrokerOrder): void {
-        this.#orders.set(order.ticket, order);
+        this.#orders.set(order.id, order);
     }
 
     protected notifyListeners (type: string, descriptor?: GenericObject): void {
@@ -222,7 +210,6 @@ export abstract class MidaExpertAdvisor {
     }
 
     #configureListeners (): void {
-        this.#marketWatcher.on("tick", async (event: MidaEvent): Promise<void> => this.#onTick(event.descriptor.tick));
-        this.#marketWatcher.on("period", async (event: MidaEvent): Promise<void> => this.#onPeriod(event.descriptor.period, event.descriptor.previousPeriod));
+
     }
 }

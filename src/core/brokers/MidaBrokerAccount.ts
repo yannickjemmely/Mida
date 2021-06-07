@@ -76,33 +76,33 @@ export abstract class MidaBrokerAccount {
 
     /**
      * Used to get an order.
-     * @param ticket The order ticket.
+     * @param id The order id.
      */
-    public abstract getOrder (ticket: string): Promise<MidaBrokerOrder | undefined>;
+    public abstract getOrder (id: string): Promise<MidaBrokerOrder | undefined>;
 
     /**
      * Used to get the gross profit of an order (the order must be in open or closed state).
-     * @param ticket The order ticket.
+     * @param id The order id.
      */
-    public abstract getOrderGrossProfit (ticket: string): Promise<number>;
+    public abstract getOrderGrossProfit (id: string): Promise<number>;
 
     /**
      * Used to get the net profit of an order (the order must be in open or closed state).
-     * @param ticket The order ticket.
+     * @param id The order id.
      */
-    public abstract getOrderNetProfit (ticket: string): Promise<number>;
+    public abstract getOrderNetProfit (id: string): Promise<number>;
 
     /**
      * Used to get the swaps of an order (the order must be in open or closed state).
-     * @param ticket The order ticket.
+     * @param id The order id.
      */
-    public abstract getOrderSwaps (ticket: string): Promise<number>;
+    public abstract getOrderSwaps (id: string): Promise<number>;
 
     /**
      * Used to get the commission of an order.
-     * @param ticket The order ticket.
+     * @param id The order id.
      */
-    public abstract getOrderCommission (ticket: string): Promise<number>;
+    public abstract getOrderCommission (id: string): Promise<number>;
 
     /**
      * Used to place an order.
@@ -112,53 +112,53 @@ export abstract class MidaBrokerAccount {
 
     /**
      * Used to cancel an order (the order must be in pending state).
-     * @param ticket The order ticket.
+     * @param id The order id.
      */
-    public abstract cancelOrder (ticket: string): Promise<void>;
+    public abstract cancelOrder (id: string): Promise<void>;
 
     /**
      * Used to close an order (the order must be in open state).
-     * @param ticket The order ticket.
+     * @param id The order id.
      */
-    public abstract closeOrder (ticket: string): Promise<void>;
+    public abstract closeOrder (id: string): Promise<void>;
 
     /**
      * Used to get the stop loss of an order.
-     * @param ticket The order ticket.
+     * @param id The order id.
      */
-    public abstract getOrderStopLoss (ticket: string): Promise<number | undefined>;
+    public abstract getOrderStopLoss (id: string): Promise<number | undefined>;
 
     /**
      * Used to set the stop loss of an order.
-     * @param ticket The order ticket.
+     * @param id The order id.
      * @param stopLoss The stop loss.
      */
-    public abstract setOrderStopLoss (ticket: string, stopLoss: number): Promise<void>;
+    public abstract setOrderStopLoss (id: string, stopLoss: number): Promise<void>;
 
     /**
      * Used to clear the stop loss of an order.
-     * @param ticket The order ticket.
+     * @param id The order id.
      */
-    public abstract clearOrderStopLoss (ticket: string): Promise<void>;
+    public abstract clearOrderStopLoss (id: string): Promise<void>;
 
     /**
      * Used to get the take profit of an order.
-     * @param ticket The order ticket.
+     * @param id The order id.
      */
-    public abstract getOrderTakeProfit (ticket: string): Promise<number | undefined>;
+    public abstract getOrderTakeProfit (id: string): Promise<number | undefined>;
 
     /**
      * Used to set the take profit of an order.
-     * @param ticket The order ticket.
+     * @param id The order id.
      * @param takeProfit The take profit.
      */
-    public abstract setOrderTakeProfit (ticket: string, takeProfit: number): Promise<void>;
+    public abstract setOrderTakeProfit (id: string, takeProfit: number): Promise<void>;
 
     /**
      * Used to clear the take profit of an order.
-     * @param ticket The order ticket.
+     * @param id The order id.
      */
-    public abstract clearOrderTakeProfit (ticket: string): Promise<void>;
+    public abstract clearOrderTakeProfit (id: string): Promise<void>;
 
     /** Used to get the account symbols. */
     public abstract getSymbols (): Promise<string[]>;
@@ -202,21 +202,21 @@ export abstract class MidaBrokerAccount {
     public abstract getSymbolAsk (symbol: string): Promise<number>;
 
     /**
-     * Used to add a symbol to the symbols watch list.
+     * Used to add a symbol to the symbols ticks watch list.
      * @param symbol The string representation of the symbol.
      */
-    public abstract watchSymbol (symbol: string): Promise<void>;
+    public abstract watchSymbolTicks (symbol: string): Promise<void>;
 
     /**
-     * Used to get the symbols in the symbols watch list.
+     * Used to get the symbols in the symbols ticks watch list.
      */
-    public abstract getWatchedSymbols (): Promise<string[]>;
+    public abstract getWatchedSymbolsTicks (): Promise<string[]>;
 
     /**
-     * Used to remove a symbol from the symbols watch list.
+     * Used to remove a symbol from the symbols ticks watch list.
      * @param symbol The string representation of the symbol.
      */
-    public abstract unwatchSymbol (symbol: string): Promise<void>;
+    public abstract unwatchSymbolTicks (symbol: string): Promise<void>;
 
     /** Used to get the account free margin. */
     public async getFreeMargin (): Promise<number> {

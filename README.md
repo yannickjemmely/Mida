@@ -45,8 +45,9 @@ const myAccount = await MidaBroker.login("cTrader", {
 
 ### Broker orders and positions
 How top open a long position for Bitcoin against USD.
+
 ```javascript
-const { MidaBrokerOrderType } = require("@reiryoku/mida");
+const {MidaBrokerOrderType} = require("@reiryoku/mida");
 
 const myOrder = await myAccount.placeOrder({
     symbol: "BTCUSD",
@@ -54,13 +55,14 @@ const myOrder = await myAccount.placeOrder({
     lots: 1,
 });
 
-console.log(myOrder.ticket);
+console.log(myOrder.id);
 console.log(myOrder.openPrice);
 ```
 
 How to open a short position for EUR against USD.
+
 ```javascript
-const { MidaBrokerOrderType } = require("@reiryoku/mida");
+const {MidaBrokerOrderType} = require("@reiryoku/mida");
 
 const myOrder = await myAccount.placeOrder({
     symbol: "EURUSD",
@@ -68,7 +70,7 @@ const myOrder = await myAccount.placeOrder({
     lots: 0.1,
 });
 
-console.log(myOrder.ticket);
+console.log(myOrder.id);
 console.log(myOrder.openPrice);
 ```
 

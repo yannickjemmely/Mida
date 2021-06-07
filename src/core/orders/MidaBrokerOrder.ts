@@ -12,7 +12,7 @@ import { GenericObject } from "#utilities/GenericObject";
 
 /** Represents a broker order. */
 export class MidaBrokerOrder {
-    readonly #ticket: string;
+    readonly #id: string;
     readonly #brokerAccount: MidaBrokerAccount;
     readonly #requestDirectives: MidaBrokerOrderDirectives;
     readonly #requestDate?: Date;
@@ -33,7 +33,7 @@ export class MidaBrokerOrder {
     readonly #emitter: MidaEmitter;
 
     public constructor ({
-        ticket,
+        id,
         brokerAccount,
         requestDirectives,
         requestDate,
@@ -48,7 +48,7 @@ export class MidaBrokerOrder {
         tags = [],
         initiator,
     }: MidaBrokerOrderParameters) {
-        this.#ticket = ticket;
+        this.#id = id;
         this.#brokerAccount = brokerAccount;
         this.#requestDirectives = { ...requestDirectives, };
         this.#requestDate = requestDate ? new Date(requestDate) : undefined;
@@ -67,9 +67,9 @@ export class MidaBrokerOrder {
         this.#configureListeners();
     }
 
-    /** The order ticket. */
-    public get ticket (): string {
-        return this.#ticket;
+    /** The order id. */
+    public get id (): string {
+        return this.#id;
     }
 
     /** The order broker account. */
@@ -213,19 +213,19 @@ export class MidaBrokerOrder {
     }
 
     public async cancel (): Promise<void> {
-        await this.#brokerAccount.cancelOrder(this.#ticket);
+        await this.#brokerAccount.cancelOrder(this.#id);
     }
 
     public async close (): Promise<void> {
-        await this.#brokerAccount.closeOrder(this.#ticket);
+        await this.#brokerAccount.closeOrder(this.#id);
     }
 
     public async getGrossProfit (): Promise<number> {
-        return this.#brokerAccount.getOrderGrossProfit(this.#ticket);
+        return this.#brokerAccount.getOrderGrossProfit(this.#id);
     }
 
     public async getNetProfit (): Promise<number> {
-        return this.#brokerAccount.getOrderNetProfit(this.#ticket);
+        return this.#brokerAccount.getOrderNetProfit(this.#id);
     }
 
     /* To implement later.
@@ -239,11 +239,11 @@ export class MidaBrokerOrder {
     */
 
     public async getSwaps (): Promise<number> {
-        return this.#brokerAccount.getOrderSwaps(this.#ticket);
+        return this.#brokerAccount.getOrderSwaps(this.#id);
     }
 
     public async getCommission (): Promise<number> {
-        return this.#brokerAccount.getOrderCommission(this.#ticket);
+        return this.#brokerAccount.getOrderCommission(this.#id);
     }
 
     public on (type: string): Promise<MidaEvent>
