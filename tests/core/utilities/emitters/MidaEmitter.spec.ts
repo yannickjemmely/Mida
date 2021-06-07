@@ -40,7 +40,7 @@ describe("MidaEmitter", () => {
 
         it("when returns a Promise, it's resolved when event occurs", () => {
             const emitter: MidaEmitter = new MidaEmitter();
-            const eventPromise: string | Promise<MidaEvent> = emitter.on("event");
+            const eventPromise: Promise<MidaEvent> = emitter.on("event");
 
             emitter.notifyListeners("event");
 

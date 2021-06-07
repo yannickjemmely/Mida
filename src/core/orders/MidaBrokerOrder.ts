@@ -283,6 +283,8 @@ export class MidaBrokerOrder {
             case "order-open": {
                 this.#openDate = event.descriptor.openDate;
                 this.#openPrice = event.descriptor.openPrice;
+                // this.#positionId = event.descriptor.positionId;
+                // this.#openDealId = event.descriptor.openDealId;
 
                 this.#notifyListeners("open", event.descriptor);
 
@@ -292,6 +294,7 @@ export class MidaBrokerOrder {
             case "order-close": {
                 this.#closeDate = event.descriptor.closeDate;
                 this.#closePrice = event.descriptor.closePrice;
+                // this.#closeDealId = event.descriptor.closeDealId;
 
                 this.#notifyListeners("close", event.descriptor);
 

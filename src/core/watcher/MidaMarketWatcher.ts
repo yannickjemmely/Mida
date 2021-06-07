@@ -13,15 +13,13 @@ import { MidaMarketWatcherParameters } from "#watcher/MidaMarketWatcherParameter
 // TODO: Implement "watchSymbolPriceBreak" functionality.
 export class MidaMarketWatcher {
     readonly #brokerAccount: MidaBrokerAccount;
-    readonly #watchedSymbols: Map<string, MidaMarketWatcherDirectives>
-    readonly #watchedSymbolsTimeframes: Map<string, Set<number>>;
+    readonly #watchedSymbols: Map<string, MidaMarketWatcherDirectives>;
     readonly #lastPeriods: Map<string, Map<number, MidaSymbolPeriod>>;
     readonly #emitter: MidaEmitter;
 
     public constructor ({ brokerAccount, }: MidaMarketWatcherParameters) {
         this.#brokerAccount = brokerAccount;
         this.#watchedSymbols = new Map();
-        this.#watchedSymbolsTimeframes = new Map();
         this.#lastPeriods = new Map();
         this.#emitter = new MidaEmitter();
 
@@ -55,7 +53,7 @@ export class MidaMarketWatcher {
     }
 
     public async watchSymbolTimeframe (symbol: string, timeframe: number): Promise<void> {
-        await this.watchSymbol(symbol);
+        // A await this.watchSymbol(symbol);
 
         const periods: MidaSymbolPeriod[] = await this.#brokerAccount.getSymbolPeriods(symbol, timeframe);
         const lastPeriod: MidaSymbolPeriod = periods[periods.length - 1];

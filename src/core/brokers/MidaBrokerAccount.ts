@@ -218,6 +218,11 @@ export abstract class MidaBrokerAccount {
      */
     public abstract unwatchSymbolTicks (symbol: string): Promise<void>;
 
+    /**
+     * Used to disconnect the account.
+     */
+    public abstract logout (): Promise<void>;
+
     /** Used to get the account free margin. */
     public async getFreeMargin (): Promise<number> {
         const tasks: Promise<number>[] = [ this.getEquity(), this.getUsedMargin(), ];
@@ -226,9 +231,7 @@ export abstract class MidaBrokerAccount {
         return equity - usedMargin;
     }
 
-    /**
-     * Used to get the account margin level.
-     */
+    /** Used to get the account margin level. */
     public async getMarginLevel (): Promise<number> {
         const tasks: Promise<number>[] = [ this.getEquity(), this.getUsedMargin(), ];
         const [ equity, usedMargin, ]: number[] = await Promise.all(tasks);
