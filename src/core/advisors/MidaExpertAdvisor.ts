@@ -9,6 +9,7 @@ import { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 import { GenericObject } from "#utilities/GenericObject";
+import { MidaMarketWatcher } from "#watcher/MidaMarketWatcher";
 
 export abstract class MidaExpertAdvisor {
     readonly #brokerAccount: MidaBrokerAccount;
@@ -18,7 +19,7 @@ export abstract class MidaExpertAdvisor {
     readonly #asyncTicks: MidaSymbolTick[];
     #asyncTickPromise?: Promise<void>;
     #isConfigured: boolean;
-    #lastStartDate?: Date;
+    readonly #marketWatcher;
     readonly #emitter: MidaEmitter;
 
     protected constructor ({ brokerAccount, }: MidaExpertAdvisorParameters) {
@@ -29,7 +30,7 @@ export abstract class MidaExpertAdvisor {
         this.#asyncTicks = [];
         this.#asyncTickPromise = undefined;
         this.#isConfigured = false;
-        this.#lastStartDate = undefined;
+        this.#marketWatcher = new MidaMarketWatcher({ brokerAccount, });
         this.#emitter = new MidaEmitter();
 
         this.#configureListeners();
@@ -47,10 +48,6 @@ export abstract class MidaExpertAdvisor {
         return [ ...this.#orders.values(), ];
     }
 
-    public get lastStartDate (): Date | undefined {
-        return this.#lastStartDate ? new Date(this.#lastStartDate) : undefined;
-    }
-
     public get pendingOrders (): MidaBrokerOrder[] {
         return this.orders.filter((order: MidaBrokerOrder): boolean => order.status === MidaBrokerOrderStatusType.PENDING);
     }
@@ -65,6 +62,10 @@ export abstract class MidaExpertAdvisor {
 
     protected get capturedTicks (): readonly MidaSymbolTick[] {
         return this.#capturedTicks;
+    }
+
+    protected get marketWatcher (): MidaMarketWatcher {
+        return this.#marketWatcher;
     }
 
     public async start (): Promise<void> {
@@ -84,7 +85,6 @@ export abstract class MidaExpertAdvisor {
         }
 
         this.#isOperative = true;
-        this.#lastStartDate = new Date();
 
         await this.onStart();
         this.notifyListeners("start");
@@ -210,6 +210,6 @@ export abstract class MidaExpertAdvisor {
     }
 
     #configureListeners (): void {
-
+        // Silence is golden.
     }
 }
