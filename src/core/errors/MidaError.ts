@@ -3,23 +3,27 @@ import { GenericObject } from "#utilities/GenericObject";
 
 /** Represents an error. */
 export class MidaError extends Error {
-    private readonly _type: string;
-    private readonly _descriptor: GenericObject;
+    readonly #type: string;
+    readonly #descriptor: GenericObject;
 
-    public constructor ({ type, message, descriptor = {}, }: MidaErrorParameters) {
+    public constructor ({
+        type,
+        message,
+        descriptor = {},
+    }: MidaErrorParameters) {
         super(message);
 
         this.name = "MidaError";
-        this._type = type;
-        this._descriptor = { ...descriptor, };
+        this.#type = type;
+        this.#descriptor = { ...descriptor, };
     }
 
     public get type (): string {
-        return this._type;
+        return this.#type;
     }
 
     public get descriptor (): GenericObject {
-        return { ...this._descriptor, };
+        return { ...this.#descriptor, };
     }
 
     public override toString (): string {

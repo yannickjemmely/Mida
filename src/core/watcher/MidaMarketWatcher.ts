@@ -10,86 +10,92 @@ import { MidaMarketWatcherParameters } from "#watcher/MidaMarketWatcherParameter
 
 // TODO: Implement "watchSymbolPriceBreak" functionality.
 export class MidaMarketWatcher {
-    private readonly _brokerAccount: MidaBrokerAccount;
-    private readonly _watchedSymbols: Set<string>;
-    private readonly _watchedSymbolsTimeframes: Map<string, Set<number>>;
-    private readonly _lastPeriods: Map<string, Map<number, MidaSymbolPeriod>>;
-    private readonly _emitter: MidaEmitter;
+    readonly #brokerAccount: MidaBrokerAccount;
+    readonly #watchedSymbols: Set<string>;
+    readonly #watchedSymbolsTimeframes: Map<string, Set<number>>;
+    readonly #lastPeriods: Map<string, Map<number, MidaSymbolPeriod>>;
+    readonly #emitter: MidaEmitter;
 
     public constructor ({ brokerAccount, }: MidaMarketWatcherParameters) {
-        this._brokerAccount = brokerAccount;
-        this._watchedSymbols = new Set();
-        this._watchedSymbolsTimeframes = new Map();
-        this._lastPeriods = new Map();
-        this._emitter = new MidaEmitter();
+        this.#brokerAccount = brokerAccount;
+        this.#watchedSymbols = new Set();
+        this.#watchedSymbolsTimeframes = new Map();
+        this.#lastPeriods = new Map();
+        this.#emitter = new MidaEmitter();
 
-        this._configureListeners();
+        this.#configureListeners();
     }
 
     public get brokerAccount (): MidaBrokerAccount {
-        return this._brokerAccount;
+        return this.#brokerAccount;
     }
 
     public get watchedSymbols (): string[] {
-        return [ ...this._watchedSymbols.values(), ];
+        return [ ...this.#watchedSymbols.values(), ];
     }
 
     public async watchSymbol (symbol: string): Promise<void> {
-        await this._brokerAccount.watchSymbol(symbol);
+        await this.#brokerAccount.watchSymbol(symbol);
 
-        this._watchedSymbols.add(symbol);
+        this.#watchedSymbols.add(symbol);
     }
 
     public async unwatchSymbol (symbol: string): Promise<void> {
-        this._watchedSymbols.delete(symbol);
+        this.#watchedSymbols.delete(symbol);
     }
 
     public getSymbolWatchedTimeframes (symbol: string): number[] {
-        return [ ...(this._watchedSymbolsTimeframes.get(symbol)?.values() || []), ];
+        return [ ...this.#watchedSymbolsTimeframes.get(symbol)?.values() ?? [], ];
     }
 
     public async watchSymbolTimeframe (symbol: string, timeframe: number): Promise<void> {
         await this.watchSymbol(symbol);
 
-        const periods: MidaSymbolPeriod[] = await this._brokerAccount.getSymbolPeriods(symbol, timeframe);
+        const periods: MidaSymbolPeriod[] = await this.#brokerAccount.getSymbolPeriods(symbol, timeframe);
         const lastPeriod: MidaSymbolPeriod = periods[periods.length - 1];
 
-        if (!this._lastPeriods.get(symbol)) {
-            this._lastPeriods.set(symbol, new Map());
+        if (!this.#lastPeriods.get(symbol)) {
+            this.#lastPeriods.set(symbol, new Map());
         }
 
-        this._lastPeriods.get(symbol)?.set(timeframe, lastPeriod);
+        this.#lastPeriods.get(symbol)?.set(timeframe, lastPeriod);
 
-        if (!this._watchedSymbolsTimeframes.get(symbol)) {
-            this._watchedSymbolsTimeframes.set(symbol, new Set());
+        if (!this.#watchedSymbolsTimeframes.get(symbol)) {
+            this.#watchedSymbolsTimeframes.set(symbol, new Set());
         }
 
-        this._watchedSymbolsTimeframes.get(symbol)?.add(timeframe);
+        this.#watchedSymbolsTimeframes.get(symbol)?.add(timeframe);
     }
 
     public async unwatchSymbolTimeframe (symbol: string, timeframe: number): Promise<void> {
-        this._watchedSymbolsTimeframes.get(symbol)?.delete(timeframe);
+        this.#watchedSymbolsTimeframes.get(symbol)?.delete(timeframe);
     }
 
+    public on (type: string): Promise<MidaEvent>
+    public on (type: string, listener: MidaEventListener): string
     public on (type: string, listener?: MidaEventListener): Promise<MidaEvent> | string {
-        return this._emitter.on(type, listener);
+        if (!listener) {
+            return this.#emitter.on(type);
+        }
+
+        return this.#emitter.on(type, listener);
     }
 
     public removeEventListener (uuid: string): void {
-        this._emitter.removeEventListener(uuid);
+        this.#emitter.removeEventListener(uuid);
     }
 
     protected notifyListeners (type: string, descriptor?: GenericObject): void {
-        this._emitter.notifyListeners(type, descriptor);
+        this.#emitter.notifyListeners(type, descriptor);
     }
 
-    private _onTick (tick: MidaSymbolTick): void {
-        if (this._watchedSymbols.has(tick.symbol)) {
+    #onTick (tick: MidaSymbolTick): void {
+        if (this.#watchedSymbols.has(tick.symbol)) {
             this.notifyListeners("tick", { tick, });
         }
     }
 
-    private _onPeriod (period: MidaSymbolPeriod, previousPeriod: MidaSymbolPeriod): void {
+    #onPeriod (period: MidaSymbolPeriod, previousPeriod: MidaSymbolPeriod): void {
         this.notifyListeners("period", {
             period,
             previousPeriod,
@@ -100,11 +106,11 @@ export class MidaMarketWatcher {
         });
     }
 
-    private async _checkNewPeriods (): Promise<void> {
+    async #checkNewPeriods (): Promise<void> {
         for (const symbol of this.watchedSymbols) {
-            for (const timeframe of [ ...(this._watchedSymbolsTimeframes.get(symbol)?.values() || []), ]) {
+            for (const timeframe of [ ...this.#watchedSymbolsTimeframes.get(symbol)?.values() ?? [], ]) {
                 try {
-                    await this._checkTimeframe(symbol, timeframe);
+                    await this.#checkTimeframe(symbol, timeframe);
                 }
                 catch (error) {
                     switch (error.type) {
@@ -122,25 +128,25 @@ export class MidaMarketWatcher {
     }
 
     // Used to check if the last known period of a symbol has been closed. Must be called each minute.
-    private async _checkTimeframe (symbol: string, timeframe: number): Promise<void> {
-        const periods: MidaSymbolPeriod[] = await this._brokerAccount.getSymbolPeriods(symbol, timeframe);
+    async #checkTimeframe (symbol: string, timeframe: number): Promise<void> {
+        const periods: MidaSymbolPeriod[] = await this.#brokerAccount.getSymbolPeriods(symbol, timeframe);
         const lastPeriod: MidaSymbolPeriod = periods[periods.length - 1];
 
-        if (!this._lastPeriods.get(symbol)) {
-            this._lastPeriods.set(symbol, new Map());
+        if (!this.#lastPeriods.get(symbol)) {
+            this.#lastPeriods.set(symbol, new Map());
         }
 
-        const previousPeriod: MidaSymbolPeriod = this._lastPeriods.get(symbol)?.get(timeframe) as MidaSymbolPeriod;
+        const previousPeriod: MidaSymbolPeriod = this.#lastPeriods.get(symbol)?.get(timeframe) as MidaSymbolPeriod;
 
         if (!previousPeriod || previousPeriod.startTime < lastPeriod.startTime) {
-            this._lastPeriods.get(symbol)?.set(timeframe, lastPeriod);
-            this._onPeriod(lastPeriod, previousPeriod);
+            this.#lastPeriods.get(symbol)?.set(timeframe, lastPeriod);
+            this.#onPeriod(lastPeriod, previousPeriod);
         }
     }
 
-    private _configureListeners (): void {
+    #configureListeners (): void {
         // <ticks>
-        this._brokerAccount.on("tick", (event: MidaEvent): void => this._onTick(event.descriptor.tick));
+        this.#brokerAccount.on("tick", (event: MidaEvent): void => this.#onTick(event.descriptor.tick));
         // </ticks>
 
         // <periods>
@@ -150,9 +156,9 @@ export class MidaMarketWatcher {
         roundMinute.setSeconds(0);
 
         setTimeout((): void => {
-            this._checkNewPeriods();
-            setInterval(() => this._checkNewPeriods(), 60000); // Invoke the function each next round minute plus ~0.1s of margin.
-        }, (roundMinute.valueOf() + 60000) - actualDate.valueOf() + 100); // Invoke the function the next round minute plus ~0.1s of margin.
+            this.#checkNewPeriods();
+            setInterval(() => this.#checkNewPeriods(), 60000); // Invoke the function each next round minute plus ~0.1s of margin.
+        }, roundMinute.valueOf() + 60000 - actualDate.valueOf() + 100); // Invoke the function the next round minute plus ~0.1s of margin.
         // </periods>
     }
 }

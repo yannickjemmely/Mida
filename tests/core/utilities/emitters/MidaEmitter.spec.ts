@@ -1,6 +1,7 @@
 import { MidaEvent } from "#events/MidaEvent";
 import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 
+// eslint-disable-next-line max-lines-per-function
 describe("MidaEmitter", () => {
     describe(".addEventListener", () => {
         it("returns a string when a listener is added", () => {
@@ -64,7 +65,9 @@ describe("MidaEmitter", () => {
             const emitter: MidaEmitter = new MidaEmitter();
             let lastEvent: any = undefined;
 
-            emitter.addEventListener("event", (event: MidaEvent) => lastEvent = event);
+            emitter.addEventListener("event", (event: MidaEvent) => {
+                lastEvent = event;
+            });
             emitter.notifyListeners("event", {
                 code: 200,
                 status: "success",

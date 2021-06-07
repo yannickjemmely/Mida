@@ -14,7 +14,7 @@ import { MidaMarketWatcher } from "#watcher/MidaMarketWatcher";
 export abstract class MidaExpertAdvisor {
     readonly #brokerAccount: MidaBrokerAccount;
     #isOperative: boolean;
-    readonly #orders: Map<number, MidaBrokerOrder>;
+    readonly #orders: Map<string, MidaBrokerOrder>;
     readonly #capturedTicks: MidaSymbolTick[];
     readonly #asyncTicks: MidaSymbolTick[];
     #asyncTickPromise?: Promise<void>;
@@ -159,6 +159,10 @@ export abstract class MidaExpertAdvisor {
 
     protected async unwatchSymbol (symbol: string): Promise<void> {
         await this.#marketWatcher.unwatchSymbol(symbol);
+    }
+
+    protected addOrder (order: MidaBrokerOrder): void {
+        this.#orders.set(order.ticket, order);
     }
 
     protected notifyListeners (type: string, descriptor?: GenericObject): void {

@@ -1,3 +1,5 @@
+import { GenericObject } from "#utilities/GenericObject";
+
 export class MidaUtilities {
     private constructor () {
         // Silence is golden.
@@ -18,7 +20,7 @@ export class MidaUtilities {
 
     // Used to create a Promise resolved after a given number of milliseconds.
     public static async wait (milliseconds: number): Promise<void> {
-        await new Promise((resolve: (value?: any) => void): any => setTimeout(resolve, milliseconds));
+        await new Promise((resolve: any): any => setTimeout(resolve, milliseconds));
     }
 
     // Used to shuffle an array.
@@ -42,7 +44,7 @@ export class MidaUtilities {
     }
 
     // Used to merge two options objects.
-    public static mergeOptions (initial: any, primary: any): any {
+    public static mergeOptions (initial: GenericObject, primary: GenericObject): GenericObject {
         const options: any = {
             ...initial,
             ...primary,
@@ -76,12 +78,5 @@ export class MidaUtilities {
     // Used to get what percentage of a number a number is.
     public static getWhatPercentageOf (subject: number, whatPercentage: number): number {
         return whatPercentage / subject * 100;
-    }
-
-    public static async assertPromiseDuration (task: Promise<any>, timeout: number, defaultValue?: any): Promise<any> {
-        return new Promise((resolve: any, reject: any): void => {
-            setTimeout(() => resolve(defaultValue), timeout);
-            task.then((value: any) => resolve(value)).catch((error: any) => reject(error));
-        });
     }
 }

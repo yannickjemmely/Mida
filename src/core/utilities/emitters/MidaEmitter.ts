@@ -1,9 +1,7 @@
-import { v1 as uuidV1 } from "uuid";
-
 import { MidaEvent } from "#events/MidaEvent";
 import { MidaEventListener } from "#events/MidaEventListener";
 import { GenericObject } from "#utilities/GenericObject";
-
+import { v1 as uuidV1 } from "uuid";
 
 /** Represents an entity capable of emitting events to a its listeners. */
 export class MidaEmitter {
@@ -57,7 +55,7 @@ export class MidaEmitter {
         return this.addEventListener(type, listener);
     }
 
-    public async notifyListeners (type: string, descriptor?: GenericObject): Promise<void> {
+    public notifyListeners (type: string, descriptor?: GenericObject): void {
         const date: Date = new Date();
         const event: MidaEvent = new MidaEvent({
             type,

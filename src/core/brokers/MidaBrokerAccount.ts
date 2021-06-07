@@ -7,7 +7,7 @@ import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
 import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
 import { MidaBrokerOrderStatusType } from "#orders/MidaBrokerOrderStatusType";
 import { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
-import { MidaSymbolQuotationPriceType } from "#quotations/MidaSymbolQuotationPriceType";
+import { MidaSymbolPriceType } from "#symbols/MidaSymbolPriceType";
 import { MidaSymbol } from "#symbols/MidaSymbol";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
@@ -181,7 +181,7 @@ export abstract class MidaBrokerAccount {
      * @param timeframe The periods timeframe.
      * @param priceType The periods price type.
      */
-    public abstract getSymbolPeriods (symbol: string, timeframe: number, priceType?: MidaSymbolQuotationPriceType): Promise<MidaSymbolPeriod[]>;
+    public abstract getSymbolPeriods (symbol: string, timeframe: number, priceType?: MidaSymbolPriceType): Promise<MidaSymbolPeriod[]>;
 
     /**
      * Used to get the latest symbol tick.

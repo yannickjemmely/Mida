@@ -1,74 +1,72 @@
 import { MidaSymbolQuotationParameters } from "#quotations/MidaSymbolQuotationParameters";
 import { IMidaCloneable } from "#utilities/cloneable/IMidaCloneable";
 import { IMidaEquatable } from "#utilities/equatable/IMidaEquatable";
+import { GenericObject } from "#utilities/GenericObject";
 
 /** Represents a symbol quotation. */
 export class MidaSymbolQuotation implements IMidaCloneable, IMidaEquatable {
-    private readonly _symbol: string;
-    private readonly _date: Date;
-    private readonly _bid: number;
-    private readonly _ask: number;
-    private readonly _exchangeName?: string;
+    readonly #symbol: string;
+    readonly #date: Date;
+    readonly #bid: number;
+    readonly #ask: number;
 
-    public constructor ({ symbol, date, bid, ask, exchangeName, }: MidaSymbolQuotationParameters) {
-        this._symbol = symbol;
-        this._date = new Date(date);
-        this._bid = bid;
-        this._ask = ask;
-        this._exchangeName = exchangeName;
+    public constructor ({
+        symbol,
+        date,
+        bid,
+        ask,
+    }: MidaSymbolQuotationParameters) {
+        this.#symbol = symbol;
+        this.#date = new Date(date);
+        this.#bid = bid;
+        this.#ask = ask;
     }
 
     /** The quotation symbol. */
     public get symbol (): string {
-        return this._symbol;
+        return this.#symbol;
     }
 
     /** The quotation date. */
     public get date (): Date {
-        return new Date(this._date);
+        return new Date(this.#date);
     }
 
     /** The quotation bid price. */
     public get bid (): number {
-        return this._bid;
+        return this.#bid;
     }
 
     /** The quotation ask price. */
     public get ask (): number {
-        return this._ask;
-    }
-
-    /** The quotation exchange name. */
-    public get exchangeName (): string | undefined {
-        return this._exchangeName;
+        return this.#ask;
     }
 
     /** The quotation mid price. */
     public get mid (): number {
-        return (this._bid + this._ask) / 2;
+        return (this.#bid + this.#ask) / 2;
     }
 
     /** The quotation spread. */
     public get spread (): number {
-        return this._ask - this._bid;
+        return this.#ask - this.#bid;
     }
 
     /** Used to get a clone of the quotation. */
     public clone (): any {
         return new MidaSymbolQuotation({
-            symbol: this._symbol,
-            date: new Date(this._date),
-            bid: this._bid,
-            ask: this._ask,
-            exchangeName: this._exchangeName,
+            symbol: this.#symbol,
+            date: new Date(this.#date),
+            bid: this.#bid,
+            ask: this.#ask,
         });
     }
 
-    public equals (object: any): boolean {
+    public equals (object: GenericObject): boolean {
         return (
             object instanceof MidaSymbolQuotation
-            && this._symbol === object._symbol
-            && this._date.valueOf() === object._date.valueOf()
+            && this.symbol === object.symbol
+            && this.date.valueOf() === object.date.valueOf()
         );
     }
 }

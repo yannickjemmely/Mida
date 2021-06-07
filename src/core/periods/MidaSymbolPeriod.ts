@@ -1,97 +1,109 @@
 import { MidaSymbolPeriodParameters } from "#periods/MidaSymbolPeriodParameters";
-import { MidaSymbolQuotationPriceType } from "#quotations/MidaSymbolQuotationPriceType";
+import { MidaSymbolPriceType } from "#symbols/MidaSymbolPriceType";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { IMidaEquatable } from "#utilities/equatable/IMidaEquatable";
+import { GenericObject } from "#utilities/GenericObject";
 
 /** Represents a symbol period (commonly named bar or candlestick). */
 export class MidaSymbolPeriod implements IMidaEquatable {
-    private readonly _symbol: string;
-    private readonly _startTime: Date;
-    private readonly _priceType: MidaSymbolQuotationPriceType;
-    private readonly _open: number;
-    private readonly _high: number;
-    private readonly _low: number;
-    private readonly _close: number;
-    private readonly _volume: number;
-    private readonly _timeframe: number;
-    private readonly _ticks?: MidaSymbolTick[];
+    readonly #symbol: string;
+    readonly #startTime: Date;
+    readonly #priceType: MidaSymbolPriceType;
+    readonly #open: number;
+    readonly #high: number;
+    readonly #low: number;
+    readonly #close: number;
+    readonly #volume: number;
+    readonly #timeframe: number;
+    readonly #ticks?: MidaSymbolTick[];
 
-    public constructor ({ symbol, startTime, priceType, open, high, low, close, volume, timeframe, ticks, }: MidaSymbolPeriodParameters) {
-        this._symbol = symbol;
-        this._startTime = new Date(startTime);
-        this._priceType = priceType;
-        this._open = open;
-        this._high = high;
-        this._low = low;
-        this._close = close;
-        this._volume = volume;
-        this._timeframe = timeframe;
-        this._ticks = ticks;
+    public constructor ({
+        symbol,
+        startTime,
+        priceType,
+        open,
+        high,
+        low,
+        close,
+        volume,
+        timeframe,
+        ticks,
+    }: MidaSymbolPeriodParameters) {
+        this.#symbol = symbol;
+        this.#startTime = new Date(startTime);
+        this.#priceType = priceType;
+        this.#open = open;
+        this.#high = high;
+        this.#low = low;
+        this.#close = close;
+        this.#volume = volume;
+        this.#timeframe = timeframe;
+        this.#ticks = ticks;
     }
 
     /** The period symbol. */
     public get symbol (): string {
-        return this._symbol;
+        return this.#symbol;
     }
 
     /** The period start time. */
     public get startTime (): Date {
-        return new Date(this._startTime);
+        return new Date(this.#startTime);
     }
 
     /** The price type represented by the period (bid or ask). */
-    public get priceType (): MidaSymbolQuotationPriceType {
-        return this._priceType;
+    public get priceType (): MidaSymbolPriceType {
+        return this.#priceType;
     }
 
     /** The period open price. */
     public get open (): number {
-        return this._open;
+        return this.#open;
     }
 
     /** The period highest price. */
     public get high (): number {
-        return this._high;
+        return this.#high;
     }
 
     /** The period lowest price. */
     public get low (): number {
-        return this._low;
+        return this.#low;
     }
 
     /** The period close price. */
     public get close (): number {
-        return this._close;
+        return this.#close;
     }
 
     /** The period volume. */
     public get volume (): number {
-        return this._volume;
+        return this.#volume;
     }
 
     /** The period timeframe (expressed in seconds). */
     public get timeframe (): number {
-        return this._timeframe;
+        return this.#timeframe;
     }
 
     /** The period ticks. Usually ticks are not registered. */
     public get ticks (): readonly MidaSymbolTick[] | undefined {
-        return this._ticks;
+        return this.#ticks;
     }
 
     /** The period end time. */
     public get endTime (): Date {
-        return new Date(this._startTime.valueOf() + this._timeframe * 1000);
+        return new Date(this.#startTime.valueOf() + this.#timeframe * 1000);
     }
 
     /** The period momentum. */
     public get momentum (): number {
-        return this._close / this._open;
+        return this.#close / this.#open;
     }
 
     /** The period body. */
     public get body (): number {
-        return this._close - this._open;
+        return this.#close - this.#open;
     }
 
     /** The period absolute body. */
@@ -101,22 +113,27 @@ export class MidaSymbolPeriod implements IMidaEquatable {
 
     /** The period lower shadow. */
     public get lowerShadow (): number {
-        return Math.min(this._open, this._close) - this._low;
+        return Math.min(this.#open, this.#close) - this.#low;
     }
 
     /** The period upper shadow. */
     public get upperShadow (): number {
-        return this._high - Math.max(this._open, this._close);
+        return this.#high - Math.max(this.#open, this.#close);
     }
 
     /** The period OHLC (open, high, low, close). */
     public get ohlc (): number[] {
-        return [ this._open, this._high, this._low, this._close, ];
+        return [
+            this.#open,
+            this.#high,
+            this.#low,
+            this.#close,
+        ];
     }
 
     /** The period OHLCV (open, high, low, close, volume). */
     public get ohlcv (): number[] {
-        return [ ...this.ohlc, this._volume, ];
+        return [ ...this.ohlc, this.#volume, ];
     }
 
     /** Indicates if the period is bearish (negative body). */
@@ -138,12 +155,12 @@ export class MidaSymbolPeriod implements IMidaEquatable {
      * Used to verify if two periods are equal in terms of symbol, start time and timeframe.
      * @param object
      */
-    public equals (object: any): boolean {
+    public equals (object: GenericObject): boolean {
         return (
             object instanceof MidaSymbolPeriod
-            && this._symbol === object._symbol
-            && this._startTime.valueOf() === object._startTime.valueOf()
-            && this._timeframe === object._timeframe
+            && this.symbol === object.symbol
+            && this.startTime.valueOf() === object.startTime.valueOf()
+            && this.timeframe === object.timeframe
         );
     }
 
@@ -160,7 +177,7 @@ export class MidaSymbolPeriod implements IMidaEquatable {
      * @param timeframe The periods timeframe.
      * @param priceType The periods price type (bid or ask).
      * @param limit Limit the length of composed periods.
-     */ /*
+     */ /* To be implemented later.
     public static fromTicks (
         ticks: MidaSymbolTick[],
         startTime: Date,
@@ -235,5 +252,6 @@ export class MidaSymbolPeriod implements IMidaEquatable {
         tryComposePeriod();
 
         return periods;
-    }*/
+    }
+    */
 }

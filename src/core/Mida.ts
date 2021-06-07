@@ -48,7 +48,6 @@ export { MidaBrokerParameters } from "#brokers/MidaBrokerParameters";
 
 export { MidaError } from "#errors/MidaError";
 export { MidaErrorParameters } from "#errors/MidaErrorParameters";
-export { MidaErrorType } from "#errors/MidaErrorType";
 
 export { MidaEvent } from "#events/MidaEvent";
 export { MidaEventListener } from "#events/MidaEventListener";
@@ -67,7 +66,7 @@ export { MidaTimeframeType } from "#periods/MidaTimeframeType";
 
 export { MidaSymbolQuotation } from "#quotations/MidaSymbolQuotation";
 export { MidaSymbolQuotationParameters } from "#quotations/MidaSymbolQuotationParameters";
-export { MidaSymbolQuotationPriceType } from "#quotations/MidaSymbolQuotationPriceType";
+export { MidaSymbolPriceType } from "#symbols/MidaSymbolPriceType";
 
 export { MidaSymbol } from "#symbols/MidaSymbol";
 export { MidaSymbolParameters } from "#symbols/MidaSymbolParameters";

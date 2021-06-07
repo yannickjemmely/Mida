@@ -60,10 +60,6 @@ export class MidaBrokerOrder {
         this.#cancelPrice = cancelPrice;
         this.#openPrice = openPrice;
         this.#closePrice = closePrice;
-        this.#stopLoss = requestDirectives.stopLoss;
-        this.#takeProfit = requestDirectives.takeProfit;
-        this.#limit = requestDirectives.limit;
-        this.#stop = requestDirectives.stop;
         this.#tags = new Set(tags);
         this.#initiator = initiator;
         this.#emitter = new MidaEmitter();
@@ -269,7 +265,7 @@ export class MidaBrokerOrder {
     }
 
     #configureListeners (): void {
-        this.#brokerAccount.on("*", async (event: MidaEvent) => this.#onEvent(event));
+        this.#brokerAccount.on("*", (event: MidaEvent) => this.#onEvent(event));
     }
 
     // eslint-disable-next-line max-lines-per-function
@@ -302,7 +298,7 @@ export class MidaBrokerOrder {
                 break;
             }
 
-            case "order-directives": {
+            case "order-modify": {
                 const directives: GenericObject = event.descriptor.directives;
 
                 for (const directive of Object.keys(directives)) {
@@ -329,7 +325,7 @@ export class MidaBrokerOrder {
                     }
                 }
 
-                this.#notifyListeners("directives", event.descriptor);
+                this.#notifyListeners("modify", event.descriptor);
 
                 break;
             }

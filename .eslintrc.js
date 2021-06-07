@@ -22,7 +22,6 @@ module.exports = {
         "no-irregular-whitespace": "error",
         "no-loss-of-precision": "error",
         "no-obj-calls": "error",
-        "no-promise-executor-return": "error",
         "no-setter-return": "error",
         "no-unexpected-multiline": "error",
         "no-unsafe-finally": "error",
@@ -71,7 +70,7 @@ module.exports = {
         "eol-last": "error",
         "func-call-spacing": [ "error", "never", ],
         "function-paren-newline": [ "error", { "minItems": 5, }, ],
-        "id-length": [ "error", { "max": 20, }, ],
+        "id-length": [ "error", { "min": 1, "max": 30, }, ],
         "implicit-arrow-linebreak": [ "error", "beside", ],
         "indent": [
             "error",
@@ -122,7 +121,7 @@ module.exports = {
         "@typescript-eslint/explicit-module-boundary-types": "error",
         "@typescript-eslint/member-delimiter-style": "error",
         "@typescript-eslint/explicit-function-return-type": "error",
-        // "@typescript-eslint/explicit-member-accessibility": "error",
+        // "@typescript-eslint/explicit-member-accessibility": "error", // Has conflict with native private fields.
         "@typescript-eslint/no-this-alias": "error",
         "@typescript-eslint/prefer-for-of": "error",
         "@typescript-eslint/prefer-namespace-keyword": "error",

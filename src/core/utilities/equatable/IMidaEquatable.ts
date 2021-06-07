@@ -1,4 +1,6 @@
+import { GenericObject } from "#utilities/GenericObject";
+
 /** Represents a equatable object. */
 export interface IMidaEquatable {
-    equals (object: any): boolean;
+    equals (object: GenericObject): boolean;
 }

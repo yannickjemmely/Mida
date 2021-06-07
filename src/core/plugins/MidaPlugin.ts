@@ -9,7 +9,13 @@ export class MidaPlugin {
     readonly #description: string;
     readonly #install?: (actions: MidaPluginActions, options?: GenericObject) => void;
 
-    public constructor ({ id, name, version, description = "", install, }: MidaPluginParameters) {
+    public constructor ({
+        id,
+        name,
+        version,
+        description = "",
+        install,
+    }: MidaPluginParameters) {
         this.#id = id;
         this.#name = name;
         this.#version = version;

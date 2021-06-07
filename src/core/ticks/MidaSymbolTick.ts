@@ -5,7 +5,7 @@ import { IMidaEquatable } from "#utilities/equatable/IMidaEquatable";
 import { GenericObject } from "#utilities/GenericObject";
 
 /** Represents a symbol tick. */
-export class MidaSymbolTick implements IMidaEquatable, IMidaCloneable {
+export class MidaSymbolTick implements IMidaCloneable, IMidaEquatable {
     readonly #quotation: MidaSymbolQuotation;
     readonly #date: Date;
     readonly #previousTick?: MidaSymbolTick;
@@ -58,22 +58,9 @@ export class MidaSymbolTick implements IMidaEquatable, IMidaCloneable {
         return this.#quotation.ask;
     }
 
-    /** The tick exchange name. */
-    public get exchangeName (): string | undefined {
-        return this.#quotation.exchangeName;
-    }
-
     /** The tick spread. */
     public get spread (): number {
         return this.#quotation.spread;
-    }
-
-    public equals (object: GenericObject): boolean {
-        return (
-            object instanceof MidaSymbolTick
-            && this.quotation.equals(object.quotation)
-            && this.date.valueOf() === object.date.valueOf()
-        );
     }
 
     public clone (): any {
@@ -83,5 +70,13 @@ export class MidaSymbolTick implements IMidaEquatable, IMidaCloneable {
             previousTick: this.#previousTick?.clone(),
             nextTick: this.#nextTick?.clone(),
         });
+    }
+
+    public equals (object: GenericObject): boolean {
+        return (
+            object instanceof MidaSymbolTick
+            && this.quotation.equals(object.quotation)
+            && this.date.valueOf() === object.date.valueOf()
+        );
     }
 }
