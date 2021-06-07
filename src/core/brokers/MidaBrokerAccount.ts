@@ -202,21 +202,11 @@ export abstract class MidaBrokerAccount {
     public abstract getSymbolAsk (symbol: string): Promise<number>;
 
     /**
-     * Used to add a symbol to the symbols ticks watch list.
+     * Used to watch the ticks of a symbol.
+     * Do not use this method directly, use a market watcher instead.
      * @param symbol The string representation of the symbol.
      */
     public abstract watchSymbolTicks (symbol: string): Promise<void>;
-
-    /**
-     * Used to get the symbols in the symbols ticks watch list.
-     */
-    public abstract getWatchedSymbolsTicks (): Promise<string[]>;
-
-    /**
-     * Used to remove a symbol from the symbols ticks watch list.
-     * @param symbol The string representation of the symbol.
-     */
-    public abstract unwatchSymbolTicks (symbol: string): Promise<void>;
 
     /**
      * Used to disconnect the account.

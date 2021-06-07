@@ -10,7 +10,6 @@ import { MidaUtilities } from "#utilities/MidaUtilities";
 import { MidaMarketWatcherDirectives } from "#watcher/MidaMarketWatcherDirectives";
 import { MidaMarketWatcherParameters } from "#watcher/MidaMarketWatcherParameters";
 
-// TODO: Implement "watchSymbolPriceBreak" functionality.
 export class MidaMarketWatcher {
     readonly #brokerAccount: MidaBrokerAccount;
     readonly #watchedSymbols: Map<string, MidaMarketWatcherDirectives>;
@@ -35,6 +34,14 @@ export class MidaMarketWatcher {
     }
 
     public async watch (symbol: string, directives: MidaMarketWatcherDirectives): Promise<void> {
+        if (this.#watchedSymbols.has(symbol)) {
+            return;
+        }
+
+        if (directives.watchTicks) {
+            await this.#brokerAccount.watchSymbolTicks(symbol);
+        }
+
         this.#watchedSymbols.set(symbol, directives);
     }
 
@@ -45,6 +52,10 @@ export class MidaMarketWatcher {
             return;
         }
 
+        if (directives.watchTicks) {
+            await this.#brokerAccount.watchSymbolTicks(symbol);
+        }
+
         this.#watchedSymbols.set(symbol, MidaUtilities.mergeOptions(actualDirectives, directives));
     }
 
@@ -52,9 +63,7 @@ export class MidaMarketWatcher {
         this.#watchedSymbols.delete(symbol);
     }
 
-    public async watchSymbolTimeframe (symbol: string, timeframe: number): Promise<void> {
-        // A await this.watchSymbol(symbol);
-
+    async #configureSymbolTimeframe (symbol: string, timeframe: number): Promise<void> {
         const periods: MidaSymbolPeriod[] = await this.#brokerAccount.getSymbolPeriods(symbol, timeframe);
         const lastPeriod: MidaSymbolPeriod = periods[periods.length - 1];
 
@@ -63,16 +72,6 @@ export class MidaMarketWatcher {
         }
 
         this.#lastPeriods.get(symbol)?.set(timeframe, lastPeriod);
-
-        if (!this.#watchedSymbolsTimeframes.get(symbol)) {
-            this.#watchedSymbolsTimeframes.set(symbol, new Set());
-        }
-
-        this.#watchedSymbolsTimeframes.get(symbol)?.add(timeframe);
-    }
-
-    public async unwatchSymbolTimeframe (symbol: string, timeframe: number): Promise<void> {
-        this.#watchedSymbolsTimeframes.get(symbol)?.delete(timeframe);
     }
 
     public on (type: string): Promise<MidaEvent>
@@ -94,7 +93,9 @@ export class MidaMarketWatcher {
     }
 
     #onTick (tick: MidaSymbolTick): void {
-        if (this.#watchedSymbols.has(tick.symbol)) {
+        const directives: MidaMarketWatcherDirectives | undefined = this.#watchedSymbols.get(tick.symbol);
+
+        if (directives?.watchTicks) {
             this.notifyListeners("tick", { tick, });
         }
     }
@@ -112,7 +113,13 @@ export class MidaMarketWatcher {
 
     async #checkNewPeriods (): Promise<void> {
         for (const symbol of this.watchedSymbols) {
-            for (const timeframe of [ ...this.#watchedSymbolsTimeframes.get(symbol)?.values() ?? [], ]) {
+            const directives: MidaMarketWatcherDirectives = this.#watchedSymbols.get(symbol) as MidaMarketWatcherDirectives;
+
+            if (!Array.isArray(directives.watchTimeframes) || directives.watchTimeframes.length < 1) {
+                continue;
+            }
+
+            for (const timeframe of directives.watchTimeframes) {
                 try {
                     await this.#checkTimeframe(symbol, timeframe);
                 }
@@ -131,7 +138,7 @@ export class MidaMarketWatcher {
         }
     }
 
-    // Used to check if the last known period of a symbol has been closed. Must be called each minute.
+    // Used to check if the last known period of a symbol has been closed. Must be called approximately each minute.
     async #checkTimeframe (symbol: string, timeframe: number): Promise<void> {
         const periods: MidaSymbolPeriod[] = await this.#brokerAccount.getSymbolPeriods(symbol, timeframe);
         const lastPeriod: MidaSymbolPeriod = periods[periods.length - 1];
@@ -142,7 +149,7 @@ export class MidaMarketWatcher {
 
         const previousPeriod: MidaSymbolPeriod = this.#lastPeriods.get(symbol)?.get(timeframe) as MidaSymbolPeriod;
 
-        if (!previousPeriod || previousPeriod.startTime < lastPeriod.startTime) {
+        if (previousPeriod.startTime < lastPeriod.startTime) {
             this.#lastPeriods.get(symbol)?.set(timeframe, lastPeriod);
             this.#onPeriod(lastPeriod, previousPeriod);
         }
