@@ -2,25 +2,22 @@ import { MidaPluginActions } from "#plugins/MidaPluginActions";
 import { MidaPluginParameters } from "#plugins/MidaPluginParameters";
 import { GenericObject } from "#utilities/GenericObject";
 
-export class MidaPlugin {
+export abstract class MidaPlugin {
     readonly #id: string;
     readonly #name: string;
     readonly #version: string;
     readonly #description: string;
-    readonly #install?: (actions: MidaPluginActions, options?: GenericObject) => void;
 
-    public constructor ({
+    protected constructor ({
         id,
         name,
         version,
         description = "",
-        install,
     }: MidaPluginParameters) {
         this.#id = id;
         this.#name = name;
         this.#version = version;
         this.#description = description;
-        this.#install = install;
     }
 
     public get id (): string {
@@ -40,8 +37,6 @@ export class MidaPlugin {
     }
 
     public install (actions: MidaPluginActions, options?: GenericObject): void {
-        if (this.#install) {
-            this.#install(actions, options);
-        }
+        // Silence is golden.
     }
 }
