@@ -1,5 +1,5 @@
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 
-export type MidaAdvisorParameters = {
+export type MidaExpertAdvisorParameters = {
     brokerAccount: MidaBrokerAccount;
 };

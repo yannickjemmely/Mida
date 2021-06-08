@@ -8,98 +8,40 @@ A JavaScript framework to easily operate in global financial markets.
 
 Mida is designed to:
 - Trade financial assets such as stocks, crypto, forex or commodities;
-- Operate with any broker and exchange using only JavaScript/TypeScript;
-- Automate and backtest trading strategies through expert advisors;
+- Operate with any broker/exchange using only JavaScript/TypeScript;
+- Automate and backtest trading/investment strategies through expert advisors;
 - Analyze markets and prices with indicators and analysis interfaces.
 
 Furthermore, Mida is free and open source, join the [Discord community](https://discord.gg/cKyWTUsr3q).
 
-<br>
-<p align="center"> 
-    <img src="images/introduction.svg" alt="" width="860px">
-</p>
-<br>
-
 ## Installation
-**WARNING: This project is work in progress! Join the Discord server for more information.**
-
 The easiest way to start out with Mida is cloning the sample project.
 ```console
 git clone https://github.com/Reiryoku-Technologies/Mida-Boilerplate.git
 ```
-
-Don't forget to install the dependencies once you are in the project directory.
-```
-cd Mida-Boilerplate
-npm run install
-```
-
-The sample project contains an example of broker login and expert advisor execution.
+The project contains an example of broker login and Bitcoin price/ticks listener.
 
 ## Usage
+Note: this project is work in progress, part of this API has not been implemented yet.
 
 ### Broker account login
-How to login into a MetaTrader 5 broker account.
+How to login into a cTrader broker account.
 ```javascript
 const { MidaBroker } = require("@reiryoku/mida");
 
-const myAccount = await MidaBroker.login("MT5", {
-    id: "foo",
-    password: "bar",
-    serverName: "FooBar",
+const myAccount = await MidaBroker.login("cTrader", {
+    clientId: "",
+    clientSecret: "",
+    accessToken: "",
+    accountId: "",
 });
 ```
-
-How to login into an independent broker account.
-```javascript
-const { MidaBroker } = require("@reiryoku/mida");
-
-const myAccount = await MidaBroker.login("ICMarkets", {
-    email: "foo@bar.com",
-    id: "foo",
-    password: "bar",
-});
-```
-
-<details><summary>More examples</summary>
-
-How to login into a MetaTrader 5 broker account with errors handler.
-```javascript
-const {
-    MidaBroker,
-    MidaBrokerErrorType,
-} = require("@reiryoku/mida");
-
-let myAccount;
-
-try {
-    myAccount = await MidaBroker.login("MT5", {
-        id: "foo",
-        password: "bar",
-        serverName: "FooBar",
-    });
-}
-catch (error) {
-    switch (error.type) {
-        case MidaBrokerErrorType.INVALID_LOGIN_CREDENTIALS:
-            console.log("The login credentials are wrong!");
-            
-            break;
-            
-        case MidaBrokerErrorType.TIMEOUT:
-            console.log("The MetaTrader 5 servers failed to respond!");
-            
-            break;
-    }
-}
-```
-
-</details>
 
 ### Broker orders and positions
 How top open a long position for Bitcoin against USD.
+
 ```javascript
-const { MidaBrokerOrderType } = require("@reiryoku/mida");
+const {MidaBrokerOrderType} = require("@reiryoku/mida");
 
 const myOrder = await myAccount.placeOrder({
     symbol: "BTCUSD",
@@ -107,13 +49,14 @@ const myOrder = await myAccount.placeOrder({
     lots: 1,
 });
 
-console.log(myOrder.ticket);
+console.log(myOrder.id);
 console.log(myOrder.openPrice);
 ```
 
 How to open a short position for EUR against USD.
+
 ```javascript
-const { MidaBrokerOrderType } = require("@reiryoku/mida");
+const {MidaBrokerOrderType} = require("@reiryoku/mida");
 
 const myOrder = await myAccount.placeOrder({
     symbol: "EURUSD",
@@ -121,7 +64,7 @@ const myOrder = await myAccount.placeOrder({
     lots: 0.1,
 });
 
-console.log(myOrder.ticket);
+console.log(myOrder.id);
 console.log(myOrder.openPrice);
 ```
 
@@ -156,7 +99,7 @@ catch (error) {
             break;
             
         case MidaBrokerErrorType.INVALID_SYMBOL:
-            console.log("Your broker account doesn't support trading Apple stocks.");
+            console.log("Your broker account doesn't support trading Apple stocks!");
             
             break;
     }
@@ -185,10 +128,10 @@ const orderDirectives = {
     lots: 1,
 };
 
-// => true | false
 const canPlaceOrder = await myAccount.canPlaceOrder(orderDirectives);
-// => MidaBrokerErrorType[]
+// => true | false
 const placeOrderObstacles = await myAccount.getPlaceOrderObstacles(orderDirectives);
+// => MidaBrokerErrorType[]
 
 if (placeOrderObstacles.includes(MidaBrokerErrorType.MARKET_CLOSED)) {
     console.log("#AAPL market is closed!");
@@ -204,22 +147,29 @@ How to open a long position for GBP against USD with stop loss and take profit.
 const { MidaBrokerOrderType } = require("@reiryoku/mida");
 
 const symbol = "GBPUSD";
-const lastTick = await myAccount.getSymbolLastTick(symbol);
+const lastBid = await myAccount.getSymbolBid(symbol);
 const myOrder = await myAccount.placeOrder({
     symbol,
     type: MidaBrokerOrderType.BUY,
     lots: 0.1,
-    stopLoss: lastTick.bid - 0.0010, // <= SL 10 pips
-    takeProfit: lastTick.bid + 0.0030, // <= TP 30 pips
+    stopLoss: lastBid - 0.0010, // <= SL 10 pips
+    takeProfit: lastBid + 0.0030, // <= TP 30 pips
 });
 ```
 
 </details>
 
 ### Symbols
+How to retrieve all symbols supported by your broker.
+```javascript
+const symbols = await myAccount.getSymbols(); // => string[]
+
+console.log(symbols);
+```
+
 How to retrieve a symbol.
 ```javascript
-const symbol = await myAccount.getSymbol("#AAPL");
+const symbol = await myAccount.getSymbol("#AAPL"); // => MidaSymbol | undefined
 
 if (!symbol) {
     console.log("Apple stocks are not available for this account!");
@@ -227,6 +177,7 @@ if (!symbol) {
 else {
     console.log(symbol.digits);
     console.log(symbol.leverage);
+    console.log(await symbol.isMarketOpen());
 }
 ```
 
@@ -236,16 +187,32 @@ const symbol = await myAccount.getSymbol("BTCUSD");
 const price = await symbol.getBid();
 
 console.log(`Bitcoin price is ${price} dollars.`);
+
+// or
+
+console.log(await myAccount.getSymbolBid("BTCUSD"));
 ```
 
 How to listen the ticks of a symbol.
 ```javascript
 const symbol = await myAccount.getSymbol("#GME");
 
+await symbol.watch();
 symbol.on("tick", (event) => {
     const tick = event.descriptor.tick;
     
     console.log(`GameStop share price is now ${tick.bid} dollars.`);
+});
+
+// or
+
+await myAccount.watchSymbol("#GME");
+myAccount.on("tick", (event) => {
+    const tick = event.descriptor.tick;
+    
+    if (tick.symbol === "#GME") {
+        console.log(`GameStop share price is now ${tick.bid} dollars.`);
+    }
 });
 ```
 
@@ -258,7 +225,7 @@ const {
 } = require("@reiryoku/mida");
 
 class MyExpertAdvisor extends MidaExpertAdvisor {
-    constructor (brokerAccount) {
+    constructor ({ brokerAccount, }) {
         super({ brokerAccount, });
     }
     
@@ -272,7 +239,7 @@ class MyExpertAdvisor extends MidaExpertAdvisor {
     
     async onPeriod (period) {
         if (period.timeframe === MidaTimeframeType.H1) {
-            console.log(`New H1 candlestick with open price => ${period.open}.`);
+            console.log(`New H1 candlestick with open price => ${period.open}`);
         }
     }
 }
@@ -287,14 +254,14 @@ const myAccount = await MidaBroker.login(/* ... */);
 const myAdvisor = new MyExpertAdvisor({ brokerAccount: myAccount, });
 
 myAdvisor.on("order-open", (event) => console.log(`New order opened with ticket => ${event.descriptor.ticket}`));
-myAdvisor.start();
+await myAdvisor.start({ stopAfter: 60000 * 60, }); // The EA will stop after one hour.
 ```
 
 ### Market analysis and indicators
 Examples of technical market analysis.
 
 #### Candlesticks
-How to get the candlesticks of a symbol (in the code candlesticks and bars are generally referred as periods).
+How to get the candlesticks of a symbol (candlesticks and bars are generally referred as periods).
 ```javascript
 const { MidaTimeframeType } = require("@reiryoku/mida");
 
@@ -315,10 +282,12 @@ const {
 } = require("@reiryoku/mida");
 
 const periods = await myAccount.getSymbolPeriods("BTCUSD", MidaTimeframeType.H1);
-const relativeStrengthIndex = await MidaIndicator.calculate("RSI", {
+const rsi = await MidaIndicator.calc("RSI", {
     prices: periods.map((period) => period.close),
     length: 14,
 });
+
+console.log("Actual RSI => " + rsi[rsi.length - 1]);
 ```
 
 #### Bollinger Bands
@@ -330,7 +299,7 @@ const {
 } = require("@reiryoku/mida");
 
 const periods = await myAccount.getSymbolPeriods("ETHUSD", MidaTimeframeType.M5);
-const bollingerBands = await MidaIndicator.calculate("BollingerBands", {
+const bollingerBands = await MidaIndicator.calc("BollingerBands", {
     prices: periods.map((period) => period.close),
     length: 20,
 });
@@ -338,15 +307,6 @@ const bollingerBands = await MidaIndicator.calculate("BollingerBands", {
 
 ### Practice and backtest
 Playground is a local broker created for paper trading and backtesting.
-To use Playground first add the plugin to your dependencies.
-```json
-{
-    "dependencies": {
-        "@reiryoku/mida": "1.0.0",
-        "@reiryoku/mida-playground": "1.0.0"
-    }
-}
-```
 
 ```javascript
 const {
@@ -397,15 +357,8 @@ console.log(myAdvisor.orders); // The orders created by the EA in one hour.
 Operating in CFDs/Forex is highly speculative and carries a high level of risk.
 It's possible to lose all your capital. These products may not be suitable for everyone,
 you should ensure that you understand the risks involved. Furthermore, Mida is not responsible
-for commissions or other taxes applied to your operations, they depend on your broker,
-and any technical inconvenience that may lead to money loss, for example a stop loss not being set.
-
-## Why Mida and not MQL
-Nowadays MQL is a procedural technology and a barrier between
-modern traders and algorithmic trading. The mission of Mida is allowing
-anyone to operate in financial markets without advanced programming skills or
-specific computer requirements. Furthermore, Mida allows operating with MetaTrader
-accounts without installing MetaTrader (which is available only for Windows OS).
+for commissions or other taxes applied to your operations, they depend on your broker. Mida and its authors
+are also not responsible for any technical inconvenience that may lead to money loss, for example a stop loss not being set.
 
 ## Contributors
 The author and maintainer of the project is [Vasile Pește](https://github.com/Vasile-Peste) (vasile.peste@protonmail.ch).

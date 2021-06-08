@@ -1,3 +1,5 @@
+import { GenericObject } from "#utilities/GenericObject";
+
 export class MidaUtilities {
     private constructor () {
         // Silence is golden.
@@ -10,15 +12,15 @@ export class MidaUtilities {
 
     // Used to get the days difference between two dates.
     public static getDaysBetweenDates (a: Date, b: Date): number {
-        const sanitizedLeftDate: number = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
-        const sanitizedRightDate: number = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
+        const normalizedLeftDate: number = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
+        const normalizedRightDate: number = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
 
-        return Math.floor(Math.abs((sanitizedLeftDate - sanitizedRightDate) / (1000 * 60 * 60 * 24)));
+        return Math.floor(Math.abs((normalizedLeftDate - normalizedRightDate) / (1000 * 60 * 60 * 24)));
     }
 
-    // Used to create a Promise, resolved after a given number of milliseconds.
+    // Used to create a Promise resolved after a given number of milliseconds.
     public static async wait (milliseconds: number): Promise<void> {
-        await new Promise((resolve: (value?: any) => void): any => setTimeout(resolve, milliseconds));
+        await new Promise((resolve: any): any => setTimeout(resolve, milliseconds));
     }
 
     // Used to shuffle an array.
@@ -42,26 +44,26 @@ export class MidaUtilities {
     }
 
     // Used to merge two options objects.
-    public static mergeOptions (initial: any, primary: any): any {
+    public static mergeOptions (initial: GenericObject, primary: GenericObject): GenericObject {
         const options: any = {
             ...initial,
             ...primary,
         };
 
-        for (const name in initial) {
-            if (!initial.hasOwnProperty(name) || !primary.hasOwnProperty(name)) {
+        for (const key in initial) {
+            if (!initial.hasOwnProperty(key) || !primary.hasOwnProperty(key)) {
                 continue;
             }
-            
-            const initialValue: any = initial[name];
-            const userValue: any = primary[name];
+
+            const initialValue: any = initial[key];
+            const userValue: any = primary[key];
 
             if (!initialValue || !userValue) {
                 continue;
             }
 
             if (initialValue.constructor === Object && userValue.constructor === Object) {
-                options[name] = MidaUtilities.mergeOptions(initialValue, userValue);
+                options[key] = MidaUtilities.mergeOptions(initialValue, userValue);
             }
         }
 
@@ -76,12 +78,5 @@ export class MidaUtilities {
     // Used to get what percentage of a number a number is.
     public static getWhatPercentageOf (subject: number, whatPercentage: number): number {
         return whatPercentage / subject * 100;
-    }
-
-    public static async assertPromiseDuration (task: Promise<any>, timeout: number, defaultValue?: any): Promise<any> {
-        return new Promise((resolve: any, reject: any): void => {
-            setTimeout(() => resolve(defaultValue), timeout);
-            task.then((value: any) => resolve(value)).catch((error: any) => reject(error));
-        });
     }
 }

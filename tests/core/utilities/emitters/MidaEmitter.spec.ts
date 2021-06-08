@@ -1,6 +1,7 @@
 import { MidaEvent } from "#events/MidaEvent";
 import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 
+// eslint-disable-next-line max-lines-per-function
 describe("MidaEmitter", () => {
     describe(".addEventListener", () => {
         it("returns a string when a listener is added", () => {
@@ -39,7 +40,7 @@ describe("MidaEmitter", () => {
 
         it("when returns a Promise, it's resolved when event occurs", () => {
             const emitter: MidaEmitter = new MidaEmitter();
-            const eventPromise: string | Promise<MidaEvent> = emitter.on("event");
+            const eventPromise: Promise<MidaEvent> = emitter.on("event");
 
             emitter.notifyListeners("event");
 
@@ -62,16 +63,19 @@ describe("MidaEmitter", () => {
 
         it("invokes listener with correct event object", () => {
             const emitter: MidaEmitter = new MidaEmitter();
+            const eventType: string = "response";
             let lastEvent: any = undefined;
 
-            emitter.addEventListener("event", (event: MidaEvent) => lastEvent = event);
-            emitter.notifyListeners("event", {
+            emitter.addEventListener(eventType, (event: MidaEvent) => {
+                lastEvent = event;
+            });
+            emitter.notifyListeners(eventType, {
                 code: 200,
                 status: "success",
             });
 
             expect(lastEvent).not.toBe(undefined);
-            expect(lastEvent.type).toBe("event");
+            expect(lastEvent.type).toBe(eventType);
             expect(lastEvent.date).toBeInstanceOf(Date);
             expect(lastEvent.descriptor.code).toBe(200);
             expect(lastEvent.descriptor.status).toBe("success");
