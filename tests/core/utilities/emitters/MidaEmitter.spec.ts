@@ -63,18 +63,19 @@ describe("MidaEmitter", () => {
 
         it("invokes listener with correct event object", () => {
             const emitter: MidaEmitter = new MidaEmitter();
+            const eventType: string = "response";
             let lastEvent: any = undefined;
 
-            emitter.addEventListener("event", (event: MidaEvent) => {
+            emitter.addEventListener(eventType, (event: MidaEvent) => {
                 lastEvent = event;
             });
-            emitter.notifyListeners("event", {
+            emitter.notifyListeners(eventType, {
                 code: 200,
                 status: "success",
             });
 
             expect(lastEvent).not.toBe(undefined);
-            expect(lastEvent.type).toBe("event");
+            expect(lastEvent.type).toBe(eventType);
             expect(lastEvent.date).toBeInstanceOf(Date);
             expect(lastEvent.descriptor.code).toBe(200);
             expect(lastEvent.descriptor.status).toBe("success");

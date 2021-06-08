@@ -144,7 +144,7 @@ export abstract class MidaExpertAdvisor {
     protected async placeOrder (directives: MidaBrokerOrderDirectives): Promise<MidaBrokerOrder> {
         const order: MidaBrokerOrder = await this.#brokerAccount.placeOrder(directives);
 
-        this.#orders.set(order.id, order);
+        this.addOrder(order);
 
         return order;
     }
@@ -210,6 +210,6 @@ export abstract class MidaExpertAdvisor {
     }
 
     #configureListeners (): void {
-        // Silence is golden.
+        this.#marketWatcher.on("tick", (event: MidaEvent): void => this.#onTick(event.descriptor.tick));
     }
 }

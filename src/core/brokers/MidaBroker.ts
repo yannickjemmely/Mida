@@ -43,12 +43,6 @@ export abstract class MidaBroker {
         }
     }
 
-    /*
-     **
-     *** Static
-     **
-    */
-
     static readonly #installedBrokers: Map<string, MidaBroker> = new Map();
 
     public static get installedBrokers (): readonly MidaBroker[] {
@@ -57,12 +51,7 @@ export abstract class MidaBroker {
 
     public static add (broker: MidaBroker): void {
         if (MidaBroker.#installedBrokers.has(broker.name)) {
-            throw new MidaError({
-                type: MidaBrokerErrorType.BROKER_ALREADY_INSTALLED,
-                descriptor: {
-                    brokerName: broker.name,
-                },
-            });
+            throw new MidaError({ type: MidaBrokerErrorType.BROKER_ALREADY_INSTALLED, descriptor: { brokerName: broker.name, }, });
         }
 
         MidaBroker.#installedBrokers.set(broker.name, broker);
@@ -72,12 +61,7 @@ export abstract class MidaBroker {
         const broker: MidaBroker | undefined = MidaBroker.#installedBrokers.get(name);
 
         if (!broker) {
-            throw new MidaError({
-                type: MidaBrokerErrorType.BROKER_NOT_INSTALLED,
-                descriptor: {
-                    brokerName: name,
-                },
-            });
+            throw new MidaError({ type: MidaBrokerErrorType.BROKER_NOT_INSTALLED, descriptor: { brokerName: name, }, });
         }
 
         return broker.login(parameters);

@@ -1,8 +1,6 @@
 module.exports = {
     root: true,
-    parserOptions: {
-        project: "tsconfig.json",
-    },
+    parserOptions: { project: "tsconfig.json", },
     parser: "@typescript-eslint/parser",
     plugins: [ "@typescript-eslint", ],
     rules: {
@@ -78,6 +76,7 @@ module.exports = {
         ],
         "key-spacing": [ "error", { "beforeColon": false, "afterColon": true, }, ],
         "linebreak-style": [ "error", "unix", ],
+        "max-len": [ "error", { "code": 150, }, ],
         "max-lines-per-function": [ "error", 60, ],
         "max-params": [ "error", 6, ],
         "new-parens": [ "error", "always", ],
