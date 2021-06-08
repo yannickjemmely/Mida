@@ -114,12 +114,13 @@ export class MidaMarketWatcher {
     async #checkNewPeriods (): Promise<void> {
         for (const symbol of this.watchedSymbols) {
             const directives: MidaMarketWatcherDirectives = this.#watchedSymbols.get(symbol) as MidaMarketWatcherDirectives;
+            const timeframes: number[] | undefined = directives.timeframes;
 
-            if (!Array.isArray(directives.watchTimeframes) || directives.watchTimeframes.length < 1) {
+            if (!directives.watchPeriods || !Array.isArray(timeframes) || timeframes.length < 1) {
                 continue;
             }
 
-            for (const timeframe of directives.watchTimeframes) {
+            for (const timeframe of timeframes) {
                 try {
                     await this.#checkTimeframe(symbol, timeframe);
                 }

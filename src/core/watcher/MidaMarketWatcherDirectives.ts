@@ -1,4 +1,5 @@
 export type MidaMarketWatcherDirectives = {
     watchTicks?: boolean;
-    watchTimeframes?: number[] | false;
+    watchPeriods?: boolean;
+    timeframes?: number[];
 };
