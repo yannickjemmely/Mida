@@ -12,10 +12,10 @@ export class MidaUtilities {
 
     // Used to get the days difference between two dates.
     public static getDaysBetweenDates (a: Date, b: Date): number {
-        const sanitizedLeftDate: number = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
-        const sanitizedRightDate: number = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
+        const normalizedLeftDate: number = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
+        const normalizedRightDate: number = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
 
-        return Math.floor(Math.abs((sanitizedLeftDate - sanitizedRightDate) / (1000 * 60 * 60 * 24)));
+        return Math.floor(Math.abs((normalizedLeftDate - normalizedRightDate) / (1000 * 60 * 60 * 24)));
     }
 
     // Used to create a Promise resolved after a given number of milliseconds.
@@ -50,20 +50,20 @@ export class MidaUtilities {
             ...primary,
         };
 
-        for (const name in initial) {
-            if (!initial.hasOwnProperty(name) || !primary.hasOwnProperty(name)) {
+        for (const key in initial) {
+            if (!initial.hasOwnProperty(key) || !primary.hasOwnProperty(key)) {
                 continue;
             }
 
-            const initialValue: any = initial[name];
-            const userValue: any = primary[name];
+            const initialValue: any = initial[key];
+            const userValue: any = primary[key];
 
             if (!initialValue || !userValue) {
                 continue;
             }
 
             if (initialValue.constructor === Object && userValue.constructor === Object) {
-                options[name] = MidaUtilities.mergeOptions(initialValue, userValue);
+                options[key] = MidaUtilities.mergeOptions(initialValue, userValue);
             }
         }
 
