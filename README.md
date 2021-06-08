@@ -14,12 +14,6 @@ Mida is designed to:
 
 Furthermore, Mida is free and open source, join the [Discord community](https://discord.gg/cKyWTUsr3q).
 
-<br>
-<p align="center"> 
-    <img src="images/introduction.svg" alt="" width="860px">
-</p>
-<br>
-
 ## Installation
 The easiest way to start out with Mida is cloning the sample project.
 ```console
