@@ -6,6 +6,7 @@ export type MidaBrokerOrderDirectives = {
     type: MidaBrokerOrderType;
     lots: number;
     stopLoss?: number;
+    trailingStopLoss?: boolean;
     takeProfit?: number;
     limit?: number;
     stop?: number;
