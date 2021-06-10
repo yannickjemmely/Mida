@@ -9,8 +9,12 @@ export type MidaBrokerAccountParameters = {
     ownerName: string;
     /** The account type. */
     type: MidaBrokerAccountType;
+    /** The account global leverage. */
+    globalLeverage: number;
     /** The account currency. */
     currency: string;
+    /** Indicates if the account is hedged. */
+    isHedged: boolean;
     /** The account broker. */
     broker: MidaBroker;
 };

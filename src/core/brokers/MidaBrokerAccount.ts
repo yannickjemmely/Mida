@@ -7,8 +7,8 @@ import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
 import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
 import { MidaBrokerOrderStatusType } from "#orders/MidaBrokerOrderStatusType";
 import { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
-import { MidaSymbolPriceType } from "#symbols/MidaSymbolPriceType";
 import { MidaSymbol } from "#symbols/MidaSymbol";
+import { MidaSymbolPriceType } from "#symbols/MidaSymbolPriceType";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 import { GenericObject } from "#utilities/GenericObject";
@@ -18,7 +18,9 @@ export abstract class MidaBrokerAccount {
     readonly #id: string;
     readonly #ownerName: string;
     readonly #type: MidaBrokerAccountType;
+    readonly #globalLeverage: number;
     readonly #currency: string;
+    readonly #isHedged: boolean;
     readonly #broker: MidaBroker;
     readonly #emitter: MidaEmitter;
 
@@ -26,13 +28,17 @@ export abstract class MidaBrokerAccount {
         id,
         ownerName,
         type,
+        globalLeverage,
         currency,
+        isHedged,
         broker,
     }: MidaBrokerAccountParameters) {
         this.#id = id;
         this.#ownerName = ownerName;
         this.#type = type;
+        this.#globalLeverage = globalLeverage;
         this.#currency = currency;
+        this.#isHedged = isHedged;
         this.#broker = broker;
         this.#emitter = new MidaEmitter();
     }
@@ -52,9 +58,19 @@ export abstract class MidaBrokerAccount {
         return this.#type;
     }
 
+    /** The account global leverage. */
+    public get globalLeverage (): number {
+        return this.#globalLeverage;
+    }
+
     /** The account currency (ISO code). */
     public get currency (): string {
         return this.#currency;
+    }
+
+    /** Indicates if the account is hedged. */
+    public get isHedged (): boolean {
+        return this.#isHedged;
     }
 
     /** The account broker. */
@@ -208,9 +224,7 @@ export abstract class MidaBrokerAccount {
      */
     public abstract watchSymbolTicks (symbol: string): Promise<void>;
 
-    /**
-     * Used to disconnect the account.
-     */
+    /** Used to disconnect the account. */
     public abstract logout (): Promise<void>;
 
     /** Used to get the account free margin. */
