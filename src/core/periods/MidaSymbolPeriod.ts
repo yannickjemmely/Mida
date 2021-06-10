@@ -164,12 +164,6 @@ export class MidaSymbolPeriod implements IMidaEquatable {
         );
     }
 
-    /*
-     **
-     *** Static Utilities
-     **
-    */
-
     /**
      * Used to compose periods from a set of ticks.
      * @param ticks The ticks.
@@ -177,12 +171,13 @@ export class MidaSymbolPeriod implements IMidaEquatable {
      * @param timeframe The periods timeframe.
      * @param priceType The periods price type (bid or ask).
      * @param limit Limit the length of composed periods.
-     */ /* To be implemented later.
+     */
+    // eslint-disable-next-line max-lines-per-function
     public static fromTicks (
         ticks: MidaSymbolTick[],
         startTime: Date,
         timeframe: number,
-        priceType: MidaSymbolQuotationPriceType = MidaSymbolQuotationPriceType.BID,
+        priceType: MidaSymbolPriceType = MidaSymbolPriceType.BID,
         limit: number = -1
     ): MidaSymbolPeriod[] {
         if (ticks.length < 1 || timeframe <= 0) {
@@ -208,10 +203,10 @@ export class MidaSymbolPeriod implements IMidaEquatable {
                 symbol: ticks[0].symbol,
                 startTime: periodStartTime,
                 priceType,
-                open: MidaSymbolTick.getTicksOpenPrice(periodTicks, priceType),
-                high: MidaSymbolTick.getTicksClosePrice(periodTicks, priceType),
-                low: MidaSymbolTick.getTicksLowestPrice(periodTicks, priceType),
-                close: MidaSymbolTick.getTicksHighestPrice(periodTicks, priceType),
+                open: periodTicks[0][priceType],
+                high: Math.max(...periodTicks.map((tick: MidaSymbolTick): number => tick[priceType])),
+                low: Math.min(...periodTicks.map((tick: MidaSymbolTick): number => tick[priceType])),
+                close: periodTicks[periodTicks.length - 1][priceType],
                 volume: periodTicks.length,
                 timeframe,
                 ticks: [ ...periodTicks, ],
@@ -220,9 +215,7 @@ export class MidaSymbolPeriod implements IMidaEquatable {
             periodTicks = [];
         }
 
-        for (let i: number = 0; i < ticks.length; ++i) {
-            const tick: MidaSymbolTick = ticks[i];
-
+        for (const tick of ticks) {
             if (limit > -1 && periods.length === limit) {
                 return periods;
             }
@@ -253,5 +246,4 @@ export class MidaSymbolPeriod implements IMidaEquatable {
 
         return periods;
     }
-    */
 }
