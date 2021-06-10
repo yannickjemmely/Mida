@@ -3,15 +3,31 @@ import { MidaExpertAdvisorComponentParameters } from "#advisors/MidaExpertAdviso
 
 export abstract class MidaExpertAdvisorComponent {
     readonly #expertAdvisor: MidaExpertAdvisor;
+    readonly #requiredComponents: typeof MidaExpertAdvisorComponent[];
+    readonly #uniquePerAdvisor: boolean;
     #enabled: boolean;
 
-    protected constructor ({ expertAdvisor, }: MidaExpertAdvisorComponentParameters) {
+    protected constructor ({
+        expertAdvisor,
+        requiredComponents = [],
+        uniquePerAdvisor = false,
+    }: MidaExpertAdvisorComponentParameters) {
         this.#expertAdvisor = expertAdvisor;
+        this.#requiredComponents = requiredComponents;
+        this.#uniquePerAdvisor = uniquePerAdvisor;
         this.#enabled = false;
     }
 
     public get expertAdvisor (): MidaExpertAdvisor {
         return this.#expertAdvisor;
+    }
+
+    public get requiredComponents (): typeof MidaExpertAdvisorComponent[] {
+        return [ ...this.#requiredComponents, ];
+    }
+
+    public get uniquePerAdvisor (): boolean {
+        return this.#uniquePerAdvisor;
     }
 
     public get enabled (): boolean {
