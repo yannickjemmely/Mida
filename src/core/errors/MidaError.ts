@@ -27,6 +27,6 @@ export class MidaError extends Error {
     }
 
     public override toString (): string {
-        return ""; // TODO: TODO.
+        return "";
     }
 }

@@ -58,7 +58,7 @@ export abstract class MidaBrokerAccount {
         return this.#type;
     }
 
-    /** The account global leverage. */
+    /** The account global leverage, this is an indicative value: each symbol has its own leverage. */
     public get globalLeverage (): number {
         return this.#globalLeverage;
     }
@@ -330,6 +330,7 @@ export abstract class MidaBrokerAccount {
         this.#emitter.removeEventListener(uuid);
     }
 
+    // protected notifyListeners (type: "tick", descriptor: { tick: MidaSymbolTick, }): void;
     protected notifyListeners (type: string, descriptor?: GenericObject): void {
         this.#emitter.notifyListeners(type, descriptor);
     }
