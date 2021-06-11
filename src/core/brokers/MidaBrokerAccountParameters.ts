@@ -15,6 +15,8 @@ export type MidaBrokerAccountParameters = {
     currency: string;
     /** Indicates if the account is hedged. */
     isHedged: boolean;
+    /** The account stop out level. */
+    stopOutLevel: number;
     /** The account broker. */
     broker: MidaBroker;
 };

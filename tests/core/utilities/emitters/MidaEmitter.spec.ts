@@ -61,6 +61,21 @@ describe("MidaEmitter", () => {
             expect(invocationsCount).toBe(3);
         });
 
+        it("invokes listeners", () => {
+            const emitter: MidaEmitter = new MidaEmitter();
+            let firstListenerInvocationsCount: number = 0;
+            let secondListenerInvocationsCount: number = 0;
+
+            emitter.addEventListener("event", () => ++firstListenerInvocationsCount);
+            emitter.addEventListener("event", () => ++secondListenerInvocationsCount);
+            emitter.notifyListeners("event");
+            emitter.notifyListeners("event");
+            emitter.notifyListeners("event");
+
+            expect(firstListenerInvocationsCount).toBe(3);
+            expect(secondListenerInvocationsCount).toBe(3);
+        });
+
         it("invokes listener with correct event object", () => {
             const emitter: MidaEmitter = new MidaEmitter();
             const eventType: string = "response";

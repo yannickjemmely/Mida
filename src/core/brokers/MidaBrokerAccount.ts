@@ -21,6 +21,7 @@ export abstract class MidaBrokerAccount {
     readonly #globalLeverage: number;
     readonly #currency: string;
     readonly #isHedged: boolean;
+    readonly #stopOutLevel: number;
     readonly #broker: MidaBroker;
     readonly #emitter: MidaEmitter;
 
@@ -31,6 +32,7 @@ export abstract class MidaBrokerAccount {
         globalLeverage,
         currency,
         isHedged,
+        stopOutLevel,
         broker,
     }: MidaBrokerAccountParameters) {
         this.#id = id;
@@ -39,6 +41,7 @@ export abstract class MidaBrokerAccount {
         this.#globalLeverage = globalLeverage;
         this.#currency = currency;
         this.#isHedged = isHedged;
+        this.#stopOutLevel = stopOutLevel;
         this.#broker = broker;
         this.#emitter = new MidaEmitter();
     }
@@ -71,6 +74,11 @@ export abstract class MidaBrokerAccount {
     /** Indicates if the account is hedged. */
     public get isHedged (): boolean {
         return this.#isHedged;
+    }
+
+    /** The account stop out level. */
+    public get stopOutLevel (): number {
+        return this.#stopOutLevel;
     }
 
     /** The account broker. */
