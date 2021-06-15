@@ -1,4 +1,4 @@
 export enum MidaBrokerPositionType {
-    SHORT = "short",
     LONG = "long",
+    SHORT = "short",
 }
