@@ -1,9 +1,10 @@
 import { MidaExpertAdvisor } from "#advisors/MidaExpertAdvisor";
 import { MidaExpertAdvisorComponentParameters } from "#advisors/MidaExpertAdvisorComponentParameters";
+import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 
 export abstract class MidaExpertAdvisorComponent {
     readonly #expertAdvisor: MidaExpertAdvisor;
-    readonly #requiredComponents: typeof MidaExpertAdvisorComponent[];
+    readonly #requiredComponents: string[];
     readonly #uniquePerAdvisor: boolean;
     #enabled: boolean;
 
@@ -22,8 +23,8 @@ export abstract class MidaExpertAdvisorComponent {
         return this.#expertAdvisor;
     }
 
-    public get requiredComponents (): typeof MidaExpertAdvisorComponent[] {
-        return [ ...this.#requiredComponents, ];
+    public get requiredComponents (): readonly string[] {
+        return this.#requiredComponents;
     }
 
     public get uniquePerAdvisor (): boolean {
@@ -36,5 +37,15 @@ export abstract class MidaExpertAdvisorComponent {
 
     public set enabled (value: boolean) {
         this.#enabled = value;
+    }
+
+    public abstract configure (): Promise<void>;
+
+    public onTick (tick: MidaSymbolTick): void {
+        // Silence is golden.
+    }
+
+    public onLateTick (tick: MidaSymbolTick): void {
+        // Silence is golden.
     }
 }
