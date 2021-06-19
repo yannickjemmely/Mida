@@ -216,36 +216,6 @@ export class MidaBrokerOrder {
         await this.#brokerAccount.cancelOrder(this.#id);
     }
 
-    public async close (): Promise<void> {
-        await this.#brokerAccount.closeOrder(this.#id);
-    }
-
-    public async getGrossProfit (): Promise<number> {
-        return this.#brokerAccount.getOrderGrossProfit(this.#id);
-    }
-
-    public async getNetProfit (): Promise<number> {
-        return this.#brokerAccount.getOrderNetProfit(this.#id);
-    }
-
-    /* To implement later.
-    public async getUsedMargin (): Promise<number | undefined> {
-        if (this._openPrice === undefined) {
-            return;
-        }
-
-        // return this._openPrice * this.lots / (await this.getLeverage());
-    }
-    */
-
-    public async getSwaps (): Promise<number> {
-        return this.#brokerAccount.getOrderSwaps(this.#id);
-    }
-
-    public async getCommission (): Promise<number> {
-        return this.#brokerAccount.getOrderCommission(this.#id);
-    }
-
     public on (type: string): Promise<MidaEvent>
     public on (type: string, listener: MidaEventListener): string
     public on (type: string, listener?: MidaEventListener): Promise<MidaEvent> | string {
