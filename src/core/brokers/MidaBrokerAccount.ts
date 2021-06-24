@@ -1,12 +1,14 @@
 import { MidaBroker } from "#brokers/MidaBroker";
 import { MidaBrokerAccountParameters } from "#brokers/MidaBrokerAccountParameters";
 import { MidaBrokerAccountType } from "#brokers/MidaBrokerAccountType";
+import { MidaBrokerDeal } from "#deals/MidaBrokerDeal";
 import { MidaEvent } from "#events/MidaEvent";
 import { MidaEventListener } from "#events/MidaEventListener";
 import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
 import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
 import { MidaBrokerOrderStatusType } from "#orders/MidaBrokerOrderStatusType";
 import { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
+import { MidaBrokerPosition } from "#positions/MidaBrokerPosition";
 import { MidaSymbol } from "#symbols/MidaSymbol";
 import { MidaSymbolPriceType } from "#symbols/MidaSymbolPriceType";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
@@ -97,6 +99,10 @@ export abstract class MidaBrokerAccount {
 
     /** Used to get the account orders. */
     public abstract getOrders (): Promise<MidaBrokerOrder[]>;
+
+    public abstract getDeals (): Promise<MidaBrokerDeal[]>;
+
+    public abstract getPositions (): Promise<MidaBrokerPosition>;
 
     /**
      * Used to get an order.
@@ -259,22 +265,6 @@ export abstract class MidaBrokerAccount {
         const orders: MidaBrokerOrder[] = await this.getOrders();
 
         return orders.filter((order: MidaBrokerOrder): boolean => order.status === status);
-    }
-
-    public async getPendingOrders (): Promise<MidaBrokerOrder[]> {
-        return this.getOrdersByStatus(MidaBrokerOrderStatusType.PENDING);
-    }
-
-    public async getCanceledOrders (): Promise<MidaBrokerOrder[]> {
-        return this.getOrdersByStatus(MidaBrokerOrderStatusType.CANCELED);
-    }
-
-    public async getOpenOrders (): Promise<MidaBrokerOrder[]> {
-        return this.getOrdersByStatus(MidaBrokerOrderStatusType.OPEN);
-    }
-
-    public async getClosedOrders (): Promise<MidaBrokerOrder[]> {
-        return this.getOrdersByStatus(MidaBrokerOrderStatusType.CLOSED);
     }
 
     /* To implement later.

@@ -4,12 +4,12 @@ import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
 export class MidaBrokerDeal {
     readonly #id: string;
     readonly #date: Date;
-    readonly #openingOrder: MidaBrokerOrder;
+    readonly #order: MidaBrokerOrder;
 
-    public constructor ({ id, date, openingOrder, }: MidaBrokerDealParameters) {
+    public constructor ({ id, date, order, }: MidaBrokerDealParameters) {
         this.#id = id;
         this.#date = new Date(date);
-        this.#openingOrder = openingOrder;
+        this.#order = order;
     }
 
     public get id (): string {
