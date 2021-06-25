@@ -1,3 +1,4 @@
+import { MidaBrokerDealPurposeType } from "#deals/MidaBrokerDealPurposeType";
 import { MidaBrokerDealRejectionType } from "#deals/MidaBrokerDealRejectionType";
 import { MidaBrokerDealStatusType } from "#deals/MidaBrokerDealStatusType";
 import { MidaBrokerDealType } from "#deals/MidaBrokerDealType";
@@ -10,7 +11,8 @@ export type MidaBrokerDealParameters = {
     requestedVolume: number;
     filledVolume?: number;
     type: MidaBrokerDealType;
-    status: MidaBrokerDealStatusType;
+    statusType: MidaBrokerDealStatusType;
+    purposeType: MidaBrokerDealPurposeType;
     requestDate: Date;
     executionDate?: Date;
     rejectionDate?: Date;

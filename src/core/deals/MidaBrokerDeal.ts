@@ -1,4 +1,5 @@
 import { MidaBrokerDealParameters } from "#deals/MidaBrokerDealParameters";
+import { MidaBrokerDealPurposeType } from "#deals/MidaBrokerDealPurposeType";
 import { MidaBrokerDealRejectionType } from "#deals/MidaBrokerDealRejectionType";
 import { MidaBrokerDealStatusType } from "#deals/MidaBrokerDealStatusType";
 import { MidaBrokerDealType } from "#deals/MidaBrokerDealType";
@@ -11,7 +12,8 @@ export class MidaBrokerDeal {
     readonly #requestedVolume: number;
     readonly #filledVolume: number;
     readonly #type: MidaBrokerDealType;
-    readonly #status: MidaBrokerDealStatusType;
+    readonly #statusType: MidaBrokerDealStatusType;
+    readonly #purposeType: MidaBrokerDealPurposeType;
     readonly #requestDate: Date;
     readonly #executionDate?: Date;
     readonly #rejectionDate?: Date;
@@ -29,7 +31,8 @@ export class MidaBrokerDeal {
         requestedVolume,
         filledVolume,
         type,
-        status,
+        statusType,
+        purposeType,
         requestDate,
         executionDate,
         rejectionDate,
@@ -46,7 +49,8 @@ export class MidaBrokerDeal {
         this.#requestedVolume = requestedVolume;
         this.#filledVolume = filledVolume ?? 0;
         this.#type = type;
-        this.#status = status;
+        this.#statusType = statusType;
+        this.#purposeType = purposeType;
         this.#requestDate = new Date(requestDate);
         this.#executionDate = executionDate;
         this.#rejectionDate = rejectionDate;
@@ -85,11 +89,43 @@ export class MidaBrokerDeal {
         return this.#type;
     }
 
-    public get status (): MidaBrokerDealStatusType {
-        return this.#status;
+    public get statusType (): MidaBrokerDealStatusType {
+        return this.#statusType;
+    }
+
+    public get purposeType (): MidaBrokerDealPurposeType {
+        return this.#purposeType;
     }
 
     public get requestDate (): Date {
         return new Date(this.#requestDate);
+    }
+
+    public get executionDate (): Date | undefined {
+        return this.#executionDate ? new Date(this.#executionDate) : undefined;
+    }
+
+    public get rejectionDate (): Date | undefined {
+        return this.#rejectionDate ? new Date(this.#rejectionDate) : undefined;
+    }
+
+    public get executionPrice (): number | undefined {
+        return this.#executionPrice;
+    }
+
+    public get grossProfit (): number | undefined {
+        return this.#grossProfit;
+    }
+
+    public get commission (): number | undefined {
+        return this.#commission;
+    }
+
+    public get swap (): number | undefined {
+        return this.#swap;
+    }
+
+    public get rejectionType (): MidaBrokerDealRejectionType | undefined {
+        return this.#rejectionType;
     }
 }
