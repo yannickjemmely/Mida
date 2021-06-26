@@ -3,12 +3,40 @@ import { MidaBrokerPositionParameters } from "#positions/MidaBrokerPositionParam
 
 export abstract class MidaBrokerPosition {
     readonly #id: string;
-    readonly #openingOrder: MidaBrokerOrder;
+    readonly #symbol: string;
+    #volume: number;
+    readonly #ordersIds: string[];
 
-    protected constructor ({ id, openingOrder, }: MidaBrokerPositionParameters) {
+    protected constructor ({
+        id,
+        symbol,
+        volume,
+    }: MidaBrokerPositionParameters) {
         this.#id = id;
-        this.#openingOrder = openingOrder;
+        this.#symbol = symbol;
+        this.#volume = volume;
+        this.#ordersIds = [];
     }
 
-    public abstract close (): Promise<void>;
+    public get id (): string {
+        return this.#id;
+    }
+
+    public get symbol (): string {
+        return this.#symbol;
+    }
+
+    public get volume (): number {
+        return this.#volume;
+    }
+
+    public get ordersIds (): string[] {
+        return [ ...this.#ordersIds, ];
+    }
+
+    public abstract addVolume (quantity: number): Promise<MidaBrokerOrder>;
+
+    public abstract subtractVolume (quantity: number): Promise<MidaBrokerOrder>;
+
+    public abstract close (volume?: number): Promise<MidaBrokerOrder>;
 }
