@@ -3,8 +3,8 @@ import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 import { MidaEvent } from "#events/MidaEvent";
 import { MidaEventListener } from "#events/MidaEventListener";
 import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
-import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
-import { MidaBrokerOrderStatusType } from "#orders/MidaBrokerOrderStatusType";
+import { MidaBrokerOrderOpenDirectives } from "#orders/MidaBrokerOrderDirectives";
+import { MidaBrokerOrderStatus } from "#orders/MidaBrokerOrderStatusType";
 import { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
@@ -49,15 +49,15 @@ export abstract class MidaExpertAdvisor {
     }
 
     public get pendingOrders (): MidaBrokerOrder[] {
-        return this.orders.filter((order: MidaBrokerOrder): boolean => order.status === MidaBrokerOrderStatusType.PENDING);
+        return this.orders.filter((order: MidaBrokerOrder): boolean => order.status === MidaBrokerOrderStatus.PENDING);
     }
 
     public get openOrders (): MidaBrokerOrder[] {
-        return this.orders.filter((order: MidaBrokerOrder): boolean => order.status === MidaBrokerOrderStatusType.OPEN);
+        return this.orders.filter((order: MidaBrokerOrder): boolean => order.status === MidaBrokerOrderStatus.OPEN);
     }
 
     public get closedOrders (): MidaBrokerOrder[] {
-        return this.orders.filter((order: MidaBrokerOrder): boolean => order.status === MidaBrokerOrderStatusType.CLOSED);
+        return this.orders.filter((order: MidaBrokerOrder): boolean => order.status === MidaBrokerOrderStatus.CLOSED);
     }
 
     protected get capturedTicks (): readonly MidaSymbolTick[] {
@@ -141,7 +141,7 @@ export abstract class MidaExpertAdvisor {
         // Silence is golden.
     }
 
-    protected async placeOrder (directives: MidaBrokerOrderDirectives): Promise<MidaBrokerOrder> {
+    protected async placeOrder (directives: MidaBrokerOrderOpenDirectives): Promise<MidaBrokerOrder> {
         const order: MidaBrokerOrder = await this.#brokerAccount.placeOrder(directives);
 
         this.addOrder(order);

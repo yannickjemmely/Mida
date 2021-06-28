@@ -54,11 +54,11 @@ export { MidaEventListener } from "#events/MidaEventListener";
 export { MidaEventParameters } from "#events/MidaEventParameters";
 
 export { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
-export { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
-export { MidaBrokerOrderExecutionType } from "#orders/MidaBrokerOrderExecutionType";
+export { MidaBrokerOrderOpenDirectives } from "#orders/MidaBrokerOrderDirectives";
+export { MidaBrokerOrderExecution } from "#orders/MidaBrokerOrderExecutionType";
 export { MidaBrokerOrderParameters } from "#orders/MidaBrokerOrderParameters";
-export { MidaBrokerOrderStatusType } from "#orders/MidaBrokerOrderStatusType";
-export { MidaBrokerOrderType } from "#orders/MidaBrokerOrderType";
+export { MidaBrokerOrderStatus } from "#orders/MidaBrokerOrderStatusType";
+export { MidaBrokerOrderDirection } from "#orders/MidaBrokerOrderType";
 
 export { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
 export { MidaSymbolPeriodParameters } from "#periods/MidaSymbolPeriodParameters";

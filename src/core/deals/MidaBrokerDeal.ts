@@ -1,19 +1,19 @@
+import { MidaBrokerDealDirection } from "#deals/MidaBrokerDealDirection";
 import { MidaBrokerDealParameters } from "#deals/MidaBrokerDealParameters";
-import { MidaBrokerDealPurposeType } from "#deals/MidaBrokerDealPurposeType";
-import { MidaBrokerDealRejectionType } from "#deals/MidaBrokerDealRejectionType";
-import { MidaBrokerDealStatusType } from "#deals/MidaBrokerDealStatusType";
-import { MidaBrokerDealType } from "#deals/MidaBrokerDealType";
+import { MidaBrokerDealPurpose } from "#deals/MidaBrokerDealPurpose";
+import { MidaBrokerDealRejection } from "#deals/MidaBrokerDealRejection";
+import { MidaBrokerDealStatus } from "#deals/MidaBrokerDealStatus";
 
-export class MidaBrokerDeal {
+export abstract class MidaBrokerDeal {
     readonly #id: string;
     readonly #orderId: string;
     readonly #positionId: string;
     readonly #symbol: string;
     readonly #requestedVolume: number;
     readonly #filledVolume: number;
-    readonly #type: MidaBrokerDealType;
-    readonly #statusType: MidaBrokerDealStatusType;
-    readonly #purposeType: MidaBrokerDealPurposeType;
+    readonly #direction: MidaBrokerDealDirection;
+    readonly #status: MidaBrokerDealStatus;
+    readonly #purpose: MidaBrokerDealPurpose;
     readonly #requestDate: Date;
     readonly #executionDate?: Date;
     readonly #rejectionDate?: Date;
@@ -21,18 +21,18 @@ export class MidaBrokerDeal {
     readonly #grossProfit?: number;
     readonly #commission?: number;
     readonly #swap?: number;
-    readonly #rejectionType?: MidaBrokerDealRejectionType;
+    readonly #rejectionType?: MidaBrokerDealRejection;
 
-    public constructor ({
+    protected constructor ({
         id,
         orderId,
         positionId,
         symbol,
         requestedVolume,
         filledVolume,
-        type,
-        statusType,
-        purposeType,
+        direction,
+        status,
+        purpose,
         requestDate,
         executionDate,
         rejectionDate,
@@ -40,7 +40,7 @@ export class MidaBrokerDeal {
         grossProfit,
         commission,
         swap,
-        rejectionType,
+        rejection,
     }: MidaBrokerDealParameters) {
         this.#id = id;
         this.#orderId = orderId;
@@ -48,9 +48,9 @@ export class MidaBrokerDeal {
         this.#symbol = symbol;
         this.#requestedVolume = requestedVolume;
         this.#filledVolume = filledVolume ?? 0;
-        this.#type = type;
-        this.#statusType = statusType;
-        this.#purposeType = purposeType;
+        this.#direction = direction;
+        this.#status = status;
+        this.#purpose = purpose;
         this.#requestDate = new Date(requestDate);
         this.#executionDate = executionDate;
         this.#rejectionDate = rejectionDate;
@@ -58,7 +58,7 @@ export class MidaBrokerDeal {
         this.#grossProfit = grossProfit;
         this.#commission = commission;
         this.#swap = swap;
-        this.#rejectionType = rejectionType;
+        this.#rejectionType = rejection;
     }
 
     public get id (): string {
@@ -85,16 +85,16 @@ export class MidaBrokerDeal {
         return this.#filledVolume;
     }
 
-    public get type (): MidaBrokerDealType {
-        return this.#type;
+    public get direction (): MidaBrokerDealDirection {
+        return this.#direction;
     }
 
-    public get statusType (): MidaBrokerDealStatusType {
-        return this.#statusType;
+    public get status (): MidaBrokerDealStatus {
+        return this.#status;
     }
 
-    public get purposeType (): MidaBrokerDealPurposeType {
-        return this.#purposeType;
+    public get purpose (): MidaBrokerDealPurpose {
+        return this.#purpose;
     }
 
     public get requestDate (): Date {
@@ -125,7 +125,7 @@ export class MidaBrokerDeal {
         return this.#swap;
     }
 
-    public get rejectionType (): MidaBrokerDealRejectionType | undefined {
+    public get rejection (): MidaBrokerDealRejection | undefined {
         return this.#rejectionType;
     }
 }

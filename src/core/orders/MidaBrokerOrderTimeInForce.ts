@@ -1,4 +1,4 @@
-export enum MidaBrokerOrderTimeInForceType {
+export enum MidaBrokerOrderTimeInForce {
     GOOD_TILL_DATE = "good-till-date",
     GOOD_TILL_CANCEL = "good-till-cancel",
     IMMEDIATE_OR_CANCEL = "immediate-or-cancel",

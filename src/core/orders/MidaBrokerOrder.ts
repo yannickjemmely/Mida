@@ -1,3 +1,3 @@
-export class MidaBrokerOrder {
-
+export abstract class MidaBrokerOrder {
+    
 }

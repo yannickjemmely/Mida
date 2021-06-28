@@ -1,4 +1,4 @@
-export enum MidaBrokerDealType {
+export enum MidaBrokerDealDirection {
     BUY = "buy",
     SELL = "sell",
 }

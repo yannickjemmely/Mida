@@ -5,8 +5,8 @@ import { MidaBrokerDeal } from "#deals/MidaBrokerDeal";
 import { MidaEvent } from "#events/MidaEvent";
 import { MidaEventListener } from "#events/MidaEventListener";
 import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
-import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
-import { MidaBrokerOrderStatusType } from "#orders/MidaBrokerOrderStatusType";
+import { MidaBrokerOrderOpenDirectives } from "#orders/MidaBrokerOrderDirectives";
+import { MidaBrokerOrderStatus } from "#orders/MidaBrokerOrderStatusType";
 import { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
 import { MidaBrokerPosition } from "#positions/MidaBrokerPosition";
 import { MidaSymbol } from "#symbols/MidaSymbol";
@@ -138,7 +138,7 @@ export abstract class MidaBrokerAccount {
      * Used to place an order.
      * @param directives The order directives.
      */
-    public abstract placeOrder (directives: MidaBrokerOrderDirectives): Promise<MidaBrokerOrder>;
+    public abstract placeOrder (directives: MidaBrokerOrderOpenDirectives): Promise<MidaBrokerOrder>;
 
     /**
      * Used to cancel an order (the order must be in pending state).
@@ -261,7 +261,7 @@ export abstract class MidaBrokerAccount {
         return equity / usedMargin * 100;
     }
 
-    public async getOrdersByStatus (status: MidaBrokerOrderStatusType): Promise<MidaBrokerOrder[]> {
+    public async getOrdersByStatus (status: MidaBrokerOrderStatus): Promise<MidaBrokerOrder[]> {
         const orders: MidaBrokerOrder[] = await this.getOrders();
 
         return orders.filter((order: MidaBrokerOrder): boolean => order.status === status);
@@ -305,7 +305,7 @@ export abstract class MidaBrokerAccount {
     }
     */
 
-    public async tryPlaceOrder (directives: MidaBrokerOrderDirectives): Promise<MidaBrokerOrder | undefined> {
+    public async tryPlaceOrder (directives: MidaBrokerOrderOpenDirectives): Promise<MidaBrokerOrder | undefined> {
         try {
             return await this.placeOrder(directives);
         }

@@ -1,7 +1,7 @@
-import { MidaBrokerDealPurposeType } from "#deals/MidaBrokerDealPurposeType";
-import { MidaBrokerDealRejectionType } from "#deals/MidaBrokerDealRejectionType";
-import { MidaBrokerDealStatusType } from "#deals/MidaBrokerDealStatusType";
-import { MidaBrokerDealType } from "#deals/MidaBrokerDealType";
+import { MidaBrokerDealDirection } from "#deals/MidaBrokerDealDirection";
+import { MidaBrokerDealPurpose } from "#deals/MidaBrokerDealPurpose";
+import { MidaBrokerDealRejection } from "#deals/MidaBrokerDealRejection";
+import { MidaBrokerDealStatus } from "#deals/MidaBrokerDealStatus";
 
 export type MidaBrokerDealParameters = {
     id: string;
@@ -10,9 +10,9 @@ export type MidaBrokerDealParameters = {
     symbol: string;
     requestedVolume: number;
     filledVolume?: number;
-    type: MidaBrokerDealType;
-    statusType: MidaBrokerDealStatusType;
-    purposeType: MidaBrokerDealPurposeType;
+    direction: MidaBrokerDealDirection;
+    status: MidaBrokerDealStatus;
+    purpose: MidaBrokerDealPurpose;
     requestDate: Date;
     executionDate?: Date;
     rejectionDate?: Date;
@@ -20,5 +20,5 @@ export type MidaBrokerDealParameters = {
     grossProfit?: number;
     commission?: number;
     swap?: number;
-    rejectionType?: MidaBrokerDealRejectionType;
+    rejection?: MidaBrokerDealRejection;
 };

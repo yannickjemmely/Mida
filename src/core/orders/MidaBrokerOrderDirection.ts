@@ -1,5 +1,5 @@
 /** The type of an order. */
-export enum MidaBrokerOrderType {
+export enum MidaBrokerOrderDirection {
     BUY = "buy",
     SELL = "sell",
 }

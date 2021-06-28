@@ -39,4 +39,10 @@ export abstract class MidaBrokerPosition {
     public abstract subtractVolume (quantity: number): Promise<MidaBrokerOrder>;
 
     public abstract close (volume?: number): Promise<MidaBrokerOrder>;
+
+    public abstract setStopLoss (stopLoss: number): Promise<void>;
+
+    public abstract setTrailingStopLoss (enabled: boolean): Promise<void>;
+
+    public abstract setTakeProfit (takeProfit: number): Promise<void>;
 }

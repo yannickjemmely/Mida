@@ -107,10 +107,11 @@ catch (error) {
 ```
 
 In case you don't want to handle errors you can use `tryPlaceOrder` which returns `undefined` in case of error.
+
 ```javascript
 const myOrder = await myAccount.tryPlaceOrder({
     symbol: "#AAPL",
-    type: MidaBrokerOrderType.SELL,
+    type: MidaBrokerOrderDirection.SELL,
     lots: 1,
 });
 
@@ -121,10 +122,11 @@ if (!myOrder) {
 
 In addition, `canPlaceOrder` or `getPlaceOrderObstacles` can be used to know if an order can be placed without errors.
 Due to the high volatility of financial markets, these methods can't guarantee that the order is going to be placed without errors being thrown.
+
 ```javascript
 const orderDirectives = {
     symbol: "#AAPL",
-    type: MidaBrokerOrderType.SELL,
+    type: MidaBrokerOrderDirection.SELL,
     lots: 1,
 };
 

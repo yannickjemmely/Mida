@@ -1,4 +1,4 @@
-export enum MidaBrokerDealPurposeType {
+export enum MidaBrokerDealPurpose {
     OPEN = "open",
     CLOSE = "close",
 }
