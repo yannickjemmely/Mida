@@ -5,8 +5,8 @@ import { MidaBrokerDeal } from "#deals/MidaBrokerDeal";
 import { MidaEvent } from "#events/MidaEvent";
 import { MidaEventListener } from "#events/MidaEventListener";
 import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
-import { MidaBrokerOrderOpenDirectives } from "#orders/MidaBrokerOrderDirectives";
-import { MidaBrokerOrderStatus } from "#orders/MidaBrokerOrderStatusType";
+import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
+import { MidaBrokerOrderStatus } from "#orders/MidaBrokerOrderStatus";
 import { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
 import { MidaBrokerPosition } from "#positions/MidaBrokerPosition";
 import { MidaSymbol } from "#symbols/MidaSymbol";
@@ -111,84 +111,10 @@ export abstract class MidaBrokerAccount {
     public abstract getOrder (id: string): Promise<MidaBrokerOrder | undefined>;
 
     /**
-     * Used to get the gross profit of an order (the order must be in open or closed state).
-     * @param id The order id.
-     */
-    public abstract getOrderGrossProfit (id: string): Promise<number>;
-
-    /**
-     * Used to get the net profit of an order (the order must be in open or closed state).
-     * @param id The order id.
-     */
-    public abstract getOrderNetProfit (id: string): Promise<number>;
-
-    /**
-     * Used to get the swaps of an order (the order must be in open or closed state).
-     * @param id The order id.
-     */
-    public abstract getOrderSwaps (id: string): Promise<number>;
-
-    /**
-     * Used to get the commission of an order.
-     * @param id The order id.
-     */
-    public abstract getOrderCommission (id: string): Promise<number>;
-
-    /**
      * Used to place an order.
      * @param directives The order directives.
      */
-    public abstract placeOrder (directives: MidaBrokerOrderOpenDirectives): Promise<MidaBrokerOrder>;
-
-    /**
-     * Used to cancel an order (the order must be in pending state).
-     * @param id The order id.
-     */
-    public abstract cancelOrder (id: string): Promise<void>;
-
-    /**
-     * Used to close an order (the order must be in open state).
-     * @param id The order id.
-     */
-    public abstract closeOrder (id: string): Promise<void>;
-
-    /**
-     * Used to get the stop loss of an order.
-     * @param id The order id.
-     */
-    public abstract getOrderStopLoss (id: string): Promise<number | undefined>;
-
-    /**
-     * Used to set the stop loss of an order.
-     * @param id The order id.
-     * @param stopLoss The stop loss.
-     */
-    public abstract setOrderStopLoss (id: string, stopLoss: number): Promise<void>;
-
-    /**
-     * Used to clear the stop loss of an order.
-     * @param id The order id.
-     */
-    public abstract clearOrderStopLoss (id: string): Promise<void>;
-
-    /**
-     * Used to get the take profit of an order.
-     * @param id The order id.
-     */
-    public abstract getOrderTakeProfit (id: string): Promise<number | undefined>;
-
-    /**
-     * Used to set the take profit of an order.
-     * @param id The order id.
-     * @param takeProfit The take profit.
-     */
-    public abstract setOrderTakeProfit (id: string, takeProfit: number): Promise<void>;
-
-    /**
-     * Used to clear the take profit of an order.
-     * @param id The order id.
-     */
-    public abstract clearOrderTakeProfit (id: string): Promise<void>;
+    public abstract placeOrder (directives: MidaBrokerOrderDirectives): Promise<MidaBrokerOrder>;
 
     /** Used to get the account symbols. */
     public abstract getSymbols (): Promise<string[]>;
@@ -304,15 +230,6 @@ export abstract class MidaBrokerAccount {
         return obstacles.length === 0;
     }
     */
-
-    public async tryPlaceOrder (directives: MidaBrokerOrderOpenDirectives): Promise<MidaBrokerOrder | undefined> {
-        try {
-            return await this.placeOrder(directives);
-        }
-        catch {
-            return undefined;
-        }
-    }
 
     public on (type: string): Promise<MidaEvent>
     public on (type: string, listener: MidaEventListener): string

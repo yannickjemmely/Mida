@@ -5,7 +5,7 @@ export abstract class MidaBrokerPosition {
     readonly #id: string;
     readonly #symbol: string;
     #volume: number;
-    readonly #ordersIds: string[];
+    #entryPrice: number;
 
     protected constructor ({
         id,
@@ -15,7 +15,6 @@ export abstract class MidaBrokerPosition {
         this.#id = id;
         this.#symbol = symbol;
         this.#volume = volume;
-        this.#ordersIds = [];
     }
 
     public get id (): string {
@@ -28,10 +27,6 @@ export abstract class MidaBrokerPosition {
 
     public get volume (): number {
         return this.#volume;
-    }
-
-    public get ordersIds (): string[] {
-        return [ ...this.#ordersIds, ];
     }
 
     public abstract addVolume (quantity: number): Promise<MidaBrokerOrder>;

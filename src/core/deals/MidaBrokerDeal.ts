@@ -21,7 +21,7 @@ export abstract class MidaBrokerDeal {
     readonly #grossProfit?: number;
     readonly #commission?: number;
     readonly #swap?: number;
-    readonly #rejectionType?: MidaBrokerDealRejection;
+    readonly #rejection?: MidaBrokerDealRejection;
 
     protected constructor ({
         id,
@@ -58,7 +58,7 @@ export abstract class MidaBrokerDeal {
         this.#grossProfit = grossProfit;
         this.#commission = commission;
         this.#swap = swap;
-        this.#rejectionType = rejection;
+        this.#rejection = rejection;
     }
 
     public get id (): string {
@@ -126,6 +126,10 @@ export abstract class MidaBrokerDeal {
     }
 
     public get rejection (): MidaBrokerDealRejection | undefined {
-        return this.#rejectionType;
+        return this.#rejection;
+    }
+
+    public get isClosing (): boolean {
+        return this.#purpose === MidaBrokerDealPurpose.CLOSE;
     }
 }
