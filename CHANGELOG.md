@@ -1,3 +1,4 @@
+* Create async event emitter.
 * Increment tsconfig.json target to es2020.
 * Remove the "getRequiredMargin" method from symbols.
 * Remove the "MidaBrowser" and "MidaBrowserTab" APIs.
