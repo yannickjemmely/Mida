@@ -1,5 +1,5 @@
 import { MidaSymbolPeriodParameters } from "#periods/MidaSymbolPeriodParameters";
-import { MidaSymbolPriceType } from "#symbols/MidaSymbolPriceType";
+import { MidaSymbolPrice } from "#symbols/MidaSymbolPriceType";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { IMidaEquatable } from "#utilities/equatable/IMidaEquatable";
 import { GenericObject } from "#utilities/GenericObject";
@@ -8,7 +8,7 @@ import { GenericObject } from "#utilities/GenericObject";
 export class MidaSymbolPeriod implements IMidaEquatable {
     readonly #symbol: string;
     readonly #startTime: Date;
-    readonly #priceType: MidaSymbolPriceType;
+    readonly #priceType: MidaSymbolPrice;
     readonly #open: number;
     readonly #high: number;
     readonly #low: number;
@@ -52,7 +52,7 @@ export class MidaSymbolPeriod implements IMidaEquatable {
     }
 
     /** The price type represented by the period (bid or ask). */
-    public get priceType (): MidaSymbolPriceType {
+    public get priceType (): MidaSymbolPrice {
         return this.#priceType;
     }
 
@@ -177,7 +177,7 @@ export class MidaSymbolPeriod implements IMidaEquatable {
         ticks: MidaSymbolTick[],
         startTime: Date,
         timeframe: number,
-        priceType: MidaSymbolPriceType = MidaSymbolPriceType.BID,
+        priceType: MidaSymbolPrice = MidaSymbolPrice.BID,
         limit: number = -1
     ): MidaSymbolPeriod[] {
         if (ticks.length < 1 || timeframe <= 0) {
