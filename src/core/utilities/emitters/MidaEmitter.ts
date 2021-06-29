@@ -3,7 +3,6 @@ import { MidaEventListener } from "#events/MidaEventListener";
 import { GenericObject } from "#utilities/GenericObject";
 import { v1 as uuidV1 } from "uuid";
 
-/** Represents an entity capable of emitting events to a its listeners. */
 export class MidaEmitter {
     static readonly #ANY_TYPE_KEY: string = "*";
     readonly #listeners: Map<string, Map<string, MidaEventListener>>;
