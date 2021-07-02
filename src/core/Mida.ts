@@ -79,7 +79,7 @@ export { MidaPlugin } from "#plugins/MidaPlugin";
 export { MidaPluginActions } from "#plugins/MidaPluginActions";
 export { MidaPluginParameters } from "#plugins/MidaPluginParameters";
 
-export { MidaEmitter } from "#utilities/emitters/MidaEmitter";
+export { MidaEmitterAsync } from "#utilities/emitters/MidaEmitter";
 
 export { GenericObject } from "#utilities/GenericObject";
 

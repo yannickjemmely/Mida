@@ -1,6 +1,7 @@
 import { MidaBrokerDeal } from "#deals/MidaBrokerDeal";
 import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
 import { MidaBrokerOrderPurpose } from "#orders/MidaBrokerOrderPurpose";
+import { MidaBrokerPositionDirection } from "#positions/MidaBrokerPositionDirection";
 import { MidaBrokerPositionParameters } from "#positions/MidaBrokerPositionParameters";
 import { MidaBrokerPositionProtection } from "#positions/MidaBrokerPositionProtection";
 
@@ -8,6 +9,7 @@ export abstract class MidaBrokerPosition {
     readonly #id: string;
     readonly #symbol: string;
     readonly #protection: MidaBrokerPositionProtection;
+    #direction: MidaBrokerPositionDirection;
     #volume: number;
     #entryPrice: number;
 

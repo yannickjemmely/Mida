@@ -3,7 +3,7 @@ import { MidaEventListener } from "#events/MidaEventListener";
 import { GenericObject } from "#utilities/GenericObject";
 import { v1 as uuidV1 } from "uuid";
 
-export class MidaEmitter {
+export class MidaEmitterAsync {
     static readonly #ANY_TYPE_KEY: string = "*";
     readonly #listeners: Map<string, Map<string, MidaEventListener>>;
 
@@ -62,8 +62,8 @@ export class MidaEmitter {
             descriptor,
         });
 
-        if (type !== MidaEmitter.#ANY_TYPE_KEY) {
-            const listenersOfAny: Map<string, MidaEventListener> = this.#listeners.get(MidaEmitter.#ANY_TYPE_KEY) ?? new Map();
+        if (type !== MidaEmitterAsync.#ANY_TYPE_KEY) {
+            const listenersOfAny: Map<string, MidaEventListener> = this.#listeners.get(MidaEmitterAsync.#ANY_TYPE_KEY) ?? new Map();
 
             for (const listener of listenersOfAny.values()) {
                 listener(event);

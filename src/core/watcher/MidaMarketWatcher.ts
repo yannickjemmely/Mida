@@ -4,7 +4,7 @@ import { MidaEvent } from "#events/MidaEvent";
 import { MidaEventListener } from "#events/MidaEventListener";
 import { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
-import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
+import { MidaEmitterAsync } from "#utilities/emitters/MidaEmitter";
 import { GenericObject } from "#utilities/GenericObject";
 import { MidaUtilities } from "#utilities/MidaUtilities";
 import { MidaMarketWatcherDirectives } from "#watcher/MidaMarketWatcherDirectives";
@@ -14,13 +14,13 @@ export class MidaMarketWatcher {
     readonly #brokerAccount: MidaBrokerAccount;
     readonly #watchedSymbols: Map<string, MidaMarketWatcherDirectives>;
     readonly #lastPeriods: Map<string, Map<number, MidaSymbolPeriod>>;
-    readonly #emitter: MidaEmitter;
+    readonly #emitter: MidaEmitterAsync;
 
     public constructor ({ brokerAccount, }: MidaMarketWatcherParameters) {
         this.#brokerAccount = brokerAccount;
         this.#watchedSymbols = new Map();
         this.#lastPeriods = new Map();
-        this.#emitter = new MidaEmitter();
+        this.#emitter = new MidaEmitterAsync();
 
         this.#configureListeners();
     }

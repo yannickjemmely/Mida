@@ -7,7 +7,7 @@ import { MidaBrokerOrderOpenDirectives } from "#orders/MidaBrokerOrderDirectives
 import { MidaBrokerOrderStatus } from "#orders/MidaBrokerOrderStatusType";
 import { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
-import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
+import { MidaEmitterAsync } from "#utilities/emitters/MidaEmitter";
 import { GenericObject } from "#utilities/GenericObject";
 import { MidaMarketWatcher } from "#watcher/MidaMarketWatcher";
 
@@ -20,7 +20,7 @@ export abstract class MidaExpertAdvisor {
     #asyncTickPromise?: Promise<void>;
     #isConfigured: boolean;
     readonly #marketWatcher;
-    readonly #emitter: MidaEmitter;
+    readonly #emitter: MidaEmitterAsync;
 
     protected constructor ({ brokerAccount, }: MidaExpertAdvisorParameters) {
         this.#brokerAccount = brokerAccount;
@@ -31,7 +31,7 @@ export abstract class MidaExpertAdvisor {
         this.#asyncTickPromise = undefined;
         this.#isConfigured = false;
         this.#marketWatcher = new MidaMarketWatcher({ brokerAccount, });
-        this.#emitter = new MidaEmitter();
+        this.#emitter = new MidaEmitterAsync();
 
         this.#configureListeners();
     }

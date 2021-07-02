@@ -2,7 +2,7 @@ import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 import { MidaSymbolParameters } from "#symbols/MidaSymbolParameters";
 import { MidaSymbolType } from "#symbols/MidaSymbolType";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
-import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
+import { MidaEmitterAsync } from "#utilities/emitters/MidaEmitter";
 import { GenericObject } from "#utilities/GenericObject";
 
 /** Represents a symbol. */
@@ -16,7 +16,7 @@ export class MidaSymbol {
     readonly #minLots: number;
     readonly #maxLots: number;
     readonly #lotUnits: number;
-    readonly #emitter: MidaEmitter;
+    readonly #emitter: MidaEmitterAsync;
 
     public constructor ({
         symbol,
@@ -38,7 +38,7 @@ export class MidaSymbol {
         this.#minLots = minLots;
         this.#maxLots = maxLots;
         this.#lotUnits = lotUnits;
-        this.#emitter = new MidaEmitter();
+        this.#emitter = new MidaEmitterAsync();
     }
 
     /** The symbol broker account. */

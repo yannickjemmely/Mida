@@ -1,13 +1,13 @@
 import { MidaEvent } from "#events/MidaEvent";
-import { MidaEmitterAsync } from "#utilities/emitters/MidaEmitter";
+import { MidaEmitterAsync } from "#utilities/emitters/MidaEmitterAsync";
 
 // eslint-disable-next-line max-lines-per-function
-describe("MidaEmitter", () => {
+describe("MidaEmitterAsync", () => {
     describe(".addEventListener", () => {
         it("returns a string when a listener is added", () => {
             const emitter: MidaEmitterAsync = new MidaEmitterAsync();
 
-            expect(typeof emitter.addEventListener("event", () => {}) === "string").toBe(true);
+            expect(typeof emitter.addEventListener("event", async () => {}) === "string").toBe(true);
         });
     });
 
@@ -15,7 +15,7 @@ describe("MidaEmitter", () => {
         it("listener is no longer invoked after being removed", () => {
             const emitter: MidaEmitterAsync = new MidaEmitterAsync();
             let invocationsCount: number = 0;
-            const uuid: string = emitter.addEventListener("event", () => ++invocationsCount);
+            const uuid: string = emitter.addEventListener("event", async () => ++invocationsCount);
 
             emitter.notifyListeners("event");
             emitter.removeEventListener(uuid);
@@ -29,7 +29,7 @@ describe("MidaEmitter", () => {
         it("returns a string when listener is passed", () => {
             const emitter: MidaEmitterAsync = new MidaEmitterAsync();
 
-            expect(typeof emitter.on("event", () => {}) === "string").toBe(true);
+            expect(typeof emitter.on("event", async () => {}) === "string").toBe(true);
         });
 
         it("returns a Promise when no listener is passed", () => {
@@ -53,7 +53,7 @@ describe("MidaEmitter", () => {
             const emitter: MidaEmitterAsync = new MidaEmitterAsync();
             let invocationsCount: number = 0;
 
-            emitter.addEventListener("event", () => ++invocationsCount);
+            emitter.addEventListener("event", async () => ++invocationsCount);
             emitter.notifyListeners("event");
             emitter.notifyListeners("event");
             emitter.notifyListeners("event");
@@ -66,8 +66,8 @@ describe("MidaEmitter", () => {
             let firstListenerInvocationsCount: number = 0;
             let secondListenerInvocationsCount: number = 0;
 
-            emitter.addEventListener("event", () => ++firstListenerInvocationsCount);
-            emitter.addEventListener("event", () => ++secondListenerInvocationsCount);
+            emitter.addEventListener("event", async () => ++firstListenerInvocationsCount);
+            emitter.addEventListener("event", async () => ++secondListenerInvocationsCount);
             emitter.notifyListeners("event");
             emitter.notifyListeners("event");
             emitter.notifyListeners("event");
@@ -81,7 +81,7 @@ describe("MidaEmitter", () => {
             const eventType: string = "response";
             let lastEvent: any = undefined;
 
-            emitter.addEventListener(eventType, (event: MidaEvent) => {
+            emitter.addEventListener(eventType, async (event: MidaEvent) => {
                 lastEvent = event;
             });
             emitter.notifyListeners(eventType, {
