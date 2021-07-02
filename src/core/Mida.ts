@@ -66,11 +66,11 @@ export { MidaTimeframeType } from "#periods/MidaTimeframeType";
 
 export { MidaSymbolQuotation } from "#quotations/MidaSymbolQuotation";
 export { MidaSymbolQuotationParameters } from "#quotations/MidaSymbolQuotationParameters";
-export { MidaSymbolPriceType } from "#symbols/MidaSymbolPriceType";
+export { MidaSymbolPrice } from "#symbols/MidaSymbolPriceType";
 
 export { MidaSymbol } from "#symbols/MidaSymbol";
 export { MidaSymbolParameters } from "#symbols/MidaSymbolParameters";
-export { MidaSymbolType } from "#symbols/MidaSymbolType";
+export { MidaSymbolCategory } from "#symbols/MidaSymbolType";
 
 export { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 export { MidaSymbolTickParameters } from "#ticks/MidaSymbolTickParameters";
