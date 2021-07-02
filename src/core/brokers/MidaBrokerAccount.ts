@@ -12,7 +12,7 @@ import { MidaBrokerPosition } from "#positions/MidaBrokerPosition";
 import { MidaSymbol } from "#symbols/MidaSymbol";
 import { MidaSymbolPrice } from "#symbols/MidaSymbolPriceType";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
-import { MidaEmitterAsync } from "#utilities/emitters/MidaEmitter";
+import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 import { GenericObject } from "#utilities/GenericObject";
 
 export abstract class MidaBrokerAccount {
@@ -24,7 +24,7 @@ export abstract class MidaBrokerAccount {
     readonly #isHedged: boolean;
     readonly #stopOutLevel: number;
     readonly #broker: MidaBroker;
-    readonly #emitter: MidaEmitterAsync;
+    readonly #emitter: MidaEmitter;
 
     protected constructor ({
         id,
@@ -44,7 +44,7 @@ export abstract class MidaBrokerAccount {
         this.#isHedged = isHedged;
         this.#stopOutLevel = stopOutLevel;
         this.#broker = broker;
-        this.#emitter = new MidaEmitterAsync();
+        this.#emitter = new MidaEmitter();
     }
 
     /** The account id. */

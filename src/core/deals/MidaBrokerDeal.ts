@@ -135,11 +135,12 @@ export class MidaBrokerDeal {
         return this.#purpose === MidaBrokerDealPurpose.CLOSE;
     }
 
+    // net profit = gross profit + swap + |commission|
     public get netProfit (): number | undefined {
         if (typeof this.#grossProfit === "undefined" || typeof this.#swap === "undefined" || typeof this.#commission === "undefined") {
             return undefined;
         }
 
-        return this.#grossProfit + this.#swap + this.#commission;
+        return this.#grossProfit + this.#swap - Math.abs(this.#commission);
     }
 }
