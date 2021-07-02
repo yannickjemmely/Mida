@@ -15,7 +15,6 @@ import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { MidaEmitterAsync } from "#utilities/emitters/MidaEmitter";
 import { GenericObject } from "#utilities/GenericObject";
 
-/** Represents a broker account. */
 export abstract class MidaBrokerAccount {
     readonly #id: string;
     readonly #ownerName: string;
@@ -68,7 +67,7 @@ export abstract class MidaBrokerAccount {
         return this.#globalLeverage;
     }
 
-    /** The account currency (ISO code). */
+    /** The account currency ISO code. */
     public get currency (): string {
         return this.#currency;
     }
@@ -100,8 +99,10 @@ export abstract class MidaBrokerAccount {
     /** Used to get the account orders. */
     public abstract getOrders (): Promise<MidaBrokerOrder[]>;
 
+    /** Used to get the account deals. */
     public abstract getDeals (): Promise<MidaBrokerDeal[]>;
 
+    /** Used to get the account positions. */
     public abstract getPositions (): Promise<MidaBrokerPosition>;
 
     /**
@@ -192,44 +193,6 @@ export abstract class MidaBrokerAccount {
 
         return orders.filter((order: MidaBrokerOrder): boolean => order.status === status);
     }
-
-    /* To implement later.
-    public async getPlaceOrderObstacles (directives: MidaBrokerOrderDirectives): Promise<MidaBrokerErrorType[]> {
-        const obstacles: MidaBrokerErrorType[] = [];
-        const symbol: MidaSymbol | undefined = await this.getSymbol(directives.symbol);
-
-        if (!symbol) {
-            obstacles.push(MidaBrokerErrorType.INVALID_SYMBOL);
-
-            return obstacles;
-        }
-
-        const isMarketOpen: boolean = await symbol.isMarketOpen();
-
-        if (!isMarketOpen) {
-            obstacles.push(MidaBrokerErrorType.MARKET_CLOSED);
-        }
-
-        if (directives.lots < symbol.minLots || directives.lots > symbol.maxLots) {
-            obstacles.push(MidaBrokerErrorType.INVALID_LOTS);
-        }
-
-        const freeMargin: number = await this.getFreeMargin();
-        const requiredMargin: number = await symbol.getRequiredMargin(directives.type, directives.lots);
-
-        if (freeMargin < requiredMargin) {
-            obstacles.push(MidaBrokerErrorType.NOT_ENOUGH_MONEY);
-        }
-
-        return obstacles;
-    }
-
-    public async canPlaceOrder (directives: MidaBrokerOrderDirectives): Promise<boolean> {
-        const obstacles: MidaBrokerErrorType[] = await this.getPlaceOrderObstacles(directives);
-
-        return obstacles.length === 0;
-    }
-    */
 
     public on (type: string): Promise<MidaEvent>
     public on (type: string, listener: MidaEventListener): string
