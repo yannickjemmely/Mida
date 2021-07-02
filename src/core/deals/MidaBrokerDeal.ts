@@ -3,11 +3,13 @@ import { MidaBrokerDealParameters } from "#deals/MidaBrokerDealParameters";
 import { MidaBrokerDealPurpose } from "#deals/MidaBrokerDealPurpose";
 import { MidaBrokerDealRejection } from "#deals/MidaBrokerDealRejection";
 import { MidaBrokerDealStatus } from "#deals/MidaBrokerDealStatus";
+import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
+import { MidaBrokerPosition } from "#positions/MidaBrokerPosition";
 
-export abstract class MidaBrokerDeal {
+export class MidaBrokerDeal {
     readonly #id: string;
-    readonly #orderId: string;
-    readonly #positionId: string;
+    readonly #order: MidaBrokerOrder;
+    readonly #position: MidaBrokerPosition;
     readonly #symbol: string;
     readonly #requestedVolume: number;
     readonly #filledVolume: number;
@@ -23,10 +25,10 @@ export abstract class MidaBrokerDeal {
     readonly #swap?: number;
     readonly #rejection?: MidaBrokerDealRejection;
 
-    protected constructor ({
+    public constructor ({
         id,
-        orderId,
-        positionId,
+        order,
+        position,
         symbol,
         requestedVolume,
         filledVolume,
@@ -43,8 +45,8 @@ export abstract class MidaBrokerDeal {
         rejection,
     }: MidaBrokerDealParameters) {
         this.#id = id;
-        this.#orderId = orderId;
-        this.#positionId = positionId;
+        this.#order = order;
+        this.#position = position;
         this.#symbol = symbol;
         this.#requestedVolume = requestedVolume;
         this.#filledVolume = filledVolume ?? 0;
@@ -65,12 +67,12 @@ export abstract class MidaBrokerDeal {
         return this.#id;
     }
 
-    public get orderId (): string {
-        return this.#orderId;
+    public get order (): MidaBrokerOrder {
+        return this.#order;
     }
 
-    public get positionId (): string {
-        return this.#positionId;
+    public get position (): MidaBrokerPosition {
+        return this.#position;
     }
 
     public get symbol (): string {
@@ -131,5 +133,13 @@ export abstract class MidaBrokerDeal {
 
     public get isClosing (): boolean {
         return this.#purpose === MidaBrokerDealPurpose.CLOSE;
+    }
+
+    public get netProfit (): number | undefined {
+        if (typeof this.#grossProfit === "undefined" || typeof this.#swap === "undefined" || typeof this.#commission === "undefined") {
+            return undefined;
+        }
+
+        return this.#grossProfit + this.#swap + this.#commission;
     }
 }

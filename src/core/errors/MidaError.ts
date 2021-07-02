@@ -1,7 +1,6 @@
 import { MidaErrorParameters } from "#errors/MidaErrorParameters";
 import { GenericObject } from "#utilities/GenericObject";
 
-/** Represents an error. */
 export class MidaError extends Error {
     readonly #type: string;
     readonly #descriptor: GenericObject;
@@ -13,7 +12,7 @@ export class MidaError extends Error {
     }: MidaErrorParameters) {
         super(message);
 
-        this.name = "MidaError";
+        this.name = "MidaError"; // Don't use "this.constructor.name": minified code will break it.
         this.#type = type;
         this.#descriptor = { ...descriptor, };
     }
