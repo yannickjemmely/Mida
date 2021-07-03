@@ -9,7 +9,7 @@ import { MidaBrokerPosition } from "#positions/MidaBrokerPosition";
 export abstract class MidaBrokerDeal {
     readonly #id: string;
     readonly #order: MidaBrokerOrder;
-    readonly #position: MidaBrokerPosition;
+    readonly #position?: MidaBrokerPosition;
     readonly #symbol: string;
     readonly #requestedVolume: number;
     readonly #filledVolume: number;
@@ -71,7 +71,7 @@ export abstract class MidaBrokerDeal {
         return this.#order;
     }
 
-    public get position (): MidaBrokerPosition {
+    public get position (): MidaBrokerPosition | undefined {
         return this.#position;
     }
 

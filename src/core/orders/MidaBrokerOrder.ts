@@ -8,6 +8,7 @@ import { MidaBrokerOrderParameters } from "#orders/MidaBrokerOrderParameters";
 import { MidaBrokerOrderPurpose } from "#orders/MidaBrokerOrderPurpose";
 import { MidaBrokerOrderStatus } from "#orders/MidaBrokerOrderStatus";
 import { MidaBrokerOrderTimeInForce } from "#orders/MidaBrokerOrderTimeInForce";
+import { MidaBrokerPosition } from "#positions/MidaBrokerPosition";
 import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 
 export abstract class MidaBrokerOrder {
@@ -80,6 +81,20 @@ export abstract class MidaBrokerOrder {
 
     public get isClosing (): boolean {
         return this.purpose === MidaBrokerOrderPurpose.CLOSE;
+    }
+
+    public get lastDeal (): MidaBrokerDeal | undefined {
+        return this.#deals[this.#deals.length - 1];
+    }
+
+    public get position (): MidaBrokerPosition | undefined {
+        for (const deal of this.#deals) {
+            if (deal.position) {
+                return deal.position;
+            }
+        }
+
+        return undefined;
     }
 
     public on (type: string): Promise<MidaEvent>

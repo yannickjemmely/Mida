@@ -6,4 +6,5 @@ export enum MidaBrokerOrderStatus {
     FILLED = "filled",
     REJECTED = "rejected",
     CANCELLED = "cancelled",
+    EXPIRED = "expired",
 }
