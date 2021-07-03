@@ -9,8 +9,8 @@ export type MidaBrokerOrderParameters = {
     brokerAccount: MidaBrokerAccount;
     directives: MidaBrokerOrderDirectives;
     status: MidaBrokerOrderStatus;
-    timeInForce: MidaBrokerOrderTimeInForce;
     deals?: MidaBrokerDeal[];
     filledVolume?: number;
+    timeInForce: MidaBrokerOrderTimeInForce;
     isStopOut?: boolean;
 };

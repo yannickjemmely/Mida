@@ -1,4 +1,4 @@
-import { MidaBrokerDeal } from "#deals/MidaBrokerDeal";
+import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
 import { MidaBrokerPositionDirection } from "#positions/MidaBrokerPositionDirection";
 import { MidaBrokerPositionProtection } from "#positions/MidaBrokerPositionProtection";
 import { MidaBrokerPositionStatus } from "#positions/MidaBrokerPositionStatus";
@@ -9,6 +9,6 @@ export type MidaBrokerPositionParameters = {
     volume: number;
     direction: MidaBrokerPositionDirection;
     status: MidaBrokerPositionStatus;
-    deals: MidaBrokerDeal[];
+    orders: MidaBrokerOrder[];
     protection?: MidaBrokerPositionProtection;
 };

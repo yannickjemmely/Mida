@@ -10,6 +10,10 @@ export type MidaBrokerOrderOpenDirectives = {
     limit?: number;
     stop?: number;
     protection?: MidaBrokerPositionProtection;
+} | {
+    purpose: MidaBrokerOrderPurpose.OPEN;
+    positionId: string;
+    volume: number;
 };
 
 export type MidaBrokerOrderCloseDirectives = {

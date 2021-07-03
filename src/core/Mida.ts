@@ -42,7 +42,7 @@ export { MidaExpertAdvisorParameters } from "#advisors/MidaExpertAdvisorParamete
 export { MidaBroker } from "#brokers/MidaBroker";
 export { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 export { MidaBrokerAccountParameters } from "#brokers/MidaBrokerAccountParameters";
-export { MidaBrokerAccountType } from "#brokers/MidaBrokerAccountType";
+export { MidaBrokerAccountOperativity } from "#brokers/MidaBrokerAccountType";
 export { MidaBrokerErrorType } from "#brokers/MidaBrokerErrorType";
 export { MidaBrokerParameters } from "#brokers/MidaBrokerParameters";
 

@@ -26,9 +26,9 @@ export abstract class MidaBrokerOrder {
         brokerAccount,
         directives,
         status,
-        timeInForce,
         deals,
         filledVolume,
+        timeInForce,
         isStopOut,
     }: MidaBrokerOrderParameters) {
         this.#id = id;
@@ -62,20 +62,24 @@ export abstract class MidaBrokerOrder {
         return this.#timeInForce;
     }
 
-    public get filledVolume (): number | undefined {
-        return this.#filledVolume;
-    }
-
     public get deals (): MidaBrokerDeal[] {
         return [ ...this.#deals, ];
+    }
+
+    public get filledVolume (): number {
+        return this.#filledVolume;
     }
 
     public get isStopOut (): boolean {
         return this.#isStopOut;
     }
 
+    public get purpose (): MidaBrokerOrderPurpose {
+        return this.#directives.purpose;
+    }
+
     public get isClosing (): boolean {
-        return this.#directives.purpose === MidaBrokerOrderPurpose.CLOSE;
+        return this.purpose === MidaBrokerOrderPurpose.CLOSE;
     }
 
     public on (type: string): Promise<MidaEvent>
@@ -92,20 +96,20 @@ export abstract class MidaBrokerOrder {
         this.#emitter.removeEventListener(uuid);
     }
 
-    protected notifyStatusChange (status: MidaBrokerOrderStatus): void {
+    protected onStatusChange (status: MidaBrokerOrderStatus): void {
         this.#status = status;
         this.#emitter.notifyListeners("status-change", { status, });
 
         switch (status) {
             case MidaBrokerOrderStatus.FILLED: {
-                this.#emitter.notifyListeners("filled");
+                this.#emitter.notifyListeners("fill");
 
                 break;
             }
         }
     }
 
-    protected notifyDeal (deal: MidaBrokerDeal): void {
+    protected onDeal (deal: MidaBrokerDeal): void {
         this.#deals.push(deal);
 
         switch (deal.status) {
@@ -122,7 +126,7 @@ export abstract class MidaBrokerOrder {
         switch (deal.status) {
             case MidaBrokerDealStatus.FILLED:
             case MidaBrokerDealStatus.PARTIALLY_FILLED: {
-                this.#emitter.notifyListeners("deal-execute", { deal, });
+                this.#emitter.notifyListeners("deal-done", { deal, });
 
                 break;
             }

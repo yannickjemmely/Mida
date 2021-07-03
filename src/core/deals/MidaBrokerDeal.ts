@@ -6,7 +6,7 @@ import { MidaBrokerDealStatus } from "#deals/MidaBrokerDealStatus";
 import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
 import { MidaBrokerPosition } from "#positions/MidaBrokerPosition";
 
-export class MidaBrokerDeal {
+export abstract class MidaBrokerDeal {
     readonly #id: string;
     readonly #order: MidaBrokerOrder;
     readonly #position: MidaBrokerPosition;
@@ -25,7 +25,7 @@ export class MidaBrokerDeal {
     readonly #swap?: number;
     readonly #rejection?: MidaBrokerDealRejection;
 
-    public constructor ({
+    protected constructor ({
         id,
         order,
         position,

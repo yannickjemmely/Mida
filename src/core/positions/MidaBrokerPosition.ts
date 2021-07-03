@@ -8,17 +8,18 @@ import { MidaBrokerOrderPurpose } from "#orders/MidaBrokerOrderPurpose";
 import { MidaBrokerPositionDirection } from "#positions/MidaBrokerPositionDirection";
 import { MidaBrokerPositionParameters } from "#positions/MidaBrokerPositionParameters";
 import { MidaBrokerPositionProtection } from "#positions/MidaBrokerPositionProtection";
-import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
+import { MidaBrokerPositionStatus } from "#positions/MidaBrokerPositionStatus";
 import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 
 export abstract class MidaBrokerPosition {
     readonly #id: string;
     readonly #symbol: string;
-    readonly #protection: MidaBrokerPositionProtection;
-    #direction: MidaBrokerPositionDirection;
-    readonly #orders: MidaBrokerOrder[];
     #volume: number;
-    #entryPrice: number;
+    #direction: MidaBrokerPositionDirection;
+    #status: MidaBrokerPositionStatus;
+    readonly #orders: MidaBrokerOrder[];
+    readonly #protection: MidaBrokerPositionProtection;
+    readonly #tags: Set<string>;
     readonly #emitter: MidaEmitter;
 
     protected constructor ({
@@ -27,14 +28,17 @@ export abstract class MidaBrokerPosition {
         volume,
         direction,
         status,
-        deals,
+        orders,
         protection,
     }: MidaBrokerPositionParameters) {
         this.#id = id;
         this.#symbol = symbol;
         this.#volume = volume;
+        this.#direction = direction;
+        this.#status = status;
+        this.#orders = orders;
         this.#protection = protection ?? {};
-        this.#orders = [];
+        this.#tags = new Set();
         this.#emitter = new MidaEmitter();
     }
 
@@ -50,8 +54,20 @@ export abstract class MidaBrokerPosition {
         return this.#volume;
     }
 
+    public get direction (): MidaBrokerPositionDirection {
+        return this.#direction;
+    }
+
+    public get status (): MidaBrokerPositionStatus {
+        return this.#status;
+    }
+
     public get orders (): MidaBrokerOrder[] {
         return this.#orders;
+    }
+
+    public get protection (): MidaBrokerPositionProtection {
+        return this.#protection;
     }
 
     public get firstOrder (): MidaBrokerOrder {
@@ -62,7 +78,49 @@ export abstract class MidaBrokerPosition {
         return this.firstOrder.brokerAccount;
     }
 
-    public abstract addVolume (quantity: number): Promise<MidaBrokerOrder>;
+    public get deals (): MidaBrokerDeal[] {
+        return this.#orders.reduce((totalDeals: MidaBrokerDeal[], order: MidaBrokerOrder) => totalDeals.concat(order.deals), []);
+    }
+
+    public get takeProfit (): number | undefined {
+        return this.#protection.takeProfit;
+    }
+
+    public get stopLoss (): number | undefined {
+        return this.#protection.stopLoss;
+    }
+
+    public get trailingStopLoss (): boolean | undefined {
+        return this.#protection.trailingStopLoss;
+    }
+
+    public get usedMargin (): number {
+        return -1;
+    }
+
+    public get unrealizedGrossProfit (): number {
+        return -1;
+    }
+
+    public get swap (): number {
+        return -1;
+    }
+
+    public get unrealizedCommission (): number {
+        return -1;
+    }
+
+    public get unrealizedNetProfit (): number {
+        return this.unrealizedGrossProfit + this.swap - this.unrealizedCommission;
+    }
+
+    public addVolume (quantity: number): Promise<MidaBrokerOrder> {
+        return this.brokerAccount.placeOrder({
+            purpose: MidaBrokerOrderPurpose.OPEN,
+            positionId: this.#id,
+            volume: quantity,
+        });
+    }
 
     public subtractVolume (quantity: number): Promise<MidaBrokerOrder> {
         return this.brokerAccount.placeOrder({
@@ -94,36 +152,41 @@ export abstract class MidaBrokerPosition {
         this.#emitter.removeEventListener(uuid);
     }
 
+    public abstract modifyProtection (protection: MidaBrokerPositionProtection): Promise<void>;
+
+    public abstract setTakeProfit (takeProfit: number): Promise<void>;
+
     public abstract setStopLoss (stopLoss: number): Promise<void>;
 
     public abstract setTrailingStopLoss (enabled: boolean): Promise<void>;
 
-    public abstract setTakeProfit (takeProfit: number): Promise<void>;
-
-    public abstract modifyProtection (protection: MidaBrokerPositionProtection): Promise<void>;
-
-    protected notifyOrder (order: MidaBrokerOrder): void {
+    protected onOrder (order: MidaBrokerOrder): void {
+        this.#orders.push(order);
         this.#emitter.notifyListeners("order", { order, });
-        order.on("deal", (event: MidaEvent): void => this.notifyDeal(event.descriptor.deal));
     }
 
-    // replace with on order and listen order deals?
-    protected notifyDeal (deal: MidaBrokerDeal): void {
-        const order: MidaBrokerOrder = deal.order;
-
+    protected onDeal (deal: MidaBrokerDeal): void {
         this.#emitter.notifyListeners("deal", { deal, });
 
         if (deal.isClosing) {
             const volumeDifference: number = deal.filledVolume - this.#volume;
 
+            this.#emitter.notifyListeners("volume-close", { quantity: deal.filledVolume, });
+
             if (volumeDifference > 0) {
-                // reverse
+                this.#volume = volumeDifference;
+                this.#direction = MidaBrokerPositionDirection.oppositeOf(this.#direction);
+
+                this.#emitter.notifyListeners("reverse");
             }
-            else if (volumeDifference === 0 && order.filledVolume === deal.requestedVolume) {
-                // position close
+            else if (volumeDifference === 0 && deal.requestedVolume === deal.order.filledVolume) {
+                this.#volume = 0;
+                this.#status = MidaBrokerPositionStatus.CLOSED;
+
+                this.#emitter.notifyListeners("close");
             }
             else {
-                // volume close
+                this.#volume = Math.abs(volumeDifference);
             }
         }
         else {
@@ -135,7 +198,7 @@ export abstract class MidaBrokerPosition {
         switch (deal.status) {
             case MidaBrokerDealStatus.FILLED:
             case MidaBrokerDealStatus.PARTIALLY_FILLED: {
-                this.#emitter.notifyListeners("deal-execute", { deal, });
+                this.#emitter.notifyListeners("deal-done", { deal, });
 
                 break;
             }
@@ -148,7 +211,7 @@ export abstract class MidaBrokerPosition {
         }
     }
 
-    protected notifyProtectionChange (protection: MidaBrokerPositionProtection): void {
+    protected onProtectionChange (protection: MidaBrokerPositionProtection): void {
         this.#emitter.notifyListeners("protection-change", { protection, });
 
         if (typeof protection.takeProfit !== "undefined") {
@@ -162,5 +225,9 @@ export abstract class MidaBrokerPosition {
         if (typeof protection.trailingStopLoss !== "undefined") {
             this.#emitter.notifyListeners("trailing-stop-loss-change", { trailingStopLoss: protection.trailingStopLoss, });
         }
+    }
+
+    protected onSwap (swap: number): void {
+        this.#emitter.notifyListeners("swap", { swap, });
     }
 }

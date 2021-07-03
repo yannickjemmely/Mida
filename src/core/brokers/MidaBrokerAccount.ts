@@ -1,6 +1,7 @@
 import { MidaBroker } from "#brokers/MidaBroker";
+import { MidaBrokerAccountOperativity } from "#brokers/MidaBrokerAccountOperativity";
 import { MidaBrokerAccountParameters } from "#brokers/MidaBrokerAccountParameters";
-import { MidaBrokerAccountType } from "#brokers/MidaBrokerAccountType";
+import { MidaBrokerAccountPositionAccounting } from "#brokers/MidaBrokerAccountPositionAccounting";
 import { MidaBrokerDeal } from "#deals/MidaBrokerDeal";
 import { MidaEvent } from "#events/MidaEvent";
 import { MidaEventListener } from "#events/MidaEventListener";
@@ -9,41 +10,38 @@ import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
 import { MidaBrokerOrderStatus } from "#orders/MidaBrokerOrderStatus";
 import { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
 import { MidaBrokerPosition } from "#positions/MidaBrokerPosition";
+import { MidaSymbolQuotationPrice } from "#quotations/MidaSymbolQuotationPrice";
 import { MidaSymbol } from "#symbols/MidaSymbol";
-import { MidaSymbolPrice } from "#symbols/MidaSymbolPriceType";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 import { GenericObject } from "#utilities/GenericObject";
 
 export abstract class MidaBrokerAccount {
     readonly #id: string;
-    readonly #ownerName: string;
-    readonly #type: MidaBrokerAccountType;
-    readonly #globalLeverage: number;
-    readonly #currency: string;
-    readonly #isHedged: boolean;
-    readonly #stopOutLevel: number;
     readonly #broker: MidaBroker;
+    readonly #ownerName: string;
+    readonly #currency: string;
+    readonly #operativity: MidaBrokerAccountOperativity;
+    readonly #positionAccounting: MidaBrokerAccountPositionAccounting;
+    readonly #indicativeLeverage: number;
     readonly #emitter: MidaEmitter;
 
     protected constructor ({
         id,
-        ownerName,
-        type,
-        globalLeverage,
-        currency,
-        isHedged,
-        stopOutLevel,
         broker,
+        ownerName,
+        currency,
+        operativity,
+        positionAccounting,
+        indicativeLeverage,
     }: MidaBrokerAccountParameters) {
         this.#id = id;
-        this.#ownerName = ownerName;
-        this.#type = type;
-        this.#globalLeverage = globalLeverage;
-        this.#currency = currency;
-        this.#isHedged = isHedged;
-        this.#stopOutLevel = stopOutLevel;
         this.#broker = broker;
+        this.#ownerName = ownerName;
+        this.#currency = currency;
+        this.#operativity = operativity;
+        this.#positionAccounting = positionAccounting;
+        this.#indicativeLeverage = indicativeLeverage;
         this.#emitter = new MidaEmitter();
     }
 
@@ -52,19 +50,14 @@ export abstract class MidaBrokerAccount {
         return this.#id;
     }
 
+    /** The account broker. */
+    public get broker (): MidaBroker {
+        return this.#broker;
+    }
+
     /** The account owner name. */
     public get ownerName (): string {
         return this.#ownerName;
-    }
-
-    /** The account type (demo or real). */
-    public get type (): MidaBrokerAccountType {
-        return this.#type;
-    }
-
-    /** The account global leverage, this is an indicative value: each symbol has its own leverage. */
-    public get globalLeverage (): number {
-        return this.#globalLeverage;
     }
 
     /** The account currency ISO code. */
@@ -72,19 +65,29 @@ export abstract class MidaBrokerAccount {
         return this.#currency;
     }
 
-    /** Indicates if the account is hedged. */
+    /** The account operativity (demo or real). */
+    public get operativity (): MidaBrokerAccountOperativity {
+        return this.#operativity;
+    }
+
+    /** The account position accounting (hedged or netted). */
+    public get positionAccounting (): MidaBrokerAccountPositionAccounting {
+        return this.#positionAccounting;
+    }
+
+    /** The account indicative leverage. */
+    public get indicativeLeverage (): number {
+        return this.#indicativeLeverage;
+    }
+
+    /** Indicates if the account operativity is demo. */
+    public get isDemo (): boolean {
+        return this.operativity === MidaBrokerAccountOperativity.DEMO;
+    }
+
+    /** Indicates if the account position accounting is hedged. */
     public get isHedged (): boolean {
-        return this.#isHedged;
-    }
-
-    /** The account stop out level. */
-    public get stopOutLevel (): number {
-        return this.#stopOutLevel;
-    }
-
-    /** The account broker. */
-    public get broker (): MidaBroker {
-        return this.#broker;
+        return this.#positionAccounting === MidaBrokerAccountPositionAccounting.HEDGED;
     }
 
     /** Used to get the account balance. */
@@ -106,10 +109,22 @@ export abstract class MidaBrokerAccount {
     public abstract getPositions (): Promise<MidaBrokerPosition>;
 
     /**
-     * Used to get an order.
+     * Used to get an order by its id.
      * @param id The order id.
      */
-    public abstract getOrder (id: string): Promise<MidaBrokerOrder | undefined>;
+    public abstract getOrderById (id: string): Promise<MidaBrokerOrder | undefined>;
+
+    /**
+     * Used to get a deal by its id.
+     * @param id The order id.
+     */
+    public abstract getDealById (id: string): Promise<MidaBrokerDeal | undefined>;
+
+    /**
+     * Used to get a position by its id.
+     * @param id The order id.
+     */
+    public abstract getPositionById (id: string): Promise<MidaBrokerPosition | undefined>;
 
     /**
      * Used to place an order.
@@ -136,9 +151,9 @@ export abstract class MidaBrokerAccount {
      * Used to get the most recent periods of a symbol.
      * @param symbol The string representation of the symbol.
      * @param timeframe The periods timeframe.
-     * @param priceType The periods price type.
+     * @param price The periods price.
      */
-    public abstract getSymbolPeriods (symbol: string, timeframe: number, priceType?: MidaSymbolPrice): Promise<MidaSymbolPeriod[]>;
+    public abstract getSymbolPeriods (symbol: string, timeframe: number, price?: MidaSymbolQuotationPrice): Promise<MidaSymbolPeriod[]>;
 
     /**
      * Used to get the latest symbol tick.
@@ -170,16 +185,16 @@ export abstract class MidaBrokerAccount {
 
     /** Used to get the account free margin. */
     public async getFreeMargin (): Promise<number> {
-        const tasks: Promise<number>[] = [ this.getEquity(), this.getUsedMargin(), ];
-        const [ equity, usedMargin, ]: number[] = await Promise.all(tasks);
+        const promises: Promise<number>[] = [ this.getEquity(), this.getUsedMargin(), ];
+        const [ equity, usedMargin, ]: number[] = await Promise.all(promises);
 
         return equity - usedMargin;
     }
 
     /** Used to get the account margin level. */
     public async getMarginLevel (): Promise<number> {
-        const tasks: Promise<number>[] = [ this.getEquity(), this.getUsedMargin(), ];
-        const [ equity, usedMargin, ]: number[] = await Promise.all(tasks);
+        const promises: Promise<number>[] = [ this.getEquity(), this.getUsedMargin(), ];
+        const [ equity, usedMargin, ]: number[] = await Promise.all(promises);
 
         if (usedMargin === 0) {
             return NaN;
@@ -208,7 +223,6 @@ export abstract class MidaBrokerAccount {
         this.#emitter.removeEventListener(uuid);
     }
 
-    // protected notifyListeners (type: "tick", descriptor: { tick: MidaSymbolTick, }): void;
     protected notifyListeners (type: string, descriptor?: GenericObject): void {
         this.#emitter.notifyListeners(type, descriptor);
     }
