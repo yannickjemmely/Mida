@@ -1,22 +1,31 @@
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
-import { MidaBrokerErrorType } from "#brokers/MidaBrokerErrorType";
 import { MidaBrokerParameters } from "#brokers/MidaBrokerParameters";
-import { MidaError } from "#errors/MidaError";
 import { GenericObject } from "#utilities/GenericObject";
 
 /** Represents a broker. */
 export abstract class MidaBroker {
     readonly #name: string;
+    readonly #legalName: string;
     readonly #websiteUri: string;
 
-    protected constructor ({ name, websiteUri, }: MidaBrokerParameters) {
+    protected constructor ({
+        name,
+        legalName,
+        websiteUri,
+    }: MidaBrokerParameters) {
         this.#name = name;
+        this.#legalName = legalName;
         this.#websiteUri = websiteUri;
     }
 
     /** The broker name. */
     public get name (): string {
         return this.#name;
+    }
+
+    /** The broker legal name. */
+    public get legalName (): string {
+        return this.#legalName;
     }
 
     /** The broker website address. */
@@ -30,28 +39,17 @@ export abstract class MidaBroker {
      */
     public abstract login (parameters: GenericObject): Promise<MidaBrokerAccount>;
 
-    /**
-     * Used to login into an account without throwing errors.
-     * @param parameters The login parameters.
-     */
-    public async tryLogin (parameters: GenericObject): Promise<MidaBrokerAccount | undefined> {
-        try {
-            return await this.login(parameters);
-        }
-        catch {
-            return undefined;
-        }
-    }
+    /* *** *** *** Reiryoku Technologies *** *** *** */
 
     static readonly #installedBrokers: Map<string, MidaBroker> = new Map();
 
-    public static get installedBrokers (): readonly MidaBroker[] {
+    public static get installedBrokers (): MidaBroker[] {
         return [ ...MidaBroker.#installedBrokers.values(), ];
     }
 
     public static add (broker: MidaBroker): void {
         if (MidaBroker.#installedBrokers.has(broker.name)) {
-            throw new MidaError({ type: MidaBrokerErrorType.BROKER_ALREADY_INSTALLED, descriptor: { brokerName: broker.name, }, });
+            throw new Error();
         }
 
         MidaBroker.#installedBrokers.set(broker.name, broker);
@@ -61,7 +59,7 @@ export abstract class MidaBroker {
         const broker: MidaBroker | undefined = MidaBroker.#installedBrokers.get(name);
 
         if (!broker) {
-            throw new MidaError({ type: MidaBrokerErrorType.BROKER_NOT_INSTALLED, descriptor: { brokerName: name, }, });
+            throw Error();
         }
 
         return broker.login(parameters);

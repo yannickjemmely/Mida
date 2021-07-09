@@ -20,7 +20,8 @@ export abstract class MidaBrokerAccount {
     readonly #id: string;
     readonly #broker: MidaBroker;
     readonly #ownerName: string;
-    readonly #currency: string;
+    readonly #currencyIso: string;
+    readonly #currencyDigits: number;
     readonly #operativity: MidaBrokerAccountOperativity;
     readonly #positionAccounting: MidaBrokerAccountPositionAccounting;
     readonly #indicativeLeverage: number;
@@ -30,7 +31,8 @@ export abstract class MidaBrokerAccount {
         id,
         broker,
         ownerName,
-        currency,
+        currencyIso,
+        currencyDigits,
         operativity,
         positionAccounting,
         indicativeLeverage,
@@ -38,7 +40,8 @@ export abstract class MidaBrokerAccount {
         this.#id = id;
         this.#broker = broker;
         this.#ownerName = ownerName;
-        this.#currency = currency;
+        this.#currencyIso = currencyIso;
+        this.#currencyDigits = currencyDigits;
         this.#operativity = operativity;
         this.#positionAccounting = positionAccounting;
         this.#indicativeLeverage = indicativeLeverage;
@@ -61,8 +64,13 @@ export abstract class MidaBrokerAccount {
     }
 
     /** The account currency ISO code. */
-    public get currency (): string {
-        return this.#currency;
+    public get currencyIso (): string {
+        return this.#currencyIso;
+    }
+
+    /** The account currency digits. */
+    public get currencyDigits (): number {
+        return this.#currencyDigits;
     }
 
     /** The account operativity (demo or real). */
@@ -100,13 +108,28 @@ export abstract class MidaBrokerAccount {
     public abstract getUsedMargin (): Promise<number>;
 
     /** Used to get the account orders. */
-    public abstract getOrders (): Promise<MidaBrokerOrder[]>;
+    public abstract getOrders (fromTimestamp: number, toTimestamp: number): Promise<MidaBrokerOrder[]>;
+
+    /** Used to get the account pending orders. */
+    public abstract getPendingOrders (): Promise<MidaBrokerOrder[]>;
 
     /** Used to get the account deals. */
-    public abstract getDeals (): Promise<MidaBrokerDeal[]>;
+    public abstract getDeals (fromTimestamp: number, toTimestamp: number): Promise<MidaBrokerDeal[]>;
 
     /** Used to get the account positions. */
-    public abstract getPositions (): Promise<MidaBrokerPosition>;
+    public abstract getPositions (fromTimestamp: number, toTimestamp: number): Promise<MidaBrokerPosition>;
+
+    /** Used to get the account open positions. */
+    public abstract getOpenPositions (): Promise<MidaBrokerPosition[]>;
+
+    /** Used to get the account deposits. */
+    // public abstract getDeposits (): Promise<any[]>;
+
+    /** Used to get the account withdrawals. */
+    // public abstract getWithdrawals (): Promise<any[]>;
+
+    /** Used to get the account owned assets. */
+    // public abstract getOwnedAssets (): Promise<any[]>;
 
     /**
      * Used to get an order by its id.
@@ -226,4 +249,9 @@ export abstract class MidaBrokerAccount {
     protected notifyListeners (type: string, descriptor?: GenericObject): void {
         this.#emitter.notifyListeners(type, descriptor);
     }
+
+    // protected onOrder (): void;
+    // protected onDeal (): void;
+    // protected onDeposit (): void;
+    // protected onWithdraw (): void;
 }

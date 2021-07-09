@@ -15,7 +15,9 @@ export type MidaBrokerAccountParameters = {
     /** The account owner name. */
     ownerName: string;
     /** The account currency ISO code. */
-    currency: string;
+    currencyIso: string;
+    /** The account currency digits. */
+    currencyDigits: number;
     /** The account operativity (demo or real). */
     operativity: MidaBrokerAccountOperativity;
     /** The account position accounting (hedged or netted). */
