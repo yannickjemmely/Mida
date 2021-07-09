@@ -62,7 +62,7 @@ export { MidaBrokerOrderDirection } from "#orders/MidaBrokerOrderType";
 
 export { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
 export { MidaSymbolPeriodParameters } from "#periods/MidaSymbolPeriodParameters";
-export { MidaTimeframeType } from "#periods/MidaTimeframeType";
+export { MidaTimeframe } from "#timeframes/MidaTimeframe";
 
 export { MidaSymbolQuotation } from "#quotations/MidaSymbolQuotation";
 export { MidaSymbolQuotationParameters } from "#quotations/MidaSymbolQuotationParameters";

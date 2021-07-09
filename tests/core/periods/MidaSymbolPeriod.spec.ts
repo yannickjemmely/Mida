@@ -1,5 +1,5 @@
 import { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
-import { MidaTimeframeType } from "#periods/MidaTimeframeType";
+import { MidaTimeframe } from "#timeframes/MidaTimeframe";
 import { MidaSymbolPrice } from "#symbols/MidaSymbolPriceType";
 
 describe("MidaSymbolPeriod", () => {
@@ -12,7 +12,7 @@ describe("MidaSymbolPeriod", () => {
         low: 3,
         close: 25,
         volume: 3232,
-        timeframe: MidaTimeframeType.H4,
+        timeframe: MidaTimeframe.H4,
     });
 
     describe(".ohlc", () => {

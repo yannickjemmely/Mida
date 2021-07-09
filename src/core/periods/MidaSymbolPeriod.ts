@@ -1,5 +1,5 @@
 import { MidaSymbolPeriodParameters } from "#periods/MidaSymbolPeriodParameters";
-import { MidaSymbolPrice } from "#symbols/MidaSymbolPriceType";
+import { MidaSymbolQuotationPrice } from "#quotations/MidaSymbolQuotationPrice";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { IMidaEquatable } from "#utilities/equatable/IMidaEquatable";
 import { GenericObject } from "#utilities/GenericObject";
@@ -8,7 +8,7 @@ import { GenericObject } from "#utilities/GenericObject";
 export class MidaSymbolPeriod implements IMidaEquatable {
     readonly #symbol: string;
     readonly #startTime: Date;
-    readonly #priceType: MidaSymbolPrice;
+    readonly #quotation: MidaSymbolQuotationPrice;
     readonly #open: number;
     readonly #high: number;
     readonly #low: number;
