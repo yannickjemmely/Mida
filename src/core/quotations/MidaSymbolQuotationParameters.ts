@@ -1,4 +1,9 @@
-/** The parameters of the symbol quotation constructor. */
+import { MidaSymbolQuotation } from "#quotations/MidaSymbolQuotation";
+
+/**
+ * The symbol quotation constructor parameters.
+ * @see MidaSymbolQuotation
+ */
 export type MidaSymbolQuotationParameters = {
     symbol: string;
     date: Date;

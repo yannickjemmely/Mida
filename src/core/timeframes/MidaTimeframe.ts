@@ -17,6 +17,8 @@ export namespace MidaTimeframe {
             if (timeframe.startsWith(knownTimeframe)) {
                 // @ts-ignore
                 quantity = Number.parseInt(timeframe.substr(knownTimeframe.length), 10) * knownTimeframes.get(knownTimeframe);
+
+                break;
             }
         }
 
