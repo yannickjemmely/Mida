@@ -5,5 +5,7 @@ import { MidaDate } from "#dates/MidaDate";
  * @see MidaDate
  */
 export type MidaDateParameters = {
+    timestamp?: number;
+    iso?: string;
     date?: Date;
 };

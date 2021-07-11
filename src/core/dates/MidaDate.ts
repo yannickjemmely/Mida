@@ -4,8 +4,27 @@ import { IMidaCloneable } from "#utilities/cloneable/IMidaCloneable";
 export class MidaDate implements IMidaCloneable {
     readonly #date: Date;
 
-    public constructor ({ date, }: MidaDateParameters) {
-        this.#date = new Date();
+    public constructor ({
+        timestamp,
+        iso,
+        date,
+    }: MidaDateParameters) {
+        if (typeof timestamp === "number") {
+            this.#date = new Date(timestamp);
+        }
+        else if (typeof iso === "string") {
+            this.#date = new Date(iso);
+        }
+        else if (typeof date === "object") {
+            this.#date = new Date(date);
+        }
+        else {
+            this.#date = new Date();
+        }
+    }
+
+    public get timestamp (): number {
+        return this.#date.getTime();
     }
 
     public get milliseconds (): number {
@@ -24,11 +43,11 @@ export class MidaDate implements IMidaCloneable {
         return this.#date.getUTCHours();
     }
 
-    public get weekDay (): number {
+    public get day (): number {
         return this.#date.getUTCDay();
     }
 
-    public get monthDay (): number {
+    public get date (): number {
         return this.#date.getUTCDate();
     }
 
@@ -40,15 +59,7 @@ export class MidaDate implements IMidaCloneable {
         return this.#date.toISOString();
     }
 
-    public getMinutesDifference (date: MidaDate): number {
-        return -1;
-    }
-
-    public getDaysDifference (date: MidaDate): number {
-        return -1;
-    }
-
     public clone (): MidaDate {
-        return new MidaDate({ date: this, });
+        return new MidaDate({ date: this.#date, });
     }
 }
