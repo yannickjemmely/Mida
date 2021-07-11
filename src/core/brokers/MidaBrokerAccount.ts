@@ -176,11 +176,7 @@ export abstract class MidaBrokerAccount {
      * @param timeframe The periods timeframe.
      * @param price The periods price.
      */
-<<<<<<< HEAD
     public abstract getSymbolPeriods (symbol: string, timeframe: number, price?: MidaSymbolQuotationPrice): Promise<MidaSymbolPeriod[]>;
-=======
-    public abstract getSymbolPeriods (symbol: string, timeframe: number, priceType?: MidaSymbolQuotationPrice): Promise<MidaSymbolPeriod[]>;
->>>>>>> master
 
     /**
      * Used to get the latest symbol tick.
