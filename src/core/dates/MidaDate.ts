@@ -59,6 +59,14 @@ export class MidaDate implements IMidaCloneable {
         return this.#date.toISOString();
     }
 
+    public toString (): string {
+        return this.toIsoString();
+    }
+
+    public valueOf (): number {
+        return this.timestamp;
+    }
+
     public clone (): MidaDate {
         return new MidaDate({ date: this.#date, });
     }
