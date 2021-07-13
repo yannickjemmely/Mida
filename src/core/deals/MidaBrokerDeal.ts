@@ -20,6 +20,8 @@ export abstract class MidaBrokerDeal {
     readonly #requestDate: Date;
     readonly #executionDate?: Date;
     readonly #rejectionDate?: Date;
+    readonly #closedByDeals: MidaBrokerDeal[];
+    readonly #closedDeals: MidaBrokerDeal[];
     readonly #executionPrice?: number;
     readonly #grossProfit?: number;
     readonly #commission?: number;
@@ -58,6 +60,8 @@ export abstract class MidaBrokerDeal {
         this.#requestDate = new Date(requestDate);
         this.#executionDate = executionDate;
         this.#rejectionDate = rejectionDate;
+        this.#closedByDeals = [];
+        this.#closedDeals = [];
         this.#executionPrice = executionPrice;
         this.#grossProfit = grossProfit;
         this.#commission = commission;
@@ -114,6 +118,14 @@ export abstract class MidaBrokerDeal {
         return this.#rejectionDate ? new Date(this.#rejectionDate) : undefined;
     }
 
+    public get closedByDeals (): MidaBrokerDeal[] | undefined {
+        return [ ...this.#closedByDeals, ];
+    }
+
+    public get closedDeals (): MidaBrokerDeal[] | undefined {
+        return [ ...this.#closedDeals, ];
+    }
+
     public get executionPrice (): number | undefined {
         return this.#executionPrice;
     }
@@ -134,6 +146,10 @@ export abstract class MidaBrokerDeal {
         return this.#rejection;
     }
 
+    public get isOpening (): boolean {
+        return this.#purpose === MidaBrokerDealPurpose.OPEN;
+    }
+
     public get isClosing (): boolean {
         return this.#purpose === MidaBrokerDealPurpose.CLOSE;
     }
@@ -147,7 +163,7 @@ export abstract class MidaBrokerDeal {
         return this.#grossProfit + this.#swap - Math.abs(this.#commission);
     }
 
-    protected onClose (closingDeal: MidaBrokerDeal): void {
-        this.#emitter.notifyListeners("close", { closingDeal, });
+    protected onClose (closedByDeal: MidaBrokerDeal): void {
+        this.#emitter.notifyListeners("close", { closedByDeal, });
     }
 }
