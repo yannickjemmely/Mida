@@ -1,5 +1,5 @@
 export namespace MidaTimeframe {
-    const knownTimeframes: Map<string, number> = new Map([
+    const commonTimeframes: Map<string, number> = new Map([
         [ "S", 1, ],
         [ "M", 60, ],
         [ "H", 3600, ],
@@ -10,13 +10,13 @@ export namespace MidaTimeframe {
     ]);
 
     export function parseTimeframe (timeframe: string): number | undefined {
-        const orderedTimeframes: string[] = [ ...knownTimeframes.keys(), ].sort((a: string, b: string) => a.length - b.length);
+        const orderedTimeframes: string[] = [ ...commonTimeframes.keys(), ].sort((a: string, b: string) => a.length - b.length);
         let quantity: number = NaN;
 
-        for (const knownTimeframe of orderedTimeframes) {
-            if (timeframe.startsWith(knownTimeframe)) {
+        for (const commonTimeframe of orderedTimeframes) {
+            if (timeframe.startsWith(commonTimeframe)) {
                 // @ts-ignore
-                quantity = Number.parseInt(timeframe.substr(knownTimeframe.length), 10) * knownTimeframes.get(knownTimeframe);
+                quantity = Number.parseInt(timeframe.substr(commonTimeframe.length), 10) * commonTimeframes.get(commonTimeframe);
 
                 break;
             }

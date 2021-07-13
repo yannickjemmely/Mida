@@ -10,6 +10,8 @@ export class MidaSymbol {
     readonly #symbol: string;
     readonly #brokerAccount: MidaBrokerAccount;
     readonly #description: string;
+    // readonly #baseAsset: string;
+    // readonly #quoteAsset: string;
     readonly #type: MidaSymbolCategory;
     readonly #digits: number;
     readonly #leverage: number;

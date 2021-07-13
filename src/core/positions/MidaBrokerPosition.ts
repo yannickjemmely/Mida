@@ -114,7 +114,11 @@ export abstract class MidaBrokerPosition {
         return this.unrealizedGrossProfit + this.swap - this.unrealizedCommission;
     }
 
-    public addVolume (quantity: number): Promise<MidaBrokerOrder> {
+    public get tags (): string[] {
+        return [ ...this.#tags, ];
+    }
+
+    public async addVolume (quantity: number): Promise<MidaBrokerOrder> {
         return this.brokerAccount.placeOrder({
             purpose: MidaBrokerOrderPurpose.OPEN,
             positionId: this.#id,
@@ -122,7 +126,7 @@ export abstract class MidaBrokerPosition {
         });
     }
 
-    public subtractVolume (quantity: number): Promise<MidaBrokerOrder> {
+    public async subtractVolume (quantity: number): Promise<MidaBrokerOrder> {
         return this.brokerAccount.placeOrder({
             purpose: MidaBrokerOrderPurpose.CLOSE,
             positionId: this.#id,
@@ -130,12 +134,24 @@ export abstract class MidaBrokerPosition {
         });
     }
 
-    public reverse (): Promise<MidaBrokerOrder> {
+    public async reverse (): Promise<MidaBrokerOrder> {
         return this.subtractVolume(this.#volume * 2);
     }
 
-    public close (): Promise<MidaBrokerOrder> {
+    public async close (): Promise<MidaBrokerOrder> {
         return this.subtractVolume(this.#volume);
+    }
+
+    public addTag (tag: string): void {
+        this.#tags.add(tag);
+    }
+
+    public hasTag (tag: string): boolean {
+        return this.#tags.has(tag);
+    }
+
+    public removeTag (tag: string): void {
+        this.#tags.delete(tag);
     }
 
     public on (type: string): Promise<MidaEvent>

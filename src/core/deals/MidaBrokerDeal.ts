@@ -5,6 +5,7 @@ import { MidaBrokerDealRejection } from "#deals/MidaBrokerDealRejection";
 import { MidaBrokerDealStatus } from "#deals/MidaBrokerDealStatus";
 import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
 import { MidaBrokerPosition } from "#positions/MidaBrokerPosition";
+import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 
 export abstract class MidaBrokerDeal {
     readonly #id: string;
@@ -24,6 +25,7 @@ export abstract class MidaBrokerDeal {
     readonly #commission?: number;
     readonly #swap?: number;
     readonly #rejection?: MidaBrokerDealRejection;
+    readonly #emitter: MidaEmitter;
 
     protected constructor ({
         id,
@@ -61,6 +63,7 @@ export abstract class MidaBrokerDeal {
         this.#commission = commission;
         this.#swap = swap;
         this.#rejection = rejection;
+        this.#emitter = new MidaEmitter();
     }
 
     public get id (): string {
@@ -142,5 +145,9 @@ export abstract class MidaBrokerDeal {
         }
 
         return this.#grossProfit + this.#swap - Math.abs(this.#commission);
+    }
+
+    protected onClose (closingDeal: MidaBrokerDeal): void {
+        this.#emitter.notifyListeners("close", { closingDeal, });
     }
 }
