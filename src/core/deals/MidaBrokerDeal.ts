@@ -172,6 +172,7 @@ export abstract class MidaBrokerDeal {
     }
 
     protected onClose (closedByDeal: MidaBrokerDeal): void {
+        this.#closedByDeals.push(closedByDeal);
         this.#emitter.notifyListeners("close", { closedByDeal, });
     }
 }

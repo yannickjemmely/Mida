@@ -1,5 +1,6 @@
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 import { MidaBrokerDeal } from "#deals/MidaBrokerDeal";
+import { MidaBrokerDealPurpose } from "#deals/MidaBrokerDealPurpose";
 import { MidaBrokerDealStatus } from "#deals/MidaBrokerDealStatus";
 import { MidaEvent } from "#events/MidaEvent";
 import { MidaEventListener } from "#events/MidaEventListener";
@@ -77,6 +78,10 @@ export abstract class MidaBrokerOrder {
 
     public get purpose (): MidaBrokerOrderPurpose {
         return this.#directives.purpose;
+    }
+
+    public get isOpening (): boolean {
+        return this.purpose === MidaBrokerOrderPurpose.OPEN;
     }
 
     public get isClosing (): boolean {
