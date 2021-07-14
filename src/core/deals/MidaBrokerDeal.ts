@@ -119,10 +119,18 @@ export abstract class MidaBrokerDeal {
     }
 
     public get closedByDeals (): MidaBrokerDeal[] | undefined {
+        if (this.isClosing) {
+            return undefined;
+        }
+
         return [ ...this.#closedByDeals, ];
     }
 
     public get closedDeals (): MidaBrokerDeal[] | undefined {
+        if (this.isOpening) {
+            return undefined;
+        }
+
         return [ ...this.#closedDeals, ];
     }
 
@@ -154,13 +162,13 @@ export abstract class MidaBrokerDeal {
         return this.#purpose === MidaBrokerDealPurpose.CLOSE;
     }
 
-    // net profit = gross profit + swap + |commission|
+    // net profit = gross profit + swap + commission
     public get netProfit (): number | undefined {
         if (typeof this.#grossProfit === "undefined" || typeof this.#swap === "undefined" || typeof this.#commission === "undefined") {
             return undefined;
         }
 
-        return this.#grossProfit + this.#swap - Math.abs(this.#commission);
+        return this.#grossProfit + this.#swap + this.#commission;
     }
 
     protected onClose (closedByDeal: MidaBrokerDeal): void {
