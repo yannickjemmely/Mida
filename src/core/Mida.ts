@@ -42,8 +42,7 @@ export { MidaExpertAdvisorParameters } from "#advisors/MidaExpertAdvisorParamete
 export { MidaBroker } from "#brokers/MidaBroker";
 export { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 export { MidaBrokerAccountParameters } from "#brokers/MidaBrokerAccountParameters";
-export { MidaBrokerAccountOperativity } from "#brokers/MidaBrokerAccountType";
-export { MidaBrokerErrorType } from "#brokers/MidaBrokerErrorType";
+export { MidaBrokerAccountOperativity } from "#brokers/MidaBrokerAccountOperativity";
 export { MidaBrokerParameters } from "#brokers/MidaBrokerParameters";
 
 export { MidaError } from "#errors/MidaError";
@@ -55,10 +54,10 @@ export { MidaEventParameters } from "#events/MidaEventParameters";
 
 export { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
 export { MidaBrokerOrderOpenDirectives } from "#orders/MidaBrokerOrderDirectives";
-export { MidaBrokerOrderExecution } from "#orders/MidaBrokerOrderExecutionType";
+export { MidaBrokerOrderExecution } from "#orders/MidaBrokerOrderExecution";
 export { MidaBrokerOrderParameters } from "#orders/MidaBrokerOrderParameters";
-export { MidaBrokerOrderStatus } from "#orders/MidaBrokerOrderStatusType";
-export { MidaBrokerOrderDirection } from "#orders/MidaBrokerOrderType";
+export { MidaBrokerOrderStatus } from "#orders/MidaBrokerOrderStatus";
+export { MidaBrokerOrderDirection } from "#orders/MidaBrokerOrderDirection";
 
 export { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
 export { MidaSymbolPeriodParameters } from "#periods/MidaSymbolPeriodParameters";
@@ -66,11 +65,11 @@ export { MidaTimeframe } from "#timeframes/MidaTimeframe";
 
 export { MidaSymbolQuotation } from "#quotations/MidaSymbolQuotation";
 export { MidaSymbolQuotationParameters } from "#quotations/MidaSymbolQuotationParameters";
-export { MidaSymbolPrice } from "#symbols/MidaSymbolPriceType";
+export { MidaSymbolPrice } from "#symbols/MidaSymbolPrice";
 
 export { MidaSymbol } from "#symbols/MidaSymbol";
 export { MidaSymbolParameters } from "#symbols/MidaSymbolParameters";
-export { MidaSymbolCategory } from "#symbols/MidaSymbolType";
+export { MidaSymbolCategory } from "#symbols/MidaSymbolCategory";
 
 export { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 export { MidaSymbolTickParameters } from "#ticks/MidaSymbolTickParameters";

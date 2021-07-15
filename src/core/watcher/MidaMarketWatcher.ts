@@ -1,5 +1,4 @@
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
-import { MidaBrokerErrorType } from "#brokers/MidaBrokerErrorType";
 import { MidaEvent } from "#events/MidaEvent";
 import { MidaEventListener } from "#events/MidaEventListener";
 import { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
@@ -126,7 +125,7 @@ export class MidaMarketWatcher {
                 }
                 catch (error) {
                     switch (error.type) {
-                        case MidaBrokerErrorType.INVALID_TIMEFRAME:
+                        case "INVALID_TIMEFRAME":
                             return;
 
                         default:

@@ -1,4 +1,4 @@
-import { MidaSymbolPrice } from "#symbols/MidaSymbolPriceType";
+import { MidaSymbolPrice } from "#symbols/MidaSymbolPrice";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 
 // Represents the parameters of the symbol period constructor.

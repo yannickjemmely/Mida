@@ -1,5 +1,5 @@
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
-import { MidaSymbolCategory } from "#symbols/MidaSymbolType";
+import { MidaSymbolCategory } from "#symbols/MidaSymbolCategory";
 
 /** The parameters of the symbol constructor. */
 export type MidaSymbolParameters = {

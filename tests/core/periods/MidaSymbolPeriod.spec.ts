@@ -1,6 +1,6 @@
 import { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
 import { MidaTimeframe } from "#timeframes/MidaTimeframe";
-import { MidaSymbolPrice } from "#symbols/MidaSymbolPriceType";
+import { MidaSymbolPrice } from "#symbols/MidaSymbolPrice";
 
 describe("MidaSymbolPeriod", () => {
     const bidPeriod: MidaSymbolPeriod = new MidaSymbolPeriod({

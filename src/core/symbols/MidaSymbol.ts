@@ -1,6 +1,6 @@
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 import { MidaSymbolParameters } from "#symbols/MidaSymbolParameters";
-import { MidaSymbolCategory } from "#symbols/MidaSymbolType";
+import { MidaSymbolCategory } from "#symbols/MidaSymbolCategory";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 import { GenericObject } from "#utilities/GenericObject";

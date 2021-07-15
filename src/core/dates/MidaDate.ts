@@ -1,3 +1,4 @@
+import * as util from "util";
 import { MidaDateParameters } from "#dates/MidaDateParameters";
 import { IMidaCloneable } from "#utilities/cloneable/IMidaCloneable";
 
@@ -8,7 +9,7 @@ export class MidaDate implements IMidaCloneable {
         timestamp,
         iso,
         date,
-    }: MidaDateParameters) {
+    }: MidaDateParameters = {}) {
         if (typeof timestamp === "number") {
             this.#date = new Date(timestamp);
         }
@@ -69,5 +70,9 @@ export class MidaDate implements IMidaCloneable {
 
     public clone (): MidaDate {
         return new MidaDate({ date: this.#date, });
+    }
+
+    public [util.inspect.custom] (): string {
+        return this.toIsoString();
     }
 }

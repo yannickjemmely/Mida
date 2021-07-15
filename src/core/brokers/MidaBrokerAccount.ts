@@ -10,7 +10,7 @@ import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
 import { MidaBrokerOrderStatus } from "#orders/MidaBrokerOrderStatus";
 import { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
 import { MidaBrokerPosition } from "#positions/MidaBrokerPosition";
-import { MidaSymbolQuotationPrice } from "#quotations/MidaSymbolQuotationPrice";
+import { MidaSymbolPrice } from "#symbols/MidaSymbolPrice";
 import { MidaSymbol } from "#symbols/MidaSymbol";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
@@ -176,7 +176,7 @@ export abstract class MidaBrokerAccount {
      * @param timeframe The periods timeframe.
      * @param price The periods price.
      */
-    public abstract getSymbolPeriods (symbol: string, timeframe: number, price?: MidaSymbolQuotationPrice): Promise<MidaSymbolPeriod[]>;
+    public abstract getSymbolPeriods (symbol: string, timeframe: number, price?: MidaSymbolPrice): Promise<MidaSymbolPeriod[]>;
 
     /**
      * Used to get the latest symbol tick.
@@ -226,11 +226,13 @@ export abstract class MidaBrokerAccount {
         return equity / usedMargin * 100;
     }
 
+    /*
     public async getOrdersByStatus (status: MidaBrokerOrderStatus): Promise<MidaBrokerOrder[]> {
         const orders: MidaBrokerOrder[] = await this.getOrders();
 
         return orders.filter((order: MidaBrokerOrder): boolean => order.status === status);
     }
+    */
 
     public on (type: string): Promise<MidaEvent>
     public on (type: string, listener: MidaEventListener): string
