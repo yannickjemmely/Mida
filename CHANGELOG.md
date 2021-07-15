@@ -1,3 +1,5 @@
+* Create "MidaTimeframe" API for handling common timeframes.
+* Create "MidaDate" API for representing UTC dates.
 * Create async event emitter.
 * Increment tsconfig.json target to es2020.
 * Remove the "getRequiredMargin" method from symbols.
