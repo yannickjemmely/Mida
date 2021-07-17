@@ -149,7 +149,7 @@ export class MidaMarketWatcher {
 
         const previousPeriod: MidaSymbolPeriod = this.#lastPeriods.get(symbol)?.get(timeframe) as MidaSymbolPeriod;
 
-        if (previousPeriod.startTime < lastPeriod.startTime) {
+        if (previousPeriod.startDate.timestamp < lastPeriod.startDate.timestamp) {
             this.#lastPeriods.get(symbol)?.set(timeframe, lastPeriod);
             this.#onPeriod(lastPeriod, previousPeriod);
         }

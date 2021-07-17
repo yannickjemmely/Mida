@@ -1,4 +1,5 @@
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
+import { MidaDate } from "#dates/MidaDate";
 import { MidaBrokerDeal } from "#deals/MidaBrokerDeal";
 import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
 import { MidaBrokerOrderRejection } from "#orders/MidaBrokerOrderRejection";
@@ -10,10 +11,12 @@ export type MidaBrokerOrderParameters = {
     brokerAccount: MidaBrokerAccount;
     directives: MidaBrokerOrderDirectives;
     status: MidaBrokerOrderStatus;
-    requestDate: Date;
-    deals?: MidaBrokerDeal[];
-    filledVolume?: number;
+    requestDate: MidaDate;
+    rejectionDate?: MidaDate;
+    expirationDate?: MidaDate;
+    lastUpdateDate: MidaDate;
     timeInForce: MidaBrokerOrderTimeInForce;
+    deals?: MidaBrokerDeal[];
     rejection?: MidaBrokerOrderRejection;
     isStopOut?: boolean;
 };

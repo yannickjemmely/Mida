@@ -1,3 +1,4 @@
+import { MidaDate } from "#dates/MidaDate";
 import { MidaBrokerDealDirection } from "#deals/MidaBrokerDealDirection";
 import { MidaBrokerDealPurpose } from "#deals/MidaBrokerDealPurpose";
 import { MidaBrokerDealRejection } from "#deals/MidaBrokerDealRejection";
@@ -15,9 +16,9 @@ export type MidaBrokerDealParameters = {
     direction: MidaBrokerDealDirection;
     status: MidaBrokerDealStatus;
     purpose: MidaBrokerDealPurpose;
-    requestDate: Date;
-    executionDate?: Date;
-    rejectionDate?: Date;
+    requestDate: MidaDate;
+    executionDate?: MidaDate;
+    rejectionDate?: MidaDate;
     executionPrice?: number;
     grossProfit?: number;
     commission?: number;

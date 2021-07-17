@@ -1,3 +1,4 @@
+import { MidaDate } from "#dates/MidaDate";
 import { MidaBrokerDealDirection } from "#deals/MidaBrokerDealDirection";
 import { MidaBrokerDealParameters } from "#deals/MidaBrokerDealParameters";
 import { MidaBrokerDealPurpose } from "#deals/MidaBrokerDealPurpose";
@@ -17,9 +18,9 @@ export abstract class MidaBrokerDeal {
     readonly #direction: MidaBrokerDealDirection;
     readonly #status: MidaBrokerDealStatus;
     readonly #purpose: MidaBrokerDealPurpose;
-    readonly #requestDate: Date;
-    readonly #executionDate?: Date;
-    readonly #rejectionDate?: Date;
+    readonly #requestDate: MidaDate;
+    readonly #executionDate?: MidaDate;
+    readonly #rejectionDate?: MidaDate;
     readonly #closedByDeals: MidaBrokerDeal[];
     readonly #closedDeals: MidaBrokerDeal[];
     readonly #executionPrice?: number;
@@ -57,7 +58,7 @@ export abstract class MidaBrokerDeal {
         this.#direction = direction;
         this.#status = status;
         this.#purpose = purpose;
-        this.#requestDate = new Date(requestDate);
+        this.#requestDate = requestDate;
         this.#executionDate = executionDate;
         this.#rejectionDate = rejectionDate;
         this.#closedByDeals = [];
@@ -106,16 +107,16 @@ export abstract class MidaBrokerDeal {
         return this.#purpose;
     }
 
-    public get requestDate (): Date {
-        return new Date(this.#requestDate);
+    public get requestDate (): MidaDate {
+        return this.#requestDate;
     }
 
-    public get executionDate (): Date | undefined {
-        return this.#executionDate ? new Date(this.#executionDate) : undefined;
+    public get executionDate (): MidaDate | undefined {
+        return this.#executionDate;
     }
 
-    public get rejectionDate (): Date | undefined {
-        return this.#rejectionDate ? new Date(this.#rejectionDate) : undefined;
+    public get rejectionDate (): MidaDate | undefined {
+        return this.#rejectionDate;
     }
 
     public get closedByDeals (): MidaBrokerDeal[] | undefined {

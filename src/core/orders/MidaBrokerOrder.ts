@@ -1,7 +1,6 @@
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 import { MidaDate } from "#dates/MidaDate";
 import { MidaBrokerDeal } from "#deals/MidaBrokerDeal";
-import { MidaBrokerDealStatus } from "#deals/MidaBrokerDealStatus";
 import { MidaEvent } from "#events/MidaEvent";
 import { MidaEventListener } from "#events/MidaEventListener";
 import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
@@ -24,9 +23,8 @@ export abstract class MidaBrokerOrder {
     #lastUpdateDate: MidaDate;
     readonly #timeInForce: MidaBrokerOrderTimeInForce;
     readonly #deals: MidaBrokerDeal[];
-    #filledVolume: number;
-    readonly #isStopOut: boolean;
     readonly #rejection?: MidaBrokerOrderRejection;
+    readonly #isStopOut: boolean;
     readonly #emitter: MidaEmitter;
 
     protected constructor ({
@@ -34,8 +32,11 @@ export abstract class MidaBrokerOrder {
         brokerAccount,
         directives,
         status,
+        requestDate,
+        rejectionDate,
+        expirationDate,
+        lastUpdateDate,
         deals,
-        filledVolume,
         timeInForce,
         isStopOut,
     }: MidaBrokerOrderParameters) {
@@ -43,9 +44,12 @@ export abstract class MidaBrokerOrder {
         this.#brokerAccount = brokerAccount;
         this.#directives = { ...directives, };
         this.#status = status;
+        this.#requestDate = requestDate;
+        this.#rejectionDate = rejectionDate;
+        this.#expirationDate = expirationDate;
+        this.#lastUpdateDate = lastUpdateDate;
         this.#timeInForce = timeInForce;
         this.#deals = deals ?? [];
-        this.#filledVolume = filledVolume ?? 0;
         this.#isStopOut = isStopOut ?? false;
         this.#emitter = new MidaEmitter();
     }
@@ -75,7 +79,13 @@ export abstract class MidaBrokerOrder {
     }
 
     public get filledVolume (): number {
-        return this.#filledVolume;
+        let filledVolume: number = 0;
+
+        for (const deal of this.#deals) {
+            filledVolume += deal.filledVolume;
+        }
+
+        return filledVolume;
     }
 
     public get isStopOut (): boolean {
@@ -144,16 +154,6 @@ export abstract class MidaBrokerOrder {
 
     protected onDeal (deal: MidaBrokerDeal): void {
         this.#deals.push(deal);
-
-        switch (deal.status) {
-            case MidaBrokerDealStatus.PARTIALLY_FILLED:
-            case MidaBrokerDealStatus.FILLED: {
-                this.#filledVolume += deal.filledVolume;
-
-                break;
-            }
-        }
-
         this.#emitter.notifyListeners("deal", { deal, });
     }
 }
