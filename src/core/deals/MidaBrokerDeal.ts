@@ -21,8 +21,8 @@ export abstract class MidaBrokerDeal {
     readonly #requestDate: MidaDate;
     readonly #executionDate?: MidaDate;
     readonly #rejectionDate?: MidaDate;
-    readonly #closedByDeals: MidaBrokerDeal[];
-    readonly #closedDeals: MidaBrokerDeal[];
+    readonly #closedByDeals?: MidaBrokerDeal[];
+    readonly #closedDeals?: MidaBrokerDeal[];
     readonly #executionPrice?: number;
     readonly #grossProfit?: number;
     readonly #commission?: number;
@@ -43,6 +43,8 @@ export abstract class MidaBrokerDeal {
         requestDate,
         executionDate,
         rejectionDate,
+        closedByDeals,
+        closedDeals,
         executionPrice,
         grossProfit,
         commission,
@@ -61,8 +63,8 @@ export abstract class MidaBrokerDeal {
         this.#requestDate = requestDate;
         this.#executionDate = executionDate;
         this.#rejectionDate = rejectionDate;
-        this.#closedByDeals = [];
-        this.#closedDeals = [];
+        this.#closedByDeals = closedByDeals;
+        this.#closedDeals = closedDeals;
         this.#executionPrice = executionPrice;
         this.#grossProfit = grossProfit;
         this.#commission = commission;
@@ -120,11 +122,11 @@ export abstract class MidaBrokerDeal {
     }
 
     public get closedByDeals (): MidaBrokerDeal[] | undefined {
-        if (this.isClosing) {
+        if (this.isClosing && this.closedByDeals) {
             return undefined;
         }
 
-        return [ ...this.#closedByDeals, ];
+        return [ ...this.#closedByDeals ?? [], ];
     }
 
     public get closedDeals (): MidaBrokerDeal[] | undefined {
@@ -132,7 +134,7 @@ export abstract class MidaBrokerDeal {
             return undefined;
         }
 
-        return [ ...this.#closedDeals, ];
+        return [ ...this.#closedDeals ?? [], ];
     }
 
     public get executionPrice (): number | undefined {
@@ -173,7 +175,7 @@ export abstract class MidaBrokerDeal {
     }
 
     protected onClose (closedByDeal: MidaBrokerDeal): void {
-        this.#closedByDeals.push(closedByDeal);
+        this.#closedByDeals?.push(closedByDeal);
         this.#emitter.notifyListeners("close", { closedByDeal, });
     }
 }
