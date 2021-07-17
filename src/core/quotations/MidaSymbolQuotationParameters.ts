@@ -1,3 +1,4 @@
+import { MidaDate } from "#dates/MidaDate";
 import { MidaSymbolQuotation } from "#quotations/MidaSymbolQuotation";
 
 /**
@@ -6,7 +7,7 @@ import { MidaSymbolQuotation } from "#quotations/MidaSymbolQuotation";
  */
 export type MidaSymbolQuotationParameters = {
     symbol: string;
-    date: Date;
+    date: MidaDate;
     bid: number;
     ask: number;
 };

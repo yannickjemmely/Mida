@@ -1,3 +1,4 @@
+import { MidaDate } from "#dates/MidaDate";
 import { MidaSymbolQuotation } from "#quotations/MidaSymbolQuotation";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 
@@ -6,7 +7,7 @@ export type MidaSymbolTickParameters = {
     symbol?: string;
     bid?: number;
     ask?: number;
-    date?: Date;
+    date?: MidaDate;
     quotation?: MidaSymbolQuotation;
     previousTick?: MidaSymbolTick;
     nextTick?: MidaSymbolTick;

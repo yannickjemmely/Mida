@@ -10,10 +10,18 @@ describe("MidaDate", () => {
     });
 
     describe(".toIsoString", () => {
-        it("is equal to native date iso string", () => {
+        it("returns string equal to native date iso string", () => {
             const date: Date = new Date();
 
             expect(new MidaDate({ date, }).toIsoString()).toBe(date.toISOString());
+        });
+    });
+
+    describe(".equals", () => {
+        it("returns true when compared to native date", () => {
+            const date: Date = new Date();
+
+            expect(new MidaDate({ date, }).equals(date)).toBe(true);
         });
     });
 });

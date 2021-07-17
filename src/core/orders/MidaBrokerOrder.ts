@@ -1,12 +1,13 @@
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
+import { MidaDate } from "#dates/MidaDate";
 import { MidaBrokerDeal } from "#deals/MidaBrokerDeal";
-import { MidaBrokerDealPurpose } from "#deals/MidaBrokerDealPurpose";
 import { MidaBrokerDealStatus } from "#deals/MidaBrokerDealStatus";
 import { MidaEvent } from "#events/MidaEvent";
 import { MidaEventListener } from "#events/MidaEventListener";
 import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
 import { MidaBrokerOrderParameters } from "#orders/MidaBrokerOrderParameters";
 import { MidaBrokerOrderPurpose } from "#orders/MidaBrokerOrderPurpose";
+import { MidaBrokerOrderRejection } from "#orders/MidaBrokerOrderRejection";
 import { MidaBrokerOrderStatus } from "#orders/MidaBrokerOrderStatus";
 import { MidaBrokerOrderTimeInForce } from "#orders/MidaBrokerOrderTimeInForce";
 import { MidaBrokerPosition } from "#positions/MidaBrokerPosition";
@@ -17,10 +18,15 @@ export abstract class MidaBrokerOrder {
     readonly #brokerAccount: MidaBrokerAccount;
     readonly #directives: MidaBrokerOrderDirectives;
     #status: MidaBrokerOrderStatus;
+    readonly #requestDate: MidaDate;
+    #rejectionDate?: MidaDate;
+    #expirationDate?: MidaDate;
+    #lastUpdateDate: MidaDate;
     readonly #timeInForce: MidaBrokerOrderTimeInForce;
     readonly #deals: MidaBrokerDeal[];
     #filledVolume: number;
     readonly #isStopOut: boolean;
+    readonly #rejection?: MidaBrokerOrderRejection;
     readonly #emitter: MidaEmitter;
 
     protected constructor ({
@@ -116,8 +122,11 @@ export abstract class MidaBrokerOrder {
         this.#emitter.removeEventListener(uuid);
     }
 
+    /* *** *** *** Reiryoku Technologies *** *** *** */
+
     protected onStatusChange (status: MidaBrokerOrderStatus): void {
         this.#status = status;
+
         this.#emitter.notifyListeners("status-change", { status, });
 
         switch (status) {
@@ -126,6 +135,10 @@ export abstract class MidaBrokerOrder {
 
                 break;
             }
+
+            case MidaBrokerOrderStatus.REJECTED: {
+                this.#emitter.notifyListeners("reject");
+            }
         }
     }
 
@@ -133,8 +146,8 @@ export abstract class MidaBrokerOrder {
         this.#deals.push(deal);
 
         switch (deal.status) {
-            case MidaBrokerDealStatus.FILLED:
-            case MidaBrokerDealStatus.PARTIALLY_FILLED: {
+            case MidaBrokerDealStatus.PARTIALLY_FILLED:
+            case MidaBrokerDealStatus.FILLED: {
                 this.#filledVolume += deal.filledVolume;
 
                 break;
@@ -142,20 +155,5 @@ export abstract class MidaBrokerOrder {
         }
 
         this.#emitter.notifyListeners("deal", { deal, });
-
-        switch (deal.status) {
-            case MidaBrokerDealStatus.FILLED:
-            case MidaBrokerDealStatus.PARTIALLY_FILLED: {
-                this.#emitter.notifyListeners("deal-done", { deal, });
-
-                break;
-            }
-
-            case MidaBrokerDealStatus.REJECTED: {
-                this.#emitter.notifyListeners("deal-reject", { deal, });
-
-                break;
-            }
-        }
     }
 }

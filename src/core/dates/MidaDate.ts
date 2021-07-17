@@ -1,8 +1,11 @@
 import * as util from "util";
 import { MidaDateParameters } from "#dates/MidaDateParameters";
 import { IMidaCloneable } from "#utilities/cloneable/IMidaCloneable";
+import { IMidaEquatable } from "#utilities/equatable/IMidaEquatable";
+import { GenericObject } from "#utilities/GenericObject";
 
-export class MidaDate implements IMidaCloneable {
+/** Represents an immutable UTC date. */
+export class MidaDate implements IMidaCloneable, IMidaEquatable {
     readonly #date: Date;
 
     public constructor ({
@@ -70,6 +73,13 @@ export class MidaDate implements IMidaCloneable {
 
     public clone (): MidaDate {
         return new MidaDate({ date: this.#date, });
+    }
+
+    public equals (object: GenericObject): boolean {
+        return (
+            object instanceof MidaDate && object.timestamp === this.timestamp
+            || object instanceof Date && object.getTime() === this.timestamp
+        );
     }
 
     public [util.inspect.custom] (): string {

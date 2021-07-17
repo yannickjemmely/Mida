@@ -2,16 +2,16 @@ import { MidaBroker } from "#brokers/MidaBroker";
 import { MidaBrokerAccountOperativity } from "#brokers/MidaBrokerAccountOperativity";
 import { MidaBrokerAccountParameters } from "#brokers/MidaBrokerAccountParameters";
 import { MidaBrokerAccountPositionAccounting } from "#brokers/MidaBrokerAccountPositionAccounting";
+import { MidaDate } from "#dates/MidaDate";
 import { MidaBrokerDeal } from "#deals/MidaBrokerDeal";
 import { MidaEvent } from "#events/MidaEvent";
 import { MidaEventListener } from "#events/MidaEventListener";
 import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
 import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
-import { MidaBrokerOrderStatus } from "#orders/MidaBrokerOrderStatus";
 import { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
 import { MidaBrokerPosition } from "#positions/MidaBrokerPosition";
-import { MidaSymbolPrice } from "#symbols/MidaSymbolPrice";
 import { MidaSymbol } from "#symbols/MidaSymbol";
+import { MidaSymbolPrice } from "#symbols/MidaSymbolPrice";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 import { GenericObject } from "#utilities/GenericObject";
@@ -19,6 +19,7 @@ import { GenericObject } from "#utilities/GenericObject";
 export abstract class MidaBrokerAccount {
     readonly #id: string;
     readonly #broker: MidaBroker;
+    readonly #creationDate: MidaDate;
     readonly #ownerName: string;
     readonly #currencyIso: string;
     readonly #currencyDigits: number;
@@ -30,6 +31,7 @@ export abstract class MidaBrokerAccount {
     protected constructor ({
         id,
         broker,
+        creationDate,
         ownerName,
         currencyIso,
         currencyDigits,
@@ -39,6 +41,7 @@ export abstract class MidaBrokerAccount {
     }: MidaBrokerAccountParameters) {
         this.#id = id;
         this.#broker = broker;
+        this.#creationDate = creationDate;
         this.#ownerName = ownerName;
         this.#currencyIso = currencyIso;
         this.#currencyDigits = currencyDigits;
@@ -56,6 +59,11 @@ export abstract class MidaBrokerAccount {
     /** The account broker. */
     public get broker (): MidaBroker {
         return this.#broker;
+    }
+
+    /** The account creation date. */
+    public get creationDate (): MidaDate {
+        return this.#creationDate;
     }
 
     /** The account owner name. */

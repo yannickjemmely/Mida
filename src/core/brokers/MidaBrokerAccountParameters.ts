@@ -2,6 +2,7 @@ import { MidaBroker } from "#brokers/MidaBroker";
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 import { MidaBrokerAccountOperativity } from "#brokers/MidaBrokerAccountOperativity";
 import { MidaBrokerAccountPositionAccounting } from "#brokers/MidaBrokerAccountPositionAccounting";
+import { MidaDate } from "#dates/MidaDate";
 
 /**
  * The broker account constructor parameters.
@@ -12,6 +13,8 @@ export type MidaBrokerAccountParameters = {
     id: string;
     /** The account broker. */
     broker: MidaBroker;
+    /** The account creation date. */
+    creationDate: MidaDate;
     /** The account owner name. */
     ownerName: string;
     /** The account currency ISO code. */
