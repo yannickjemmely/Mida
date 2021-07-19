@@ -1,6 +1,5 @@
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 import { MidaBrokerDeal } from "#deals/MidaBrokerDeal";
-import { MidaBrokerDealStatus } from "#deals/MidaBrokerDealStatus";
 import { MidaEvent } from "#events/MidaEvent";
 import { MidaEventListener } from "#events/MidaEventListener";
 import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
@@ -209,21 +208,6 @@ export abstract class MidaBrokerPosition {
             this.#volume += deal.filledVolume;
 
             this.#emitter.notifyListeners("volume-open", { quantity: deal.filledVolume, });
-        }
-
-        switch (deal.status) {
-            case MidaBrokerDealStatus.FILLED:
-            case MidaBrokerDealStatus.PARTIALLY_FILLED: {
-                this.#emitter.notifyListeners("deal-done", { deal, });
-
-                break;
-            }
-
-            case MidaBrokerDealStatus.REJECTED: {
-                this.#emitter.notifyListeners("deal-reject", { deal, });
-
-                break;
-            }
         }
     }
 
