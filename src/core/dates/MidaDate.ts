@@ -19,7 +19,10 @@ export class MidaDate implements IMidaCloneable, IMidaEquatable {
         else if (typeof iso === "string") {
             this.#date = new Date(iso);
         }
-        else if (typeof date === "object") {
+        else if (date instanceof MidaDate) {
+            this.#date = new Date(date.timestamp);
+        }
+        else if (date instanceof Date) {
             this.#date = new Date(date);
         }
         else {

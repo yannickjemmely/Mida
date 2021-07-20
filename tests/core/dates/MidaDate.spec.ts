@@ -18,10 +18,16 @@ describe("MidaDate", () => {
     });
 
     describe(".equals", () => {
-        it("returns true when compared to native date", () => {
+        it("returns true when compared to instance of native date", () => {
             const date: Date = new Date();
 
             expect(new MidaDate({ date, }).equals(date)).toBe(true);
+        });
+
+        it("returns true when compared to different instance of same class", () => {
+            const date: MidaDate = new MidaDate();
+
+            expect(date.equals(new MidaDate({ date, }))).toBe(true);
         });
     });
 });
