@@ -1,3 +1,4 @@
+import { MidaAssetDeclaration } from "#assets/MidaAssetDeclaration";
 import { MidaBroker } from "#brokers/MidaBroker";
 import { MidaBrokerAccountOperativity } from "#brokers/MidaBrokerAccountOperativity";
 import { MidaBrokerAccountParameters } from "#brokers/MidaBrokerAccountParameters";
@@ -122,10 +123,10 @@ export abstract class MidaBrokerAccount {
     public abstract getPendingOrders (): Promise<MidaBrokerOrder[]>;
 
     /** Used to get the account deals. */
-    public abstract getDeals (fromTimestamp: number, toTimestamp: number): Promise<MidaBrokerDeal[]>;
+    public abstract getDeals (fromUtcTimestamp: number, toUtcTimestamp: number): Promise<MidaBrokerDeal[]>;
 
     /** Used to get the account positions. */
-    public abstract getPositions (fromTimestamp: number, toTimestamp: number): Promise<MidaBrokerPosition>;
+    public abstract getPositions (fromUtcTimestamp: number, toUtcTimestamp: number): Promise<MidaBrokerPosition>;
 
     /** Used to get the account open positions. */
     public abstract getOpenPositions (): Promise<MidaBrokerPosition[]>;
@@ -137,7 +138,7 @@ export abstract class MidaBrokerAccount {
     // public abstract getWithdrawals (): Promise<any[]>;
 
     /** Used to get the account owned assets. */
-    // public abstract getOwnedAssets (): Promise<any[]>;
+    public abstract getOwnedAssets (): Promise<MidaAssetDeclaration[]>;
 
     /**
      * Used to get an order by its id.
