@@ -3,6 +3,7 @@
     <img src="images/logo.svg" alt="Mida" width="358px">
 </p>
 <br>
+** !!! WORK IN PROGRESS !!! **
 
 A JavaScript framework to easily operate in global financial markets.
 
@@ -13,13 +14,6 @@ Mida is designed to:
 - Analyze markets and prices with indicators and analysis interfaces.
 
 Furthermore, Mida is free and open source, join the [Discord community](https://discord.gg/cKyWTUsr3q).
-
-## Installation
-The easiest way to start out with Mida is cloning the sample project.
-```console
-git clone https://github.com/Reiryoku-Technologies/Mida-Boilerplate.git
-```
-The project contains an example of broker login and Bitcoin price/ticks listener.
 
 ## Usage
 Note: this project is work in progress, part of this API has not been implemented yet.
@@ -37,11 +31,13 @@ const myAccount = await MidaBroker.login("cTrader", {
 });
 ```
 
+For cTrader, to get the information above you have to create your own application at [https://connect.spotware.com](https://connect.spotware.com).
+
 ### Broker orders and positions
 How top open a long position for Bitcoin against USD.
 
 ```javascript
-const {MidaBrokerOrderType} = require("@reiryoku/mida");
+const { MidaBrokerOrderType } = require("@reiryoku/mida");
 
 const myOrder = await myAccount.placeOrder({
     symbol: "BTCUSD",
