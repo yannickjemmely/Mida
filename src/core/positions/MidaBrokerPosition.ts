@@ -181,12 +181,14 @@ export abstract class MidaBrokerPosition {
     }
 
     protected onDeal (deal: MidaBrokerDeal): void {
+        const filledVolume = deal.filledVolume;
+
         this.#emitter.notifyListeners("deal", { deal, });
 
         if (deal.isClosing) {
-            const volumeDifference: number = deal.filledVolume - this.#volume;
+            const volumeDifference: number = filledVolume - this.#volume;
 
-            this.#emitter.notifyListeners("volume-close", { quantity: deal.filledVolume, });
+            this.#emitter.notifyListeners("volume-close", { quantity: filledVolume, });
 
             if (volumeDifference > 0) {
                 this.#volume = volumeDifference;
@@ -205,24 +207,24 @@ export abstract class MidaBrokerPosition {
             }
         }
         else {
-            this.#volume += deal.filledVolume;
+            this.#volume += filledVolume;
 
-            this.#emitter.notifyListeners("volume-open", { quantity: deal.filledVolume, });
+            this.#emitter.notifyListeners("volume-open", { quantity: filledVolume, });
         }
     }
 
     protected onProtectionChange (protection: MidaBrokerPositionProtection): void {
         this.#emitter.notifyListeners("protection-change", { protection, });
 
-        if (typeof protection.takeProfit !== "undefined") {
+        if (Number.isFinite(protection.takeProfit)) {
             this.#emitter.notifyListeners("take-profit-change", { takeProfit: protection.takeProfit, });
         }
 
-        if (typeof protection.stopLoss !== "undefined") {
+        if (Number.isFinite(protection.stopLoss)) {
             this.#emitter.notifyListeners("stop-loss-change", { stopLoss: protection.stopLoss, });
         }
 
-        if (typeof protection.trailingStopLoss !== "undefined") {
+        if (Number.isFinite(protection.trailingStopLoss)) {
             this.#emitter.notifyListeners("trailing-stop-loss-change", { trailingStopLoss: protection.trailingStopLoss, });
         }
     }

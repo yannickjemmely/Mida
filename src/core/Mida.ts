@@ -20,11 +20,13 @@ class Mida {
     }
 
     public static use (plugin: MidaPlugin, options?: GenericObject): void {
-        if (!plugin || Mida.isPluginInstalled(plugin.id)) {
+        const pluginId = plugin?.id;
+
+        if (!pluginId || Mida.isPluginInstalled(pluginId)) {
             return;
         }
 
-        Mida.#installedPlugins.set(plugin.id, plugin);
+        Mida.#installedPlugins.set(pluginId, plugin);
         plugin.install(Mida.#pluginActions, options);
     }
 
