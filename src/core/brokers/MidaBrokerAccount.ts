@@ -123,10 +123,10 @@ export abstract class MidaBrokerAccount {
     public abstract getPendingOrders (): Promise<MidaBrokerOrder[]>;
 
     /** Used to get the account deals. */
-    public abstract getDeals (fromUtcTimestamp: number, toUtcTimestamp: number): Promise<MidaBrokerDeal[]>;
+    public abstract getDeals (fromTimestamp: number, toTimestamp: number): Promise<MidaBrokerDeal[]>;
 
     /** Used to get the account positions. */
-    public abstract getPositions (fromUtcTimestamp: number, toUtcTimestamp: number): Promise<MidaBrokerPosition>;
+    public abstract getPositions (fromTimestamp: number, toTimestamp: number): Promise<MidaBrokerPosition>;
 
     /** Used to get the account open positions. */
     public abstract getOpenPositions (): Promise<MidaBrokerPosition[]>;

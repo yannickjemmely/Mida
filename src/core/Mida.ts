@@ -45,7 +45,10 @@ export { MidaBroker } from "#brokers/MidaBroker";
 export { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 export { MidaBrokerAccountParameters } from "#brokers/MidaBrokerAccountParameters";
 export { MidaBrokerAccountOperativity } from "#brokers/MidaBrokerAccountOperativity";
+export { MidaBrokerAccountPositionAccounting } from "#brokers/MidaBrokerAccountPositionAccounting";
 export { MidaBrokerParameters } from "#brokers/MidaBrokerParameters";
+
+export { MidaDate } from "#dates/MidaDate";
 
 export { MidaError } from "#errors/MidaError";
 export { MidaErrorParameters } from "#errors/MidaErrorParameters";

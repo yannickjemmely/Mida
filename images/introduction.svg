@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1275" height="535">
+    <g fill="none" fill-rule="evenodd">
+        <path fill="#FFF" d="M-120-521h2173V794H-120z"/>
+        <rect width="144" height="68" x="82.5" y="223.5" fill="#D8D8D8" stroke="#979797" rx="8"/>
+        <path fill="#F2F2F2" stroke="#D9D9D9" d="M434.5 82.5h395v370h-395z"/>
+        <text fill="#000" font-family="HelveticaNeue, Helvetica Neue" font-size="24" letter-spacing="1.125">
+            <tspan x="101" y="266">Mida API</tspan>
+        </text>
+        <rect width="182" height="68" x="540.5" y="329.5" fill="#D8D8D8" stroke="#979797" rx="8"/>
+        <rect width="182" height="68" x="540.5" y="137.5" fill="#D8D8D8" stroke="#979797" rx="8"/>
+        <text fill="#000" font-family="HelveticaNeue, Helvetica Neue" font-size="24" letter-spacing="1.125">
+            <tspan x="586" y="181">Brokers</tspan>
+        </text>
+        <text fill="#000" font-family="HelveticaNeue, Helvetica Neue" font-size="24" letter-spacing="1.125">
+            <tspan x="567" y="373">Exchanges</tspan>
+        </text>
+        <rect width="155" height="68" x="1037.5" y="223.5" fill="#D8D8D8" stroke="#979797" rx="8"/>
+        <text fill="#000" font-family="HelveticaNeue, Helvetica Neue" font-size="24" letter-spacing="1.125">
+            <tspan x="1067" y="266">Markets</tspan>
+        </text>
+        <path stroke="#979797" stroke-linecap="square" d="M263.5 258.5h101"/>
+        <path fill="#979797" fill-rule="nonzero" d="m523.939 171.26-5.736 8.268-1.92-3.51-151.543 82.92-.439.24-.48-.877.439-.24 151.543-82.92-1.92-3.509 10.056-.372Z"/>
+        <path fill="#979797" fill-rule="nonzero" d="m364.858 258.307.417.276 151.403 99.82 2.203-3.339 5.036 8.711-9.99-1.197 2.201-3.339-151.403-99.822-.418-.275.55-.835ZM989 254l9 4.5-9 4.5v-4.001L896 259v-1l93-.001V254Z"/>
+        <path stroke="#979797" stroke-linecap="square" d="M739.5 171.5 896 258M739.5 363.5 896 259"/>
+    </g>
+</svg>
