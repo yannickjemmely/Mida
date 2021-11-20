@@ -19,7 +19,6 @@ Furthermore, Mida is free and open source, join the [Discord community](https://
 <p align="center"> 
     <img src="images/introduction.svg" alt="" width="860px">
 </p>
-<br>
 
 ## Usage
 Note: this project is work in progress, part of this API has not been implemented yet.
