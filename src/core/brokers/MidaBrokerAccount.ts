@@ -1,5 +1,4 @@
 import { MidaAsset } from "#assets/MidaAsset";
-import { MidaAssetDeclaration } from "#assets/MidaAssetDeclaration";
 import { MidaBroker } from "#brokers/MidaBroker";
 import { MidaBrokerAccountOperativity } from "#brokers/MidaBrokerAccountOperativity";
 import { MidaBrokerAccountParameters } from "#brokers/MidaBrokerAccountParameters";
@@ -139,10 +138,7 @@ export abstract class MidaBrokerAccount {
     // public abstract getWithdrawals (): Promise<any[]>;
 
     /** Used to get the account available assets. */
-    public abstract getAvailableAssets (): Promise<MidaAsset[]>;
-
-    /** Used to get the account owned assets. */
-    public abstract getOwnedAssets (): Promise<MidaAssetDeclaration[]>;
+    public abstract getAssets (): Promise<MidaAsset[]>;
 
     /**
      * Used to get an order by its id.
@@ -168,7 +164,7 @@ export abstract class MidaBrokerAccount {
      */
     public abstract placeOrder (directives: MidaBrokerOrderDirectives): Promise<MidaBrokerOrder>;
 
-    /** Used to get the account symbols. */
+    /** Used to get the account available symbols. */
     public abstract getSymbols (): Promise<string[]>;
 
     /**

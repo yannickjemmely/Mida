@@ -3,7 +3,6 @@
     <img src="images/logo.svg" alt="Mida" width="358px">
 </p>
 <br>
-** !!! WORK IN PROGRESS !!! **
 
 A JavaScript framework to easily operate in global financial markets.
 
@@ -26,21 +25,25 @@ Note: this project is work in progress, part of this API has not been implemente
 ### Broker account login
 How to login into a cTrader broker account.
 ```javascript
-const { MidaBroker } = require("@reiryoku/mida");
+const { Mida, MidaBroker } = require("@reiryoku/mida");
 
+// Use the Mida cTrader plugin
+Mida.use(require("@reiryoku/mida-ctrader"));
+
+// Login into any cTrader broker account
 const myAccount = await MidaBroker.login("cTrader", {
     clientId: "",
     clientSecret: "",
     accessToken: "",
-    accountId: "",
+    cTraderBrokerAccountId: "",
 });
 ```
 
-For cTrader, to get the information above you have to create your own application at [https://connect.spotware.com](https://connect.spotware.com).
+For cTrader, to get `clientId`, `clientSecret` and `accessToken` you have to create an account on
+[cTrader Open API](https://connect.spotware.com), the process is simple and free.
 
 ### Broker orders and positions
 How top open a long position for Bitcoin against USD.
-
 ```javascript
 const { MidaBrokerOrderType } = require("@reiryoku/mida");
 
@@ -55,7 +58,6 @@ console.log(myOrder.openPrice);
 ```
 
 How to open a short position for EUR against USD.
-
 ```javascript
 const {MidaBrokerOrderType} = require("@reiryoku/mida");
 
@@ -107,8 +109,8 @@ catch (error) {
 }
 ```
 
-In case you don't want to handle errors you can use `tryPlaceOrder` which returns `undefined` in case of error.
-
+In case you don't want to handle errors you can use `tryPlaceOrder` which returns `undefined` if the
+order has not been placed for any reason.
 ```javascript
 const myOrder = await myAccount.tryPlaceOrder({
     symbol: "#AAPL",
