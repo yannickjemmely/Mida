@@ -41,6 +41,11 @@ export { Mida };
 export { MidaExpertAdvisor } from "#advisors/MidaExpertAdvisor";
 export { MidaExpertAdvisorParameters } from "#advisors/MidaExpertAdvisorParameters";
 
+export { MidaAsset } from "#assets/MidaAsset";
+export { MidaAssetDeclaration } from "#assets/MidaAssetDeclaration";
+export { MidaAssetDeclarationParameters } from "#assets/MidaAssetDeclarationParameters";
+export { MidaAssetParameters } from "#assets/MidaAssetParameters";
+
 export { MidaBroker } from "#brokers/MidaBroker";
 export { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 export { MidaBrokerAccountParameters } from "#brokers/MidaBrokerAccountParameters";

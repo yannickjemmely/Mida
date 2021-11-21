@@ -148,6 +148,8 @@ export abstract class MidaBrokerOrder {
 
             case MidaBrokerOrderStatus.REJECTED: {
                 this.#emitter.notifyListeners("reject");
+
+                break;
             }
         }
     }

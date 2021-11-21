@@ -1,3 +1,4 @@
+import { MidaAsset } from "#assets/MidaAsset";
 import { MidaAssetDeclaration } from "#assets/MidaAssetDeclaration";
 import { MidaBroker } from "#brokers/MidaBroker";
 import { MidaBrokerAccountOperativity } from "#brokers/MidaBrokerAccountOperativity";
@@ -136,6 +137,9 @@ export abstract class MidaBrokerAccount {
 
     /** Used to get the account withdrawals. */
     // public abstract getWithdrawals (): Promise<any[]>;
+
+    /** Used to get the account available assets. */
+    public abstract getAvailableAssets (): Promise<MidaAsset[]>;
 
     /** Used to get the account owned assets. */
     public abstract getOwnedAssets (): Promise<MidaAssetDeclaration[]>;
