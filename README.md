@@ -45,12 +45,12 @@ For cTrader, to get `clientId`, `clientSecret` and `accessToken` you have to cre
 ### Broker orders and positions
 How top open a long position for Bitcoin against USD.
 ```javascript
-const { MidaBrokerOrderType } = require("@reiryoku/mida");
+const { MidaBrokerOrderDirection } = require("@reiryoku/mida");
 
 const myOrder = await myAccount.placeOrder({
     symbol: "BTCUSD",
-    type: MidaBrokerOrderType.BUY,
-    lots: 1,
+    type: MidaBrokerOrderDirection.BUY,
+    volume: 1,
 });
 
 console.log(myOrder.id);
@@ -59,12 +59,12 @@ console.log(myOrder.openPrice);
 
 How to open a short position for EUR against USD.
 ```javascript
-const {MidaBrokerOrderType} = require("@reiryoku/mida");
+const { MidaBrokerOrderDirection } = require("@reiryoku/mida");
 
 const myOrder = await myAccount.placeOrder({
     symbol: "EURUSD",
-    type: MidaBrokerOrderType.SELL,
-    lots: 0.1,
+    type: MidaBrokerOrderDirection.SELL,
+    volume: 0.1,
 });
 
 console.log(myOrder.id);
@@ -76,7 +76,7 @@ console.log(myOrder.openPrice);
 How to open a short position for Apple stocks with errors handler.
 ```javascript
 const {
-    MidaBrokerOrderType,
+    MidaBrokerOrderDirection,
     MidaBrokerErrorType,
 } = require("@reiryoku/mida");
 
@@ -85,8 +85,8 @@ let myOrder;
 try {
     myOrder = await myAccount.placeOrder({
         symbol: "#AAPL",
-        type: MidaBrokerOrderType.SELL,
-        lots: 1,
+        type: MidaBrokerOrderDirection.SELL,
+        volume: 1,
     });
 }
 catch (error) {
@@ -149,23 +149,25 @@ if (placeOrderObstacles.includes(MidaBrokerErrorType.NOT_ENOUGH_MONEY)) {
 
 How to open a long position for GBP against USD with stop loss and take profit.
 ```javascript
-const { MidaBrokerOrderType } = require("@reiryoku/mida");
+const { MidaBrokerOrderDirection } = require("@reiryoku/mida");
 
 const symbol = "GBPUSD";
 const lastBid = await myAccount.getSymbolBid(symbol);
 const myOrder = await myAccount.placeOrder({
     symbol,
-    type: MidaBrokerOrderType.BUY,
-    lots: 0.1,
-    stopLoss: lastBid - 0.0010, // <= SL 10 pips
-    takeProfit: lastBid + 0.0030, // <= TP 30 pips
+    type: MidaBrokerOrderDirection.BUY,
+    volume: 0.1,
+    protection: {
+        stopLoss: lastBid - 0.0010, // <= SL 10 pips
+        takeProfit: lastBid + 0.0030, // <= TP 30 pips
+    },
 });
 ```
 
 </details>
 
 ### Symbols
-How to retrieve all symbols supported by your broker.
+How to retrieve all symbols available for your broker account.
 ```javascript
 const symbols = await myAccount.getSymbols(); // => string[]
 
@@ -203,20 +205,22 @@ How to listen the ticks of a symbol.
 const symbol = await myAccount.getSymbol("#GME");
 
 await symbol.watch();
+
 symbol.on("tick", (event) => {
     const tick = event.descriptor.tick;
     
-    console.log(`GameStop share price is now ${tick.bid} dollars.`);
+    console.log(`GameStop share price is now ${tick.bid} dollars`);
 });
 
 // or
 
 await myAccount.watchSymbol("#GME");
+
 myAccount.on("tick", (event) => {
     const tick = event.descriptor.tick;
     
     if (tick.symbol === "#GME") {
-        console.log(`GameStop share price is now ${tick.bid} dollars.`);
+        console.log(`GameStop share price is now ${tick.bid} dollars`);
     }
 });
 ```
