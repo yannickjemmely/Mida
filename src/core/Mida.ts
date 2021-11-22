@@ -55,6 +55,13 @@ export { MidaBrokerParameters } from "#brokers/MidaBrokerParameters";
 
 export { MidaDate } from "#dates/MidaDate";
 
+export { MidaBrokerDeal } from "#deals/MidaBrokerDeal";
+export { MidaBrokerDealDirection } from "#deals/MidaBrokerDealDirection";
+export { MidaBrokerDealParameters } from "#deals/MidaBrokerDealParameters";
+export { MidaBrokerDealPurpose } from "#deals/MidaBrokerDealPurpose";
+export { MidaBrokerDealRejection } from "#deals/MidaBrokerDealRejection";
+export { MidaBrokerDealStatus } from "#deals/MidaBrokerDealStatus";
+
 export { MidaError } from "#errors/MidaError";
 export { MidaErrorParameters } from "#errors/MidaErrorParameters";
 
