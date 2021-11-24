@@ -8,7 +8,7 @@ import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
 import { MidaBrokerPosition } from "#positions/MidaBrokerPosition";
 import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 
-export abstract class MidaBrokerDeal {
+export class MidaBrokerDeal {
     readonly #id: string;
     readonly #order: MidaBrokerOrder;
     readonly #position?: MidaBrokerPosition;
@@ -30,7 +30,7 @@ export abstract class MidaBrokerDeal {
     readonly #rejection?: MidaBrokerDealRejection;
     readonly #emitter: MidaEmitter;
 
-    protected constructor ({
+    public constructor ({
         id,
         order,
         position,
@@ -121,14 +121,16 @@ export abstract class MidaBrokerDeal {
         return this.#rejectionDate;
     }
 
+    // ### OPTIONAL SUPPORT
     public get closedByDeals (): MidaBrokerDeal[] | undefined {
-        if (this.isClosing && this.closedByDeals) {
+        if (this.isClosing) {
             return undefined;
         }
 
         return [ ...this.#closedByDeals ?? [], ];
     }
 
+    // ### OPTIONAL SUPPORT
     public get closedDeals (): MidaBrokerDeal[] | undefined {
         if (this.isOpening) {
             return undefined;
@@ -174,6 +176,9 @@ export abstract class MidaBrokerDeal {
         return this.#grossProfit + this.#swap + this.#commission;
     }
 
+    /* *** *** *** Reiryoku Technologies *** *** *** */
+
+    // ### OPTIONAL SUPPORT, INVOKE FROM IMPLEMENTATION
     protected onClose (closedByDeal: MidaBrokerDeal): void {
         this.#closedByDeals?.push(closedByDeal);
         this.#emitter.notifyListeners("close", { closedByDeal, });

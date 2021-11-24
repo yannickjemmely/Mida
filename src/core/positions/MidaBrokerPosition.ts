@@ -78,7 +78,13 @@ export abstract class MidaBrokerPosition {
     }
 
     public get deals (): MidaBrokerDeal[] {
-        return this.#orders.reduce((totalDeals: MidaBrokerDeal[], order: MidaBrokerOrder) => totalDeals.concat(order.deals), []);
+        const deals = [];
+
+        for (const order of this.orders) {
+            deals.push(...order.deals);
+        }
+
+        return deals;
     }
 
     public get takeProfit (): number | undefined {
@@ -110,7 +116,7 @@ export abstract class MidaBrokerPosition {
     }
 
     public get unrealizedNetProfit (): number {
-        return this.unrealizedGrossProfit + this.swap - this.unrealizedCommission;
+        return this.unrealizedGrossProfit + this.swap + this.unrealizedCommission;
     }
 
     public get tags (): string[] {
@@ -167,6 +173,8 @@ export abstract class MidaBrokerPosition {
         this.#emitter.removeEventListener(uuid);
     }
 
+    /* *** *** *** Reiryoku Technologies *** *** *** */
+
     public abstract modifyProtection (protection: MidaBrokerPositionProtection): Promise<void>;
 
     public abstract setTakeProfit (takeProfit: number): Promise<void>;
@@ -175,11 +183,13 @@ export abstract class MidaBrokerPosition {
 
     public abstract setTrailingStopLoss (enabled: boolean): Promise<void>;
 
+    // ### INVOKE FROM IMPLEMENTATION
     protected onOrder (order: MidaBrokerOrder): void {
         this.#orders.push(order);
         this.#emitter.notifyListeners("order", { order, });
     }
 
+    // ### INVOKE FROM IMPLEMENTATION
     protected onDeal (deal: MidaBrokerDeal): void {
         const filledVolume = deal.filledVolume;
 
@@ -187,6 +197,7 @@ export abstract class MidaBrokerPosition {
 
         if (deal.isClosing) {
             const volumeDifference: number = filledVolume - this.#volume;
+            const order = deal.order;
 
             this.#emitter.notifyListeners("volume-close", { quantity: filledVolume, });
 
@@ -196,7 +207,7 @@ export abstract class MidaBrokerPosition {
 
                 this.#emitter.notifyListeners("reverse");
             }
-            else if (volumeDifference === 0 && deal.requestedVolume === deal.order.filledVolume) {
+            else if (volumeDifference === 0 && order.directives.volume === order.filledVolume) {
                 this.#volume = 0;
                 this.#status = MidaBrokerPositionStatus.CLOSED;
 
@@ -213,6 +224,7 @@ export abstract class MidaBrokerPosition {
         }
     }
 
+    // ### INVOKE FROM IMPLEMENTATION
     protected onProtectionChange (protection: MidaBrokerPositionProtection): void {
         this.#emitter.notifyListeners("protection-change", { protection, });
 
@@ -229,6 +241,7 @@ export abstract class MidaBrokerPosition {
         }
     }
 
+    // ### OPTIONAL SUPPORT, INVOKE FROM IMPLEMENTATION
     protected onSwap (swap: number): void {
         this.#emitter.notifyListeners("swap", { swap, });
     }
