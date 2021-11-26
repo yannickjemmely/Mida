@@ -123,7 +123,7 @@ export class MidaMarketWatcher {
                 try {
                     await this.#checkTimeframe(symbol, timeframe);
                 }
-                catch (error) {
+                catch (error: any) {
                     switch (error.type) {
                         case "INVALID_TIMEFRAME":
                             return;
