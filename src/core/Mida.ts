@@ -70,7 +70,7 @@ export { MidaEventListener } from "#events/MidaEventListener";
 export { MidaEventParameters } from "#events/MidaEventParameters";
 
 export { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
-export { MidaBrokerOrderOpenDirectives } from "#orders/MidaBrokerOrderDirectives";
+export { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
 export { MidaBrokerOrderExecution } from "#orders/MidaBrokerOrderExecution";
 export { MidaBrokerOrderParameters } from "#orders/MidaBrokerOrderParameters";
 export { MidaBrokerOrderStatus } from "#orders/MidaBrokerOrderStatus";
@@ -98,6 +98,8 @@ export { MidaPluginParameters } from "#plugins/MidaPluginParameters";
 export { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 
 export { GenericObject } from "#utilities/GenericObject";
+
+export { MidaUtilities } from "#utilities/MidaUtilities";
 
 export { MidaMarketWatcher } from "#watcher/MidaMarketWatcher";
 export { MidaMarketWatcherParameters } from "#watcher/MidaMarketWatcherParameters";

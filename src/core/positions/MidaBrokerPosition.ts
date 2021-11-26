@@ -173,8 +173,6 @@ export abstract class MidaBrokerPosition {
         this.#emitter.removeEventListener(uuid);
     }
 
-    /* *** *** *** Reiryoku Technologies *** *** *** */
-
     public abstract modifyProtection (protection: MidaBrokerPositionProtection): Promise<void>;
 
     public abstract setTakeProfit (takeProfit: number): Promise<void>;
@@ -183,13 +181,11 @@ export abstract class MidaBrokerPosition {
 
     public abstract setTrailingStopLoss (enabled: boolean): Promise<void>;
 
-    // ### INVOKE FROM IMPLEMENTATION
     protected onOrder (order: MidaBrokerOrder): void {
         this.#orders.push(order);
         this.#emitter.notifyListeners("order", { order, });
     }
 
-    // ### INVOKE FROM IMPLEMENTATION
     protected onDeal (deal: MidaBrokerDeal): void {
         const filledVolume = deal.filledVolume;
 
@@ -224,7 +220,6 @@ export abstract class MidaBrokerPosition {
         }
     }
 
-    // ### INVOKE FROM IMPLEMENTATION
     protected onProtectionChange (protection: MidaBrokerPositionProtection): void {
         this.#emitter.notifyListeners("protection-change", { protection, });
 
@@ -241,7 +236,6 @@ export abstract class MidaBrokerPosition {
         }
     }
 
-    // ### OPTIONAL SUPPORT, INVOKE FROM IMPLEMENTATION
     protected onSwap (swap: number): void {
         this.#emitter.notifyListeners("swap", { swap, });
     }

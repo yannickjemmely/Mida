@@ -132,9 +132,6 @@ export abstract class MidaBrokerOrder {
         this.#emitter.removeEventListener(uuid);
     }
 
-    /* *** *** *** Reiryoku Technologies *** *** *** */
-
-    // ### INVOKE FROM IMPLEMENTATION
     protected onStatusChange (status: MidaBrokerOrderStatus): void {
         this.#status = status;
 
@@ -155,7 +152,6 @@ export abstract class MidaBrokerOrder {
         }
     }
 
-    // ### INVOKE FROM IMPLEMENTATION
     protected onDeal (deal: MidaBrokerDeal): void {
         this.#deals.push(deal);
         this.#emitter.notifyListeners("deal", { deal, });

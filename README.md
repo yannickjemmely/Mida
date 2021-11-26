@@ -1,6 +1,6 @@
 <br>
 <p align="center"> 
-    <img src="images/logo.svg" alt="Mida" width="358px">
+    <img src="images/logo.svg" alt="Mida" width="412px">
 </p>
 <br>
 
@@ -13,11 +13,6 @@ Mida is designed to:
 - Analyze markets and prices with indicators and analysis interfaces.
 
 Furthermore, Mida is free and open source, join the [Discord community](https://discord.gg/cKyWTUsr3q).
-
-<br>
-<p align="center"> 
-    <img src="images/introduction.svg" alt="" width="860px">
-</p>
 
 ## Usage
 Note: this project is work in progress, part of this API has not been implemented yet.

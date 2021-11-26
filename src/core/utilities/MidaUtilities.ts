@@ -1,4 +1,5 @@
 import { GenericObject } from "#utilities/GenericObject";
+import { v1 as uuidV1 } from "uuid";
 
 export class MidaUtilities {
     private constructor () {
@@ -78,5 +79,9 @@ export class MidaUtilities {
     // Used to get what percentage of a number a number is.
     public static getWhatPercentageOf (subject: number, whatPercentage: number): number {
         return whatPercentage / subject * 100;
+    }
+
+    public static generateUuid (): string {
+        return uuidV1();
     }
 }

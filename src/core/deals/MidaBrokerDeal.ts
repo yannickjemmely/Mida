@@ -121,7 +121,6 @@ export class MidaBrokerDeal {
         return this.#rejectionDate;
     }
 
-    // ### OPTIONAL SUPPORT
     public get closedByDeals (): MidaBrokerDeal[] | undefined {
         if (this.isClosing) {
             return undefined;
@@ -130,7 +129,6 @@ export class MidaBrokerDeal {
         return [ ...this.#closedByDeals ?? [], ];
     }
 
-    // ### OPTIONAL SUPPORT
     public get closedDeals (): MidaBrokerDeal[] | undefined {
         if (this.isOpening) {
             return undefined;
@@ -176,9 +174,6 @@ export class MidaBrokerDeal {
         return this.#grossProfit + this.#swap + this.#commission;
     }
 
-    /* *** *** *** Reiryoku Technologies *** *** *** */
-
-    // ### OPTIONAL SUPPORT, INVOKE FROM IMPLEMENTATION
     protected onClose (closedByDeal: MidaBrokerDeal): void {
         this.#closedByDeals?.push(closedByDeal);
         this.#emitter.notifyListeners("close", { closedByDeal, });
