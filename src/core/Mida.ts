@@ -95,6 +95,12 @@ export { MidaPlugin } from "#plugins/MidaPlugin";
 export { MidaPluginActions } from "#plugins/MidaPluginActions";
 export { MidaPluginParameters } from "#plugins/MidaPluginParameters";
 
+export { MidaBrokerPosition } from "#positions/MidaBrokerPosition";
+export { MidaBrokerPositionDirection } from "#positions/MidaBrokerPositionDirection";
+export { MidaBrokerPositionParameters } from "#positions/MidaBrokerPositionParameters";
+export { MidaBrokerPositionProtection } from "#positions/MidaBrokerPositionProtection";
+export { MidaBrokerPositionStatus } from "#positions/MidaBrokerPositionStatus";
+
 export { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 
 export { GenericObject } from "#utilities/GenericObject";

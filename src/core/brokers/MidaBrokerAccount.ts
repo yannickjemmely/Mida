@@ -191,7 +191,7 @@ export abstract class MidaBrokerAccount {
      * Used to get the latest symbol tick.
      * @param symbol The string representation of the symbol.
      */
-    public abstract getSymbolLastTick (symbol: string): Promise<MidaSymbolTick | undefined>;
+    public abstract getSymbolLastTick (symbol: string): Promise<MidaSymbolTick>;
 
     /**
      * Used to get the latest symbol bid quote.
