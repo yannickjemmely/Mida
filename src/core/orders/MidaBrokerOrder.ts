@@ -23,7 +23,8 @@ export abstract class MidaBrokerOrder {
     #lastUpdateDate: MidaDate;
     readonly #timeInForce: MidaBrokerOrderTimeInForce;
     readonly #deals: MidaBrokerDeal[];
-    readonly #rejection?: MidaBrokerOrderRejection;
+    #position?: MidaBrokerPosition;
+    #rejection?: MidaBrokerOrderRejection;
     readonly #isStopOut: boolean;
     readonly #emitter: MidaEmitter;
 
@@ -70,12 +71,60 @@ export abstract class MidaBrokerOrder {
         return this.#status;
     }
 
+    public get requestDate (): MidaDate {
+        return this.#requestDate;
+    }
+
+    public get rejectionDate (): MidaDate | undefined {
+        return this.#rejectionDate;
+    }
+
+    protected set rejectionDate (rejectionDate: MidaDate | undefined) {
+        this.#rejectionDate = rejectionDate;
+    }
+
+    public get expirationDate (): MidaDate | undefined {
+        return this.#expirationDate;
+    }
+
+    protected set expirationDate (expirationDate: MidaDate | undefined) {
+        this.#expirationDate = expirationDate;
+    }
+
+    public get lastUpdateDate (): MidaDate {
+        return this.#lastUpdateDate;
+    }
+
+    protected set lastUpdateDate (lastUpdateDate: MidaDate) {
+        this.#lastUpdateDate = lastUpdateDate;
+    }
+
     public get timeInForce (): MidaBrokerOrderTimeInForce {
         return this.#timeInForce;
     }
 
     public get deals (): MidaBrokerDeal[] {
         return [ ...this.#deals, ];
+    }
+
+    public get position (): MidaBrokerPosition | undefined {
+        return this.#position;
+    }
+
+    protected set position (position: MidaBrokerPosition | undefined) {
+        this.#position = position;
+    }
+
+    public get rejection (): MidaBrokerOrderRejection | undefined {
+        return this.#rejection;
+    }
+
+    protected set rejection (rejection: MidaBrokerOrderRejection | undefined) {
+        this.#rejection = rejection;
+    }
+
+    public get isStopOut (): boolean {
+        return this.#isStopOut;
     }
 
     public get filledVolume (): number {
@@ -86,10 +135,6 @@ export abstract class MidaBrokerOrder {
         }
 
         return filledVolume;
-    }
-
-    public get isStopOut (): boolean {
-        return this.#isStopOut;
     }
 
     public get purpose (): MidaBrokerOrderPurpose {
@@ -108,16 +153,6 @@ export abstract class MidaBrokerOrder {
         return this.#deals[this.#deals.length - 1];
     }
 
-    public get position (): MidaBrokerPosition | undefined {
-        for (const deal of this.#deals) {
-            if (deal.position) {
-                return deal.position;
-            }
-        }
-
-        return undefined;
-    }
-
     public on (type: string): Promise<MidaEvent>
     public on (type: string, listener: MidaEventListener): string
     public on (type: string, listener?: MidaEventListener): Promise<MidaEvent> | string {
@@ -131,6 +166,8 @@ export abstract class MidaBrokerOrder {
     public removeEventListener (uuid: string): void {
         this.#emitter.removeEventListener(uuid);
     }
+
+    /* *** *** *** Reiryoku Technologies *** *** *** */
 
     protected onStatusChange (status: MidaBrokerOrderStatus): void {
         this.#status = status;

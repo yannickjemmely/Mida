@@ -16,6 +16,7 @@ import { MidaSymbolPrice } from "#symbols/MidaSymbolPrice";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 import { GenericObject } from "#utilities/GenericObject";
+import { MidaMarketWatcher } from "#watcher/MidaMarketWatcher";
 
 export abstract class MidaBrokerAccount {
     readonly #id: string;
@@ -207,7 +208,8 @@ export abstract class MidaBrokerAccount {
 
     /**
      * Used to watch the ticks of a symbol.
-     * Do not use this method directly, use a market watcher instead.
+     * Recommended to not use this method directly, use a market watcher instead.
+     * @link MidaMarketWatcher
      * @param symbol The string representation of the symbol.
      */
     public abstract watchSymbolTicks (symbol: string): Promise<void>;
@@ -217,16 +219,14 @@ export abstract class MidaBrokerAccount {
 
     /** Used to get the account free margin. */
     public async getFreeMargin (): Promise<number> {
-        const promises: Promise<number>[] = [ this.getEquity(), this.getUsedMargin(), ];
-        const [ equity, usedMargin, ]: number[] = await Promise.all(promises);
+        const [ equity, usedMargin, ]: number[] = await Promise.all([ this.getEquity(), this.getUsedMargin(), ]);
 
         return equity - usedMargin;
     }
 
     /** Used to get the account margin level. */
     public async getMarginLevel (): Promise<number> {
-        const promises: Promise<number>[] = [ this.getEquity(), this.getUsedMargin(), ];
-        const [ equity, usedMargin, ]: number[] = await Promise.all(promises);
+        const [ equity, usedMargin, ]: number[] = await Promise.all([ this.getEquity(), this.getUsedMargin(), ]);
 
         if (usedMargin === 0) {
             return NaN;
@@ -234,14 +234,6 @@ export abstract class MidaBrokerAccount {
 
         return equity / usedMargin * 100;
     }
-
-    /*
-    public async getOrdersByStatus (status: MidaBrokerOrderStatus): Promise<MidaBrokerOrder[]> {
-        const orders: MidaBrokerOrder[] = await this.getOrders();
-
-        return orders.filter((order: MidaBrokerOrder): boolean => order.status === status);
-    }
-    */
 
     public on (type: string): Promise<MidaEvent>
     public on (type: string, listener: MidaEventListener): string

@@ -16,7 +16,7 @@ export namespace MidaTimeframe {
         for (const commonTimeframe of orderedTimeframes) {
             if (timeframe.startsWith(commonTimeframe)) {
                 // @ts-ignore
-                quantity = Number.parseInt(timeframe.substr(commonTimeframe.length), 10) * commonTimeframes.get(commonTimeframe);
+                quantity = Number.parseInt(timeframe.substring(commonTimeframe.length), 10) * commonTimeframes.get(commonTimeframe);
 
                 break;
             }

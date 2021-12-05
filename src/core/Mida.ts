@@ -19,15 +19,15 @@ class Mida {
         return [ ...Mida.#installedPlugins.values(), ];
     }
 
-    public static use (plugin: MidaPlugin, options?: GenericObject): void {
-        const pluginId = plugin?.id;
+    public static use (plugin: MidaPlugin | any /* Avoids a warning on non-TS projects using Mida */, options?: GenericObject): void {
+        const pluginId: string | undefined = plugin?.id;
 
         if (!pluginId || Mida.isPluginInstalled(pluginId)) {
             return;
         }
 
-        Mida.#installedPlugins.set(pluginId, plugin);
         plugin.install(Mida.#pluginActions, options);
+        Mida.#installedPlugins.set(pluginId, plugin);
     }
 
     public static isPluginInstalled (id: string): boolean {
@@ -70,23 +70,26 @@ export { MidaEventListener } from "#events/MidaEventListener";
 export { MidaEventParameters } from "#events/MidaEventParameters";
 
 export { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
+export { MidaBrokerOrderDirection } from "#orders/MidaBrokerOrderDirection";
 export { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
 export { MidaBrokerOrderExecution } from "#orders/MidaBrokerOrderExecution";
 export { MidaBrokerOrderParameters } from "#orders/MidaBrokerOrderParameters";
+export { MidaBrokerOrderPurpose } from "#orders/MidaBrokerOrderPurpose";
+export { MidaBrokerOrderRejection } from "#orders/MidaBrokerOrderRejection";
 export { MidaBrokerOrderStatus } from "#orders/MidaBrokerOrderStatus";
-export { MidaBrokerOrderDirection } from "#orders/MidaBrokerOrderDirection";
+export { MidaBrokerOrderTimeInForce } from "#orders/MidaBrokerOrderTimeInForce";
 
 export { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
 export { MidaSymbolPeriodParameters } from "#periods/MidaSymbolPeriodParameters";
-export { MidaTimeframe } from "#timeframes/MidaTimeframe";
 
 export { MidaSymbolQuotation } from "#quotations/MidaSymbolQuotation";
 export { MidaSymbolQuotationParameters } from "#quotations/MidaSymbolQuotationParameters";
-export { MidaSymbolPrice } from "#symbols/MidaSymbolPrice";
 
 export { MidaSymbol } from "#symbols/MidaSymbol";
-export { MidaSymbolParameters } from "#symbols/MidaSymbolParameters";
 export { MidaSymbolCategory } from "#symbols/MidaSymbolCategory";
+export { MidaSymbolParameters } from "#symbols/MidaSymbolParameters";
+export { MidaSymbolPrice } from "#symbols/MidaSymbolPrice";
+export { MidaSymbolTradeStatus } from "#symbols/MidaSymbolTradeStatus";
 
 export { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 export { MidaSymbolTickParameters } from "#ticks/MidaSymbolTickParameters";
@@ -104,6 +107,8 @@ export { MidaBrokerPositionStatus } from "#positions/MidaBrokerPositionStatus";
 export { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 
 export { GenericObject } from "#utilities/GenericObject";
+
+export { MidaTimeframe } from "#timeframes/MidaTimeframe";
 
 export { MidaUtilities } from "#utilities/MidaUtilities";
 

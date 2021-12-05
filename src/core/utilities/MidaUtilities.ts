@@ -84,4 +84,20 @@ export class MidaUtilities {
     public static generateUuid (): string {
         return uuidV1();
     }
+
+    public static truncate (subject: number, precision: number): number {
+        const parts: string[] = subject.toString().split(".");
+
+        if (parts.length === 1) {
+            return subject;
+        }
+
+        const newDecimal: string = parts[1].substring(0, precision);
+
+        if (newDecimal.length === 0) {
+            return subject;
+        }
+
+        return Number(`${parts[0]}.${newDecimal}`);
+    }
 }

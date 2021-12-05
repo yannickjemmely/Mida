@@ -5,6 +5,7 @@ import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
 import { MidaBrokerOrderRejection } from "#orders/MidaBrokerOrderRejection";
 import { MidaBrokerOrderStatus } from "#orders/MidaBrokerOrderStatus";
 import { MidaBrokerOrderTimeInForce } from "#orders/MidaBrokerOrderTimeInForce";
+import { MidaBrokerPosition } from "#positions/MidaBrokerPosition";
 
 export type MidaBrokerOrderParameters = {
     id: string;
@@ -17,6 +18,7 @@ export type MidaBrokerOrderParameters = {
     lastUpdateDate: MidaDate;
     timeInForce: MidaBrokerOrderTimeInForce;
     deals?: MidaBrokerDeal[];
+    position?: MidaBrokerPosition;
     rejection?: MidaBrokerOrderRejection;
     isStopOut?: boolean;
 };
