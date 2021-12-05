@@ -107,7 +107,7 @@ export abstract class MidaBrokerPosition {
         return -1;
     }
 
-    public get swap (): number {
+    public get unrealizedSwap (): number {
         return -1;
     }
 
@@ -116,7 +116,7 @@ export abstract class MidaBrokerPosition {
     }
 
     public get unrealizedNetProfit (): number {
-        return this.unrealizedGrossProfit + this.swap + this.unrealizedCommission;
+        return this.unrealizedGrossProfit + this.unrealizedSwap + this.unrealizedCommission;
     }
 
     public get tags (): string[] {
@@ -179,7 +179,9 @@ export abstract class MidaBrokerPosition {
 
     public abstract setStopLoss (stopLoss: number): Promise<void>;
 
-    public abstract setTrailingStopLoss (enabled: boolean): Promise<void>;
+    public abstract setTrailingStopLoss (trailingStopLoss: boolean): Promise<void>;
+
+    /* *** *** *** Reiryoku Technologies *** *** *** */
 
     protected onOrder (order: MidaBrokerOrder): void {
         this.#orders.push(order);
@@ -221,8 +223,6 @@ export abstract class MidaBrokerPosition {
     }
 
     protected onProtectionChange (protection: MidaBrokerPositionProtection): void {
-        this.#emitter.notifyListeners("protection-change", { protection, });
-
         if (Number.isFinite(protection.takeProfit)) {
             this.#emitter.notifyListeners("take-profit-change", { takeProfit: protection.takeProfit, });
         }
@@ -234,6 +234,8 @@ export abstract class MidaBrokerPosition {
         if (Number.isFinite(protection.trailingStopLoss)) {
             this.#emitter.notifyListeners("trailing-stop-loss-change", { trailingStopLoss: protection.trailingStopLoss, });
         }
+
+        this.#emitter.notifyListeners("protection-change", { protection, });
     }
 
     protected onSwap (swap: number): void {
