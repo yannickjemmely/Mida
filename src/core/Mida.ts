@@ -15,7 +15,7 @@ class Mida {
         // Silence is golden.
     }
 
-    public static get installedPlugins (): readonly MidaPlugin[] {
+    public static get installedPlugins (): MidaPlugin[] {
         return [ ...Mida.#installedPlugins.values(), ];
     }
 
@@ -64,6 +64,7 @@ export { MidaBrokerDealStatus } from "#deals/MidaBrokerDealStatus";
 
 export { MidaError } from "#errors/MidaError";
 export { MidaErrorParameters } from "#errors/MidaErrorParameters";
+export { MidaUnsupportedOperationError } from "#errors/MidaUnsupportedOperationError";
 
 export { MidaEvent } from "#events/MidaEvent";
 export { MidaEventListener } from "#events/MidaEventListener";

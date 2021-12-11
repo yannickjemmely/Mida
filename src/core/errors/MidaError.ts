@@ -12,7 +12,7 @@ export class MidaError extends Error {
     }: MidaErrorParameters) {
         super(message);
 
-        this.name = "MidaError";
+        this.name = this.constructor.name;
         this.#type = type;
         this.#descriptor = { ...descriptor, };
     }

@@ -18,8 +18,6 @@ export abstract class MidaBrokerOrder {
     readonly #directives: MidaBrokerOrderDirectives;
     #status: MidaBrokerOrderStatus;
     readonly #requestDate: MidaDate;
-    #rejectionDate?: MidaDate;
-    #expirationDate?: MidaDate;
     #lastUpdateDate: MidaDate;
     readonly #timeInForce: MidaBrokerOrderTimeInForce;
     readonly #deals: MidaBrokerDeal[];
@@ -34,8 +32,6 @@ export abstract class MidaBrokerOrder {
         directives,
         status,
         requestDate,
-        rejectionDate,
-        expirationDate,
         lastUpdateDate,
         deals,
         timeInForce,
@@ -46,8 +42,6 @@ export abstract class MidaBrokerOrder {
         this.#directives = { ...directives, };
         this.#status = status;
         this.#requestDate = requestDate;
-        this.#rejectionDate = rejectionDate;
-        this.#expirationDate = expirationDate;
         this.#lastUpdateDate = lastUpdateDate;
         this.#timeInForce = timeInForce;
         this.#deals = deals ?? [];
@@ -73,22 +67,6 @@ export abstract class MidaBrokerOrder {
 
     public get requestDate (): MidaDate {
         return this.#requestDate;
-    }
-
-    public get rejectionDate (): MidaDate | undefined {
-        return this.#rejectionDate;
-    }
-
-    protected set rejectionDate (rejectionDate: MidaDate | undefined) {
-        this.#rejectionDate = rejectionDate;
-    }
-
-    public get expirationDate (): MidaDate | undefined {
-        return this.#expirationDate;
-    }
-
-    protected set expirationDate (expirationDate: MidaDate | undefined) {
-        this.#expirationDate = expirationDate;
     }
 
     public get lastUpdateDate (): MidaDate {
@@ -153,6 +131,8 @@ export abstract class MidaBrokerOrder {
         return this.#deals[this.#deals.length - 1];
     }
 
+    public abstract cancel (): Promise<void>;
+
     public on (type: string): Promise<MidaEvent>
     public on (type: string, listener: MidaEventListener): string
     public on (type: string, listener?: MidaEventListener): Promise<MidaEvent> | string {
@@ -170,11 +150,22 @@ export abstract class MidaBrokerOrder {
     /* *** *** *** Reiryoku Technologies *** *** *** */
 
     protected onStatusChange (status: MidaBrokerOrderStatus): void {
+        if (this.#status === status) {
+            return;
+        }
+
+        const previousStatus: MidaBrokerOrderStatus = this.#status;
         this.#status = status;
 
-        this.#emitter.notifyListeners("status-change", { status, });
+        this.#emitter.notifyListeners("status-change", { status, previousStatus, });
 
         switch (status) {
+            case MidaBrokerOrderStatus.PARTIALLY_FILLED: {
+                this.#emitter.notifyListeners("partial-fill");
+
+                break;
+            }
+
             case MidaBrokerOrderStatus.FILLED: {
                 this.#emitter.notifyListeners("fill");
 

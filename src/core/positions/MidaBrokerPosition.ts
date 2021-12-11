@@ -62,7 +62,7 @@ export abstract class MidaBrokerPosition {
     }
 
     public get orders (): MidaBrokerOrder[] {
-        return this.#orders;
+        return [ ...this.#orders, ];
     }
 
     public get protection (): MidaBrokerPositionProtection {
@@ -99,28 +99,30 @@ export abstract class MidaBrokerPosition {
         return this.#protection.trailingStopLoss;
     }
 
-    public get usedMargin (): number {
-        return -1;
-    }
-
-    public get unrealizedGrossProfit (): number {
-        return -1;
-    }
-
-    public get unrealizedSwap (): number {
-        return -1;
-    }
-
-    public get unrealizedCommission (): number {
-        return -1;
-    }
-
-    public get unrealizedNetProfit (): number {
-        return this.unrealizedGrossProfit + this.unrealizedSwap + this.unrealizedCommission;
-    }
-
     public get tags (): string[] {
         return [ ...this.#tags, ];
+    }
+
+    public abstract getUsedMargin (): Promise<number>;
+
+    public abstract getUnrealizedGrossProfit (): Promise<number>;
+
+    public abstract getUnrealizedSwap (): Promise<number>;
+
+    public abstract getUnrealizedCommission (): Promise<number>;
+
+    public async getUnrealizedNetProfit (): Promise<number> {
+        const [
+            unrealizedGrossProfit,
+            unrealizedSwap,
+            unrealizedCommission,
+        ] = await Promise.all([
+            this.getUnrealizedGrossProfit(),
+            this.getUnrealizedSwap(),
+            this.getUnrealizedCommission(),
+        ]);
+
+        return unrealizedGrossProfit + unrealizedSwap + unrealizedCommission;
     }
 
     public async addVolume (quantity: number): Promise<MidaBrokerOrder> {

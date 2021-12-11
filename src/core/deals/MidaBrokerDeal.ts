@@ -8,7 +8,7 @@ import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
 import { MidaBrokerPosition } from "#positions/MidaBrokerPosition";
 import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 
-export class MidaBrokerDeal {
+export abstract class MidaBrokerDeal {
     readonly #id: string;
     readonly #order: MidaBrokerOrder;
     readonly #position?: MidaBrokerPosition;
@@ -30,7 +30,7 @@ export class MidaBrokerDeal {
     readonly #rejection?: MidaBrokerDealRejection;
     readonly #emitter: MidaEmitter;
 
-    public constructor ({
+    protected constructor ({
         id,
         order,
         position,

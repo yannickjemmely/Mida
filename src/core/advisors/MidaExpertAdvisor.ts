@@ -47,8 +47,8 @@ export abstract class MidaExpertAdvisor {
         return [ ...this.#orders.values(), ];
     }
 
-    protected get capturedTicks (): readonly MidaSymbolTick[] {
-        return this.#capturedTicks;
+    protected get capturedTicks (): MidaSymbolTick[] {
+        return [ ...this.#capturedTicks, ];
     }
 
     protected get marketWatcher (): MidaMarketWatcher {
@@ -68,12 +68,22 @@ export abstract class MidaExpertAdvisor {
             }
             catch (error) {
                 console.log(error);
+
+                return;
             }
         }
 
         this.#isOperative = true;
 
-        await this.onStart();
+        try {
+            await this.onStart();
+        }
+        catch (error) {
+            console.log(error);
+
+            return;
+        }
+
         this.notifyListeners("start");
     }
 

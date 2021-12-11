@@ -13,8 +13,6 @@ export type MidaBrokerOrderParameters = {
     directives: MidaBrokerOrderDirectives;
     status: MidaBrokerOrderStatus;
     requestDate: MidaDate;
-    rejectionDate?: MidaDate;
-    expirationDate?: MidaDate;
     lastUpdateDate: MidaDate;
     timeInForce: MidaBrokerOrderTimeInForce;
     deals?: MidaBrokerDeal[];

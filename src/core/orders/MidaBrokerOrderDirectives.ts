@@ -4,16 +4,13 @@ import { MidaBrokerPositionProtection } from "#positions/MidaBrokerPositionProte
 
 export type MidaBrokerOrderOpenDirectives = {
     purpose: MidaBrokerOrderPurpose.OPEN;
-    symbol: string;
-    direction: MidaBrokerOrderDirection;
+    symbol?: string;
+    direction?: MidaBrokerOrderDirection;
     volume: number;
     limit?: number;
     stop?: number;
     protection?: MidaBrokerPositionProtection;
-} | {
-    purpose: MidaBrokerOrderPurpose.OPEN;
-    positionId: string;
-    volume: number;
+    positionId?: string;
 };
 
 export type MidaBrokerOrderCloseDirectives = {
