@@ -199,6 +199,12 @@ export abstract class MidaExpertAdvisor {
     #onPeriod (period: MidaSymbolPeriod, previousPeriod: MidaSymbolPeriod): void {
         try {
             this.onPeriod(period, previousPeriod);
+        }
+        catch (error) {
+            console.log(error);
+        }
+
+        try {
             this.onCandlestick(period, previousPeriod);
         }
         catch (error) {
