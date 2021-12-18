@@ -147,7 +147,7 @@ export abstract class MidaExpertAdvisor {
     }
 
     protected addOrder (order: MidaBrokerOrder): void {
-        this.#orders.set(order.id, order);
+        // Silence is golden.
     }
 
     protected notifyListeners (type: string, descriptor?: GenericObject): void {

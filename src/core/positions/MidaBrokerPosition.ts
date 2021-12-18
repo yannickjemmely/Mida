@@ -199,15 +199,13 @@ export abstract class MidaBrokerPosition {
             const volumeDifference: number = filledVolume - this.#volume;
             const order = deal.order;
 
-            this.#emitter.notifyListeners("volume-close", { quantity: filledVolume, });
-
             if (volumeDifference > 0) {
                 this.#volume = volumeDifference;
                 this.#direction = MidaBrokerPositionDirection.oppositeOf(this.#direction);
 
                 this.#emitter.notifyListeners("reverse");
             }
-            else if (volumeDifference === 0 && order.directives.volume === order.filledVolume) {
+            else if (volumeDifference === 0 && order.isFilled) {
                 this.#volume = 0;
                 this.#status = MidaBrokerPositionStatus.CLOSED;
 
@@ -216,6 +214,8 @@ export abstract class MidaBrokerPosition {
             else {
                 this.#volume = Math.abs(volumeDifference);
             }
+
+            this.#emitter.notifyListeners("volume-close", { quantity: filledVolume, });
         }
         else {
             this.#volume += filledVolume;
@@ -225,7 +225,9 @@ export abstract class MidaBrokerPosition {
     }
 
     protected onProtectionChange (protection: MidaBrokerPositionProtection): void {
-        if (Number.isFinite(protection.takeProfit)) {
+        if (Number.isFinite(protection.takeProfit) && this.#protection.takeProfit !== protection.takeProfit) {
+            this.#protection.takeProfit = protection.takeProfit;
+
             this.#emitter.notifyListeners("take-profit-change", { takeProfit: protection.takeProfit, });
         }
 

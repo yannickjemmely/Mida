@@ -1,19 +1,25 @@
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 import { MidaDate } from "#dates/MidaDate";
 import { MidaBrokerDeal } from "#deals/MidaBrokerDeal";
-import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
+import { MidaBrokerOrderPurpose } from "#orders/MidaBrokerOrderPurpose";
 import { MidaBrokerOrderRejection } from "#orders/MidaBrokerOrderRejection";
 import { MidaBrokerOrderStatus } from "#orders/MidaBrokerOrderStatus";
 import { MidaBrokerOrderTimeInForce } from "#orders/MidaBrokerOrderTimeInForce";
 import { MidaBrokerPosition } from "#positions/MidaBrokerPosition";
+import { MidaBrokerOrderDirection } from "./MidaBrokerOrderDirection";
 
 export type MidaBrokerOrderParameters = {
-    id: string;
+    id?: string;
     brokerAccount: MidaBrokerAccount;
-    directives: MidaBrokerOrderDirectives;
+    symbol: string;
+    requestedVolume: number;
+    direction: MidaBrokerOrderDirection;
+    purpose: MidaBrokerOrderPurpose;
+    limit?: number;
+    stop?: number;
     status: MidaBrokerOrderStatus;
-    requestDate: MidaDate;
-    lastUpdateDate: MidaDate;
+    creationDate?: MidaDate;
+    lastUpdateDate?: MidaDate;
     timeInForce: MidaBrokerOrderTimeInForce;
     deals?: MidaBrokerDeal[];
     position?: MidaBrokerPosition;

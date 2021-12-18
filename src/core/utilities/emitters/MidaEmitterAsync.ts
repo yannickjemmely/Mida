@@ -1,7 +1,7 @@
 import { MidaEvent } from "#events/MidaEvent";
 import { MidaEventListenerAsync } from "#events/MidaEventListenerAsync";
 import { GenericObject } from "#utilities/GenericObject";
-import { v1 as uuidV1 } from "uuid";
+import { MidaUtilities } from "#utilities/MidaUtilities";
 
 export class MidaEmitterAsync {
     static readonly #ANY_TYPE_KEY: string = "*";
@@ -15,7 +15,7 @@ export class MidaEmitterAsync {
         let uuid: string;
 
         do {
-            uuid = uuidV1();
+            uuid = MidaUtilities.generateUuid();
         }
         while (this.#uuidExists(uuid)); // This software deals with money. Better to avoid even the most improbable things.
 
