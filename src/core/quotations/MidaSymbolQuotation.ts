@@ -1,3 +1,4 @@
+import { MidaDate } from "#dates/MidaDate";
 import { MidaSymbolQuotationParameters } from "#quotations/MidaSymbolQuotationParameters";
 import { IMidaCloneable } from "#utilities/cloneable/IMidaCloneable";
 import { IMidaEquatable } from "#utilities/equatable/IMidaEquatable";
@@ -6,7 +7,7 @@ import { GenericObject } from "#utilities/GenericObject";
 /** Represents a symbol quotation. */
 export class MidaSymbolQuotation implements IMidaCloneable, IMidaEquatable {
     readonly #symbol: string;
-    readonly #date: Date;
+    readonly #date: MidaDate;
     readonly #bid: number;
     readonly #ask: number;
 
@@ -17,7 +18,7 @@ export class MidaSymbolQuotation implements IMidaCloneable, IMidaEquatable {
         ask,
     }: MidaSymbolQuotationParameters) {
         this.#symbol = symbol;
-        this.#date = new Date(date);
+        this.#date = date;
         this.#bid = bid;
         this.#ask = ask;
     }
@@ -28,8 +29,8 @@ export class MidaSymbolQuotation implements IMidaCloneable, IMidaEquatable {
     }
 
     /** The quotation date. */
-    public get date (): Date {
-        return new Date(this.#date);
+    public get date (): MidaDate {
+        return this.#date;
     }
 
     /** The quotation bid price. */
@@ -56,7 +57,7 @@ export class MidaSymbolQuotation implements IMidaCloneable, IMidaEquatable {
     public clone (): any {
         return new MidaSymbolQuotation({
             symbol: this.#symbol,
-            date: new Date(this.#date),
+            date: this.#date.clone(),
             bid: this.#bid,
             ask: this.#ask,
         });
@@ -66,7 +67,8 @@ export class MidaSymbolQuotation implements IMidaCloneable, IMidaEquatable {
         return (
             object instanceof MidaSymbolQuotation
             && this.symbol === object.symbol
-            && this.date.valueOf() === object.date.valueOf()
+            && this.bid === object.bid
+            && this.ask === object.ask
         );
     }
 }

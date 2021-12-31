@@ -1,9 +1,8 @@
 import { MidaEvent } from "#events/MidaEvent";
 import { MidaEventListener } from "#events/MidaEventListener";
 import { GenericObject } from "#utilities/GenericObject";
-import { v1 as uuidV1 } from "uuid";
+import { MidaUtilities } from "#utilities/MidaUtilities";
 
-/** Represents an entity capable of emitting events to a its listeners. */
 export class MidaEmitter {
     static readonly #ANY_TYPE_KEY: string = "*";
     readonly #listeners: Map<string, Map<string, MidaEventListener>>;
@@ -16,9 +15,9 @@ export class MidaEmitter {
         let uuid: string;
 
         do {
-            uuid = uuidV1();
+            uuid = MidaUtilities.generateUuid();
         }
-        while (this.#uuidExists(uuid)); // This software deals with money. Better to avoid even the most improbable things.
+        while (this.#uuidExists(uuid)); // This software deals with money. Better to avoid even the most improbable events
 
         const listenersOfType: Map<string, MidaEventListener> = this.#listeners.get(type) ?? new Map();
 

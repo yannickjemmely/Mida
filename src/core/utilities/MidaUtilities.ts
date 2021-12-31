@@ -1,4 +1,5 @@
 import { GenericObject } from "#utilities/GenericObject";
+import { v1 as uuidV1 } from "uuid";
 
 export class MidaUtilities {
     private constructor () {
@@ -78,5 +79,25 @@ export class MidaUtilities {
     // Used to get what percentage of a number a number is.
     public static getWhatPercentageOf (subject: number, whatPercentage: number): number {
         return whatPercentage / subject * 100;
+    }
+
+    public static generateUuid (): string {
+        return uuidV1();
+    }
+
+    public static truncate (subject: number, precision: number): number {
+        const parts: string[] = subject.toString().split(".");
+
+        if (parts.length === 1) {
+            return subject;
+        }
+
+        const newDecimal: string = parts[1].substring(0, precision);
+
+        if (newDecimal.length === 0) {
+            return subject;
+        }
+
+        return Number(`${parts[0]}.${newDecimal}`);
     }
 }

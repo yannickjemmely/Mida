@@ -15,7 +15,7 @@
         "removeComments": true,
         "sourceMap": true,
         "strict": true,
-        "target": "es6",
+        "target": "es2020",
         "plugins": [
             { "transform": "typescript-transform-paths" },
             { "transform": "typescript-transform-paths", "afterDeclarations": true }

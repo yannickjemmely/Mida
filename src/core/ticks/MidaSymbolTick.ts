@@ -1,3 +1,4 @@
+import { MidaDate } from "#dates/MidaDate";
 import { MidaSymbolQuotation } from "#quotations/MidaSymbolQuotation";
 import { MidaSymbolTickParameters } from "#ticks/MidaSymbolTickParameters";
 import { IMidaCloneable } from "#utilities/cloneable/IMidaCloneable";
@@ -7,18 +8,32 @@ import { GenericObject } from "#utilities/GenericObject";
 /** Represents a symbol tick. */
 export class MidaSymbolTick implements IMidaCloneable, IMidaEquatable {
     readonly #quotation: MidaSymbolQuotation;
-    readonly #date: Date;
+    readonly #date: MidaDate;
     readonly #previousTick?: MidaSymbolTick;
     readonly #nextTick?: MidaSymbolTick;
 
     public constructor ({
-        quotation,
+        symbol,
+        bid,
+        ask,
         date,
+        quotation,
         previousTick,
         nextTick,
     }: MidaSymbolTickParameters) {
-        this.#quotation = quotation;
-        this.#date = new Date(date ?? quotation.date);
+        if (quotation) {
+            this.#quotation = quotation;
+        }
+        else {
+            this.#quotation = new MidaSymbolQuotation({
+                symbol: symbol as string,
+                bid: bid as number,
+                ask: ask as number,
+                date: date as MidaDate,
+            });
+        }
+
+        this.#date = this.#quotation.date;
         this.#previousTick = previousTick;
         this.#nextTick = nextTick;
     }
@@ -29,8 +44,8 @@ export class MidaSymbolTick implements IMidaCloneable, IMidaEquatable {
     }
 
     /** The tick date. */
-    public get date (): Date {
-        return new Date(this.#date);
+    public get date (): MidaDate {
+        return this.#date;
     }
 
     /** The tick previous to this. */
@@ -66,7 +81,7 @@ export class MidaSymbolTick implements IMidaCloneable, IMidaEquatable {
     public clone (): any {
         return new MidaSymbolTick({
             quotation: this.#quotation.clone(),
-            date: new Date(this.#date),
+            date: this.#date.clone(),
             previousTick: this.#previousTick?.clone(),
             nextTick: this.#nextTick?.clone(),
         });

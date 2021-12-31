@@ -1,18 +1,19 @@
+import { MidaDate } from "#dates/MidaDate";
 import { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
-import { MidaTimeframeType } from "#periods/MidaTimeframeType";
-import { MidaSymbolPriceType } from "#symbols/MidaSymbolPriceType";
+import { MidaSymbolPrice } from "#symbols/MidaSymbolPrice";
+import { MidaTimeframe } from "#timeframes/MidaTimeframe";
 
 describe("MidaSymbolPeriod", () => {
     const bidPeriod: MidaSymbolPeriod = new MidaSymbolPeriod({
         symbol: "TEST",
-        startTime: new Date(),
-        priceType: MidaSymbolPriceType.BID,
+        startDate: new MidaDate(),
+        priceType: MidaSymbolPrice.BID,
         open: 10,
         high: 50,
         low: 3,
         close: 25,
         volume: 3232,
-        timeframe: MidaTimeframeType.H4,
+        timeframe: MidaTimeframe.H4,
     });
 
     describe(".ohlc", () => {

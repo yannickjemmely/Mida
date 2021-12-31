@@ -1,11 +1,12 @@
 import { MidaExpertAdvisorParameters } from "#advisors/MidaExpertAdvisorParameters";
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
+import { MidaBrokerDeal } from "#deals/MidaBrokerDeal";
 import { MidaEvent } from "#events/MidaEvent";
 import { MidaEventListener } from "#events/MidaEventListener";
 import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
-import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
-import { MidaBrokerOrderStatusType } from "#orders/MidaBrokerOrderStatusType";
+import { MidaBrokerOrderOpenDirectives } from "#orders/MidaBrokerOrderDirectives";
 import { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
+import { MidaBrokerPosition } from "#positions/MidaBrokerPosition";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 import { GenericObject } from "#utilities/GenericObject";
@@ -48,24 +49,36 @@ export abstract class MidaExpertAdvisor {
         return [ ...this.#orders.values(), ];
     }
 
-    public get pendingOrders (): MidaBrokerOrder[] {
-        return this.orders.filter((order: MidaBrokerOrder): boolean => order.status === MidaBrokerOrderStatusType.PENDING);
-    }
-
-    public get openOrders (): MidaBrokerOrder[] {
-        return this.orders.filter((order: MidaBrokerOrder): boolean => order.status === MidaBrokerOrderStatusType.OPEN);
-    }
-
-    public get closedOrders (): MidaBrokerOrder[] {
-        return this.orders.filter((order: MidaBrokerOrder): boolean => order.status === MidaBrokerOrderStatusType.CLOSED);
-    }
-
-    protected get capturedTicks (): readonly MidaSymbolTick[] {
-        return this.#capturedTicks;
+    protected get capturedTicks (): MidaSymbolTick[] {
+        return [ ...this.#capturedTicks, ];
     }
 
     protected get marketWatcher (): MidaMarketWatcher {
         return this.#marketWatcher;
+    }
+
+    public get deals (): MidaBrokerDeal[] {
+        const deals: MidaBrokerDeal[] = [];
+
+        for (const order of this.orders) {
+            deals.push(...order.deals);
+        }
+
+        return deals;
+    }
+
+    public get positions (): MidaBrokerPosition[] {
+        const positions: MidaBrokerPosition[] = [];
+
+        for (const order of this.orders) {
+            const position: MidaBrokerPosition | undefined = order.position;
+
+            if (position) {
+                positions.push(position);
+            }
+        }
+
+        return positions;
     }
 
     public async start (): Promise<void> {
@@ -81,12 +94,22 @@ export abstract class MidaExpertAdvisor {
             }
             catch (error) {
                 console.log(error);
+
+                return;
             }
         }
 
         this.#isOperative = true;
 
-        await this.onStart();
+        try {
+            await this.onStart();
+        }
+        catch (error) {
+            console.log(error);
+
+            return;
+        }
+
         this.notifyListeners("start");
     }
 
@@ -141,7 +164,7 @@ export abstract class MidaExpertAdvisor {
         // Silence is golden.
     }
 
-    protected async placeOrder (directives: MidaBrokerOrderDirectives): Promise<MidaBrokerOrder> {
+    protected async placeOrder (directives: MidaBrokerOrderOpenDirectives): Promise<MidaBrokerOrder> {
         const order: MidaBrokerOrder = await this.#brokerAccount.placeOrder(directives);
 
         this.addOrder(order);
@@ -150,7 +173,7 @@ export abstract class MidaExpertAdvisor {
     }
 
     protected addOrder (order: MidaBrokerOrder): void {
-        this.#orders.set(order.id, order);
+        // Silence is golden.
     }
 
     protected notifyListeners (type: string, descriptor?: GenericObject): void {
@@ -202,6 +225,12 @@ export abstract class MidaExpertAdvisor {
     #onPeriod (period: MidaSymbolPeriod, previousPeriod: MidaSymbolPeriod): void {
         try {
             this.onPeriod(period, previousPeriod);
+        }
+        catch (error) {
+            console.log(error);
+        }
+
+        try {
             this.onCandlestick(period, previousPeriod);
         }
         catch (error) {

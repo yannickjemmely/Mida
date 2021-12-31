@@ -1,5 +1,4 @@
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
-import { MidaBrokerErrorType } from "#brokers/MidaBrokerErrorType";
 import { MidaEvent } from "#events/MidaEvent";
 import { MidaEventListener } from "#events/MidaEventListener";
 import { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
@@ -124,9 +123,9 @@ export class MidaMarketWatcher {
                 try {
                     await this.#checkTimeframe(symbol, timeframe);
                 }
-                catch (error) {
+                catch (error: any) {
                     switch (error.type) {
-                        case MidaBrokerErrorType.INVALID_TIMEFRAME:
+                        case "INVALID_TIMEFRAME":
                             return;
 
                         default:
@@ -139,7 +138,8 @@ export class MidaMarketWatcher {
         }
     }
 
-    // Used to check if the last known period of a symbol has been closed. Must be called approximately each minute.
+    // Used to check if the last known period of a symbol has been closed
+    // Must be called approximately with a 1 minute interval
     async #checkTimeframe (symbol: string, timeframe: number): Promise<void> {
         const periods: MidaSymbolPeriod[] = await this.#brokerAccount.getSymbolPeriods(symbol, timeframe);
         const lastPeriod: MidaSymbolPeriod = periods[periods.length - 1];
@@ -150,7 +150,7 @@ export class MidaMarketWatcher {
 
         const previousPeriod: MidaSymbolPeriod = this.#lastPeriods.get(symbol)?.get(timeframe) as MidaSymbolPeriod;
 
-        if (previousPeriod.startTime < lastPeriod.startTime) {
+        if (previousPeriod.startDate.timestamp < lastPeriod.startDate.timestamp) {
             this.#lastPeriods.get(symbol)?.set(timeframe, lastPeriod);
             this.#onPeriod(lastPeriod, previousPeriod);
         }
@@ -169,8 +169,8 @@ export class MidaMarketWatcher {
 
         setTimeout((): void => {
             this.#checkNewPeriods();
-            setInterval(() => this.#checkNewPeriods(), 60000); // Invoke the function each next round minute plus ~0.1s of margin.
-        }, roundMinute.valueOf() + 60000 - actualDate.valueOf() + 100); // Invoke the function the next round minute plus ~0.1s of margin.
+            setInterval(() => this.#checkNewPeriods(), 60000); // Invoke the function each next round minute plus ~0.1s of margin
+        }, roundMinute.valueOf() + 60000 - actualDate.valueOf() + 100); // Invoke the function the next round minute plus ~0.1s of margin
         // </periods>
     }
 }

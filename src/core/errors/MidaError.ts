@@ -1,7 +1,6 @@
 import { MidaErrorParameters } from "#errors/MidaErrorParameters";
 import { GenericObject } from "#utilities/GenericObject";
 
-/** Represents an error. */
 export class MidaError extends Error {
     readonly #type: string;
     readonly #descriptor: GenericObject;
@@ -13,7 +12,7 @@ export class MidaError extends Error {
     }: MidaErrorParameters) {
         super(message);
 
-        this.name = "MidaError";
+        this.name = this.constructor.name;
         this.#type = type;
         this.#descriptor = { ...descriptor, };
     }
@@ -27,6 +26,6 @@ export class MidaError extends Error {
     }
 
     public override toString (): string {
-        return ""; // TODO: TODO.
+        return "";
     }
 }

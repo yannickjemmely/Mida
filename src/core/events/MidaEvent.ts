@@ -1,7 +1,6 @@
 import { MidaEventParameters } from "#events/MidaEventParameters";
 import { GenericObject } from "#utilities/GenericObject";
 
-/** Represents an event. */
 export class MidaEvent {
     readonly #type: string;
     readonly #date: Date;

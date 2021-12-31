@@ -1,6 +1,6 @@
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 import { MidaSymbolParameters } from "#symbols/MidaSymbolParameters";
-import { MidaSymbolType } from "#symbols/MidaSymbolType";
+import { MidaSymbolCategory } from "#symbols/MidaSymbolCategory";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 import { GenericObject } from "#utilities/GenericObject";
@@ -10,7 +10,9 @@ export class MidaSymbol {
     readonly #symbol: string;
     readonly #brokerAccount: MidaBrokerAccount;
     readonly #description: string;
-    readonly #type: MidaSymbolType;
+    // readonly #baseAsset: string;
+    // readonly #quoteAsset: string;
+    readonly #type: MidaSymbolCategory;
     readonly #digits: number;
     readonly #leverage: number;
     readonly #minLots: number;
@@ -52,7 +54,7 @@ export class MidaSymbol {
     }
 
     /** The symbol type. */
-    public get type (): MidaSymbolType {
+    public get type (): MidaSymbolCategory {
         return this.#type;
     }
 

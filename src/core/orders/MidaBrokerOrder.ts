@@ -1,250 +1,216 @@
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
+import { MidaDate } from "#dates/MidaDate";
+import { MidaBrokerDeal } from "#deals/MidaBrokerDeal";
+import { MidaBrokerDealStatus } from "#deals/MidaBrokerDealStatus";
 import { MidaEvent } from "#events/MidaEvent";
 import { MidaEventListener } from "#events/MidaEventListener";
-import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
-import { MidaBrokerOrderExecutionType } from "#orders/MidaBrokerOrderExecutionType";
+import { MidaBrokerOrderDirection } from "#orders/MidaBrokerOrderDirection";
+import { MidaBrokerOrderExecution } from "#orders/MidaBrokerOrderExecution";
 import { MidaBrokerOrderParameters } from "#orders/MidaBrokerOrderParameters";
-import { MidaBrokerOrderStatusType } from "#orders/MidaBrokerOrderStatusType";
-import { MidaBrokerOrderType } from "#orders/MidaBrokerOrderType";
-import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
+import { MidaBrokerOrderPurpose } from "#orders/MidaBrokerOrderPurpose";
+import { MidaBrokerOrderRejection } from "#orders/MidaBrokerOrderRejection";
+import { MidaBrokerOrderStatus } from "#orders/MidaBrokerOrderStatus";
+import { MidaBrokerOrderTimeInForce } from "#orders/MidaBrokerOrderTimeInForce";
+import { MidaBrokerPosition } from "#positions/MidaBrokerPosition";
+import { MidaBrokerPositionProtection } from "#positions/MidaBrokerPositionProtection";
 import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
-import { GenericObject } from "#utilities/GenericObject";
 
 /** Represents a broker order. */
-export class MidaBrokerOrder {
-    readonly #id: string;
+export abstract class MidaBrokerOrder {
+    #id?: string;
     readonly #brokerAccount: MidaBrokerAccount;
-    readonly #requestDirectives: MidaBrokerOrderDirectives;
-    readonly #requestDate?: Date;
-    readonly #creationDate?: Date;
-    #cancelDate?: Date;
-    #openDate?: Date;
-    #closeDate?: Date;
-    readonly #creationPrice: number;
-    #cancelPrice?: number;
-    #openPrice?: number;
-    #closePrice?: number;
-    #stopLoss?: number;
-    #takeProfit?: number;
+    readonly #symbol: string;
+    readonly #requestedVolume: number;
+    readonly #direction: MidaBrokerOrderDirection;
+    readonly #purpose: MidaBrokerOrderPurpose;
     #limit?: number;
     #stop?: number;
-    readonly #tags: Set<string>;
-    readonly #initiator?: string;
+    #status: MidaBrokerOrderStatus;
+    #creationDate?: MidaDate;
+    #lastUpdateDate?: MidaDate;
+    readonly #timeInForce: MidaBrokerOrderTimeInForce;
+    readonly #deals: MidaBrokerDeal[];
+    #position?: MidaBrokerPosition;
+    #rejection?: MidaBrokerOrderRejection;
+    readonly #isStopOut: boolean;
     readonly #emitter: MidaEmitter;
 
-    public constructor ({
+    protected constructor ({
         id,
         brokerAccount,
-        requestDirectives,
-        requestDate,
+        symbol,
+        requestedVolume,
+        direction,
+        purpose,
+        limit,
+        stop,
+        status,
         creationDate,
-        cancelDate,
-        openDate,
-        closeDate,
-        creationPrice,
-        cancelPrice,
-        openPrice,
-        closePrice,
-        tags = [],
-        initiator,
+        lastUpdateDate,
+        deals,
+        timeInForce,
+        isStopOut,
     }: MidaBrokerOrderParameters) {
         this.#id = id;
         this.#brokerAccount = brokerAccount;
-        this.#requestDirectives = { ...requestDirectives, };
-        this.#requestDate = requestDate ? new Date(requestDate) : undefined;
-        this.#creationDate = creationDate ? new Date(creationDate) : undefined;
-        this.#cancelDate = cancelDate ? new Date(cancelDate) : undefined;
-        this.#openDate = openDate ? new Date(openDate) : undefined;
-        this.#closeDate = closeDate ? new Date(closeDate) : undefined;
-        this.#creationPrice = creationPrice;
-        this.#cancelPrice = cancelPrice;
-        this.#openPrice = openPrice;
-        this.#closePrice = closePrice;
-        this.#tags = new Set(tags);
-        this.#initiator = initiator;
+        this.#symbol = symbol;
+        this.#requestedVolume = requestedVolume;
+        this.#direction = direction;
+        this.#purpose = purpose;
+        this.#limit = limit;
+        this.#stop = stop;
+        this.#status = status;
+        this.#creationDate = creationDate;
+        this.#lastUpdateDate = lastUpdateDate;
+        this.#timeInForce = timeInForce;
+        this.#deals = deals ?? [];
+        this.#isStopOut = isStopOut ?? false;
         this.#emitter = new MidaEmitter();
-
-        this.#configureListeners();
     }
 
-    /** The order id. */
-    public get id (): string {
+    public get id (): string | undefined {
         return this.#id;
     }
 
-    /** The order broker account. */
+    protected set id (id: string | undefined) {
+        this.#id = id;
+    }
+
     public get brokerAccount (): MidaBrokerAccount {
         return this.#brokerAccount;
     }
 
-    /** The order request directives. */
-    public get requestDirectives (): MidaBrokerOrderDirectives {
-        return { ...this.#requestDirectives, };
+    public get symbol (): string {
+        return this.#symbol;
     }
 
-    /** The order request date. */
-    public get requestDate (): Date | undefined {
-        return this.#requestDate ? new Date(this.#requestDate) : undefined;
+    public get requestedVolume (): number {
+        return this.#requestedVolume;
     }
 
-    /** The order creation date. */
-    public get creationDate (): Date | undefined {
-        return this.#creationDate ? new Date(this.#creationDate) : undefined;
+    public get direction (): MidaBrokerOrderDirection {
+        return this.#direction;
     }
 
-    /** The order cancel date, undefined if the order is not canceled. */
-    public get cancelDate (): Date | undefined {
-        return this.#cancelDate ? new Date(this.#cancelDate) : undefined;
+    public get purpose (): MidaBrokerOrderPurpose {
+        return this.#purpose;
     }
 
-    /** The order open date, undefined if the order is not open. */
-    public get openDate (): Date | undefined {
-        return this.#openDate ? new Date(this.#openDate) : undefined;
-    }
-
-    /** The order close date, undefined if the order is not closed. */
-    public get closeDate (): Date | undefined {
-        return this.#closeDate ? new Date(this.#closeDate) : undefined;
-    }
-
-    /** The order creation price. */
-    public get creationPrice (): number {
-        return this.#creationPrice;
-    }
-
-    /** The order cancel price, undefined if the order is not canceled. */
-    public get cancelPrice (): number | undefined {
-        return this.#cancelPrice;
-    }
-
-    /** The order open price, undefined if the order is not open. */
-    public get openPrice (): number | undefined {
-        return this.#openPrice;
-    }
-
-    /** The order close price, undefined if the order is not closed. */
-    public get closePrice (): number | undefined {
-        return this.#closePrice;
-    }
-
-    /** The order stop loss. */
-    public get stopLoss (): number | undefined {
-        return this.#stopLoss;
-    }
-
-    /** The order take profit. */
-    public get takeProfit (): number | undefined {
-        return this.#takeProfit;
-    }
-
-    /** The order limit. */
     public get limit (): number | undefined {
         return this.#limit;
     }
 
-    /** The order stop. */
     public get stop (): number | undefined {
         return this.#stop;
     }
 
-    /** The order tags (stored only locally). */
-    public get tags (): string[] {
-        return [ ...this.#tags, ];
+    public get status (): MidaBrokerOrderStatus {
+        return this.#status;
     }
 
-    /** The order initiator. */
-    public get initiator (): string | undefined {
-        return this.#initiator;
+    public get creationDate (): MidaDate | undefined {
+        return this.#creationDate;
     }
 
-    /** The order symbol. */
-    public get symbol (): string {
-        return this.#requestDirectives.symbol;
+    protected set creationDate (creationDate: MidaDate | undefined) {
+        this.#creationDate = creationDate;
     }
 
-    /** The order type. */
-    public get type (): MidaBrokerOrderType {
-        return this.#requestDirectives.type;
+    public get lastUpdateDate (): MidaDate | undefined {
+        return this.#lastUpdateDate;
     }
 
-    /** The order lots. */
-    public get lots (): number {
-        return this.#requestDirectives.lots;
+    protected set lastUpdateDate (lastUpdateDate: MidaDate | undefined) {
+        this.#lastUpdateDate = lastUpdateDate;
     }
 
-    /** The order status. */
-    public get status (): MidaBrokerOrderStatusType {
-        if (this.#cancelDate) {
-            return MidaBrokerOrderStatusType.CANCELED;
-        }
-        else if (this.#closeDate) {
-            return MidaBrokerOrderStatusType.CLOSED;
-        }
-        else if (this.#openDate) {
-            return MidaBrokerOrderStatusType.OPEN;
-        }
-
-        return MidaBrokerOrderStatusType.PENDING;
+    public get timeInForce (): MidaBrokerOrderTimeInForce {
+        return this.#timeInForce;
     }
 
-    /** The order execution type. */
-    public get executionType (): any {
-        if (Number.isFinite(this.#requestDirectives.limit)) {
-            return MidaBrokerOrderExecutionType.LIMIT;
-        }
-
-        if (Number.isFinite(this.#requestDirectives.stop)) {
-            return MidaBrokerOrderExecutionType.STOP;
-        }
-
-        return MidaBrokerOrderExecutionType.MARKET;
+    public get deals (): MidaBrokerDeal[] {
+        return [ ...this.#deals, ];
     }
 
-    public addTag (tag: string): void {
-        this.#tags.add(tag);
+    public get position (): MidaBrokerPosition | undefined {
+        return this.#position;
     }
 
-    public hasTag (tag: string): boolean {
-        return this.#tags.has(tag);
+    protected set position (position: MidaBrokerPosition | undefined) {
+        this.#position = position;
     }
 
-    public removeTag (tag: string): void {
-        this.#tags.delete(tag);
+    public get rejection (): MidaBrokerOrderRejection | undefined {
+        return this.#rejection;
     }
 
-    public async cancel (): Promise<void> {
-        await this.#brokerAccount.cancelOrder(this.#id);
+    protected set rejection (rejection: MidaBrokerOrderRejection | undefined) {
+        this.#rejection = rejection;
     }
 
-    public async close (): Promise<void> {
-        await this.#brokerAccount.closeOrder(this.#id);
+    public get isStopOut (): boolean {
+        return this.#isStopOut;
     }
 
-    public async getGrossProfit (): Promise<number> {
-        return this.#brokerAccount.getOrderGrossProfit(this.#id);
-    }
+    public get filledVolume (): number {
+        let filledVolume: number = 0;
 
-    public async getNetProfit (): Promise<number> {
-        return this.#brokerAccount.getOrderNetProfit(this.#id);
-    }
-
-    /* To implement later.
-    public async getUsedMargin (): Promise<number | undefined> {
-        if (this._openPrice === undefined) {
-            return;
+        for (const deal of this.#deals) {
+            filledVolume += deal.filledVolume;
         }
 
-        // return this._openPrice * this.lots / (await this.getLeverage());
-    }
-    */
-
-    public async getSwaps (): Promise<number> {
-        return this.#brokerAccount.getOrderSwaps(this.#id);
+        return filledVolume;
     }
 
-    public async getCommission (): Promise<number> {
-        return this.#brokerAccount.getOrderCommission(this.#id);
+    public get isFilled (): boolean {
+        return this.#requestedVolume === this.filledVolume;
     }
+
+    public get executionPrice (): number | undefined {
+        if (this.status !== MidaBrokerOrderStatus.FILLED) {
+            return undefined;
+        }
+
+        let priceVolumeProduct: number = 0;
+
+        for (const deal of this.#deals) {
+            if (deal.status === MidaBrokerDealStatus.PARTIALLY_FILLED || deal.status === MidaBrokerDealStatus.FILLED) {
+                const executionPrice: number = deal.executionPrice as number;
+
+                priceVolumeProduct += executionPrice * deal.filledVolume;
+            }
+        }
+
+        return priceVolumeProduct / this.filledVolume;
+    }
+
+    public get isOpening (): boolean {
+        return this.#purpose === MidaBrokerOrderPurpose.OPEN;
+    }
+
+    public get isClosing (): boolean {
+        return this.#purpose === MidaBrokerOrderPurpose.CLOSE;
+    }
+
+    public get execution (): MidaBrokerOrderExecution {
+        if (Number.isFinite(this.#limit)) {
+            return MidaBrokerOrderExecution.LIMIT;
+        }
+
+        if (Number.isFinite(this.#stop)) {
+            return MidaBrokerOrderExecution.STOP;
+        }
+
+        return MidaBrokerOrderExecution.MARKET;
+    }
+
+    public get lastDeal (): MidaBrokerDeal | undefined {
+        return this.#deals[this.#deals.length - 1];
+    }
+
+    public abstract cancel (): Promise<void>;
+
+    public abstract modifyPositionProtection (protection: MidaBrokerPositionProtection): Promise<void>;
 
     public on (type: string): Promise<MidaEvent>
     public on (type: string, listener: MidaEventListener): string
@@ -260,88 +226,70 @@ export class MidaBrokerOrder {
         this.#emitter.removeEventListener(uuid);
     }
 
-    #notifyListeners (type: string, descriptor?: GenericObject): void {
-        this.#emitter.notifyListeners(type, descriptor);
-    }
+    /* *** *** *** Reiryoku Technologies *** *** *** */
 
-    #configureListeners (): void {
-        this.#brokerAccount.on("*", (event: MidaEvent) => this.#onEvent(event));
-    }
+    protected onStatusChange (status: MidaBrokerOrderStatus): void {
+        if (this.#status === status) {
+            return;
+        }
 
-    // eslint-disable-next-line max-lines-per-function
-    #onEvent (event: MidaEvent): void {
-        switch (event.type) {
-            case "order-cancel": {
-                this.#cancelDate = event.descriptor.cancelDate;
-                this.#cancelPrice = event.descriptor.cancelPrice;
+        const previousStatus: MidaBrokerOrderStatus = this.#status;
+        this.#status = status;
 
-                this.#notifyListeners("cancel", event.descriptor);
+        switch (status) {
+            case MidaBrokerOrderStatus.REJECTED: {
+                this.#emitter.notifyListeners("reject");
 
                 break;
             }
-
-            case "order-open": {
-                this.#openDate = event.descriptor.openDate;
-                this.#openPrice = event.descriptor.openPrice;
-                // this.#positionId = event.descriptor.positionId;
-                // this.#openDealId = event.descriptor.openDealId;
-
-                this.#notifyListeners("open", event.descriptor);
+            case MidaBrokerOrderStatus.ACCEPTED: {
+                this.#emitter.notifyListeners("accept");
 
                 break;
             }
-
-            case "order-close": {
-                this.#closeDate = event.descriptor.closeDate;
-                this.#closePrice = event.descriptor.closePrice;
-                // this.#closeDealId = event.descriptor.closeDealId;
-
-                this.#notifyListeners("close", event.descriptor);
+            case MidaBrokerOrderStatus.PENDING: {
+                this.#emitter.notifyListeners("pending");
 
                 break;
             }
-
-            case "order-modify": {
-                const directives: GenericObject = event.descriptor.directives;
-
-                for (const directive of Object.keys(directives)) {
-                    switch (directive) {
-                        case "stopLoss":
-                            this.#stopLoss = directives[directive];
-
-                            break;
-
-                        case "takeProfit":
-                            this.#takeProfit = directives[directive];
-
-                            break;
-
-                        case "limit":
-                            this.#limit = directives[directive];
-
-                            break;
-
-                        case "stop":
-                            this.#stop = directives[directive];
-
-                            break;
-                    }
-                }
-
-                this.#notifyListeners("modify", event.descriptor);
+            case MidaBrokerOrderStatus.CANCELLED: {
+                this.#emitter.notifyListeners("cancel");
 
                 break;
             }
+            case MidaBrokerOrderStatus.PARTIALLY_FILLED: {
+                this.#emitter.notifyListeners("partial-fill");
 
-            case "tick": {
-                const tick: MidaSymbolTick = event.descriptor.tick;
+                break;
+            }
+            case MidaBrokerOrderStatus.FILLED: {
+                this.#emitter.notifyListeners("fill");
 
-                if (tick.symbol === this.symbol) {
-                    this.#notifyListeners("tick", event.descriptor);
-                }
+                break;
+            }
+            case MidaBrokerOrderStatus.EXPIRED: {
+                this.#emitter.notifyListeners("expire");
 
                 break;
             }
         }
+
+        this.#emitter.notifyListeners("status-change", { status, previousStatus, });
+    }
+
+    protected onPendingPriceChange (price: number): void {
+        if (Number.isFinite(this.#limit)) {
+            this.#limit = price;
+        }
+        else if (Number.isFinite(this.#stop)) {
+            this.#stop = price;
+        }
+
+        this.#emitter.notifyListeners("pending-price-change", { price, });
+    }
+
+    protected onDeal (deal: MidaBrokerDeal): void {
+        this.#deals.push(deal);
+        this.#emitter.notifyListeners("deal", { deal, });
     }
 }
