@@ -1,6 +1,7 @@
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 import { MidaDate } from "#dates/MidaDate";
 import { MidaBrokerDeal } from "#deals/MidaBrokerDeal";
+import { MidaBrokerDealStatus } from "#deals/MidaBrokerDealStatus";
 import { MidaEvent } from "#events/MidaEvent";
 import { MidaEventListener } from "#events/MidaEventListener";
 import { MidaBrokerOrderDirection } from "#orders/MidaBrokerOrderDirection";
@@ -163,6 +164,24 @@ export abstract class MidaBrokerOrder {
 
     public get isFilled (): boolean {
         return this.#requestedVolume === this.filledVolume;
+    }
+
+    public get executionPrice (): number | undefined {
+        if (this.status !== MidaBrokerOrderStatus.FILLED) {
+            return undefined;
+        }
+
+        let priceVolumeProduct: number = 0;
+
+        for (const deal of this.#deals) {
+            if (deal.status === MidaBrokerDealStatus.PARTIALLY_FILLED || deal.status === MidaBrokerDealStatus.FILLED) {
+                const executionPrice: number = deal.executionPrice as number;
+
+                priceVolumeProduct += executionPrice * deal.filledVolume;
+            }
+        }
+
+        return priceVolumeProduct / this.filledVolume;
     }
 
     public get isOpening (): boolean {

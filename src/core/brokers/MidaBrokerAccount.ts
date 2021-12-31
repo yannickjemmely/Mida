@@ -24,8 +24,8 @@ export abstract class MidaBrokerAccount {
     readonly #broker: MidaBroker;
     readonly #creationDate: MidaDate;
     readonly #ownerName: string;
-    readonly #currencyIso: string;
-    readonly #currencyDigits: number;
+    readonly #depositCurrencyIso: string;
+    readonly #depositCurrencyDigits: number;
     readonly #operativity: MidaBrokerAccountOperativity;
     readonly #positionAccounting: MidaBrokerAccountPositionAccounting;
     readonly #indicativeLeverage: number;
@@ -36,8 +36,8 @@ export abstract class MidaBrokerAccount {
         broker,
         creationDate,
         ownerName,
-        currencyIso,
-        currencyDigits,
+        depositCurrencyIso,
+        depositCurrencyDigits,
         operativity,
         positionAccounting,
         indicativeLeverage,
@@ -46,8 +46,8 @@ export abstract class MidaBrokerAccount {
         this.#broker = broker;
         this.#creationDate = creationDate;
         this.#ownerName = ownerName;
-        this.#currencyIso = currencyIso;
-        this.#currencyDigits = currencyDigits;
+        this.#depositCurrencyIso = depositCurrencyIso;
+        this.#depositCurrencyDigits = depositCurrencyDigits;
         this.#operativity = operativity;
         this.#positionAccounting = positionAccounting;
         this.#indicativeLeverage = indicativeLeverage;
@@ -69,19 +69,19 @@ export abstract class MidaBrokerAccount {
         return this.#creationDate;
     }
 
-    /** The account owner name. */
+    /** The account owner name. Might be empty due to privacy regulations. */
     public get ownerName (): string {
         return this.#ownerName;
     }
 
-    /** The account currency ISO code. */
-    public get currencyIso (): string {
-        return this.#currencyIso;
+    /** The account deposit currency ISO code. */
+    public get depositCurrencyIso (): string {
+        return this.#depositCurrencyIso;
     }
 
-    /** The account currency digits. */
-    public get currencyDigits (): number {
-        return this.#currencyDigits;
+    /** The account deposit currency digits. */
+    public get depositCurrencyDigits (): number {
+        return this.#depositCurrencyDigits;
     }
 
     /** The account operativity (demo or real). */
@@ -225,7 +225,10 @@ export abstract class MidaBrokerAccount {
         return equity - usedMargin;
     }
 
-    /** Used to get the account margin level. */
+    /**
+     * Used to get the account margin level.
+     * Returns NaN if no margin is used.
+     */
     public async getMarginLevel (): Promise<number> {
         const [ equity, usedMargin, ]: number[] = await Promise.all([ this.getEquity(), this.getUsedMargin(), ]);
 

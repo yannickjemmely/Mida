@@ -1,10 +1,12 @@
 import { MidaExpertAdvisorParameters } from "#advisors/MidaExpertAdvisorParameters";
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
+import { MidaBrokerDeal } from "#deals/MidaBrokerDeal";
 import { MidaEvent } from "#events/MidaEvent";
 import { MidaEventListener } from "#events/MidaEventListener";
 import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
 import { MidaBrokerOrderOpenDirectives } from "#orders/MidaBrokerOrderDirectives";
 import { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
+import { MidaBrokerPosition } from "#positions/MidaBrokerPosition";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 import { GenericObject } from "#utilities/GenericObject";
@@ -53,6 +55,30 @@ export abstract class MidaExpertAdvisor {
 
     protected get marketWatcher (): MidaMarketWatcher {
         return this.#marketWatcher;
+    }
+
+    public get deals (): MidaBrokerDeal[] {
+        const deals: MidaBrokerDeal[] = [];
+
+        for (const order of this.orders) {
+            deals.push(...order.deals);
+        }
+
+        return deals;
+    }
+
+    public get positions (): MidaBrokerPosition[] {
+        const positions: MidaBrokerPosition[] = [];
+
+        for (const order of this.orders) {
+            const position: MidaBrokerPosition | undefined = order.position;
+
+            if (position) {
+                positions.push(position);
+            }
+        }
+
+        return positions;
     }
 
     public async start (): Promise<void> {
