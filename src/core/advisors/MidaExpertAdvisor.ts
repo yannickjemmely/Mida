@@ -1,3 +1,4 @@
+import { MidaExpertAdvisorComponent } from "#advisors/MidaExpertAdvisorComponent";
 import { MidaExpertAdvisorParameters } from "#advisors/MidaExpertAdvisorParameters";
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 import { MidaBrokerDeal } from "#deals/MidaBrokerDeal";
@@ -20,7 +21,8 @@ export abstract class MidaExpertAdvisor {
     readonly #asyncTicks: MidaSymbolTick[];
     #asyncTickPromise?: Promise<void>;
     #isConfigured: boolean;
-    readonly #marketWatcher;
+    readonly #marketWatcher: MidaMarketWatcher;
+    readonly #components: MidaExpertAdvisorComponent[];
     readonly #emitter: MidaEmitter;
 
     protected constructor ({ brokerAccount, }: MidaExpertAdvisorParameters) {
@@ -32,6 +34,7 @@ export abstract class MidaExpertAdvisor {
         this.#asyncTickPromise = undefined;
         this.#isConfigured = false;
         this.#marketWatcher = new MidaMarketWatcher({ brokerAccount, });
+        this.#components = [];
         this.#emitter = new MidaEmitter();
 
         this.#configureListeners();
@@ -55,6 +58,22 @@ export abstract class MidaExpertAdvisor {
 
     protected get marketWatcher (): MidaMarketWatcher {
         return this.#marketWatcher;
+    }
+
+    public get components (): MidaExpertAdvisorComponent[] {
+        return [ ...this.#components, ];
+    }
+
+    public get enabledComponents (): MidaExpertAdvisorComponent[] {
+        const enabledComponents: MidaExpertAdvisorComponent[] = [];
+
+        for (const component of this.#components) {
+            if (component.enabled) {
+                enabledComponents.push(component);
+            }
+        }
+
+        return enabledComponents;
     }
 
     public get deals (): MidaBrokerDeal[] {
@@ -192,6 +211,24 @@ export abstract class MidaExpertAdvisor {
         }
         else {
             this.#onTickAsync(tick);
+        }
+
+        for (const component of this.enabledComponents) {
+            try {
+                component.onTick(tick);
+            }
+            catch (error) {
+                console.error(error);
+            }
+        }
+
+        for (const component of this.enabledComponents) {
+            try {
+                component.onLateTick(tick);
+            }
+            catch (error) {
+                console.error(error);
+            }
         }
 
         try {

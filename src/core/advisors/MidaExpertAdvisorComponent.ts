@@ -23,8 +23,8 @@ export abstract class MidaExpertAdvisorComponent {
         return this.#expertAdvisor;
     }
 
-    public get requiredComponents (): readonly string[] {
-        return this.#requiredComponents;
+    public get requiredComponents (): string[] {
+        return [ ...this.#requiredComponents, ];
     }
 
     public get uniquePerAdvisor (): boolean {
@@ -45,7 +45,15 @@ export abstract class MidaExpertAdvisorComponent {
         // Silence is golden.
     }
 
+    public async onTickAsync (tick: MidaSymbolTick): Promise<void> {
+        // Silence is golden.
+    }
+
     public onLateTick (tick: MidaSymbolTick): void {
+        // Silence is golden.
+    }
+
+    public async onLateTickAsync (tick: MidaSymbolTick): Promise<void> {
         // Silence is golden.
     }
 }
