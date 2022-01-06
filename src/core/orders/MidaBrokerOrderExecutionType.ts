@@ -1,4 +1,4 @@
-export enum MidaBrokerOrderExecution {
+export enum MidaBrokerOrderExecutionType {
     MARKET = "market",
     LIMIT = "limit",
     STOP = "stop",

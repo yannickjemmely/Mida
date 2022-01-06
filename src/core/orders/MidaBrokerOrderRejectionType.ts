@@ -1,4 +1,4 @@
-export enum MidaBrokerOrderRejection {
+export enum MidaBrokerOrderRejectionType {
     MARKET_CLOSED = "market-closed",
     SYMBOL_NOT_FOUND = "symbol-not-found",
     SYMBOL_DISABLED = "symbol-disabled",

@@ -73,10 +73,10 @@ export { MidaEventParameters } from "#events/MidaEventParameters";
 export { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
 export { MidaBrokerOrderDirection } from "#orders/MidaBrokerOrderDirection";
 export { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
-export { MidaBrokerOrderExecution } from "#orders/MidaBrokerOrderExecution";
+export { MidaBrokerOrderExecutionType } from "#orders/MidaBrokerOrderExecutionType";
 export { MidaBrokerOrderParameters } from "#orders/MidaBrokerOrderParameters";
 export { MidaBrokerOrderPurpose } from "#orders/MidaBrokerOrderPurpose";
-export { MidaBrokerOrderRejection } from "#orders/MidaBrokerOrderRejection";
+export { MidaBrokerOrderRejectionType } from "#orders/MidaBrokerOrderRejectionType";
 export { MidaBrokerOrderStatus } from "#orders/MidaBrokerOrderStatus";
 export { MidaBrokerOrderTimeInForce } from "#orders/MidaBrokerOrderTimeInForce";
 

@@ -5,14 +5,13 @@ import { MidaBrokerDealStatus } from "#deals/MidaBrokerDealStatus";
 import { MidaEvent } from "#events/MidaEvent";
 import { MidaEventListener } from "#events/MidaEventListener";
 import { MidaBrokerOrderDirection } from "#orders/MidaBrokerOrderDirection";
-import { MidaBrokerOrderExecution } from "#orders/MidaBrokerOrderExecution";
+import { MidaBrokerOrderExecutionType } from "#orders/MidaBrokerOrderExecutionType";
 import { MidaBrokerOrderParameters } from "#orders/MidaBrokerOrderParameters";
 import { MidaBrokerOrderPurpose } from "#orders/MidaBrokerOrderPurpose";
-import { MidaBrokerOrderRejection } from "#orders/MidaBrokerOrderRejection";
+import { MidaBrokerOrderRejectionType } from "#orders/MidaBrokerOrderRejectionType";
 import { MidaBrokerOrderStatus } from "#orders/MidaBrokerOrderStatus";
 import { MidaBrokerOrderTimeInForce } from "#orders/MidaBrokerOrderTimeInForce";
 import { MidaBrokerPosition } from "#positions/MidaBrokerPosition";
-import { MidaBrokerPositionProtection } from "#positions/MidaBrokerPositionProtection";
 import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 
 /** Represents a broker order. */
@@ -23,15 +22,15 @@ export abstract class MidaBrokerOrder {
     readonly #requestedVolume: number;
     readonly #direction: MidaBrokerOrderDirection;
     readonly #purpose: MidaBrokerOrderPurpose;
-    #limit?: number;
-    #stop?: number;
+    #limitPrice?: number;
+    #stopPrice?: number;
     #status: MidaBrokerOrderStatus;
     #creationDate?: MidaDate;
     #lastUpdateDate?: MidaDate;
     readonly #timeInForce: MidaBrokerOrderTimeInForce;
     readonly #deals: MidaBrokerDeal[];
     #position?: MidaBrokerPosition;
-    #rejection?: MidaBrokerOrderRejection;
+    #rejectionType?: MidaBrokerOrderRejectionType;
     readonly #isStopOut: boolean;
     readonly #emitter: MidaEmitter;
 
@@ -42,8 +41,8 @@ export abstract class MidaBrokerOrder {
         requestedVolume,
         direction,
         purpose,
-        limit,
-        stop,
+        limitPrice,
+        stopPrice,
         status,
         creationDate,
         lastUpdateDate,
@@ -57,8 +56,8 @@ export abstract class MidaBrokerOrder {
         this.#requestedVolume = requestedVolume;
         this.#direction = direction;
         this.#purpose = purpose;
-        this.#limit = limit;
-        this.#stop = stop;
+        this.#limitPrice = limitPrice;
+        this.#stopPrice = stopPrice;
         this.#status = status;
         this.#creationDate = creationDate;
         this.#lastUpdateDate = lastUpdateDate;
@@ -96,12 +95,12 @@ export abstract class MidaBrokerOrder {
         return this.#purpose;
     }
 
-    public get limit (): number | undefined {
-        return this.#limit;
+    public get limitPrice (): number | undefined {
+        return this.#limitPrice;
     }
 
-    public get stop (): number | undefined {
-        return this.#stop;
+    public get stopPrice (): number | undefined {
+        return this.#stopPrice;
     }
 
     public get status (): MidaBrokerOrderStatus {
@@ -140,12 +139,12 @@ export abstract class MidaBrokerOrder {
         this.#position = position;
     }
 
-    public get rejection (): MidaBrokerOrderRejection | undefined {
-        return this.#rejection;
+    public get rejectionType (): MidaBrokerOrderRejectionType | undefined {
+        return this.#rejectionType;
     }
 
-    protected set rejection (rejection: MidaBrokerOrderRejection | undefined) {
-        this.#rejection = rejection;
+    protected set rejectionType (rejection: MidaBrokerOrderRejectionType | undefined) {
+        this.#rejectionType = rejection;
     }
 
     public get isStopOut (): boolean {
@@ -163,7 +162,7 @@ export abstract class MidaBrokerOrder {
     }
 
     public get isFilled (): boolean {
-        return this.#requestedVolume === this.filledVolume;
+        return this.#status === MidaBrokerOrderStatus.FILLED;
     }
 
     public get executionPrice (): number | undefined {
@@ -192,16 +191,16 @@ export abstract class MidaBrokerOrder {
         return this.#purpose === MidaBrokerOrderPurpose.CLOSE;
     }
 
-    public get execution (): MidaBrokerOrderExecution {
-        if (Number.isFinite(this.#limit)) {
-            return MidaBrokerOrderExecution.LIMIT;
+    public get executionType (): MidaBrokerOrderExecutionType {
+        if (Number.isFinite(this.#limitPrice)) {
+            return MidaBrokerOrderExecutionType.LIMIT;
         }
 
-        if (Number.isFinite(this.#stop)) {
-            return MidaBrokerOrderExecution.STOP;
+        if (Number.isFinite(this.#stopPrice)) {
+            return MidaBrokerOrderExecutionType.STOP;
         }
 
-        return MidaBrokerOrderExecution.MARKET;
+        return MidaBrokerOrderExecutionType.MARKET;
     }
 
     public get lastDeal (): MidaBrokerDeal | undefined {
@@ -209,8 +208,6 @@ export abstract class MidaBrokerOrder {
     }
 
     public abstract cancel (): Promise<void>;
-
-    public abstract modifyPositionProtection (protection: MidaBrokerPositionProtection): Promise<void>;
 
     public on (type: string): Promise<MidaEvent>
     public on (type: string, listener: MidaEventListener): string
@@ -278,11 +275,11 @@ export abstract class MidaBrokerOrder {
     }
 
     protected onPendingPriceChange (price: number): void {
-        if (Number.isFinite(this.#limit)) {
-            this.#limit = price;
+        if (Number.isFinite(this.#limitPrice)) {
+            this.#limitPrice = price;
         }
-        else if (Number.isFinite(this.#stop)) {
-            this.#stop = price;
+        else if (Number.isFinite(this.#stopPrice)) {
+            this.#stopPrice = price;
         }
 
         this.#emitter.notifyListeners("pending-price-change", { price, });

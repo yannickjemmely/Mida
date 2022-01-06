@@ -1,5 +1,6 @@
 import { MidaDate } from "#dates/MidaDate";
 import { MidaSymbolQuotation } from "#quotations/MidaSymbolQuotation";
+import { MidaSymbolTickMovementType } from "#ticks/MidaSymbolTickMovementType";
 import { MidaSymbolTickParameters } from "#ticks/MidaSymbolTickParameters";
 import { IMidaCloneable } from "#utilities/cloneable/IMidaCloneable";
 import { IMidaEquatable } from "#utilities/equatable/IMidaEquatable";
@@ -9,6 +10,7 @@ import { GenericObject } from "#utilities/GenericObject";
 export class MidaSymbolTick implements IMidaCloneable, IMidaEquatable {
     readonly #quotation: MidaSymbolQuotation;
     readonly #date: MidaDate;
+    readonly #movementType: MidaSymbolTickMovementType;
     readonly #previousTick?: MidaSymbolTick;
     readonly #nextTick?: MidaSymbolTick;
 
@@ -17,6 +19,7 @@ export class MidaSymbolTick implements IMidaCloneable, IMidaEquatable {
         bid,
         ask,
         date,
+        movementType,
         quotation,
         previousTick,
         nextTick,
@@ -34,6 +37,7 @@ export class MidaSymbolTick implements IMidaCloneable, IMidaEquatable {
         }
 
         this.#date = this.#quotation.date;
+        this.#movementType = movementType;
         this.#previousTick = previousTick;
         this.#nextTick = nextTick;
     }
@@ -46,6 +50,11 @@ export class MidaSymbolTick implements IMidaCloneable, IMidaEquatable {
     /** The tick date. */
     public get date (): MidaDate {
         return this.#date;
+    }
+
+    /** The tick movement type. */
+    public get movementType (): MidaSymbolTickMovementType {
+        return this.#movementType;
     }
 
     /** The tick previous to this. */
@@ -78,10 +87,11 @@ export class MidaSymbolTick implements IMidaCloneable, IMidaEquatable {
         return this.#quotation.spread;
     }
 
-    public clone (): any {
+    public clone (): MidaSymbolTick {
         return new MidaSymbolTick({
             quotation: this.#quotation.clone(),
             date: this.#date.clone(),
+            movementType: this.#movementType,
             previousTick: this.#previousTick?.clone(),
             nextTick: this.#nextTick?.clone(),
         });
