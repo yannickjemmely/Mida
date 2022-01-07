@@ -93,6 +93,7 @@ export { MidaSymbolPrice } from "#symbols/MidaSymbolPrice";
 export { MidaSymbolTradeStatus } from "#symbols/MidaSymbolTradeStatus";
 
 export { MidaSymbolTick } from "#ticks/MidaSymbolTick";
+export { MidaSymbolTickMovementType } from "#ticks/MidaSymbolTickMovementType";
 export { MidaSymbolTickParameters } from "#ticks/MidaSymbolTickParameters";
 
 export { MidaPlugin } from "#plugins/MidaPlugin";

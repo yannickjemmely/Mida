@@ -1,10 +1,12 @@
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
-import { MidaBrokerDeal } from "#deals/MidaBrokerDeal";
 import { MidaEvent } from "#events/MidaEvent";
 import { MidaEventListener } from "#events/MidaEventListener";
 import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
+import { MidaBrokerOrderDirection } from "#orders/MidaBrokerOrderDirection";
 import { MidaBrokerOrderPurpose } from "#orders/MidaBrokerOrderPurpose";
+import { MidaBrokerOrderStatus } from "#orders/MidaBrokerOrderStatus";
 import { MidaBrokerPositionDirection } from "#positions/MidaBrokerPositionDirection";
+import { MidaBrokerPositionHistory } from "#positions/MidaBrokerPositionHistory";
 import { MidaBrokerPositionParameters } from "#positions/MidaBrokerPositionParameters";
 import { MidaBrokerPositionProtection } from "#positions/MidaBrokerPositionProtection";
 import { MidaBrokerPositionStatus } from "#positions/MidaBrokerPositionStatus";
@@ -12,10 +14,6 @@ import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 
 export abstract class MidaBrokerPosition {
     readonly #id: string;
-    readonly #symbol: string;
-    #volume: number;
-    #direction: MidaBrokerPositionDirection;
-    #status: MidaBrokerPositionStatus;
     readonly #orders: MidaBrokerOrder[];
     readonly #protection: MidaBrokerPositionProtection;
     readonly #tags: Set<string>;
@@ -23,18 +21,10 @@ export abstract class MidaBrokerPosition {
 
     protected constructor ({
         id,
-        symbol,
-        volume,
-        direction,
-        status,
         orders,
         protection,
     }: MidaBrokerPositionParameters) {
         this.#id = id;
-        this.#symbol = symbol;
-        this.#volume = volume;
-        this.#direction = direction;
-        this.#status = status;
         this.#orders = orders;
         this.#protection = protection ?? {};
         this.#tags = new Set();
@@ -45,22 +35,6 @@ export abstract class MidaBrokerPosition {
         return this.#id;
     }
 
-    public get symbol (): string {
-        return this.#symbol;
-    }
-
-    public get volume (): number {
-        return this.#volume;
-    }
-
-    public get direction (): MidaBrokerPositionDirection {
-        return this.#direction;
-    }
-
-    public get status (): MidaBrokerPositionStatus {
-        return this.#status;
-    }
-
     public get orders (): MidaBrokerOrder[] {
         return [ ...this.#orders, ];
     }
@@ -69,22 +43,93 @@ export abstract class MidaBrokerPosition {
         return this.#protection;
     }
 
-    public get firstOrder (): MidaBrokerOrder {
-        return this.#orders[0];
+    public get filledOrders (): MidaBrokerOrder[] {
+        const filledOrders: MidaBrokerOrder[] = [];
+
+        for (const order of this.#orders) {
+            if (order.status === MidaBrokerOrderStatus.FILLED) {
+                filledOrders.push(order);
+            }
+        }
+
+        return filledOrders;
+    }
+
+    public get firstFilledOrder (): MidaBrokerOrder {
+        return this.filledOrders[0];
+    }
+
+    public get symbol (): string {
+        return this.firstFilledOrder.symbol;
+    }
+
+    public get history (): MidaBrokerPositionHistory {
+        const positionDirectionHistory: MidaBrokerPositionDirection[] = [];
+        const directionHistory: MidaBrokerOrderDirection[] = [ this.firstFilledOrder.direction, ];
+        let currentDirection: MidaBrokerOrderDirection = directionHistory[0];
+        let openVolume: number = 0;
+        let closedVolume: number = 0;
+
+        for (const order of this.filledOrders) {
+            if (order.direction === currentDirection) {
+                openVolume += order.filledVolume;
+            }
+            else {
+                closedVolume += order.filledVolume;
+            }
+
+            const volumeDifference: number = closedVolume - openVolume;
+
+            if (volumeDifference > 0) {
+                currentDirection = order.direction;
+                openVolume = volumeDifference;
+                closedVolume = 0;
+
+                directionHistory.push(currentDirection);
+            }
+        }
+
+        for (const direction of directionHistory) {
+            switch (direction) {
+                case MidaBrokerOrderDirection.SELL: {
+                    positionDirectionHistory.push(MidaBrokerPositionDirection.SHORT);
+
+                    break;
+                }
+                case MidaBrokerOrderDirection.BUY: {
+                    positionDirectionHistory.push(MidaBrokerPositionDirection.LONG);
+
+                    break;
+                }
+            }
+        }
+
+        return {
+            directions: positionDirectionHistory,
+            openVolume: openVolume - closedVolume,
+        };
+    }
+
+    public get volume (): number {
+        return this.history.openVolume;
+    }
+
+    public get direction (): MidaBrokerPositionDirection {
+        const directions: MidaBrokerPositionDirection[] = this.history.directions;
+
+        return directions[directions.length - 1];
+    }
+
+    public get status (): MidaBrokerPositionStatus {
+        if (this.volume === 0) {
+            return MidaBrokerPositionStatus.CLOSED;
+        }
+
+        return MidaBrokerPositionStatus.OPEN;
     }
 
     public get brokerAccount (): MidaBrokerAccount {
-        return this.firstOrder.brokerAccount;
-    }
-
-    public get deals (): MidaBrokerDeal[] {
-        const deals = [];
-
-        for (const order of this.orders) {
-            deals.push(...order.deals);
-        }
-
-        return deals;
+        return this.firstFilledOrder.brokerAccount;
     }
 
     public get takeProfit (): number | undefined {
@@ -142,11 +187,11 @@ export abstract class MidaBrokerPosition {
     }
 
     public async reverse (): Promise<MidaBrokerOrder> {
-        return this.subtractVolume(this.#volume * 2);
+        return this.subtractVolume(this.volume * 2);
     }
 
     public async close (): Promise<MidaBrokerOrder> {
-        return this.subtractVolume(this.#volume);
+        return this.subtractVolume(this.volume);
     }
 
     public addTag (tag: string): void {
@@ -177,9 +222,9 @@ export abstract class MidaBrokerPosition {
 
     public abstract modifyProtection (protection: MidaBrokerPositionProtection): Promise<void>;
 
-    public abstract setTakeProfit (takeProfit: number): Promise<void>;
+    public abstract setTakeProfit (takeProfit: number | undefined): Promise<void>;
 
-    public abstract setStopLoss (stopLoss: number): Promise<void>;
+    public abstract setStopLoss (stopLoss: number | undefined): Promise<void>;
 
     public abstract setTrailingStopLoss (trailingStopLoss: boolean): Promise<void>;
 
@@ -190,36 +235,22 @@ export abstract class MidaBrokerPosition {
         this.#emitter.notifyListeners("order", { order, });
     }
 
-    protected onDeal (deal: MidaBrokerDeal): void {
-        const filledVolume = deal.filledVolume;
+    protected onOrderFill (order: MidaBrokerOrder): void {
+        const filledVolume = order.filledVolume;
 
-        this.#emitter.notifyListeners("deal", { deal, });
-
-        if (deal.isClosing) {
-            const volumeDifference: number = filledVolume - this.#volume;
-            const order = deal.order;
+        if (order.isClosing) {
+            const volumeDifference: number = filledVolume - this.volume;
 
             if (volumeDifference > 0) {
-                this.#volume = volumeDifference;
-                this.#direction = MidaBrokerPositionDirection.oppositeOf(this.#direction);
-
                 this.#emitter.notifyListeners("reverse");
             }
-            else if (volumeDifference === 0 && order.isFilled) {
-                this.#volume = 0;
-                this.#status = MidaBrokerPositionStatus.CLOSED;
-
+            else if (volumeDifference === 0) {
                 this.#emitter.notifyListeners("close");
-            }
-            else {
-                this.#volume = Math.abs(volumeDifference);
             }
 
             this.#emitter.notifyListeners("volume-close", { quantity: filledVolume, });
         }
         else {
-            this.#volume += filledVolume;
-
             this.#emitter.notifyListeners("volume-open", { quantity: filledVolume, });
         }
     }
