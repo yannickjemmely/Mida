@@ -1,4 +1,5 @@
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
+import { MidaBrokerDeal } from "#deals/MidaBrokerDeal";
 import { MidaEvent } from "#events/MidaEvent";
 import { MidaEventListener } from "#events/MidaEventListener";
 import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
@@ -43,6 +44,10 @@ export abstract class MidaBrokerPosition {
         return this.#protection;
     }
 
+    public get tags (): string[] {
+        return [ ...this.#tags, ];
+    }
+
     public get filledOrders (): MidaBrokerOrder[] {
         const filledOrders: MidaBrokerOrder[] = [];
 
@@ -59,14 +64,24 @@ export abstract class MidaBrokerPosition {
         return this.filledOrders[0];
     }
 
+    public get filledOrdersDeals (): MidaBrokerDeal[] {
+        const deals: MidaBrokerDeal[] = [];
+
+        for (const order of this.filledOrders) {
+            deals.push(...order.deals);
+        }
+
+        return deals;
+    }
+
     public get symbol (): string {
         return this.firstFilledOrder.symbol;
     }
 
     public get history (): MidaBrokerPositionHistory {
         const positionDirectionHistory: MidaBrokerPositionDirection[] = [];
-        const directionHistory: MidaBrokerOrderDirection[] = [ this.firstFilledOrder.direction, ];
-        let currentDirection: MidaBrokerOrderDirection = directionHistory[0];
+        const directionChangeHistory: MidaBrokerOrderDirection[] = [ this.firstFilledOrder.direction, ];
+        let currentDirection: MidaBrokerOrderDirection = directionChangeHistory[0];
         let openVolume: number = 0;
         let closedVolume: number = 0;
 
@@ -85,11 +100,11 @@ export abstract class MidaBrokerPosition {
                 openVolume = volumeDifference;
                 closedVolume = 0;
 
-                directionHistory.push(currentDirection);
+                directionChangeHistory.push(currentDirection);
             }
         }
 
-        for (const direction of directionHistory) {
+        for (const direction of directionChangeHistory) {
             switch (direction) {
                 case MidaBrokerOrderDirection.SELL: {
                     positionDirectionHistory.push(MidaBrokerPositionDirection.SHORT);
@@ -144,8 +159,44 @@ export abstract class MidaBrokerPosition {
         return this.#protection.trailingStopLoss;
     }
 
-    public get tags (): string[] {
-        return [ ...this.#tags, ];
+    public get realizedGrossProfit (): number {
+        let grossProfit: number = 0;
+
+        for (const deal of this.filledOrdersDeals) {
+            if (deal.isClosing) {
+                grossProfit += deal.grossProfit as number;
+            }
+        }
+
+        return grossProfit;
+    }
+
+    public get realizedSwap (): number {
+        let swap: number = 0;
+
+        for (const deal of this.filledOrdersDeals) {
+            if (deal.isClosing) {
+                swap += deal.swap as number;
+            }
+        }
+
+        return swap;
+    }
+
+    public get realizedCommission (): number {
+        let commission: number = 0;
+
+        for (const deal of this.filledOrdersDeals) {
+            if (deal.isClosing) {
+                commission += deal.commission as number;
+            }
+        }
+
+        return commission;
+    }
+
+    public get realizedNetProfit (): number {
+        return this.realizedGrossProfit + this.realizedSwap + this.realizedCommission;
     }
 
     public abstract getUsedMargin (): Promise<number>;
@@ -235,6 +286,7 @@ export abstract class MidaBrokerPosition {
         this.#emitter.notifyListeners("order", { order, });
     }
 
+    // Only filled orders impact the position
     protected onOrderFill (order: MidaBrokerOrder): void {
         const filledVolume = order.filledVolume;
 
