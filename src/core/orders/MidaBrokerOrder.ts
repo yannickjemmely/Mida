@@ -19,7 +19,7 @@ export abstract class MidaBrokerOrder {
     #id?: string;
     readonly #brokerAccount: MidaBrokerAccount;
     readonly #symbol: string;
-    readonly #requestedVolume: number;
+    #requestedVolume: number;
     readonly #direction: MidaBrokerOrderDirection;
     readonly #purpose: MidaBrokerOrderPurpose;
     #limitPrice?: number;
@@ -283,6 +283,16 @@ export abstract class MidaBrokerOrder {
         }
 
         this.#emitter.notifyListeners("pending-price-change", { price, });
+    }
+
+    protected onPendingVolumeChange (volume: number): void {
+        if (this.#requestedVolume === volume) {
+            return;
+        }
+
+        this.#requestedVolume = volume;
+
+        this.#emitter.notifyListeners("pending-volume-change", { volume, });
     }
 
     protected onDeal (deal: MidaBrokerDeal): void {
