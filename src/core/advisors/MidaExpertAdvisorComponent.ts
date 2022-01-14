@@ -35,25 +35,17 @@ export abstract class MidaExpertAdvisorComponent {
         return this.#enabled;
     }
 
-    public set enabled (value: boolean) {
-        this.#enabled = value;
+    public set enabled (enabled: boolean) {
+        this.#enabled = enabled;
     }
 
     public abstract configure (): Promise<void>;
 
-    public onTick (tick: MidaSymbolTick): void {
+    public async onTick (tick: MidaSymbolTick): Promise<void> {
         // Silence is golden.
     }
 
-    public async onTickAsync (tick: MidaSymbolTick): Promise<void> {
-        // Silence is golden.
-    }
-
-    public onLateTick (tick: MidaSymbolTick): void {
-        // Silence is golden.
-    }
-
-    public async onLateTickAsync (tick: MidaSymbolTick): Promise<void> {
+    public async onLateTick (tick: MidaSymbolTick): Promise<void> {
         // Silence is golden.
     }
 }
