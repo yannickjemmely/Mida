@@ -1,4 +1,4 @@
 export enum MidaBrokerPositionStatus {
-    OPEN,
-    CLOSED,
+    OPEN = "open",
+    CLOSED = "closed",
 }

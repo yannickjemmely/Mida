@@ -8,25 +8,42 @@ import { GenericObject } from "#utilities/GenericObject";
 export class MidaDate implements IMidaCloneable, IMidaEquatable {
     readonly #date: Date;
 
-    public constructor ({
-        timestamp,
-        iso,
-        date,
-    }: MidaDateParameters = {}) {
-        if (typeof timestamp === "number") {
-            this.#date = new Date(timestamp);
-        }
-        else if (typeof iso === "string") {
-            this.#date = new Date(iso);
-        }
-        else if (date instanceof MidaDate) {
-            this.#date = new Date(date.timestamp);
-        }
-        else if (date instanceof Date) {
-            this.#date = new Date(date);
-        }
-        else {
-            this.#date = new Date();
+    public constructor (descriptor?: MidaDateParameters | string | number) {
+        switch (typeof descriptor) {
+            case "number":
+            case "string": {
+                this.#date = new Date(descriptor);
+
+                break;
+            }
+            case "object": {
+                const {
+                    timestamp,
+                    iso,
+                    date,
+                } = descriptor;
+
+                if (typeof timestamp === "number") {
+                    this.#date = new Date(timestamp);
+                }
+                else if (typeof iso === "string") {
+                    this.#date = new Date(iso);
+                }
+                else if (date instanceof MidaDate) {
+                    this.#date = new Date(date.timestamp);
+                }
+                else if (date instanceof Date) {
+                    this.#date = new Date(date);
+                }
+                else {
+                    this.#date = new Date();
+                }
+
+                break;
+            }
+            default: {
+                this.#date = new Date();
+            }
         }
     }
 
@@ -50,11 +67,11 @@ export class MidaDate implements IMidaCloneable, IMidaEquatable {
         return this.#date.getUTCHours();
     }
 
-    public get day (): number {
+    public get weekDay (): number {
         return this.#date.getUTCDay();
     }
 
-    public get date (): number {
+    public get monthDay (): number {
         return this.#date.getUTCDate();
     }
 
