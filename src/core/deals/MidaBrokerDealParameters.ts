@@ -2,7 +2,7 @@ import { MidaDate } from "#dates/MidaDate";
 import { MidaBrokerDeal } from "#deals/MidaBrokerDeal";
 import { MidaBrokerDealDirection } from "#deals/MidaBrokerDealDirection";
 import { MidaBrokerDealPurpose } from "#deals/MidaBrokerDealPurpose";
-import { MidaBrokerDealRejection } from "#deals/MidaBrokerDealRejection";
+import { MidaBrokerDealRejectionType } from "#deals/MidaBrokerDealRejectionType";
 import { MidaBrokerDealStatus } from "#deals/MidaBrokerDealStatus";
 import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
 import { MidaBrokerPosition } from "#positions/MidaBrokerPosition";
@@ -26,5 +26,5 @@ export type MidaBrokerDealParameters = {
     grossProfit?: number;
     commission?: number;
     swap?: number;
-    rejection?: MidaBrokerDealRejection;
+    rejectionType?: MidaBrokerDealRejectionType;
 };

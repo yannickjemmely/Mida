@@ -59,7 +59,7 @@ export { MidaBrokerDeal } from "#deals/MidaBrokerDeal";
 export { MidaBrokerDealDirection } from "#deals/MidaBrokerDealDirection";
 export { MidaBrokerDealParameters } from "#deals/MidaBrokerDealParameters";
 export { MidaBrokerDealPurpose } from "#deals/MidaBrokerDealPurpose";
-export { MidaBrokerDealRejection } from "#deals/MidaBrokerDealRejection";
+export { MidaBrokerDealRejectionType } from "#deals/MidaBrokerDealRejectionType";
 export { MidaBrokerDealStatus } from "#deals/MidaBrokerDealStatus";
 
 export { MidaError } from "#errors/MidaError";

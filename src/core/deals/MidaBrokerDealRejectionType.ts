@@ -1,4 +1,4 @@
-export enum MidaBrokerDealRejection {
+export enum MidaBrokerDealRejectionType {
     NO_LIQUIDITY = "no-liquidity",
     MISSED = "missed",
     INTERNAL_BROKER_ERROR = "internal-broker-error",
