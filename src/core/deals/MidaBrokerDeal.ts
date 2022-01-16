@@ -10,8 +10,8 @@ import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 
 export abstract class MidaBrokerDeal {
     readonly #id: string;
-    readonly #order: MidaBrokerOrder;
-    readonly #position?: MidaBrokerPosition;
+    readonly #orderGetter: MidaBrokerOrder | (() => MidaBrokerOrder);
+    readonly #positionGetter?: MidaBrokerPosition | (() => MidaBrokerPosition);
     readonly #symbol: string;
     readonly #requestedVolume: number;
     readonly #filledVolume: number;
@@ -52,8 +52,8 @@ export abstract class MidaBrokerDeal {
         rejectionType,
     }: MidaBrokerDealParameters) {
         this.#id = id;
-        this.#order = order;
-        this.#position = position;
+        this.#orderGetter = order;
+        this.#positionGetter = position;
         this.#symbol = symbol;
         this.#requestedVolume = requestedVolume;
         this.#filledVolume = filledVolume ?? 0;
@@ -170,6 +170,22 @@ export abstract class MidaBrokerDeal {
 
     public get isClosing (): boolean {
         return this.#purpose === MidaBrokerDealPurpose.CLOSE;
+    }
+
+    get #order (): MidaBrokerOrder {
+        if (typeof this.#orderGetter === "function") {
+            return this.#orderGetter();
+        }
+
+        return this.#orderGetter;
+    }
+
+    get #position (): MidaBrokerPosition | undefined {
+        if (typeof this.#positionGetter === "function") {
+            return this.#positionGetter();
+        }
+
+        return this.#positionGetter;
     }
 
     // net profit = gross profit + swap + commission

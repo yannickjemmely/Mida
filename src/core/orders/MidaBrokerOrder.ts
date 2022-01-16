@@ -29,7 +29,7 @@ export abstract class MidaBrokerOrder {
     #lastUpdateDate?: MidaDate;
     readonly #timeInForce: MidaBrokerOrderTimeInForce;
     readonly #deals: MidaBrokerDeal[];
-    #position?: MidaBrokerPosition;
+    #positionGetter?: MidaBrokerPosition | (() => MidaBrokerPosition);
     #rejectionType?: MidaBrokerOrderRejectionType;
     readonly #isStopOut: boolean;
     readonly #emitter: MidaEmitter;
@@ -46,8 +46,10 @@ export abstract class MidaBrokerOrder {
         status,
         creationDate,
         lastUpdateDate,
-        deals,
         timeInForce,
+        deals,
+        position,
+        rejectionType,
         isStopOut,
     }: MidaBrokerOrderParameters) {
         this.#id = id;
@@ -63,6 +65,8 @@ export abstract class MidaBrokerOrder {
         this.#lastUpdateDate = lastUpdateDate;
         this.#timeInForce = timeInForce;
         this.#deals = deals ?? [];
+        this.#positionGetter = position;
+        this.#rejectionType = rejectionType;
         this.#isStopOut = isStopOut ?? false;
         this.#emitter = new MidaEmitter();
     }
@@ -205,6 +209,18 @@ export abstract class MidaBrokerOrder {
 
     public get lastDeal (): MidaBrokerDeal | undefined {
         return this.#deals[this.#deals.length - 1];
+    }
+
+    get #position (): MidaBrokerPosition | undefined {
+        if (typeof this.#positionGetter === "function") {
+            return this.#positionGetter();
+        }
+
+        return this.#positionGetter;
+    }
+
+    set #position (position: MidaBrokerPosition | undefined) {
+        this.#positionGetter = position;
     }
 
     public abstract cancel (): Promise<void>;

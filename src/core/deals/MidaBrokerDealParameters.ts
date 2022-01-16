@@ -9,8 +9,8 @@ import { MidaBrokerPosition } from "#positions/MidaBrokerPosition";
 
 export type MidaBrokerDealParameters = {
     id: string;
-    order: MidaBrokerOrder;
-    position?: MidaBrokerPosition;
+    order: MidaBrokerOrder | (() => MidaBrokerOrder);
+    position?: MidaBrokerPosition | (() => MidaBrokerPosition);
     symbol: string;
     requestedVolume: number;
     filledVolume?: number;

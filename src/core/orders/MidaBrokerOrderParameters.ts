@@ -22,7 +22,7 @@ export type MidaBrokerOrderParameters = {
     lastUpdateDate?: MidaDate;
     timeInForce: MidaBrokerOrderTimeInForce;
     deals?: MidaBrokerDeal[];
-    position?: MidaBrokerPosition;
+    position?: MidaBrokerPosition | (() => MidaBrokerPosition);
     rejectionType?: MidaBrokerOrderRejectionType;
     isStopOut?: boolean;
 };
