@@ -17,8 +17,6 @@ Designed to:
 Mida is free and open source, join the [Discord community](https://discord.gg/cKyWTUsr3q).
 
 ## Usage
-Note: this project is work in progress, part of this API has not been implemented yet.
-
 ### Broker account login
 How to login into a cTrader broker account.
 ```javascript
@@ -36,17 +34,17 @@ const myAccount = await MidaBroker.login("cTrader", {
 });
 ```
 
-For cTrader, to get `clientId`, `clientSecret` and `accessToken` you have to create an account on
-[cTrader Open API](https://connect.spotware.com), the process is simple and free.
+To get a `clientId`, `clientSecret` and `accessToken` you have to create an account on
+[cTrader Open API](https://connect.spotware.com), the API usage is free.
 
 ### Broker orders and positions
 How top open a long position for Bitcoin against USD.
 ```javascript
 const { MidaBrokerOrderDirection } = require("@reiryoku/mida");
 
-const myOrder = await myAccount.placeOrder({
+const myOrder = await myAccount.openPosition({
     symbol: "BTCUSD",
-    type: MidaBrokerOrderDirection.BUY,
+    direction: MidaBrokerOrderDirection.BUY,
     volume: 1,
 });
 
@@ -60,15 +58,13 @@ const { MidaBrokerOrderDirection } = require("@reiryoku/mida");
 
 const myOrder = await myAccount.placeOrder({
     symbol: "EURUSD",
-    type: MidaBrokerOrderDirection.SELL,
+    direction: MidaBrokerOrderDirection.SELL,
     volume: 0.1,
 });
 
 console.log(myOrder.id);
 console.log(myOrder.openPrice);
 ```
-
-<details><summary>More examples</summary>
 
 How to open a short position for Apple stocks with errors handler.
 ```javascript
@@ -77,34 +73,34 @@ const {
     MidaBrokerErrorType,
 } = require("@reiryoku/mida");
 
-let myOrder;
+const myOrder = await myAccount.placeOrder({
+    symbol: "#AAPL",
+    direction: MidaBrokerOrderDirection.SELL,
+    volume: 1,
+});
 
-try {
-    myOrder = await myAccount.placeOrder({
-        symbol: "#AAPL",
-        type: MidaBrokerOrderDirection.SELL,
-        volume: 1,
-    });
-}
-catch (error) {
-    switch (error.type) {
-        case MidaBrokerErrorType.MARKET_CLOSED:
+if (myOrder.isRejected) {
+    switch (myOrder.rejectionType) {
+        case MidaBrokerOrderRejectionType.MARKET_CLOSED: {
             console.log("#AAPL market is closed!");
-            
+
             break;
-            
-        case MidaBrokerErrorType.NOT_ENOUGH_MONEY:
+        }
+        case MidaBrokerOrderRejectionType.NOT_ENOUGH_MONEY: {
             console.log("You don't have enough money in your account!");
-            
+
             break;
-            
-        case MidaBrokerErrorType.INVALID_SYMBOL:
+        }
+        case MidaBrokerOrderRejectionType.INVALID_SYMBOL: {
             console.log("Your broker account doesn't support trading Apple stocks!");
-            
+
             break;
+        }
     }
 }
 ```
+
+<details><summary>More examples</summary>
 
 In case you don't want to handle errors you can use `tryPlaceOrder` which returns `undefined` if the
 order has not been placed for any reason.
