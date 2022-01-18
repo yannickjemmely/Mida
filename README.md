@@ -14,7 +14,7 @@ Designed to:
 - Automate and backtest trading/investment strategies through expert advisors;
 - Analyze markets and prices with indicators and analysis interfaces.
 
-Free and open source, join the [Discord community](https://discord.gg/cKyWTUsr3q).
+Mida is free and open source, join the [Discord community](https://discord.gg/cKyWTUsr3q).
 
 ## Usage
 Note: this project is work in progress, part of this API has not been implemented yet.
