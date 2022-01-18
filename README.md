@@ -4,7 +4,7 @@
 </p>
 <br>
 <p align="center">
-    A JavaScript framework to easily operate in global financial markets.
+    **A JavaScript framework to easily operate in global financial markets.**
 </p>
 <br>
 
