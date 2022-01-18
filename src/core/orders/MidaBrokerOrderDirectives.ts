@@ -12,16 +12,19 @@ export type MidaBrokerOrderOpenDirectives = {
     stop?: number;
     protection?: MidaBrokerPositionProtection;
     positionId?: string;
-};
+} & MidaBrokerOrderAdvancedDirectives;
 
 export type MidaBrokerOrderCloseDirectives = {
     purpose: MidaBrokerOrderPurpose.CLOSE;
     positionId: string;
     volume?: number;
-};
+} & MidaBrokerOrderAdvancedDirectives;
 
-export type MidaBrokerOrderDirectives = (MidaBrokerOrderOpenDirectives | MidaBrokerOrderCloseDirectives) & {
+export type MidaBrokerOrderAdvancedDirectives = {
+    resolverEvents?: string[];
     listeners?: {
         [eventType: string]: MidaEventListener;
     };
 };
+
+export type MidaBrokerOrderDirectives = MidaBrokerOrderOpenDirectives | MidaBrokerOrderCloseDirectives;

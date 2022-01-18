@@ -219,7 +219,7 @@ export abstract class MidaBrokerOrder {
         return this.#positionGetter;
     }
 
-    set #position (position: MidaBrokerPosition | undefined) {
+    set #position (position: MidaBrokerPosition | (() => MidaBrokerPosition) | undefined) {
         this.#positionGetter = position;
     }
 

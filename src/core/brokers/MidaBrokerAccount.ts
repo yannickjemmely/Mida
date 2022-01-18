@@ -128,7 +128,7 @@ export abstract class MidaBrokerAccount {
     public abstract getDeals (fromTimestamp: number, toTimestamp: number): Promise<MidaBrokerDeal[]>;
 
     /** Used to get the account positions. */
-    public abstract getPositions (fromTimestamp: number, toTimestamp: number): Promise<MidaBrokerPosition>;
+    public abstract getPositions (fromTimestamp: number, toTimestamp: number): Promise<MidaBrokerPosition[]>;
 
     /** Used to get the account open positions. */
     public abstract getOpenPositions (): Promise<MidaBrokerPosition[]>;
@@ -240,7 +240,7 @@ export abstract class MidaBrokerAccount {
     }
 
     /**
-     * Used to open a position.
+     * Used to place an order for opening a position.
      * @param directives The order directives to open a position.
      */
     public async openPosition (directives: Omit<MidaBrokerOrderOpenDirectives, "purpose">): Promise<MidaBrokerOrder> {
