@@ -6,6 +6,7 @@
 <p align="center">
     A JavaScript framework to easily operate in global financial markets.
 </p>
+<br>
 
 Designed to:
 - Trade financial assets such as stocks, crypto, forex or commodities;
@@ -13,7 +14,7 @@ Designed to:
 - Automate and backtest trading/investment strategies through expert advisors;
 - Analyze markets and prices with indicators and analysis interfaces.
 
-Furthermore, Mida is free and open source, join the [Discord community](https://discord.gg/cKyWTUsr3q).
+Free and open source, join the [Discord community](https://discord.gg/cKyWTUsr3q).
 
 ## Usage
 Note: this project is work in progress, part of this API has not been implemented yet.
