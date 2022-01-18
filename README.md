@@ -14,13 +14,13 @@ Designed to:
 - Automate and backtest trading/investment strategies through expert advisors;
 - Analyze markets and prices with indicators and analysis interfaces.
 
-Mida is free and open source, join the [Discord community](https://discord.gg/cKyWTUsr3q).
+Mida is free and open source, join the [Discord](https://discord.gg/cKyWTUsr3q) and [Telegram](https://t.me/joinmida) community.
 
 ## Usage
 ### Broker account login
 How to login into a cTrader broker account.
 ```javascript
-const { Mida, MidaBroker } = require("@reiryoku/mida");
+const { Mida, MidaBroker, } = require("@reiryoku/mida");
 
 // Use the Mida cTrader plugin
 Mida.use(require("@reiryoku/mida-ctrader"));
