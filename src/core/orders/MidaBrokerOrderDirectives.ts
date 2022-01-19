@@ -1,6 +1,7 @@
 import { MidaEventListener } from "#events/MidaEventListener";
 import { MidaBrokerOrderDirection } from "#orders/MidaBrokerOrderDirection";
 import { MidaBrokerOrderPurpose } from "#orders/MidaBrokerOrderPurpose";
+import { MidaBrokerOrderTimeInForce } from "#orders/MidaBrokerOrderTimeInForce";
 import { MidaBrokerPositionProtection } from "#positions/MidaBrokerPositionProtection";
 
 export type MidaBrokerOrderOpenDirectives = {
@@ -22,6 +23,8 @@ export type MidaBrokerOrderCloseDirectives = {
 
 export type MidaBrokerOrderAdvancedDirectives = {
     resolverEvents?: string[];
+    timeInForce?: MidaBrokerOrderTimeInForce;
+    expirationTimestamp?: number;
     listeners?: {
         [eventType: string]: MidaEventListener;
     };

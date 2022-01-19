@@ -6,8 +6,10 @@ import { MidaEvent } from "#events/MidaEvent";
 import { MidaEventListener } from "#events/MidaEventListener";
 import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
 import { MidaBrokerOrderOpenDirectives } from "#orders/MidaBrokerOrderDirectives";
+import { MidaBrokerOrderStatus } from "#orders/MidaBrokerOrderStatus";
 import { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
 import { MidaBrokerPosition } from "#positions/MidaBrokerPosition";
+import { MidaBrokerPositionStatus } from "#positions/MidaBrokerPositionStatus";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 import { GenericObject } from "#utilities/GenericObject";
@@ -16,10 +18,10 @@ import { MidaMarketWatcher } from "#watcher/MidaMarketWatcher";
 export abstract class MidaExpertAdvisor {
     readonly #brokerAccount: MidaBrokerAccount;
     #isOperative: boolean;
-    readonly #orders: Map<string, MidaBrokerOrder>;
+    readonly #orders: MidaBrokerOrder[];
     readonly #capturedTicks: MidaSymbolTick[];
-    readonly #ticksQueue: MidaSymbolTick[];
-    #tickEventPromise?: Promise<void>;
+    readonly #tickEventQueue: MidaSymbolTick[];
+    #tickEventIsLocked: boolean;
     #isConfigured: boolean;
     readonly #marketWatcher: MidaMarketWatcher;
     readonly #components: MidaExpertAdvisorComponent[];
@@ -27,11 +29,11 @@ export abstract class MidaExpertAdvisor {
 
     protected constructor ({ brokerAccount, }: MidaExpertAdvisorParameters) {
         this.#brokerAccount = brokerAccount;
-        this.#orders = new Map();
         this.#isOperative = false;
+        this.#orders = [];
         this.#capturedTicks = [];
-        this.#ticksQueue = [];
-        this.#tickEventPromise = undefined;
+        this.#tickEventQueue = [];
+        this.#tickEventIsLocked = false;
         this.#isConfigured = false;
         this.#marketWatcher = new MidaMarketWatcher({ brokerAccount, });
         this.#components = [];
@@ -47,7 +49,7 @@ export abstract class MidaExpertAdvisor {
     }
 
     public get orders (): MidaBrokerOrder[] {
-        return [ ...this.#orders.values(), ];
+        return [ ...this.#orders, ];
     }
 
     protected get capturedTicks (): MidaSymbolTick[] {
@@ -74,10 +76,22 @@ export abstract class MidaExpertAdvisor {
         return enabledComponents;
     }
 
-    public get deals (): MidaBrokerDeal[] {
+    public get filledOrders (): MidaBrokerOrder[] {
+        const filledOrders: MidaBrokerOrder[] = [];
+
+        for (const order of this.#orders) {
+            if (order.status === MidaBrokerOrderStatus.FILLED) {
+                filledOrders.push(order);
+            }
+        }
+
+        return filledOrders;
+    }
+
+    public get filledOrdersDeals (): MidaBrokerDeal[] {
         const deals: MidaBrokerDeal[] = [];
 
-        for (const order of this.orders) {
+        for (const order of this.filledOrders) {
             deals.push(...order.deals);
         }
 
@@ -85,17 +99,28 @@ export abstract class MidaExpertAdvisor {
     }
 
     public get positions (): MidaBrokerPosition[] {
-        const positions: MidaBrokerPosition[] = [];
+        const positions: Map<string, MidaBrokerPosition> = new Map();
 
-        for (const order of this.orders) {
-            const position: MidaBrokerPosition | undefined = order.position;
+        for (const order of this.filledOrders) {
+            const position: MidaBrokerPosition = order.position as MidaBrokerPosition;
 
-            if (position) {
-                positions.push(position);
+            positions.set(position.id, position);
+        }
+
+        return [ ...positions.values(), ];
+    }
+
+    public get openPositions (): MidaBrokerPosition[] {
+        const positions: MidaBrokerPosition[] = this.positions;
+        const openPositions: MidaBrokerPosition[] = [];
+
+        for (const position of positions) {
+            if (position.status === MidaBrokerPositionStatus.OPEN) {
+                openPositions.push(position);
             }
         }
 
-        return positions;
+        return openPositions;
     }
 
     public async start (): Promise<void> {
@@ -130,7 +155,15 @@ export abstract class MidaExpertAdvisor {
 
         this.#isOperative = false;
 
-        await this.onStop();
+        try {
+            await this.onStop();
+
+            return;
+        }
+        catch (error) {
+            console.log(error);
+        }
+
         this.notifyListeners("stop");
     }
 
@@ -158,7 +191,7 @@ export abstract class MidaExpertAdvisor {
         // Silence is golden.
     }
 
-    protected async onPeriod (period: MidaSymbolPeriod, previousPeriod: MidaSymbolPeriod): Promise<void> {
+    protected async onPeriodClose (period: MidaSymbolPeriod): Promise<void> {
         // Silence is golden.
     }
 
@@ -188,16 +221,16 @@ export abstract class MidaExpertAdvisor {
         }
 
         this.#capturedTicks.push(tick);
-
-        if (this.#tickEventPromise) {
-            this.#ticksQueue.push(tick);
-        }
-        else {
-            this.#tickEventPromise = this.#onTickAsync(tick);
-        }
+        this.#onTickAsync(tick);
     }
 
     async #onTickAsync (tick: MidaSymbolTick): Promise<void> {
+        if (this.#tickEventIsLocked) {
+            this.#tickEventQueue.push(tick);
+        }
+
+        this.#tickEventIsLocked = true;
+
         // <components>
         for (const component of this.enabledComponents) {
             try {
@@ -225,19 +258,17 @@ export abstract class MidaExpertAdvisor {
             console.error(error);
         }
 
-        const nextTick: MidaSymbolTick | undefined = this.#ticksQueue.shift();
+        const nextTick: MidaSymbolTick | undefined = this.#tickEventQueue.shift();
+        this.#tickEventIsLocked = false;
 
         if (nextTick) {
-            this.#tickEventPromise = this.#onTickAsync(nextTick);
-        }
-        else {
-            this.#tickEventPromise = undefined;
+            this.#onTickAsync(nextTick);
         }
     }
 
-    #onPeriod (period: MidaSymbolPeriod, previousPeriod: MidaSymbolPeriod): void {
+    #onPeriodClose (period: MidaSymbolPeriod): void {
         try {
-            this.onPeriod(period, previousPeriod);
+            this.onPeriodClose(period);
         }
         catch (error) {
             console.log(error);
@@ -266,5 +297,6 @@ export abstract class MidaExpertAdvisor {
 
     #configureListeners (): void {
         this.#marketWatcher.on("tick", (event: MidaEvent): void => this.#onTick(event.descriptor.tick));
+        this.#marketWatcher.on("period-close", (event: MidaEvent): void => this.#onPeriodClose(event.descriptor.period));
     }
 }

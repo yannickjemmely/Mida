@@ -209,7 +209,7 @@ export abstract class MidaBrokerAccount {
 
     /**
      * Used to watch the ticks of a symbol.
-     * Recommended to not use this method directly, use a market watcher instead.
+     * Prefer using a market watcher instead.
      * @link MidaMarketWatcher
      * @param symbol The string representation of the symbol.
      */

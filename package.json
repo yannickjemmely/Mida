@@ -33,8 +33,7 @@
         "tests"
     ],
     "dependencies": {
-        "uuid": "^8.3.2",
-        "lodash": "^4.17.21"
+        "uuid": "^8.3.2"
     },
     "devDependencies": {
         "@reiryoku/eslint-config-reiryoku": "^1.0.0",
