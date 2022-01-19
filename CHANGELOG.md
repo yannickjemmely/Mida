@@ -1,4 +1,4 @@
-3.0.0 - 19-01-2022
+3.0.0 - 20-01-2022
 ===================
 * Refactor entire project, introduce orders, deals and positions.
 * Create "MidaTimeframe" API for handling common timeframes.
