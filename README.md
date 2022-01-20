@@ -4,6 +4,8 @@
 </p>
 <br>
 <p align="center">
+    ![npm](https://img.shields.io/npm/v/@reiryoku/mida?color=rgb%280%2C%200%2C%200%29)
+    <br>
     <b>A JavaScript framework to easily operate in global financial markets.</b>
 </p>
 <br>
