@@ -1,6 +1,6 @@
 [![Image](https://img.shields.io/npm/v/@reiryoku/mida?color=black)](https://www.npmjs.com/package/@reiryoku/mida)
 [![Image](https://img.shields.io/npm/l/@reiryoku/mida?color=black)](LICENSE)
-<br>
+<br><br>
 <p align="center"> 
     <img src="images/logo.svg" alt="Mida" width="352px">
 </p>
