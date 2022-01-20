@@ -1,5 +1,6 @@
-[![Image](https://img.shields.io/npm/v/@reiryoku/mida?color=black)](https://www.npmjs.com/package/@reiryoku/mida)
-[![Image](https://img.shields.io/npm/l/@reiryoku/mida?color=black)](LICENSE)
+[![Image](https://img.shields.io/npm/v/@reiryoku/mida)](https://www.npmjs.com/package/@reiryoku/mida)
+[![Image](https://img.shields.io/npm/l/@reiryoku/mida)](LICENSE)
+[![Image](https://img.shields.io/discord/780532638846287904)](https://discord.gg/cKyWTUsr3q)
 <br><br>
 <p align="center"> 
     <img src="images/logo.svg" alt="Mida" width="352px">
