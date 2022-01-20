@@ -1,6 +1,6 @@
 3.0.0 - 20-01-2022
 ===================
-* Refactor entire project, introduce orders, deals and positions.
+* **Refactor entire project, introduce orders, deals and positions.**
 * Create "MidaTimeframe" API for handling common timeframes.
 * Create "MidaDate" API for representing UTC dates.
 * Create async event emitter.
