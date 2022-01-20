@@ -1,4 +1,4 @@
-![npm](https://img.shields.io/npm/v/@reiryoku/mida?color=rgb%280%2C%200%2C%200%29)
+[![Image](https://img.shields.io/npm/v/@reiryoku/mida?color=black)](http://reiryoku.com)
 <br>
 <p align="center"> 
     <img src="images/logo.svg" alt="Mida" width="352px">
