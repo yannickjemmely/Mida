@@ -12,13 +12,15 @@ import { MidaMarketWatcherParameters } from "#watcher/MidaMarketWatcherParameter
 export class MidaMarketWatcher {
     readonly #brokerAccount: MidaBrokerAccount;
     readonly #watchedSymbols: Map<string, MidaMarketWatcherDirectives>;
-    readonly #lastPeriods: Map<string, Map<number, MidaSymbolPeriod>>;
+    readonly #lastClosedPeriods: Map<string, Map<number, MidaSymbolPeriod>>;
     readonly #emitter: MidaEmitter;
+    #tickListenerUuid?: string;
+    #closedPeriodsIntervalId?: NodeJS.Timer;
 
     public constructor ({ brokerAccount, }: MidaMarketWatcherParameters) {
         this.#brokerAccount = brokerAccount;
         this.#watchedSymbols = new Map();
-        this.#lastPeriods = new Map();
+        this.#lastClosedPeriods = new Map();
         this.#emitter = new MidaEmitter();
 
         this.#configureListeners();
@@ -32,15 +34,16 @@ export class MidaMarketWatcher {
         return [ ...this.#watchedSymbols.keys(), ];
     }
 
+    public getSymbolDirectives (symbol: string): MidaMarketWatcherDirectives | undefined {
+        return this.#watchedSymbols.get(symbol);
+    }
+
     public async watch (symbol: string, directives: MidaMarketWatcherDirectives): Promise<void> {
         if (this.#watchedSymbols.has(symbol)) {
             return;
         }
 
-        if (directives.watchTicks) {
-            await this.#brokerAccount.watchSymbolTicks(symbol);
-        }
-
+        await this.#configureSymbolDirectives(symbol, directives);
         this.#watchedSymbols.set(symbol, directives);
     }
 
@@ -51,10 +54,7 @@ export class MidaMarketWatcher {
             return;
         }
 
-        if (directives.watchTicks) {
-            await this.#brokerAccount.watchSymbolTicks(symbol);
-        }
-
+        await this.#configureSymbolDirectives(symbol, directives);
         this.#watchedSymbols.set(symbol, MidaUtilities.mergeOptions(actualDirectives, directives));
     }
 
@@ -62,15 +62,33 @@ export class MidaMarketWatcher {
         this.#watchedSymbols.delete(symbol);
     }
 
+    async #configureSymbolDirectives (symbol: string, directives: MidaMarketWatcherDirectives): Promise<void> {
+        const previousDirectives: MidaMarketWatcherDirectives | undefined = this.#watchedSymbols.get(symbol);
+
+        if (directives.watchTicks && !previousDirectives?.watchTicks) {
+            await this.#brokerAccount.watchSymbolTicks(symbol);
+        }
+
+        if (directives.watchPeriods && Array.isArray(directives.timeframes)) {
+            for (const timeframe of directives.timeframes) {
+                await this.#configureSymbolTimeframe(symbol, timeframe);
+            }
+        }
+    }
+
     async #configureSymbolTimeframe (symbol: string, timeframe: number): Promise<void> {
+        if (this.#lastClosedPeriods.get(symbol)?.has(timeframe)) {
+            return;
+        }
+
         const periods: MidaSymbolPeriod[] = await this.#brokerAccount.getSymbolPeriods(symbol, timeframe);
         const lastPeriod: MidaSymbolPeriod = periods[periods.length - 1];
 
-        if (!this.#lastPeriods.get(symbol)) {
-            this.#lastPeriods.set(symbol, new Map());
+        if (!this.#lastClosedPeriods.get(symbol)) {
+            this.#lastClosedPeriods.set(symbol, new Map());
         }
 
-        this.#lastPeriods.get(symbol)?.set(timeframe, lastPeriod);
+        this.#lastClosedPeriods.get(symbol)?.set(timeframe, lastPeriod);
     }
 
     public on (type: string): Promise<MidaEvent>
@@ -91,26 +109,7 @@ export class MidaMarketWatcher {
         this.#emitter.notifyListeners(type, descriptor);
     }
 
-    #onTick (tick: MidaSymbolTick): void {
-        const directives: MidaMarketWatcherDirectives | undefined = this.#watchedSymbols.get(tick.symbol);
-
-        if (directives?.watchTicks) {
-            this.notifyListeners("tick", { tick, });
-        }
-    }
-
-    #onPeriod (period: MidaSymbolPeriod, previousPeriod: MidaSymbolPeriod): void {
-        this.notifyListeners("period", {
-            period,
-            previousPeriod,
-        });
-        this.notifyListeners("candlestick", {
-            period,
-            previousPeriod,
-        });
-    }
-
-    async #checkNewPeriods (): Promise<void> {
+    async #checkNewClosedPeriods (): Promise<void> {
         for (const symbol of this.watchedSymbols) {
             const directives: MidaMarketWatcherDirectives = this.#watchedSymbols.get(symbol) as MidaMarketWatcherDirectives;
             const timeframes: number[] | undefined = directives.timeframes;
@@ -121,7 +120,7 @@ export class MidaMarketWatcher {
 
             for (const timeframe of timeframes) {
                 try {
-                    await this.#checkTimeframe(symbol, timeframe);
+                    await this.#checkClosedPeriod(symbol, timeframe);
                 }
                 catch (error: any) {
                     switch (error.type) {
@@ -136,29 +135,38 @@ export class MidaMarketWatcher {
                 }
             }
         }
+
+
     }
 
-    // Used to check if the last known period of a symbol has been closed
+    // Used to check if the last known symbol period has been closed
     // Must be called approximately with a 1 minute interval
-    async #checkTimeframe (symbol: string, timeframe: number): Promise<void> {
+    async #checkClosedPeriod (symbol: string, timeframe: number): Promise<void> {
         const periods: MidaSymbolPeriod[] = await this.#brokerAccount.getSymbolPeriods(symbol, timeframe);
         const lastPeriod: MidaSymbolPeriod = periods[periods.length - 1];
+        const lastLocalPeriod: MidaSymbolPeriod = this.#lastClosedPeriods.get(symbol)?.get(timeframe) as MidaSymbolPeriod;
 
-        if (!this.#lastPeriods.get(symbol)) {
-            this.#lastPeriods.set(symbol, new Map());
+        if (lastPeriod.endDate.timestamp > lastLocalPeriod.endDate.timestamp) {
+            this.#lastClosedPeriods.get(symbol)?.set(timeframe, lastPeriod);
+            this.#onPeriodClose(lastPeriod);
         }
+    }
 
-        const previousPeriod: MidaSymbolPeriod = this.#lastPeriods.get(symbol)?.get(timeframe) as MidaSymbolPeriod;
+    #onTick (tick: MidaSymbolTick): void {
+        const directives: MidaMarketWatcherDirectives | undefined = this.#watchedSymbols.get(tick.symbol);
 
-        if (previousPeriod.startDate.timestamp < lastPeriod.startDate.timestamp) {
-            this.#lastPeriods.get(symbol)?.set(timeframe, lastPeriod);
-            this.#onPeriod(lastPeriod, previousPeriod);
+        if (directives?.watchTicks) {
+            this.notifyListeners("tick", { tick, });
         }
+    }
+
+    #onPeriodClose (period: MidaSymbolPeriod): void {
+        this.notifyListeners("period-close", { period, });
     }
 
     #configureListeners (): void {
         // <ticks>
-        this.#brokerAccount.on("tick", (event: MidaEvent): void => this.#onTick(event.descriptor.tick));
+        this.#tickListenerUuid = this.#brokerAccount.on("tick", (event: MidaEvent): void => this.#onTick(event.descriptor.tick));
         // </ticks>
 
         // <periods>
@@ -168,9 +176,8 @@ export class MidaMarketWatcher {
         roundMinute.setSeconds(0);
 
         setTimeout((): void => {
-            this.#checkNewPeriods();
-            setInterval(() => this.#checkNewPeriods(), 60000); // Invoke the function each next round minute plus ~0.1s of margin
-        }, roundMinute.valueOf() + 60000 - actualDate.valueOf() + 100); // Invoke the function the next round minute plus ~0.1s of margin
+            this.#closedPeriodsIntervalId = setInterval(() => this.#checkNewClosedPeriods(), 60000);
+        }, roundMinute.valueOf() + 60000 - actualDate.valueOf() + 60); // Invoke the function the next round minute plus ~0.06s of margin
         // </periods>
     }
 }
