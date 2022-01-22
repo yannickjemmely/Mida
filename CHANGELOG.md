@@ -1,3 +1,6 @@
+### Features
+* Expose "period-close" event and `getSymbolDirectives` method in `MidaMarketWatcher` ([#3](https://github.com/Reiryoku-Technologies/Mida/pull/3)).
+
 3.0.0 - 20-01-2022
 ===================
 * **Refactor entire project, introduce orders, deals and positions.**
