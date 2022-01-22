@@ -167,6 +167,8 @@ export class MidaMarketWatcher {
         roundMinute.setSeconds(0);
 
         this.#closedPeriodsTimeoutId = setTimeout((): void => {
+            this.#checkNewClosedPeriods();
+
             this.#closedPeriodsIntervalId = setInterval(() => this.#checkNewClosedPeriods(), 60000);
         }, roundMinute.valueOf() + 60000 - actualDate.valueOf() + 60); // Invoke the function the next round minute plus ~0.06s of margin
         // </periods>
