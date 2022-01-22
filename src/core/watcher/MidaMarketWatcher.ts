@@ -14,7 +14,8 @@ export class MidaMarketWatcher {
     readonly #watchedSymbols: Map<string, MidaMarketWatcherDirectives>;
     readonly #lastClosedPeriods: Map<string, Map<number, MidaSymbolPeriod>>;
     readonly #emitter: MidaEmitter;
-    #tickListenerUuid?: string;
+    #ticksListenerUuid?: string;
+    #closedPeriodsTimeoutId?: NodeJS.Timer;
     #closedPeriodsIntervalId?: NodeJS.Timer;
 
     public constructor ({ brokerAccount, }: MidaMarketWatcherParameters) {
@@ -122,21 +123,11 @@ export class MidaMarketWatcher {
                 try {
                     await this.#checkClosedPeriod(symbol, timeframe);
                 }
-                catch (error: any) {
-                    switch (error.type) {
-                        case "INVALID_TIMEFRAME":
-                            return;
-
-                        default:
-                            console.log(error);
-
-                            return;
-                    }
+                catch {
+                    // Silence is golden.
                 }
             }
         }
-
-
     }
 
     // Used to check if the last known symbol period has been closed
@@ -166,7 +157,7 @@ export class MidaMarketWatcher {
 
     #configureListeners (): void {
         // <ticks>
-        this.#tickListenerUuid = this.#brokerAccount.on("tick", (event: MidaEvent): void => this.#onTick(event.descriptor.tick));
+        this.#ticksListenerUuid = this.#brokerAccount.on("tick", (event: MidaEvent): void => this.#onTick(event.descriptor.tick));
         // </ticks>
 
         // <periods>
@@ -175,7 +166,7 @@ export class MidaMarketWatcher {
 
         roundMinute.setSeconds(0);
 
-        setTimeout((): void => {
+        this.#closedPeriodsTimeoutId = setTimeout((): void => {
             this.#closedPeriodsIntervalId = setInterval(() => this.#checkNewClosedPeriods(), 60000);
         }, roundMinute.valueOf() + 60000 - actualDate.valueOf() + 60); // Invoke the function the next round minute plus ~0.06s of margin
         // </periods>
