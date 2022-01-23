@@ -13,9 +13,7 @@ export abstract class MidaIndicator {
         return this.#name;
     }
 
-    public abstract calculate (parameters: GenericObject): Promise<any>;
-
-    // public abstract next (parameters: GenericObject): Promise<any>;
+    public abstract calculate (parameters: GenericObject | GenericObject[] | number[]): Promise<any>;
 
     static readonly #installedIndicators: Map<string, typeof MidaIndicator> = new Map();
 
