@@ -2,7 +2,7 @@
 * Expose "period-close" event and `getSymbolDirectives` method in `MidaMarketWatcher` ([#3](https://github.com/Reiryoku-Technologies/Mida/pull/3)).
 
 ### Bug fixes
-* Remove import of `util` module which may throw errors on certain webpack configurations.
+* Remove import of `util` module which may throw errors on certain webpack configurations [#4](https://github.com/Reiryoku-Technologies/Mida/pull/4).
 
 3.0.0 - 20-01-2022
 ===================
