@@ -1,3 +1,5 @@
+3.1.0 - 23-01-2022
+===================
 ### Features
 * Expose "period-close" event and `getSymbolDirectives` method in `MidaMarketWatcher` ([#3](https://github.com/Reiryoku-Technologies/Mida/pull/3)).
 
