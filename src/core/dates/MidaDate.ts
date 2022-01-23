@@ -1,4 +1,3 @@
-import * as util from "util";
 import { MidaDateParameters } from "#dates/MidaDateParameters";
 import { IMidaCloneable } from "#utilities/cloneable/IMidaCloneable";
 import { IMidaEquatable } from "#utilities/equatable/IMidaEquatable";
@@ -100,9 +99,5 @@ export class MidaDate implements IMidaCloneable, IMidaEquatable {
             object instanceof MidaDate && object.timestamp === this.timestamp
             || object instanceof Date && object.getTime() === this.timestamp
         );
-    }
-
-    public [util.inspect.custom] (): string {
-        return this.toIsoString();
     }
 }
