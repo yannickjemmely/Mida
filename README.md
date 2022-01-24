@@ -10,8 +10,8 @@
 
 Designed to:
 - Trade financial assets such as stocks, crypto, forex or commodities;
+- Create expert advisors to automate and backtest trading strategies;
 - Operate with any broker/exchange using only JavaScript/TypeScript;
-- Automate and backtest trading/investment strategies through expert advisors;
 - Analyze markets and prices with indicators and analysis interfaces.
 
 Mida is free and open source, join the [Discord](https://discord.gg/cKyWTUsr3q) and [Telegram](https://t.me/joinmida) community.
