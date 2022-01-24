@@ -1,7 +1,4 @@
-[![Image](https://img.shields.io/npm/v/@reiryoku/mida)](https://www.npmjs.com/package/@reiryoku/mida)
-[![Image](https://img.shields.io/npm/l/@reiryoku/mida)](LICENSE)
-[![Image](https://img.shields.io/discord/780532638846287904?label=community)](https://discord.gg/cKyWTUsr3q)
-<br><br>
+<br>
 <p align="center"> 
     <img src="images/logo.svg" alt="Mida" width="352px">
 </p>
@@ -18,6 +15,11 @@ Designed to:
 - Analyze markets and prices with indicators and analysis interfaces.
 
 Mida is free and open source, join the [Discord](https://discord.gg/cKyWTUsr3q) and [Telegram](https://t.me/joinmida) community.
+<br>
+[![Image](https://img.shields.io/npm/v/@reiryoku/mida)](https://www.npmjs.com/package/@reiryoku/mida)
+[![Image](https://img.shields.io/npm/l/@reiryoku/mida)](LICENSE)
+[![Image](https://img.shields.io/discord/780532638846287904?label=community)](https://discord.gg/cKyWTUsr3q)
+<br>
 
 ## Usage
 ### Broker account login
