@@ -22,6 +22,16 @@ Mida is free and open source, join the [Discord](https://discord.gg/cKyWTUsr3q) 
 [![Image](https://img.shields.io/discord/780532638846287904?label=community)](https://discord.gg/cKyWTUsr3q)
 <br>
 
+## Installation
+```console
+npm i @reiryoku/mida
+```
+
+To use cTrader broker accounts, also install the Mida cTrader plugin
+```console
+npm i @reiryoku/mida-ctrader
+```
+
 ## Usage
 ### Broker account login
 How to login into a cTrader broker account.
