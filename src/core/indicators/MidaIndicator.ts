@@ -1,4 +1,5 @@
 import { MidaError } from "#errors/MidaError";
+import { MidaIndicatorFormat } from "#indicators/MidaIndicatorFormat";
 import { MidaIndicatorParameters } from "#indicators/MidaIndicatorParameters";
 import { GenericObject } from "#utilities/GenericObject";
 
@@ -13,7 +14,9 @@ export abstract class MidaIndicator {
         return this.#name;
     }
 
-    public abstract calculate (parameters: GenericObject | GenericObject[] | number[]): Promise<any>;
+    public abstract calculate (input: MidaIndicatorFormat): Promise<MidaIndicatorFormat>;
+
+    public abstract next (input: MidaIndicatorFormat): Promise<MidaIndicatorFormat>;
 
     static readonly #installedIndicators: Map<string, typeof MidaIndicator> = new Map();
 
@@ -37,6 +40,6 @@ export abstract class MidaIndicator {
             throw new MidaError();
         }
 
-        return new indicatorConstructor(parameters);
+        return new indicatorConstructor();
     }
 }
