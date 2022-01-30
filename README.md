@@ -202,7 +202,7 @@ How to get the price of a symbol.
 const symbol = await myAccount.getSymbol("BTCUSD");
 const price = await symbol.getBid();
 
-console.log(`Bitcoin price is ${price} dollars.`);
+console.log(`Bitcoin price is ${price} US dollars.`);
 
 // or
 
@@ -211,26 +211,16 @@ console.log(await myAccount.getSymbolBid("BTCUSD"));
 
 How to listen the ticks of a symbol.
 ```javascript
-const symbol = await myAccount.getSymbol("#GME");
+const { MidaMarketWatcher, } = require("@reiryoku/mida");
 
-await symbol.watch();
+const marketWatcher = new MidaMarketWatcher({ brokerAccount: myAccount, });
 
-symbol.on("tick", (event) => {
-    const tick = event.descriptor.tick;
+await marketWatcher.watch("BTCUSD", { watchTicks: true, });
+
+marketWatcher.on("tick", (event) => {
+    const { tick, } = event.descriptor;
     
-    console.log(`GameStop share price is now ${tick.bid} dollars`);
-});
-
-// or
-
-await myAccount.watchSymbol("#GME");
-
-myAccount.on("tick", (event) => {
-    const tick = event.descriptor.tick;
-    
-    if (tick.symbol === "#GME") {
-        console.log(`GameStop share price is now ${tick.bid} dollars`);
-    }
+    console.log(`Bitcoin price is now ${tick.bid} US dollars`);
 });
 ```
 
@@ -239,7 +229,7 @@ How to create an expert advisor.
 ```javascript
 const {
     MidaExpertAdvisor,
-    MidaTimeframeType,
+    MidaTimeframe,
 } = require("@reiryoku/mida");
 
 class MyExpertAdvisor extends MidaExpertAdvisor {
@@ -248,17 +238,19 @@ class MyExpertAdvisor extends MidaExpertAdvisor {
     }
     
     async configure () {
-        this.watchSymbol("EURUSD");
+        await this.marketWatcher.watch("EURUSD", {
+            watchTicks: true,
+            watchPeriods: true,
+            timeframes: [ MidaTimeframe.H1, ],
+        });
     }
 
     async onTick (tick) {
         // Implement your strategy.
     }
     
-    async onPeriod (period) {
-        if (period.timeframe === MidaTimeframeType.H1) {
-            console.log(`New H1 candlestick with open price => ${period.open}`);
-        }
+    async onPeriodClose (period) {
+        console.log(`H1 candlestick closed at price => ${period.open}`);
     }
 }
 ```
@@ -279,11 +271,11 @@ await myAdvisor.start({ stopAfter: 60000 * 60, }); // The EA will stop after one
 Examples of technical market analysis.
 
 #### Candlesticks
-How to get the candlesticks of a symbol (candlesticks and bars are generally referred as periods).
+How to get the candlesticks of a symbol (candlesticks and bars are generically called periods).
 ```javascript
-const { MidaTimeframeType } = require("@reiryoku/mida");
+const { MidaTimeframe, } = require("@reiryoku/mida");
 
-const periods = await myAccount.getSymbolPeriods("EURUSD", MidaTimeframeType.M30);
+const periods = await myAccount.getSymbolPeriods("EURUSD", MidaTimeframe.M30);
 const lastPeriod = periods[periods.length - 1];
 
 console.log("Last candlestick start time: " + lastPeriod.startTime);
@@ -313,10 +305,10 @@ How to calculate the Bollinger Bands indicator for Ethereum on M5 chart.
 ```javascript
 const {
     MidaIndicator,
-    MidaTimeframeType,
+    MidaTimeframe,
 } = require("@reiryoku/mida");
 
-const periods = await myAccount.getSymbolPeriods("ETHUSD", MidaTimeframeType.M5);
+const periods = await myAccount.getSymbolPeriods("ETHUSD", MidaTimeframe.M5);
 const bollingerBands = await MidaIndicator.calc("BollingerBands", {
     prices: periods.map((period) => period.close),
     length: 20,
@@ -372,10 +364,10 @@ console.log(myAdvisor.orders); // The orders created by the EA in one hour.
 ```
 
 ## Disclaimer
-Operating in CFDs/Forex is highly speculative and carries a high level of risk.
+Operating in CFDs/Forex and generically operating in financial markets is highly speculative and carries a high level of risk.
 It's possible to lose all your capital. These products may not be suitable for everyone,
 you should ensure that you understand the risks involved. Furthermore, Mida is not responsible
-for commissions or other taxes applied to your operations, they depend on your broker. Mida and its authors
+for commissions and other taxes applied to your operations, they depend on your broker or exchange. Mida and its authors
 are also not responsible for any technical inconvenience that may lead to money loss, for example a stop loss not being set.
 
 ## Contributors
