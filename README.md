@@ -118,20 +118,6 @@ if (myOrder.isRejected) {
 
 <details><summary>More examples</summary>
 
-In case you don't want to handle errors you can use `tryPlaceOrder` which returns `undefined` if the
-order has not been placed for any reason.
-```javascript
-const myOrder = await myAccount.tryPlaceOrder({
-    symbol: "#AAPL",
-    type: MidaBrokerOrderDirection.SELL,
-    lots: 1,
-});
-
-if (!myOrder) {
-    console.log("Order not placed.");
-}
-```
-
 In addition, `canPlaceOrder` or `getPlaceOrderObstacles` can be used to know if an order can be placed without errors.
 Due to the high volatility of financial markets, these methods can't guarantee that the order is going to be placed without errors being thrown.
 
