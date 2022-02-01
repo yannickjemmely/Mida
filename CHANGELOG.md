@@ -1,3 +1,6 @@
+### Features
+* Update documentation ([#6](https://github.com/Reiryoku-Technologies/Mida/pull/6)).
+
 3.1.0 - 23-01-2022
 ===================
 ### Features
