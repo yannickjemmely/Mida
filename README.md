@@ -4,7 +4,7 @@
 </p>
 <br>
 <p align="center">
-    <b>A JavaScript framework to easily operate in global financial markets.</b>
+    <b>A JavaScript framework to easily operate in global financial markets</b>
 </p>
 <br>
 
@@ -51,12 +51,12 @@ const myAccount = await MidaBroker.login("cTrader", {
 ```
 
 To get a `clientId`, `clientSecret` and `accessToken` you have to create an account on
-[cTrader Open API](https://connect.spotware.com), the API usage is free.
+[cTrader Open API](https://connect.spotware.com).
 
 ### Broker orders and positions
 How top open a long position for Bitcoin against USD.
 ```javascript
-const { MidaBrokerOrderDirection } = require("@reiryoku/mida");
+const { MidaBrokerOrderDirection, } = require("@reiryoku/mida");
 
 const myOrder = await myAccount.openPosition({
     symbol: "BTCUSD",
@@ -70,7 +70,7 @@ console.log(myOrder.openPrice);
 
 How to open a short position for EUR against USD.
 ```javascript
-const { MidaBrokerOrderDirection } = require("@reiryoku/mida");
+const { MidaBrokerOrderDirection, } = require("@reiryoku/mida");
 
 const myOrder = await myAccount.placeOrder({
     symbol: "EURUSD",
@@ -82,11 +82,11 @@ console.log(myOrder.id);
 console.log(myOrder.openPrice);
 ```
 
-How to open a short position for Apple stocks with errors handler.
+How to open a short position for Apple stocks with error handler.
 ```javascript
 const {
     MidaBrokerOrderDirection,
-    MidaBrokerErrorType,
+    MidaBrokerOrderRejectionType,
 } = require("@reiryoku/mida");
 
 const myOrder = await myAccount.placeOrder({
@@ -118,39 +118,45 @@ if (myOrder.isRejected) {
 
 <details><summary>More examples</summary>
 
-In addition, `canPlaceOrder` or `getPlaceOrderObstacles` can be used to know if an order can be placed without errors.
-Due to the high volatility of financial markets, these methods can't guarantee that the order is going to be placed without errors being thrown.
+In addition, `canPlaceOrder` is used to know if an order can be placed without predicted rejections. Due to the high volatility of financial markets, these methods can't guarantee that the order is going to be placed without any rejection.
 
 ```javascript
+const {
+    MidaBrokerOrderDirection,
+    MidaBrokerOrderRejectionType,
+} = require("@reiryoku/mida");
+
 const orderDirectives = {
-    symbol: "#AAPL",
-    type: MidaBrokerOrderDirection.SELL,
+    symbol: "XAUUSD",
+    direction: MidaBrokerOrderDirection.SELL,
     lots: 1,
 };
 
 const canPlaceOrder = await myAccount.canPlaceOrder(orderDirectives);
-// => true | false
-const placeOrderObstacles = await myAccount.getPlaceOrderObstacles(orderDirectives);
-// => MidaBrokerErrorType[]
+// => true | MidaBrokerOrderRejectionType[]
 
-if (placeOrderObstacles.includes(MidaBrokerErrorType.MARKET_CLOSED)) {
-    console.log("#AAPL market is closed!");
-}
+if (canPlaceOrder !== true) {
+    console.log("Order can't be placed")
 
-if (placeOrderObstacles.includes(MidaBrokerErrorType.NOT_ENOUGH_MONEY)) {
-    console.log("You don't have enough money in your account!");
+    if (placeOrderObstacles.includes(MidaBrokerOrderRejectionType.MARKET_CLOSED)) {
+        console.log("XAUUSD market is closed!");
+    }
+    
+    if (placeOrderObstacles.includes(MidaBrokerOrderRejectionType.NOT_ENOUGH_MONEY)) {
+        console.log("You don't have enough money in your account!");
+    }
 }
 ```
 
 How to open a long position for GBP against USD with stop loss and take profit.
 ```javascript
-const { MidaBrokerOrderDirection } = require("@reiryoku/mida");
+const { MidaBrokerOrderDirection, } = require("@reiryoku/mida");
 
 const symbol = "GBPUSD";
 const lastBid = await myAccount.getSymbolBid(symbol);
 const myOrder = await myAccount.placeOrder({
     symbol,
-    type: MidaBrokerOrderDirection.BUY,
+    direction: MidaBrokerOrderDirection.BUY,
     volume: 0.1,
     protection: {
         stopLoss: lastBid - 0.0010, // <= SL 10 pips
@@ -210,6 +216,41 @@ marketWatcher.on("tick", (event) => {
 });
 ```
 
+How to listen when candlesticks are closed.
+```javascript
+const {
+    MidaMarketWatcher,
+    MidaTimeframe,
+} = require("@reiryoku/mida");
+
+const marketWatcher = new MidaMarketWatcher({ brokerAccount: myAccount, });
+
+await marketWatcher.watch("BTCUSD", {
+    watchPeriods: true,
+    timeframes: [
+        MidaTimeframe.M5,
+        MidaTimeframe.H1,
+    ],
+});
+
+marketWatcher.on("period-close", (event) => {
+    const { period, } = event.descriptor;
+    
+    switch (period.timeframe) {
+        case MidaTimeframe.M5: {
+            console.log(`M5 candlestick closed at ${period.close}`);
+            
+            break;
+        }
+        case MidaTimeframe.H1: {
+            console.log(`H1 candlestick closed at ${period.close}`);
+            
+            break;
+        }
+    }
+});
+```
+
 ### Expert advisors
 How to create an expert advisor.
 ```javascript
@@ -236,7 +277,7 @@ class MyExpertAdvisor extends MidaExpertAdvisor {
     }
     
     async onPeriodClose (period) {
-        console.log(`H1 candlestick closed at price => ${period.open}`);
+        console.log(`H1 candlestick closed at ${period.open}`);
     }
 }
 ```
