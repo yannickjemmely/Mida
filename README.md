@@ -284,14 +284,16 @@ class MyExpertAdvisor extends MidaExpertAdvisor {
 
 How to execute an expert advisor.
 ```javascript
-const { MidaBroker } = require("@reiryoku/mida");
-const { MyExpertAdvisor } = require("./my-expert-advisor"); 
+const { MidaBroker, } = require("@reiryoku/mida");
+const { MyExpertAdvisor, } = require("./my-expert-advisor"); 
 
 const myAccount = await MidaBroker.login(/* ... */);
 const myAdvisor = new MyExpertAdvisor({ brokerAccount: myAccount, });
 
-myAdvisor.on("order-open", (event) => console.log(`New order opened with ticket => ${event.descriptor.ticket}`));
-await myAdvisor.start({ stopAfter: 60000 * 60, }); // The EA will stop after one hour.
+myAdvisor.on("order-fill", (event) => {
+    
+});
+await myAdvisor.start({ stopAfter: 60000 * 60, }); // The EA will stop after one hour
 ```
 
 ### Market analysis and indicators
