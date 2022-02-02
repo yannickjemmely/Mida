@@ -8,7 +8,8 @@
 </p>
 <br>
 
-Designed to:
+## Introduction
+Mida is designed to:
 - Trade financial assets such as stocks, crypto, forex or commodities;
 - Create expert advisors to automate and backtest trading strategies;
 - Operate with any broker/exchange using only JavaScript/TypeScript;
