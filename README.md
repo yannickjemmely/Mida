@@ -1,4 +1,4 @@
-<br>
+<br><br>
 <p align="center"> 
     <img src="images/logo.svg" alt="Mida" width="352px">
 </p>
@@ -6,7 +6,7 @@
 <p align="center">
     <b>A JavaScript framework to easily operate in global financial markets</b>
 </p>
-<br>
+<br><br>
 
 ## Introduction
 Mida is designed to:
