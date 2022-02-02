@@ -1,3 +1,4 @@
+import { MidaAsset } from "#assets/MidaAsset";
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 import { MidaSymbolParameters } from "#symbols/MidaSymbolParameters";
 import { MidaSymbolCategory } from "#symbols/MidaSymbolCategory";
@@ -10,8 +11,8 @@ export class MidaSymbol {
     readonly #symbol: string;
     readonly #brokerAccount: MidaBrokerAccount;
     readonly #description: string;
-    // readonly #baseAsset: string;
-    // readonly #quoteAsset: string;
+    readonly #baseAsset: MidaAsset;
+    readonly #quoteAsset: MidaAsset;
     readonly #type: MidaSymbolCategory;
     readonly #digits: number;
     readonly #leverage: number;
@@ -24,6 +25,8 @@ export class MidaSymbol {
         symbol,
         brokerAccount,
         description,
+        baseAsset,
+        quoteAsset,
         type,
         digits,
         leverage,
@@ -34,6 +37,8 @@ export class MidaSymbol {
         this.#symbol = symbol;
         this.#brokerAccount = brokerAccount;
         this.#description = description;
+        this.#baseAsset = baseAsset;
+        this.#quoteAsset = quoteAsset;
         this.#type = type;
         this.#digits = digits;
         this.#leverage = leverage;
@@ -51,6 +56,16 @@ export class MidaSymbol {
     /** The symbol description. */
     public get description (): string {
         return this.#description;
+    }
+
+    /** The symbol base asset. */
+    public get baseAsset (): MidaAsset {
+        return this.#baseAsset;
+    }
+
+    /** The symbol quote asset. */
+    public get quoteAsset (): MidaAsset {
+        return this.#quoteAsset;
     }
 
     /** The symbol type. */
@@ -114,7 +129,7 @@ export class MidaSymbol {
 }
 
 /*
-    Example of typed event export interface MidaSymbol {
-        on (type: "tick", listener?: MidaEventListener): Promise<MidaEvent> | string;
-    }
+export interface MidaSymbol {
+    on (type: "tick", listener?: MidaEventListener): Promise<MidaEvent> | string;
+}
 */
