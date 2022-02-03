@@ -6,21 +6,28 @@
 <p align="center">
     <b>A JavaScript framework to easily operate in global financial markets</b>
 </p>
+<br>
+<p align="center">
+    <a href="https://www.npmjs.com/package/@reiryoku/mida">
+        <img src="https://img.shields.io/npm/v/@reiryoku/mida" alt="">
+    </a>
+    <a href="./LICENSE">
+        <img src="https://img.shields.io/npm/l/@reiryoku/mida" alt="">
+    </a>
+    <a href="https://discord.gg/cKyWTUsr3q">
+        <img src="https://img.shields.io/discord/780532638846287904?label=community" alt="">
+    </a>
+</p>
 <br><br>
 
 ## Introduction
-Mida is designed to:
+Designed to:
 - Trade financial assets such as stocks, crypto, forex or commodities;
 - Create expert advisors to automate and backtest trading strategies;
 - Operate with any broker/exchange using only JavaScript/TypeScript;
 - Analyze markets and prices with indicators and analysis interfaces.
 
-Mida is free and open source, join the [Discord](https://discord.gg/cKyWTUsr3q) and [Telegram](https://t.me/joinmida) community.
-<br>
-
-[![Image](https://img.shields.io/npm/v/@reiryoku/mida)](https://www.npmjs.com/package/@reiryoku/mida)
-[![Image](https://img.shields.io/npm/l/@reiryoku/mida)](LICENSE)
-[![Image](https://img.shields.io/discord/780532638846287904?label=community)](https://discord.gg/cKyWTUsr3q)
+Join the [Discord](https://discord.gg/cKyWTUsr3q) and [Telegram](https://t.me/joinmida) community.
 <br>
 
 ## Installation
