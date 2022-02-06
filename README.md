@@ -58,7 +58,7 @@ const myAccount = await MidaBroker.login("cTrader", {
 });
 ```
 
-To get a `clientId`, `clientSecret` and `accessToken` you have to create an account on
+To get a `clientId`, `clientSecret` and `accessToken` you must create an account on
 [cTrader Open API](https://connect.spotware.com).
 
 ### Broker orders and positions
@@ -66,14 +66,14 @@ How top open a long position for Bitcoin against USD.
 ```javascript
 const { MidaBrokerOrderDirection, } = require("@reiryoku/mida");
 
-const myOrder = await myAccount.openPosition({
+const myOrder = await myAccount.placeOrder({
     symbol: "BTCUSD",
     direction: MidaBrokerOrderDirection.BUY,
     volume: 1,
 });
 
 console.log(myOrder.id);
-console.log(myOrder.openPrice);
+console.log(myOrder.executionPrice);
 ```
 
 How to open a short position for EUR against USD.
@@ -87,7 +87,7 @@ const myOrder = await myAccount.placeOrder({
 });
 
 console.log(myOrder.id);
-console.log(myOrder.openPrice);
+console.log(myOrder.executionPrice);
 ```
 
 How to open a short position for Apple stocks with error handler.
@@ -124,38 +124,6 @@ if (myOrder.isRejected) {
 }
 ```
 
-<details><summary>More examples</summary>
-
-In addition, `canPlaceOrder` is used to know if an order can be placed without predicted rejections. Due to the high volatility of financial markets, these methods can't guarantee that the order is going to be placed without any rejection.
-
-```javascript
-const {
-    MidaBrokerOrderDirection,
-    MidaBrokerOrderRejectionType,
-} = require("@reiryoku/mida");
-
-const orderDirectives = {
-    symbol: "XAUUSD",
-    direction: MidaBrokerOrderDirection.SELL,
-    lots: 1,
-};
-
-const canPlaceOrder = await myAccount.canPlaceOrder(orderDirectives);
-// => true | MidaBrokerOrderRejectionType[]
-
-if (canPlaceOrder !== true) {
-    console.log("Order can't be placed")
-
-    if (placeOrderObstacles.includes(MidaBrokerOrderRejectionType.MARKET_CLOSED)) {
-        console.log("XAUUSD market is closed!");
-    }
-    
-    if (placeOrderObstacles.includes(MidaBrokerOrderRejectionType.NOT_ENOUGH_MONEY)) {
-        console.log("You don't have enough money in your account!");
-    }
-}
-```
-
 How to open a long position for GBP against USD with stop loss and take profit.
 ```javascript
 const { MidaBrokerOrderDirection, } = require("@reiryoku/mida");
@@ -173,19 +141,73 @@ const myOrder = await myAccount.placeOrder({
 });
 ```
 
-</details>
+How to open volume for an open position
+```javascript
+const {
+    MidaBrokerOrderDirection,
+    MidaBrokerPositionDirection,
+} = require("@reiryoku/mida");
+
+const myPosition = await myAccount.getPositionById("...");
+
+await myPosition.addVolume(1);
+// or
+await myAccount.placeOrder({
+    positionId: myPosition.id,
+    direction: myPosition.direction === MidaBrokerPositionDirection.LONG ? MidaBrokerOrderDirection.BUY : MidaBrokerOrderDirection.SELL,
+    volume: 1,
+});
+```
+
+How to close volume for an open position
+```javascript
+const {
+    MidaBrokerOrderDirection,
+    MidaBrokerPositionDirection,
+} = require("@reiryoku/mida");
+
+const myPosition = await myAccount.getPositionById("...");
+
+await myPosition.subtractVolume(1);
+// or
+await myAccount.placeOrder({
+    positionId: myPosition.id,
+    direction: myPosition.direction === MidaBrokerPositionDirection.LONG ? MidaBrokerOrderDirection.SELL : MidaBrokerOrderDirection.BUY,
+    volume: 1,
+});
+```
+
+How to close an open position
+```javascript
+const {
+    MidaBrokerOrderDirection,
+    MidaBrokerPositionDirection,
+} = require("@reiryoku/mida");
+
+const myPosition = await myAccount.getPositionById("...");
+
+await myPosition.close();
+// or
+await myPosition.subtractVolume(myPosition.volume);
+// or
+await myAccount.placeOrder({
+    positionId: myPosition.id,
+    direction: myPosition.direction === MidaBrokerPositionDirection.LONG ? MidaBrokerOrderDirection.SELL : MidaBrokerOrderDirection.BUY,
+    volume: myPosition.volume,
+});
+```
 
 ### Symbols
 How to retrieve all symbols available for your broker account.
 ```javascript
-const symbols = await myAccount.getSymbols(); // => string[]
+const symbols = await myAccount.getSymbols();
 
 console.log(symbols);
 ```
 
 How to retrieve a symbol.
 ```javascript
-const symbol = await myAccount.getSymbol("#AAPL"); // => MidaSymbol | undefined
+const symbol = await myAccount.getSymbol("#AAPL");
 
 if (!symbol) {
     console.log("Apple stocks are not available for this account!");
@@ -202,7 +224,7 @@ How to get the price of a symbol.
 const symbol = await myAccount.getSymbol("BTCUSD");
 const price = await symbol.getBid();
 
-console.log(`Bitcoin price is ${price} US dollars.`);
+console.log(`Bitcoin price is ${price} US dollars`);
 
 // or
 
@@ -298,16 +320,10 @@ const { MyExpertAdvisor, } = require("./my-expert-advisor");
 const myAccount = await MidaBroker.login(/* ... */);
 const myAdvisor = new MyExpertAdvisor({ brokerAccount: myAccount, });
 
-myAdvisor.on("order-fill", (event) => {
-    
-});
-await myAdvisor.start({ stopAfter: 60000 * 60, }); // The EA will stop after one hour
+await myAdvisor.start();
 ```
 
-### Market analysis and indicators
-Examples of technical market analysis.
-
-#### Candlesticks
+### Candlesticks
 How to get the candlesticks of a symbol (candlesticks and bars are generically called periods).
 ```javascript
 const { MidaTimeframe, } = require("@reiryoku/mida");
@@ -320,88 +336,8 @@ console.log("Last candlestick OHLC: " + lastPeriod.ohlc);
 console.log("Last candlestick close price: " + lastPeriod.close);
 ```
 
-#### Relative Strength Index
-How to calculate the RSI indicator for Bitcoin on H1 chart.
-```javascript
-const {
-    MidaIndicator,
-    MidaTimeframeType,
-} = require("@reiryoku/mida");
-
-const periods = await myAccount.getSymbolPeriods("BTCUSD", MidaTimeframeType.H1);
-const rsi = await MidaIndicator.calc("RSI", {
-    prices: periods.map((period) => period.close),
-    length: 14,
-});
-
-console.log("Actual RSI => " + rsi[rsi.length - 1]);
-```
-
-#### Bollinger Bands
-How to calculate the Bollinger Bands indicator for Ethereum on M5 chart.
-```javascript
-const {
-    MidaIndicator,
-    MidaTimeframe,
-} = require("@reiryoku/mida");
-
-const periods = await myAccount.getSymbolPeriods("ETHUSD", MidaTimeframe.M5);
-const bollingerBands = await MidaIndicator.calc("BollingerBands", {
-    prices: periods.map((period) => period.close),
-    length: 20,
-});
-```
-
-### Practice and backtest
-Playground is a local broker created for paper trading and backtesting.
-
-```javascript
-const {
-    Mida,
-    MidaBroker,
-} = require("@reiryoku/mida");
-
-// Use the Mida Playground plugin.
-Mida.use(require("@reiryoku/mida-playground"));
-
-const myAccount = await MidaBroker.login("Playground", {
-    id: "test", // The account id.
-    localDate: new Date("2020-04-23"), // The broker local date.
-    currency: "USD", // The account currency.
-    balance: 10000, // The account initial balance.
-    negativeBalanceProtection: true,
-});
-
-// Used to listen any market ticks.
-myAccount.on("tick", (event) => {
-    const tick = event.descriptor.tick;
-    
-    console.log(`New tick for ${tick.symbol} => ${tick.bid} | ${tick.ask}`);
-});
-
-// Used to elapse a given amount of time in the local date, this will trigger ticks.
-await myAccount.elapseTime(60 * 10); // 60 seconds * 10 = 10 minutes.
-
-console.log(myAccount.localDate); // The local date is now 2020-04-23 00:10:00.
-```
-
-#### Backtest expert advisors
-If you have created an expert advisor, you can easily backtest it by just assigning
-the playground broker to it.
-
-```javascript
-import { MyExpertAdvisor } from "./my-expert-advisor";
-
-const myAdvisor = new MyExpertAdvisor({ brokerAccount: myAccount, });
-
-await myAdvisor.start();
-await myAccount.elapseTime(60 * 60 * 24); // Elapse 1 hour, this will trigger ticks and candles.
-
-console.log(myAdvisor.orders); // The orders created by the EA in one hour.
-```
-
 ## Disclaimer
-Operating in CFDs/Forex and generically operating in financial markets is highly speculative and carries a high level of risk.
+Operating in CFDs/Forex and generically in financial markets is highly speculative and carries a high level of risk.
 It's possible to lose all your capital. These products may not be suitable for everyone,
 you should ensure that you understand the risks involved. Furthermore, Mida is not responsible
 for commissions and other taxes applied to your operations, they depend on your broker or exchange. Mida and its authors

@@ -211,6 +211,10 @@ export abstract class MidaBrokerOrder {
         return this.#deals[this.#deals.length - 1];
     }
 
+    public get isRejected (): boolean {
+        return this.rejectionType !== undefined;
+    }
+
     get #position (): MidaBrokerPosition | undefined {
         if (typeof this.#positionGetter === "function") {
             return this.#positionGetter();

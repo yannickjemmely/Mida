@@ -9,7 +9,6 @@ export namespace MidaBrokerPositionDirection {
             case MidaBrokerPositionDirection.LONG: {
                 return MidaBrokerPositionDirection.SHORT;
             }
-
             case MidaBrokerPositionDirection.SHORT: {
                 return MidaBrokerPositionDirection.LONG;
             }

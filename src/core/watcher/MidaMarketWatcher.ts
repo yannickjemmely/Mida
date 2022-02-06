@@ -170,7 +170,7 @@ export class MidaMarketWatcher {
             this.#checkNewClosedPeriods();
 
             this.#closedPeriodsIntervalId = setInterval(() => this.#checkNewClosedPeriods(), 60000);
-        }, roundMinute.valueOf() + 60000 - actualDate.valueOf() + 60); // Invoke the function the next round minute plus ~0.06s of margin
+        }, roundMinute.valueOf() + 60000 - actualDate.valueOf() + 3000); // Invoke the function the next round minute plus 3s of margin
         // </periods>
     }
 }

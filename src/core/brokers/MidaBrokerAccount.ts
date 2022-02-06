@@ -8,8 +8,7 @@ import { MidaBrokerDeal } from "#deals/MidaBrokerDeal";
 import { MidaEvent } from "#events/MidaEvent";
 import { MidaEventListener } from "#events/MidaEventListener";
 import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
-import { MidaBrokerOrderDirectives, MidaBrokerOrderOpenDirectives } from "#orders/MidaBrokerOrderDirectives";
-import { MidaBrokerOrderPurpose } from "#orders/MidaBrokerOrderPurpose";
+import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
 import { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
 import { MidaBrokerPosition } from "#positions/MidaBrokerPosition";
 import { MidaSymbol } from "#symbols/MidaSymbol";
@@ -237,17 +236,6 @@ export abstract class MidaBrokerAccount {
         }
 
         return equity / usedMargin * 100;
-    }
-
-    /**
-     * Used to place an order for opening a position.
-     * @param directives The order directives to open a position.
-     */
-    public async openPosition (directives: Omit<MidaBrokerOrderOpenDirectives, "purpose">): Promise<MidaBrokerOrder> {
-        return this.placeOrder({
-            purpose: MidaBrokerOrderPurpose.OPEN,
-            ...directives,
-        });
     }
 
     public on (type: string): Promise<MidaEvent>
