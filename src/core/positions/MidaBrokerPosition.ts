@@ -4,7 +4,6 @@ import { MidaEvent } from "#events/MidaEvent";
 import { MidaEventListener } from "#events/MidaEventListener";
 import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
 import { MidaBrokerOrderDirection } from "#orders/MidaBrokerOrderDirection";
-import { MidaBrokerOrderPurpose } from "#orders/MidaBrokerOrderPurpose";
 import { MidaBrokerOrderStatus } from "#orders/MidaBrokerOrderStatus";
 import { MidaBrokerPositionDirection } from "#positions/MidaBrokerPositionDirection";
 import { MidaBrokerPositionHistory } from "#positions/MidaBrokerPositionHistory";
@@ -223,16 +222,16 @@ export abstract class MidaBrokerPosition {
 
     public async addVolume (quantity: number): Promise<MidaBrokerOrder> {
         return this.brokerAccount.placeOrder({
-            purpose: MidaBrokerOrderPurpose.OPEN,
             positionId: this.#id,
+            direction: this.direction === MidaBrokerPositionDirection.LONG ? MidaBrokerOrderDirection.BUY : MidaBrokerOrderDirection.SELL,
             volume: quantity,
         });
     }
 
     public async subtractVolume (quantity: number): Promise<MidaBrokerOrder> {
         return this.brokerAccount.placeOrder({
-            purpose: MidaBrokerOrderPurpose.CLOSE,
             positionId: this.#id,
+            direction: this.direction === MidaBrokerPositionDirection.LONG ? MidaBrokerOrderDirection.SELL : MidaBrokerOrderDirection.BUY,
             volume: quantity,
         });
     }

@@ -8,4 +8,5 @@ export enum MidaBrokerOrderRejectionType {
     INVALID_VOLUME = "invalid-volume",
     INVALID_TAKE_PROFIT = "invalid-take-profit",
     INVALID_STOP_LOSS = "invalid-stop-loss",
+    INVALID_EXPIRATION = "invalid-expiration",
 }

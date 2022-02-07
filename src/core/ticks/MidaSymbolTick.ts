@@ -6,7 +6,7 @@ import { IMidaCloneable } from "#utilities/cloneable/IMidaCloneable";
 import { IMidaEquatable } from "#utilities/equatable/IMidaEquatable";
 import { GenericObject } from "#utilities/GenericObject";
 
-/** Represents a symbol tick. */
+/** Represents a symbol tick */
 export class MidaSymbolTick implements IMidaCloneable, IMidaEquatable {
     readonly #quotation: MidaSymbolQuotation;
     readonly #date: MidaDate;
@@ -42,47 +42,47 @@ export class MidaSymbolTick implements IMidaCloneable, IMidaEquatable {
         this.#nextTick = nextTick;
     }
 
-    /** The tick quotation. */
+    /** The tick quotation */
     public get quotation (): MidaSymbolQuotation {
         return this.#quotation;
     }
 
-    /** The tick date. */
+    /** The tick date */
     public get date (): MidaDate {
         return this.#date;
     }
 
-    /** The tick movement type. */
+    /** The tick movement type */
     public get movementType (): MidaSymbolTickMovementType {
         return this.#movementType;
     }
 
-    /** The tick previous to this. */
+    /** The tick previous to this */
     public get previousTick (): MidaSymbolTick | undefined {
         return this.#previousTick;
     }
 
-    /** The tick next to this. */
+    /** The tick next to this */
     public get nextTick (): MidaSymbolTick | undefined {
         return this.#nextTick;
     }
 
-    /** The tick symbol. */
+    /** The tick symbol */
     public get symbol (): string {
         return this.#quotation.symbol;
     }
 
-    /** The tick bid price. */
+    /** The tick bid price */
     public get bid (): number {
         return this.#quotation.bid;
     }
 
-    /** The tick ask price. */
+    /** The tick ask price */
     public get ask (): number {
         return this.#quotation.ask;
     }
 
-    /** The tick spread. */
+    /** The tick spread */
     public get spread (): number {
         return this.#quotation.spread;
     }

@@ -89,7 +89,7 @@ export { MidaSymbolQuotationParameters } from "#quotations/MidaSymbolQuotationPa
 export { MidaSymbol } from "#symbols/MidaSymbol";
 export { MidaSymbolCategory } from "#symbols/MidaSymbolCategory";
 export { MidaSymbolParameters } from "#symbols/MidaSymbolParameters";
-export { MidaSymbolPrice } from "#symbols/MidaSymbolPrice";
+export { MidaSymbolPriceType } from "#symbols/MidaSymbolPriceType";
 export { MidaSymbolTradeStatus } from "#symbols/MidaSymbolTradeStatus";
 
 export { MidaSymbolTick } from "#ticks/MidaSymbolTick";

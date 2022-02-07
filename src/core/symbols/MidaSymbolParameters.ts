@@ -2,7 +2,7 @@ import { MidaAsset } from "#assets/MidaAsset";
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 import { MidaSymbolCategory } from "#symbols/MidaSymbolCategory";
 
-/** The parameters of the symbol constructor. */
+/** The symbol constructor parameters */
 export type MidaSymbolParameters = {
     symbol: string;
     brokerAccount: MidaBrokerAccount;
