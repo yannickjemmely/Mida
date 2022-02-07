@@ -5,7 +5,7 @@ import { MidaBrokerDeal } from "#deals/MidaBrokerDeal";
 import { MidaEvent } from "#events/MidaEvent";
 import { MidaEventListener } from "#events/MidaEventListener";
 import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
-import { MidaBrokerOrderOpenDirectives } from "#orders/MidaBrokerOrderDirectives";
+import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
 import { MidaBrokerOrderStatus } from "#orders/MidaBrokerOrderStatus";
 import { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
 import { MidaBrokerPosition } from "#positions/MidaBrokerPosition";
@@ -199,7 +199,7 @@ export abstract class MidaExpertAdvisor {
         // Silence is golden.
     }
 
-    protected async placeOrder (directives: MidaBrokerOrderOpenDirectives): Promise<MidaBrokerOrder> {
+    protected async placeOrder (directives: MidaBrokerOrderDirectives): Promise<MidaBrokerOrder> {
         const order: MidaBrokerOrder = await this.#brokerAccount.placeOrder(directives);
 
         this.addOrder(order);

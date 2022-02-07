@@ -1,6 +1,6 @@
 import { MidaDate } from "#dates/MidaDate";
 import { MidaSymbolPeriodParameters } from "#periods/MidaSymbolPeriodParameters";
-import { MidaSymbolPrice } from "#symbols/MidaSymbolPrice";
+import { MidaSymbolPriceType } from "#symbols/MidaSymbolPriceType";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { IMidaEquatable } from "#utilities/equatable/IMidaEquatable";
 import { GenericObject } from "#utilities/GenericObject";
@@ -9,7 +9,7 @@ import { GenericObject } from "#utilities/GenericObject";
 export class MidaSymbolPeriod implements IMidaEquatable {
     readonly #symbol: string;
     readonly #startDate: MidaDate;
-    readonly #priceType: MidaSymbolPrice;
+    readonly #priceType: MidaSymbolPriceType;
     readonly #open: number;
     readonly #high: number;
     readonly #low: number;
@@ -53,7 +53,7 @@ export class MidaSymbolPeriod implements IMidaEquatable {
     }
 
     /** The price type represented by the period (bid or ask). */
-    public get priceType (): MidaSymbolPrice {
+    public get priceType (): MidaSymbolPriceType {
         return this.#priceType;
     }
 
@@ -94,7 +94,7 @@ export class MidaSymbolPeriod implements IMidaEquatable {
 
     /** The period end date. */
     public get endDate (): MidaDate {
-        return new MidaDate({ timestamp: this.#startDate.timestamp + this.#timeframe * 1000, });
+        return new MidaDate(this.#startDate.timestamp + this.#timeframe * 1000);
     }
 
     /** The period momentum. */
@@ -166,11 +166,11 @@ export class MidaSymbolPeriod implements IMidaEquatable {
     }
 
     /**
-     * Used to compose periods from a set of ticks.
-     * @param ticks The ticks.
-     * @param startTime The start time of the first period.
-     * @param timeframe The periods timeframe.
-     * @param priceType The periods price type (bid or ask).
+     * Used to compose periods from a set of ticks
+     * @param ticks The ticks
+     * @param startTime The start time of the first period
+     * @param timeframe The periods timeframe
+     * @param priceType The periods price type (bid or ask)
      * @param limit Limit the length of composed periods.
      */
     // eslint-disable-next-line max-lines-per-function
@@ -178,7 +178,7 @@ export class MidaSymbolPeriod implements IMidaEquatable {
         ticks: MidaSymbolTick[],
         startTime: MidaDate,
         timeframe: number,
-        priceType: MidaSymbolPrice = MidaSymbolPrice.BID,
+        priceType: MidaSymbolPriceType = MidaSymbolPriceType.BID,
         limit: number = -1
     ): MidaSymbolPeriod[] {
         if (ticks.length < 1 || timeframe <= 0) {
@@ -228,7 +228,7 @@ export class MidaSymbolPeriod implements IMidaEquatable {
             let periodHasEnded: boolean = false;
 
             while (tick.date > periodEndTime) {
-                periodStartTime = new MidaDate({ timestamp: periodEndTime.timestamp, });
+                periodStartTime = new MidaDate(periodEndTime.timestamp);
                 periodEndTime = getNextPeriodEndTime();
 
                 if (!periodHasEnded) {

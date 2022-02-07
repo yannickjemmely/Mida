@@ -2,7 +2,7 @@ import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 import { MidaBrokerParameters } from "#brokers/MidaBrokerParameters";
 import { GenericObject } from "#utilities/GenericObject";
 
-/** Represents a broker. */
+/** Represents a broker */
 export abstract class MidaBroker {
     readonly #name: string;
     readonly #legalName: string;
@@ -18,24 +18,24 @@ export abstract class MidaBroker {
         this.#websiteUri = websiteUri;
     }
 
-    /** The broker name. */
+    /** The broker name */
     public get name (): string {
         return this.#name;
     }
 
-    /** The broker legal name. */
+    /** The broker legal name */
     public get legalName (): string {
         return this.#legalName;
     }
 
-    /** The broker website address. */
+    /** The broker website address */
     public get websiteUri (): string {
         return this.#websiteUri;
     }
 
     /**
-     * Used to login into an account.
-     * @param parameters The login parameters.
+     * Used to login into an account
+     * @param parameters The login parameters
      */
     public abstract login (parameters: GenericObject): Promise<MidaBrokerAccount>;
 

@@ -5,26 +5,26 @@ import { MidaBrokerAccountPositionAccounting } from "#brokers/MidaBrokerAccountP
 import { MidaDate } from "#dates/MidaDate";
 
 /**
- * The broker account constructor parameters.
+ * The broker account constructor parameters
  * @see MidaBrokerAccount
  */
 export type MidaBrokerAccountParameters = {
-    /** The account id. */
+    /** The account id */
     id: string;
-    /** The account broker. */
+    /** The account broker */
     broker: MidaBroker;
-    /** The account creation date. */
+    /** The account creation date */
     creationDate: MidaDate;
-    /** The account owner name. */
+    /** The account owner name */
     ownerName: string;
-    /** The account deposit currency ISO code. */
+    /** The account deposit currency ISO code */
     depositCurrencyIso: string;
-    /** The account deposit currency digits. */
+    /** The account deposit currency digits */
     depositCurrencyDigits: number;
-    /** The account operativity (demo or real). */
+    /** The account operativity (demo or real) */
     operativity: MidaBrokerAccountOperativity;
-    /** The account position accounting (hedged or netted). */
+    /** The account position accounting (hedged or netted) */
     positionAccounting: MidaBrokerAccountPositionAccounting;
-    /** The account indicative leverage. */
+    /** The account indicative leverage */
     indicativeLeverage: number;
 };
