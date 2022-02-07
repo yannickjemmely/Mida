@@ -31,26 +31,26 @@ export namespace MidaTimeframe {
 }
 
 export enum MidaTimeframe {
-    /** 1 second. */
+    /** 1 second */
     S1 = 1,
-    /** 1 minute. */
+    /** 1 minute */
     M1 = 60,
-    /** 5 minutes. */
+    /** 5 minutes */
     M5 = 300,
-    /** 15 minutes. */
+    /** 15 minutes */
     M15 = 900,
-    /** 30 minutes. */
+    /** 30 minutes */
     M30 = 1800,
-    /** 1 hour. */
+    /** 1 hour */
     H1 = 3600,
-    /** 4 hours. */
+    /** 4 hours */
     H4 = 14400,
-    /** 1 day. */
+    /** 1 day */
     D1 = 86400,
-    /** 1 week. */
+    /** 1 week */
     W1 = 604800,
-    /** 1 month. */
+    /** 1 month */
     MO1 = 2592000,
-    /** 1 year. */
+    /** 1 year */
     Y1 = 31536000,
 }
