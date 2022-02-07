@@ -21,7 +21,7 @@ export abstract class MidaExpertAdvisor {
     readonly #orders: MidaBrokerOrder[];
     readonly #capturedTicks: MidaSymbolTick[];
     readonly #tickEventQueue: MidaSymbolTick[];
-    #tickEventIsLocked: boolean;
+    #isTickEventLocked: boolean;
     #isConfigured: boolean;
     readonly #marketWatcher: MidaMarketWatcher;
     readonly #components: MidaExpertAdvisorComponent[];
@@ -33,7 +33,7 @@ export abstract class MidaExpertAdvisor {
         this.#orders = [];
         this.#capturedTicks = [];
         this.#tickEventQueue = [];
-        this.#tickEventIsLocked = false;
+        this.#isTickEventLocked = false;
         this.#isConfigured = false;
         this.#marketWatcher = new MidaMarketWatcher({ brokerAccount, });
         this.#components = [];
@@ -225,11 +225,11 @@ export abstract class MidaExpertAdvisor {
     }
 
     async #onTickAsync (tick: MidaSymbolTick): Promise<void> {
-        if (this.#tickEventIsLocked) {
+        if (this.#isTickEventLocked) {
             this.#tickEventQueue.push(tick);
         }
 
-        this.#tickEventIsLocked = true;
+        this.#isTickEventLocked = true;
 
         // <components>
         for (const component of this.enabledComponents) {
@@ -259,7 +259,7 @@ export abstract class MidaExpertAdvisor {
         }
 
         const nextTick: MidaSymbolTick | undefined = this.#tickEventQueue.shift();
-        this.#tickEventIsLocked = false;
+        this.#isTickEventLocked = false;
 
         if (nextTick) {
             this.#onTickAsync(nextTick);
