@@ -1,11 +1,15 @@
 import { GenericObject } from "#utilities/GenericObject";
+import { MidaError } from "#errors/MidaError";
 
-/** The parameters of the error constructor. */
+/**
+ * The error constructor parameters
+ * @see MidaError
+ */
 export type MidaErrorParameters = {
-    /** The error type. */
+    /** The error type */
     type: string;
-    /** The error message. */
+    /** The error message */
     message?: string;
-    /** The error descriptor. */
+    /** The error descriptor */
     descriptor?: GenericObject;
 };

@@ -1,1 +1,1 @@
-This directory contains the Mida entry points.
+The Mida entry points

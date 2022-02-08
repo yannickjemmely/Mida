@@ -3,7 +3,7 @@ import { MidaBrokerPosition } from "#positions/MidaBrokerPosition";
 import { MidaBrokerPositionProtection } from "#positions/MidaBrokerPositionProtection";
 
 /**
- * The broker position constructor parameters.
+ * The broker position constructor parameters
  * @see MidaBrokerPosition
  */
 export type MidaBrokerPositionParameters = {

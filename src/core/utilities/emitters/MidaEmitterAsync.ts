@@ -17,7 +17,7 @@ export class MidaEmitterAsync {
         do {
             uuid = MidaUtilities.generateUuid();
         }
-        while (this.#uuidExists(uuid)); // This software deals with money. Better to avoid even the most improbable things.
+        while (this.#uuidExists(uuid)); // This software deals with money, better to avoid even the most improbable things
 
         const listenersOfType: Map<string, MidaEventListenerAsync> = this.#listeners.get(type) ?? new Map();
 
