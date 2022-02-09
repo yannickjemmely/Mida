@@ -1,1 +1,1 @@
-This directory contains the Mida tests.
+The Mida tests

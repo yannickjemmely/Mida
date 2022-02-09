@@ -14,7 +14,7 @@ import { MidaBrokerOrderTimeInForce } from "#orders/MidaBrokerOrderTimeInForce";
 import { MidaBrokerPosition } from "#positions/MidaBrokerPosition";
 import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 
-/** Represents a broker order. */
+/** Represents a broker order */
 export abstract class MidaBrokerOrder {
     #id?: string;
     readonly #brokerAccount: MidaBrokerAccount;
@@ -209,6 +209,10 @@ export abstract class MidaBrokerOrder {
 
     public get lastDeal (): MidaBrokerDeal | undefined {
         return this.#deals[this.#deals.length - 1];
+    }
+
+    public get isRejected (): boolean {
+        return this.rejectionType !== undefined;
     }
 
     get #position (): MidaBrokerPosition | undefined {

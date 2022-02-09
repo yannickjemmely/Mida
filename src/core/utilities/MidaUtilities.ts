@@ -3,15 +3,15 @@ import { v1 as uuidV1 } from "uuid";
 
 export class MidaUtilities {
     private constructor () {
-        // Silence is golden.
+        // Silence is golden
     }
 
-    // Used to get the minutes difference between two dates.
+    // Used to get the minutes difference between two dates
     public static getMinutesBetweenDates (a: Date, b: Date): number {
         return Math.round(Math.abs(a.getTime() - b.getTime()) / 60000);
     }
 
-    // Used to get the days difference between two dates.
+    // Used to get the days difference between two dates
     public static getDaysBetweenDates (a: Date, b: Date): number {
         const normalizedLeftDate: number = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
         const normalizedRightDate: number = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
@@ -19,12 +19,12 @@ export class MidaUtilities {
         return Math.floor(Math.abs((normalizedLeftDate - normalizedRightDate) / (1000 * 60 * 60 * 24)));
     }
 
-    // Used to create a Promise resolved after a given number of milliseconds.
+    // Used to create a Promise resolved after a given number of milliseconds
     public static async wait (milliseconds: number): Promise<void> {
         await new Promise((resolve: any): any => setTimeout(resolve, milliseconds));
     }
 
-    // Used to shuffle an array.
+    // Used to shuffle an array
     public static shuffleArray (array: any[]): any[] {
         let length: number = array.length;
 
@@ -39,12 +39,12 @@ export class MidaUtilities {
         return array;
     }
 
-    // Used to get a random integer in an inclusive range.
+    // Used to get a random integer in an inclusive range
     public static generateInRandomInteger (min: number, max: number): number {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
-    // Used to merge two options objects.
+    // Used to merge two options objects
     public static mergeOptions (initial: GenericObject, primary: GenericObject): GenericObject {
         const options: any = {
             ...initial,
@@ -71,12 +71,12 @@ export class MidaUtilities {
         return options;
     }
 
-    // Used to get the percentage of a number.
+    // Used to get the percentage of a number
     public static getPercentageOf (subject: number, percentage: number): number {
         return percentage / 100 * subject;
     }
 
-    // Used to get what percentage of a number a number is.
+    // Used to get what percentage of a number a number is
     public static getWhatPercentageOf (subject: number, whatPercentage: number): number {
         return whatPercentage / subject * 100;
     }

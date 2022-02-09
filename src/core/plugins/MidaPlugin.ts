@@ -37,6 +37,6 @@ export abstract class MidaPlugin {
     }
 
     public install (actions: MidaPluginActions, options?: GenericObject): void {
-        // Silence is golden.
+        // Silence is golden
     }
 }

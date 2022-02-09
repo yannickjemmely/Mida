@@ -5,7 +5,7 @@ import { MidaBrokerDeal } from "#deals/MidaBrokerDeal";
 import { MidaEvent } from "#events/MidaEvent";
 import { MidaEventListener } from "#events/MidaEventListener";
 import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
-import { MidaBrokerOrderOpenDirectives } from "#orders/MidaBrokerOrderDirectives";
+import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
 import { MidaBrokerOrderStatus } from "#orders/MidaBrokerOrderStatus";
 import { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
 import { MidaBrokerPosition } from "#positions/MidaBrokerPosition";
@@ -21,7 +21,7 @@ export abstract class MidaExpertAdvisor {
     readonly #orders: MidaBrokerOrder[];
     readonly #capturedTicks: MidaSymbolTick[];
     readonly #tickEventQueue: MidaSymbolTick[];
-    #tickEventIsLocked: boolean;
+    #isTickEventLocked: boolean;
     #isConfigured: boolean;
     readonly #marketWatcher: MidaMarketWatcher;
     readonly #components: MidaExpertAdvisorComponent[];
@@ -33,7 +33,7 @@ export abstract class MidaExpertAdvisor {
         this.#orders = [];
         this.#capturedTicks = [];
         this.#tickEventQueue = [];
-        this.#tickEventIsLocked = false;
+        this.#isTickEventLocked = false;
         this.#isConfigured = false;
         this.#marketWatcher = new MidaMarketWatcher({ brokerAccount, });
         this.#components = [];
@@ -184,22 +184,22 @@ export abstract class MidaExpertAdvisor {
     protected abstract configure (): Promise<void>;
 
     protected async onStart (): Promise<void> {
-        // Silence is golden.
+        // Silence is golden
     }
 
     protected async onTick (tick: MidaSymbolTick): Promise<void> {
-        // Silence is golden.
+        // Silence is golden
     }
 
     protected async onPeriodClose (period: MidaSymbolPeriod): Promise<void> {
-        // Silence is golden.
+        // Silence is golden
     }
 
     protected async onStop (): Promise<void> {
-        // Silence is golden.
+        // Silence is golden
     }
 
-    protected async placeOrder (directives: MidaBrokerOrderOpenDirectives): Promise<MidaBrokerOrder> {
+    protected async placeOrder (directives: MidaBrokerOrderDirectives): Promise<MidaBrokerOrder> {
         const order: MidaBrokerOrder = await this.#brokerAccount.placeOrder(directives);
 
         this.addOrder(order);
@@ -208,7 +208,7 @@ export abstract class MidaExpertAdvisor {
     }
 
     protected addOrder (order: MidaBrokerOrder): void {
-        // Silence is golden.
+        // Silence is golden
     }
 
     protected notifyListeners (type: string, descriptor?: GenericObject): void {
@@ -225,11 +225,11 @@ export abstract class MidaExpertAdvisor {
     }
 
     async #onTickAsync (tick: MidaSymbolTick): Promise<void> {
-        if (this.#tickEventIsLocked) {
+        if (this.#isTickEventLocked) {
             this.#tickEventQueue.push(tick);
         }
 
-        this.#tickEventIsLocked = true;
+        this.#isTickEventLocked = true;
 
         // <components>
         for (const component of this.enabledComponents) {
@@ -259,7 +259,7 @@ export abstract class MidaExpertAdvisor {
         }
 
         const nextTick: MidaSymbolTick | undefined = this.#tickEventQueue.shift();
-        this.#tickEventIsLocked = false;
+        this.#isTickEventLocked = false;
 
         if (nextTick) {
             this.#onTickAsync(nextTick);

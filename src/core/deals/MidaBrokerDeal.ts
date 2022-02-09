@@ -113,12 +113,12 @@ export abstract class MidaBrokerDeal {
         return this.#requestDate;
     }
 
-    /** Execution date, defined only if the deal is filled or partially filled. */
+    /** Execution date, defined only if the deal is filled or partially filled */
     public get executionDate (): MidaDate | undefined {
         return this.#executionDate;
     }
 
-    /** Rejection date, defined only if the deal is rejected. */
+    /** Rejection date, defined only if the deal is rejected */
     public get rejectionDate (): MidaDate | undefined {
         return this.#rejectionDate;
     }
@@ -145,17 +145,17 @@ export abstract class MidaBrokerDeal {
         return this.#executionPrice;
     }
 
-    /** Realized gross profit, defined only for closing deals. */
+    /** Realized gross profit, defined only for closing deals */
     public get grossProfit (): number | undefined {
         return this.#grossProfit;
     }
 
-    /** Realized commission, defined only for closing deals. */
+    /** Realized commission, defined only for closing deals */
     public get commission (): number | undefined {
         return this.#commission;
     }
 
-    /** Realized swap (rollover), defined only for closing deals. */
+    /** Realized swap (rollover), defined only for closing deals */
     public get swap (): number | undefined {
         return this.#swap;
     }
@@ -189,7 +189,7 @@ export abstract class MidaBrokerDeal {
     }
 
     // net profit = gross profit + swap + commission
-    /** Realized net profit, defined only for closing deals. */
+    /** Realized net profit, defined only for closing deals */
     public get netProfit (): number | undefined {
         if (!Number.isFinite(this.#grossProfit) || !Number.isFinite(this.#swap) || !Number.isFinite(this.#commission)) {
             return undefined;

@@ -1,9 +1,13 @@
+import { MidaAsset } from "#assets/MidaAsset";
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 
+/**
+ * The asset constructor parameters
+ * @see MidaAsset
+ */
 export type MidaAssetParameters = {
-    id: string;
-    brokerAccount: MidaBrokerAccount;
     name: string;
+    brokerAccount: MidaBrokerAccount;
     description: string;
     measurementUnit: string;
 };

@@ -12,7 +12,7 @@ class Mida {
     };
 
     private constructor () {
-        // Silence is golden.
+        // Silence is golden
     }
 
     public static get installedPlugins (): MidaPlugin[] {
@@ -42,8 +42,6 @@ export { MidaExpertAdvisor } from "#advisors/MidaExpertAdvisor";
 export { MidaExpertAdvisorParameters } from "#advisors/MidaExpertAdvisorParameters";
 
 export { MidaAsset } from "#assets/MidaAsset";
-export { MidaAssetDeclaration } from "#assets/MidaAssetDeclaration";
-export { MidaAssetDeclarationParameters } from "#assets/MidaAssetDeclarationParameters";
 export { MidaAssetParameters } from "#assets/MidaAssetParameters";
 
 export { MidaBroker } from "#brokers/MidaBroker";
@@ -89,7 +87,7 @@ export { MidaSymbolQuotationParameters } from "#quotations/MidaSymbolQuotationPa
 export { MidaSymbol } from "#symbols/MidaSymbol";
 export { MidaSymbolCategory } from "#symbols/MidaSymbolCategory";
 export { MidaSymbolParameters } from "#symbols/MidaSymbolParameters";
-export { MidaSymbolPrice } from "#symbols/MidaSymbolPrice";
+export { MidaSymbolPriceType } from "#symbols/MidaSymbolPriceType";
 export { MidaSymbolTradeStatus } from "#symbols/MidaSymbolTradeStatus";
 
 export { MidaSymbolTick } from "#ticks/MidaSymbolTick";

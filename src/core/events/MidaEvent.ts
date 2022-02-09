@@ -16,17 +16,17 @@ export class MidaEvent {
         this.#descriptor = { ...descriptor, };
     }
 
-    /** The event type. */
+    /** The event type */
     public get type (): string {
         return this.#type;
     }
 
-    /** The event date. */
+    /** The event date */
     public get date (): Date {
         return new Date(this.#date);
     }
 
-    /** The event descriptor. */
+    /** The event descriptor */
     public get descriptor (): GenericObject {
         return { ...this.#descriptor, };
     }
