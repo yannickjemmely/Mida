@@ -188,7 +188,7 @@ export class MidaSymbolPeriod implements IMidaEquatable {
         let periodStartTime: MidaDate = startTime;
 
         function getNextPeriodEndTime (): MidaDate {
-            return new MidaDate({ timestamp: periodStartTime.timestamp + timeframe * 1000, });
+            return new MidaDate(periodStartTime.timestamp + timeframe * 1000);
         }
 
         const periods: MidaSymbolPeriod[] = [];

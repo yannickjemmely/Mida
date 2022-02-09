@@ -1,6 +1,7 @@
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 import { MidaDate } from "#dates/MidaDate";
 import { MidaBrokerDeal } from "#deals/MidaBrokerDeal";
+import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
 import { MidaBrokerOrderPurpose } from "#orders/MidaBrokerOrderPurpose";
 import { MidaBrokerOrderRejectionType } from "#orders/MidaBrokerOrderRejectionType";
 import { MidaBrokerOrderStatus } from "#orders/MidaBrokerOrderStatus";
@@ -8,6 +9,10 @@ import { MidaBrokerOrderTimeInForce } from "#orders/MidaBrokerOrderTimeInForce";
 import { MidaBrokerPosition } from "#positions/MidaBrokerPosition";
 import { MidaBrokerOrderDirection } from "./MidaBrokerOrderDirection";
 
+/**
+ * The broker order constructor parameters
+ * @see MidaBrokerOrder
+ */
 export type MidaBrokerOrderParameters = {
     id?: string;
     brokerAccount: MidaBrokerAccount;

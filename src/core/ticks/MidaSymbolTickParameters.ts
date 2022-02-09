@@ -3,7 +3,10 @@ import { MidaSymbolQuotation } from "#quotations/MidaSymbolQuotation";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { MidaSymbolTickMovementType } from "#ticks/MidaSymbolTickMovementType";
 
-/** The parameters of the symbol tick constructor. */
+/**
+ * The symbol tick constructor parameters
+ * @see MidaSymbolTick
+ */
 export type MidaSymbolTickParameters = {
     symbol?: string;
     bid?: number;

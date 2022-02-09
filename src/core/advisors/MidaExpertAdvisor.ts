@@ -184,19 +184,19 @@ export abstract class MidaExpertAdvisor {
     protected abstract configure (): Promise<void>;
 
     protected async onStart (): Promise<void> {
-        // Silence is golden.
+        // Silence is golden
     }
 
     protected async onTick (tick: MidaSymbolTick): Promise<void> {
-        // Silence is golden.
+        // Silence is golden
     }
 
     protected async onPeriodClose (period: MidaSymbolPeriod): Promise<void> {
-        // Silence is golden.
+        // Silence is golden
     }
 
     protected async onStop (): Promise<void> {
-        // Silence is golden.
+        // Silence is golden
     }
 
     protected async placeOrder (directives: MidaBrokerOrderDirectives): Promise<MidaBrokerOrder> {
@@ -208,7 +208,7 @@ export abstract class MidaExpertAdvisor {
     }
 
     protected addOrder (order: MidaBrokerOrder): void {
-        // Silence is golden.
+        // Silence is golden
     }
 
     protected notifyListeners (type: string, descriptor?: GenericObject): void {

@@ -42,10 +42,10 @@ export abstract class MidaExpertAdvisorComponent {
     public abstract configure (): Promise<void>;
 
     public async onTick (tick: MidaSymbolTick): Promise<void> {
-        // Silence is golden.
+        // Silence is golden
     }
 
     public async onLateTick (tick: MidaSymbolTick): Promise<void> {
-        // Silence is golden.
+        // Silence is golden
     }
 }

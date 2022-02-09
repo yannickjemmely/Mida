@@ -124,7 +124,7 @@ export class MidaMarketWatcher {
                     await this.#checkClosedPeriod(symbol, timeframe);
                 }
                 catch {
-                    // Silence is golden.
+                    // Silence is golden
                 }
             }
         }

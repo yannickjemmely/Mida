@@ -1,8 +1,12 @@
 import { MidaDate } from "#dates/MidaDate";
+import { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
 import { MidaSymbolPriceType } from "#symbols/MidaSymbolPriceType";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 
-/** The symbol period constructor parameters */
+/**
+ * The symbol period constructor parameters
+ * @see MidaSymbolPeriod
+ */
 export type MidaSymbolPeriodParameters = {
     symbol: string;
     startDate: MidaDate;

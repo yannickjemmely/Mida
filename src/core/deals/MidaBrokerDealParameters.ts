@@ -7,6 +7,10 @@ import { MidaBrokerDealStatus } from "#deals/MidaBrokerDealStatus";
 import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
 import { MidaBrokerPosition } from "#positions/MidaBrokerPosition";
 
+/**
+ * The broker deal constructor parameters
+ * @see MidaBrokerDeal
+ */
 export type MidaBrokerDealParameters = {
     id: string;
     order: MidaBrokerOrder | (() => MidaBrokerOrder);
