@@ -1,7 +1,11 @@
 ### Features
 * Update documentation ([#6](https://github.com/Reiryoku-Technologies/Mida/pull/6))
 * **_BREAKING_** Add symbol assets, creating a symbol now requires passing the base asset and quote asset, creating an asset no longer requires defining an id ([#5](https://github.com/Reiryoku-Technologies/Mida/pull/5))
-* **_BREAKING_** Remove `openPosition` method from broker accounts (use directly `placeOrder`), `MidaSymbolPrice` is now `MidaSymbolPriceType`, general improvements ([#7](https://github.com/Reiryoku-Technologies/Mida/pull/7))
+* **_BREAKING_** ([#7](https://github.com/Reiryoku-Technologies/Mida/pull/7))
+    * Remove `openPosition` method from broker accounts (use directly `placeOrder`)
+    * Rename `MidaSymbolPrice` to `MidaSymbolPriceType`
+    * Add general improvements
+* **_BREAKING_** Rename various interfaces, add generic improvements and comments for documentation.
 
 3.1.0 - 23-01-2022
 ===================
