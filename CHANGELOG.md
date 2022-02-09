@@ -5,7 +5,7 @@
     * Remove `openPosition` method from broker accounts (use directly `placeOrder`)
     * Rename `MidaSymbolPrice` to `MidaSymbolPriceType`
     * Add general improvements
-* **_BREAKING_** Rename various interfaces, add generic improvements and comments for documentation.
+* **_BREAKING_** Rename various interfaces, add generic improvements and comments for documentation
 
 3.1.0 - 23-01-2022
 ===================
