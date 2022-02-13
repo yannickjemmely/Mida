@@ -2,6 +2,7 @@
 <p align="center"> 
     <img src="images/logo.svg" alt="Mida" width="552px">
 </p>
+<br>
 <p align="center">
     <b>A JavaScript framework to easily operate in global financial markets</b>
 </p>
