@@ -1,6 +1,6 @@
 <br><br>
 <p align="center"> 
-    <img src="images/logo.svg" alt="Mida" width="552px">
+    <img src="images/logo.svg" alt="Mida" width="352px">
 </p>
 <br>
 <p align="center">
