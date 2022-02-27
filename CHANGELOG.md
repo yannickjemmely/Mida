@@ -1,3 +1,5 @@
+4.0.0 - 27-02-2022
+===================
 ### Features
 * Update documentation ([#6](https://github.com/Reiryoku-Technologies/Mida/pull/6))
 * **_BREAKING_** Add assets to symbols, creating a symbol now requires passing the base asset and quote asset, creating an asset no longer requires passing an id ([#5](https://github.com/Reiryoku-Technologies/Mida/pull/5))
