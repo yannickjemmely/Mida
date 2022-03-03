@@ -1,3 +1,6 @@
+### Bug fixes
+* Correctly update position protection when `onProtectionChange` is called [#11](https://github.com/Reiryoku-Technologies/Mida/pull/11)
+
 4.0.0 - 27-02-2022
 ===================
 ### Features

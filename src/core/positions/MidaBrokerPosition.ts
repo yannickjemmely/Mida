@@ -307,18 +307,33 @@ export abstract class MidaBrokerPosition {
     }
 
     protected onProtectionChange (protection: MidaBrokerPositionProtection): void {
-        if (Number.isFinite(protection.takeProfit) && this.#protection.takeProfit !== protection.takeProfit) {
-            this.#protection.takeProfit = protection.takeProfit;
+        const {
+            takeProfit,
+            stopLoss,
+            trailingStopLoss,
+        } = protection;
+        const {
+            takeProfit: actualTakeProfit,
+            stopLoss: actualStopLoss,
+            trailingStopLoss: actualTrailingStopLoss,
+        } = this.#protection;
 
-            this.#emitter.notifyListeners("take-profit-change", { takeProfit: protection.takeProfit, });
+        if (takeProfit !== actualTakeProfit) {
+            this.#protection.takeProfit = takeProfit;
+
+            this.#emitter.notifyListeners("take-profit-change", { takeProfit, });
         }
 
-        if (Number.isFinite(protection.stopLoss)) {
-            this.#emitter.notifyListeners("stop-loss-change", { stopLoss: protection.stopLoss, });
+        if (stopLoss !== actualStopLoss) {
+            this.#protection.stopLoss = stopLoss;
+
+            this.#emitter.notifyListeners("stop-loss-change", { stopLoss, });
         }
 
-        if (Number.isFinite(protection.trailingStopLoss)) {
-            this.#emitter.notifyListeners("trailing-stop-loss-change", { trailingStopLoss: protection.trailingStopLoss, });
+        if (trailingStopLoss !== actualTrailingStopLoss) {
+            this.#protection.trailingStopLoss = actualTrailingStopLoss;
+
+            this.#emitter.notifyListeners("trailing-stop-loss-change", { trailingStopLoss, });
         }
 
         this.#emitter.notifyListeners("protection-change", { protection, });
