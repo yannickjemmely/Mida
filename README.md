@@ -4,7 +4,7 @@
 </p>
 <br>
 <p align="center">
-    <b>A JavaScript framework to easily operate in global financial markets</b>
+    <b>A JavaScript framework for trading in global financial markets</b>
 </p>
 <br>
 <p align="center">
@@ -22,13 +22,17 @@
 
 ## Table of Contents
 * [Introduction](#introduction)
+* [Installation](#installation)
+* [Usage](#usage)
+    * [Broker account login](#broker-account-login)
 
 ## Introduction
-Mida is a JavaScript framework designed to trade financial assets such as stocks, crypto, forex or commodities,
-create solid and maintainable expert advisors on large scale, analyze markets and cover all the necessities of
-retail and institutional algorithmic traders.
+Mida is a JavaScript framework for trading financial assets such as stocks, crypto, forex or commodities.
+It is designed to provide a solid and scalable environment for creating trading bots, indicators,
+market analysis tools and trading applications depending on use cases.
 
-Join the [Discord](https://discord.gg/cKyWTUsr3q) and [Telegram](https://t.me/joinmida) community.
+Join the Mida community on [Discord](https://discord.gg/cKyWTUsr3q) and [Telegram](https://t.me/joinmida),
+you will find people ready to welcome you and help you with your first steps.
 <br>
 
 ## Installation
