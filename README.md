@@ -33,7 +33,7 @@ market analysis tools or just trading applications depending on use cases.
     * [Broker orders and positions](#broker-orders-and-positions)
     * [Symbols](#symbols)
     * [Trading bots (expert advisors)](#trading-bots-expert-advisors)
-    * [Candlesticks](#candlesticks
+    * [Candlesticks](#candlesticks)
 * [Disclaimer](#disclaimer)
 * [Contributors](#contributors)
 
