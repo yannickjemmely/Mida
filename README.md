@@ -25,8 +25,9 @@ Mida is a JavaScript framework for trading financial assets such as stocks, cryp
 It is designed to provide a solid and scalable environment for creating trading bots, indicators,
 market analysis tools or just trading applications depending on use cases.
 
-Join the Mida community on [Discord](https://discord.gg/cKyWTUsr3q) and [Telegram](https://t.me/joinmida),
+Join the community on [Discord](https://discord.gg/cKyWTUsr3q) and [Telegram](https://t.me/joinmida),
 you will find people ready to welcome you and help you with your first steps.
+<br>
 
 ## Table of contents
 * [Introduction](#introduction)
