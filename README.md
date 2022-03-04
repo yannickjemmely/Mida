@@ -26,7 +26,7 @@ It is designed to provide a solid and scalable environment for creating trading 
 market analysis tools or just trading applications depending on use cases.
 
 Join the community on [Discord](https://discord.gg/cKyWTUsr3q) and [Telegram](https://t.me/joinmida),
-you will find people ready to welcome you and help you with your first steps.
+you will find people ready to help you with your first steps.
 <br>
 
 ## Table of contents
