@@ -20,6 +20,9 @@
 </p>
 <br><br>
 
+## Table of Contents
+* [Introduction](#introduction)
+
 ## Introduction
 Mida is a JavaScript framework designed to trade financial assets such as stocks, crypto, forex or commodities,
 create solid and maintainable expert advisors on large scale, analyze markets and cover all the necessities of
