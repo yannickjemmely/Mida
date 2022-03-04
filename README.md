@@ -23,13 +23,19 @@
 ## Introduction
 Mida is a JavaScript framework for trading financial assets such as stocks, crypto, forex or commodities.
 It is designed to provide a solid and scalable environment for creating trading bots, indicators,
-market analysis tools, trading applications depending on use cases.
+market analysis tools or just trading applications depending on use cases.
 
-## Table of Contents
+## Table of contents
 * [Introduction](#introduction)
 * [Installation](#installation)
 * [Usage](#usage)
     * [Broker account login](#broker-account-login)
+    * [Broker orders and positions](#broker-orders-and-positions)
+    * [Symbols](#symbols)
+    * [Trading bots (expert advisors)](#trading-bots-expert-advisors)
+    * [Candlesticks](#candlesticks
+* [Disclaimer](#disclaimer)
+* [Contributors](#contributors)
 
 Join the Mida community on [Discord](https://discord.gg/cKyWTUsr3q) and [Telegram](https://t.me/joinmida),
 you will find people ready to welcome you and help you with your first steps.
@@ -37,12 +43,7 @@ you will find people ready to welcome you and help you with your first steps.
 
 ## Installation
 ```console
-npm i @reiryoku/mida
-```
-
-To use cTrader broker accounts, also install the Mida cTrader plugin
-```console
-npm i @reiryoku/mida-ctrader
+npm i @reiryoku/mida @reiryoku/mida-ctrader
 ```
 
 ## Usage
@@ -286,8 +287,8 @@ marketWatcher.on("period-close", (event) => {
 });
 ```
 
-### Expert advisors
-How to create an expert advisor.
+### Trading bots (expert advisors)
+How to create a trading bot
 ```javascript
 const {
     MidaExpertAdvisor,
@@ -317,7 +318,7 @@ class MyExpertAdvisor extends MidaExpertAdvisor {
 }
 ```
 
-How to execute an expert advisor.
+How to execute a trading bot.
 ```javascript
 const { MidaBroker, } = require("@reiryoku/mida");
 const { MyExpertAdvisor, } = require("./my-expert-advisor"); 
