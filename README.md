@@ -36,7 +36,6 @@ to get help you with your first steps.
     * [Account login](#account-login)
     * [Balance, equity and margin](#balance-equity-and-margin)
     * [Orders, deals and positions](#orders-deals-and-positions)
-    * [Open positions and pending orders](#open-positions-and-pending-orders)
     * [Symbols and assets](#symbols-and-assets)
     * [Ticks and candlesticks](#ticks-and-candlesticks)
     * [Trading bots (expert advisors)](#trading-bots-expert-advisors)
