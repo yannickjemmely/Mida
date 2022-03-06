@@ -25,16 +25,17 @@ Mida is a JavaScript framework for trading financial assets such as stocks, cryp
 It is designed to provide a solid and scalable environment for creating trading bots, indicators,
 market analysis tools or just trading applications depending on use cases.
 
-Join the community on [Discord](https://discord.gg/cKyWTUsr3q) and [Telegram](https://t.me/joinmida),
-you will be helped you with your first steps.
+Join the community on [Discord](https://discord.gg/cKyWTUsr3q) and [Telegram](https://t.me/joinmida)
+to get help you with your first steps.
 <br>
 
 ## Table of contents
 * [Ecosystem](#ecosystem)
 * [Installation](#installation)
 * [Usage](#usage)
-    * [Broker account login](#broker-account-login)
-    * [Broker orders and positions](#broker-orders-and-positions)
+    * [Account login](#account-login)
+    * [Balance, equity and margin](#balance-equity-and-margin)
+    * [Orders and positions](#orders-and-positions)
     * [Symbols](#symbols)
     * [Trading bots (expert advisors)](#trading-bots-expert-advisors)
     * [Candlesticks](#candlesticks)
@@ -43,12 +44,12 @@ you will be helped you with your first steps.
 
 ## Ecosystem
 This repository contains the Mida core which is enriched by
-plugins and other projects revolving around it.
+plugins and other projects.
 
 | Project                  | Status                        | Description                     |
 | -----------              | -----------                   | -----------                     |
 | [Mida cTrader](https://github.com/Reiryoku-Technologies/Mida-cTrader)     | [![Image](https://img.shields.io/npm/v/@reiryoku/mida-ctrader)](https://www.npmjs.com/package/@reiryoku/mida-ctrader)        | For using cTrader accounts           |
-| [Apollo](https://github.com/Reiryoku-Technologies/Apollo)                 | [![Image](https://img.shields.io/npm/v/@reiryoku/mida-ctrader)](https://www.npmjs.com/package/@reiryoku/apollo)              | For getting real-time economic data  |
+| [Apollo](https://github.com/Reiryoku-Technologies/Apollo)                 | [![Image](https://img.shields.io/npm/v/@reiryoku/apollo)](https://www.npmjs.com/package/@reiryoku/apollo)                    | For getting real-time economic data  |
 
 ## Installation
 ```console
@@ -56,7 +57,7 @@ npm i @reiryoku/mida @reiryoku/mida-ctrader
 ```
 
 ## Usage
-### Broker account login
+### Account login
 How to login into a cTrader broker account.
 ```javascript
 const { Mida, MidaBroker, } = require("@reiryoku/mida");
@@ -76,7 +77,19 @@ const myAccount = await MidaBroker.login("cTrader", {
 To get a `clientId`, `clientSecret` and `accessToken` you must create an account on
 [cTrader Open API](https://connect.spotware.com).
 
-### Broker orders and positions
+### Balance, equity and margin
+How to get the account balance, equity and margin.
+```javascript
+const { MidaBrokerOrderDirection, } = require("@reiryoku/mida");
+
+console.log(await myAccount.getBalance());
+console.log(await myAccount.getEquity());
+console.log(await myAccount.getFreeMargin());
+console.log(await myAccount.getUsedMargin());
+```
+
+### Orders, deals and positions
+Use `placeOrder` to search for deals to open/close a position.
 How top open a long position for Bitcoin against USD.
 ```javascript
 const { MidaBrokerOrderDirection, } = require("@reiryoku/mida");
@@ -89,6 +102,8 @@ const myOrder = await myAccount.placeOrder({
 
 console.log(myOrder.id);
 console.log(myOrder.executionPrice);
+console.log(myOrder.position);
+console.log(myOrder.deals);
 ```
 
 How to open a short position for EUR against USD.
@@ -103,6 +118,8 @@ const myOrder = await myAccount.placeOrder({
 
 console.log(myOrder.id);
 console.log(myOrder.executionPrice);
+console.log(myOrder.position);
+console.log(myOrder.deals);
 ```
 
 How to open a short position for Apple stocks with error handler.
