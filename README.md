@@ -47,9 +47,9 @@ you will be helped you with your first steps.
 This repository contains the Mida core which is enriched by
 plugins and other projects revolving around it
 
-| Project                               | Status                        | Description                     |
-| -----------                           | -----------                   | -----------                     |
-| Mida cTrader                          | [![Image](https://img.shields.io/npm/v/@reiryoku/mida-ctrader)](https://www.npmjs.com/package/@reiryoku/mida-ctrader)        |    Using cTrader accounts          |
+| Project                  | Status                        | Description                     |
+| -----------              | -----------                   | -----------                     |
+| Mida cTrader             | <br>[![Image](https://img.shields.io/npm/v/@reiryoku/mida-ctrader)](https://www.npmjs.com/package/@reiryoku/mida-ctrader)        |    Using cTrader accounts          |
 
 ## Installation
 ```console
