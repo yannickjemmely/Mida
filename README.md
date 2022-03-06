@@ -49,7 +49,7 @@ plugins and other projects revolving around it
 
 | Project                  | Status                        | Description                     |
 | -----------              | -----------                   | -----------                     |
-| Mida cTrader             | <br>[![Image](https://img.shields.io/npm/v/@reiryoku/mida-ctrader)](https://www.npmjs.com/package/@reiryoku/mida-ctrader) <br>        |    Using cTrader accounts          |
+| Mida cTrader             | <br>[![Image](https://img.shields.io/npm/v/@reiryoku/mida-ctrader)](https://www.npmjs.com/package/@reiryoku/mida-ctrader) <br><br>        |    Using cTrader accounts          |
 
 ## Installation
 ```console
