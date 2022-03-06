@@ -35,7 +35,7 @@ to get help you with your first steps.
 * [Usage](#usage)
     * [Account login](#account-login)
     * [Balance, equity and margin](#balance-equity-and-margin)
-    * [Orders and positions](#orders-and-positions)
+    * [Orders, deals and positions](#orders-deals-and-positions)
     * [Symbols](#symbols)
     * [Trading bots (expert advisors)](#trading-bots-expert-advisors)
     * [Candlesticks](#candlesticks)
@@ -43,7 +43,7 @@ to get help you with your first steps.
 * [Contributors](#contributors)
 
 ## Ecosystem
-This repository contains the Mida core which is enriched by
+This project is the Mida core which is enriched by
 plugins and other projects.
 
 | Project                  | Status                        | Description                     |
@@ -263,6 +263,7 @@ console.log(`Bitcoin price is ${price} US dollars`);
 console.log(await myAccount.getSymbolBid("BTCUSD"));
 ```
 
+### Ticks and candlesticks
 How to listen the ticks of a symbol.
 ```javascript
 const { MidaMarketWatcher, } = require("@reiryoku/mida");
@@ -276,6 +277,18 @@ marketWatcher.on("tick", (event) => {
     
     console.log(`Bitcoin price is now ${tick.bid} US dollars`);
 });
+```
+
+How to get the candlesticks of a symbol (candlesticks and bars are generically called periods).
+```javascript
+const { MidaTimeframe, } = require("@reiryoku/mida");
+
+const periods = await myAccount.getSymbolPeriods("EURUSD", MidaTimeframe.M30);
+const lastPeriod = periods[periods.length - 1];
+
+console.log("Last candlestick start time: " + lastPeriod.startTime);
+console.log("Last candlestick OHLC: " + lastPeriod.ohlc);
+console.log("Last candlestick close price: " + lastPeriod.close);
 ```
 
 How to listen when candlesticks are closed.
@@ -353,19 +366,6 @@ const myAccount = await MidaBroker.login(/* ... */);
 const myAdvisor = new MyExpertAdvisor({ brokerAccount: myAccount, });
 
 await myAdvisor.start();
-```
-
-### Candlesticks
-How to get the candlesticks of a symbol (candlesticks and bars are generically called periods).
-```javascript
-const { MidaTimeframe, } = require("@reiryoku/mida");
-
-const periods = await myAccount.getSymbolPeriods("EURUSD", MidaTimeframe.M30);
-const lastPeriod = periods[periods.length - 1];
-
-console.log("Last candlestick start time: " + lastPeriod.startTime);
-console.log("Last candlestick OHLC: " + lastPeriod.ohlc);
-console.log("Last candlestick close price: " + lastPeriod.close);
 ```
 
 ## Disclaimer
