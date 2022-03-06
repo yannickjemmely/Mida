@@ -228,7 +228,6 @@ await myAccount.placeOrder({
 });
 ```
 
-#### Open positions and pending orders
 How to retrieve all open positions and pending orders.
 ```javascript
 console.log(await myAccount.getOpenPositions());
