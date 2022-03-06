@@ -26,11 +26,11 @@ It is designed to provide a solid and scalable environment for creating trading 
 market analysis tools or just trading applications depending on use cases.
 
 Join the community on [Discord](https://discord.gg/cKyWTUsr3q) and [Telegram](https://t.me/joinmida),
-you will find people ready to help you with your first steps.
+you will be helped you with your first steps.
 <br>
 
 ## Table of contents
-* [Introduction](#introduction)
+* [Ecosystem](#ecosystem)
 * [Installation](#installation)
 * [Usage](#usage)
     * [Broker account login](#broker-account-login)
@@ -42,6 +42,14 @@ you will find people ready to help you with your first steps.
 * [Contributors](#contributors)
 
 <br>
+
+## Ecosystem
+This repository contains the Mida core which is enriched by
+plugins and other projects revolving around it
+
+| Project                               | Status                        | Description                     |
+| -----------                           | -----------                   | -----------                     |
+| Mida cTrader                          | [![Image](https://img.shields.io/npm/v/@reiryoku/mida-ctrader)](https://www.npmjs.com/package/@reiryoku/mida-ctrader)        |    Using cTrader accounts          |
 
 ## Installation
 ```console
@@ -290,7 +298,7 @@ marketWatcher.on("period-close", (event) => {
 ```
 
 ### Trading bots (expert advisors)
-How to create a trading bot
+How to create a trading bot (or expert advisor)
 ```javascript
 const {
     MidaExpertAdvisor,
