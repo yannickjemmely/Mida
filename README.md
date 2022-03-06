@@ -49,6 +49,7 @@ plugins and other projects revolving around it.
 | -----------              | -----------                   | -----------                     |
 | [Mida cTrader](https://github.com/Reiryoku-Technologies/Mida-cTrader)     | [![Image](https://img.shields.io/npm/v/@reiryoku/mida-ctrader)](https://www.npmjs.com/package/@reiryoku/mida-ctrader)        | For using cTrader accounts           |
 | [Apollo](https://github.com/Reiryoku-Technologies/Apollo)                 | [![Image](https://img.shields.io/npm/v/@reiryoku/mida-ctrader)](https://www.npmjs.com/package/@reiryoku/apollo)              | For getting real-time economic data  |
+
 ## Installation
 ```console
 npm i @reiryoku/mida @reiryoku/mida-ctrader
