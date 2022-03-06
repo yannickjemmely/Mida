@@ -36,15 +36,15 @@ to get help you with your first steps.
     * [Account login](#account-login)
     * [Balance, equity and margin](#balance-equity-and-margin)
     * [Orders, deals and positions](#orders-deals-and-positions)
-    * [Symbols](#symbols)
+    * [Open positions and pending orders](#open-positions-and-pending-orders)
+    * [Symbols and assets](#symbols-and-assets)
+    * [Ticks and candlesticks](#ticks-and-candlesticks)
     * [Trading bots (expert advisors)](#trading-bots-expert-advisors)
-    * [Candlesticks](#candlesticks)
 * [Disclaimer](#disclaimer)
 * [Contributors](#contributors)
 
 ## Ecosystem
-This project is the Mida core which is enriched by
-plugins and other projects.
+The Mida core is enriched by plugins and other projects.
 
 | Project                  | Status                        | Description                     |
 | -----------              | -----------                   | -----------                     |
@@ -74,7 +74,7 @@ const myAccount = await MidaBroker.login("cTrader", {
 });
 ```
 
-To get a `clientId`, `clientSecret` and `accessToken` you must create an account on
+To get a `clientId`, `clientSecret` and `accessToken` you have to create an account on
 [cTrader Open API](https://connect.spotware.com).
 
 ### Balance, equity and margin
@@ -89,7 +89,6 @@ console.log(await myAccount.getUsedMargin());
 ```
 
 ### Orders, deals and positions
-Use `placeOrder` to search for deals to open/close a position.
 How top open a long position for Bitcoin against USD.
 ```javascript
 const { MidaBrokerOrderDirection, } = require("@reiryoku/mida");
@@ -173,7 +172,7 @@ const myOrder = await myAccount.placeOrder({
 });
 ```
 
-How to open volume for an open position
+How to open volume for an open position.
 ```javascript
 const {
     MidaBrokerOrderDirection,
@@ -191,7 +190,7 @@ await myAccount.placeOrder({
 });
 ```
 
-How to close volume for an open position
+How to close volume for an open position.
 ```javascript
 const {
     MidaBrokerOrderDirection,
@@ -209,7 +208,7 @@ await myAccount.placeOrder({
 });
 ```
 
-How to close an open position
+How to close an open position.
 ```javascript
 const {
     MidaBrokerOrderDirection,
@@ -229,7 +228,14 @@ await myAccount.placeOrder({
 });
 ```
 
-### Symbols
+### Open positions and pending orders
+How to retrieve all open positions and pending orders.
+```javascript
+console.log(await myAccount.getOpenPositions());
+console.log(await myAccount.getPendingOrders());
+```
+
+### Symbols and assets
 How to retrieve all symbols available for your broker account.
 ```javascript
 const symbols = await myAccount.getSymbols();
@@ -247,6 +253,8 @@ if (!symbol) {
 else {
     console.log(symbol.digits);
     console.log(symbol.leverage);
+    console.log(symbol.baseAsset);
+    console.log(symbol.quoteAsset);
     console.log(await symbol.isMarketOpen());
 }
 ```
