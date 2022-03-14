@@ -1,3 +1,25 @@
+/*
+ * Copyright Reiryoku Technologies and its contributors, https://www.reiryoku.com
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+*/
+
 import { MidaAsset } from "#assets/MidaAsset";
 import { MidaBroker } from "#brokers/MidaBroker";
 import { MidaBrokerAccountOperativity } from "#brokers/MidaBrokerAccountOperativity";
@@ -133,12 +155,6 @@ export abstract class MidaBrokerAccount {
     /** Used to get the account open positions */
     public abstract getOpenPositions (): Promise<MidaBrokerPosition[]>;
 
-    /** Used to get the account deposits */
-    // public abstract getDeposits (): Promise<any[]>;
-
-    /** Used to get the account withdrawals */
-    // public abstract getWithdrawals (): Promise<any[]>;
-
     /** Used to get the account available assets */
     public abstract getAssets (): Promise<MidaAsset[]>;
 
@@ -225,9 +241,7 @@ export abstract class MidaBrokerAccount {
         return equity - usedMargin;
     }
 
-    /**
-     * Used to get the account margin level, returns NaN if no margin is used
-     */
+    /** Used to get the account margin level, returns NaN if no margin is used */
     public async getMarginLevel (): Promise<number> {
         const [ equity, usedMargin, ]: number[] = await Promise.all([ this.getEquity(), this.getUsedMargin(), ]);
 

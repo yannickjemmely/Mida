@@ -1,3 +1,25 @@
+/*
+ * Copyright Reiryoku Technologies and its contributors, https://www.reiryoku.com
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+*/
+
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 import { MidaEvent } from "#events/MidaEvent";
 import { MidaEventListener } from "#events/MidaEventListener";
@@ -5,7 +27,7 @@ import { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 import { GenericObject } from "#utilities/GenericObject";
-import { MidaUtilities } from "#utilities/MidaUtilities";
+import { mergeOptions } from "#utilities/MidaUtilities";
 import { MidaMarketWatcherDirectives } from "#watcher/MidaMarketWatcherDirectives";
 import { MidaMarketWatcherParameters } from "#watcher/MidaMarketWatcherParameters";
 
@@ -56,7 +78,7 @@ export class MidaMarketWatcher {
         }
 
         await this.#configureSymbolDirectives(symbol, directives);
-        this.#watchedSymbols.set(symbol, MidaUtilities.mergeOptions(actualDirectives, directives));
+        this.#watchedSymbols.set(symbol, mergeOptions(actualDirectives, directives));
     }
 
     public async unwatch (symbol: string): Promise<void> {

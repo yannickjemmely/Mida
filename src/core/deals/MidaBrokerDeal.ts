@@ -1,3 +1,25 @@
+/*
+ * Copyright Reiryoku Technologies and its contributors, https://www.reiryoku.com
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+*/
+
 import { MidaDate } from "#dates/MidaDate";
 import { MidaBrokerDealDirection } from "#deals/MidaBrokerDealDirection";
 import { MidaBrokerDealParameters } from "#deals/MidaBrokerDealParameters";
@@ -12,8 +34,6 @@ export abstract class MidaBrokerDeal {
     readonly #id: string;
     readonly #orderGetter: MidaBrokerOrder | (() => MidaBrokerOrder);
     readonly #positionGetter?: MidaBrokerPosition | (() => MidaBrokerPosition);
-    readonly #symbol: string;
-    readonly #requestedVolume: number;
     readonly #filledVolume: number;
     readonly #direction: MidaBrokerDealDirection;
     readonly #status: MidaBrokerDealStatus;
@@ -24,9 +44,9 @@ export abstract class MidaBrokerDeal {
     readonly #closedByDeals?: MidaBrokerDeal[];
     readonly #closedDeals?: MidaBrokerDeal[];
     readonly #executionPrice?: number;
-    readonly #grossProfit?: number;
-    readonly #commission?: number;
-    readonly #swap?: number;
+    readonly #grossProfit: number;
+    readonly #commission: number;
+    readonly #swap: number;
     readonly #rejectionType?: MidaBrokerDealRejectionType;
     readonly #emitter: MidaEmitter;
 
@@ -34,8 +54,6 @@ export abstract class MidaBrokerDeal {
         id,
         order,
         position,
-        symbol,
-        requestedVolume,
         filledVolume,
         direction,
         status,
@@ -54,8 +72,6 @@ export abstract class MidaBrokerDeal {
         this.#id = id;
         this.#orderGetter = order;
         this.#positionGetter = position;
-        this.#symbol = symbol;
-        this.#requestedVolume = requestedVolume;
         this.#filledVolume = filledVolume ?? 0;
         this.#direction = direction;
         this.#status = status;
@@ -66,9 +82,9 @@ export abstract class MidaBrokerDeal {
         this.#closedByDeals = closedByDeals;
         this.#closedDeals = closedDeals;
         this.#executionPrice = executionPrice;
-        this.#grossProfit = grossProfit;
-        this.#commission = commission;
-        this.#swap = swap;
+        this.#grossProfit = grossProfit ?? 0;
+        this.#commission = commission ?? 0;
+        this.#swap = swap ?? 0;
         this.#rejectionType = rejectionType;
         this.#emitter = new MidaEmitter();
     }
@@ -86,11 +102,11 @@ export abstract class MidaBrokerDeal {
     }
 
     public get symbol (): string {
-        return this.#symbol;
+        return this.order.symbol;
     }
 
     public get requestedVolume (): number {
-        return this.#requestedVolume;
+        return this.order.requestedVolume;
     }
 
     public get filledVolume (): number {
@@ -113,12 +129,10 @@ export abstract class MidaBrokerDeal {
         return this.#requestDate;
     }
 
-    /** Execution date, defined only if the deal is filled or partially filled */
     public get executionDate (): MidaDate | undefined {
         return this.#executionDate;
     }
 
-    /** Rejection date, defined only if the deal is rejected */
     public get rejectionDate (): MidaDate | undefined {
         return this.#rejectionDate;
     }
@@ -145,18 +159,15 @@ export abstract class MidaBrokerDeal {
         return this.#executionPrice;
     }
 
-    /** Realized gross profit, defined only for closing deals */
-    public get grossProfit (): number | undefined {
+    public get grossProfit (): number {
         return this.#grossProfit;
     }
 
-    /** Realized commission, defined only for closing deals */
-    public get commission (): number | undefined {
+    public get commission (): number {
         return this.#commission;
     }
 
-    /** Realized swap (rollover), defined only for closing deals */
-    public get swap (): number | undefined {
+    public get swap (): number {
         return this.#swap;
     }
 
@@ -170,6 +181,17 @@ export abstract class MidaBrokerDeal {
 
     public get isClosing (): boolean {
         return this.#purpose === MidaBrokerDealPurpose.CLOSE;
+    }
+
+    public get isExecuted (): boolean {
+        return (
+            this.#status === MidaBrokerDealStatus.PARTIALLY_FILLED
+            || this.#status === MidaBrokerDealStatus.FILLED
+        );
+    }
+
+    public get isRejected (): boolean {
+        return this.#status === MidaBrokerDealStatus.REJECTED;
     }
 
     get #order (): MidaBrokerOrder {
@@ -188,18 +210,8 @@ export abstract class MidaBrokerDeal {
         return this.#positionGetter;
     }
 
-    // net profit = gross profit + swap + commission
-    /** Realized net profit, defined only for closing deals */
     public get netProfit (): number | undefined {
-        if (!Number.isFinite(this.#grossProfit) || !Number.isFinite(this.#swap) || !Number.isFinite(this.#commission)) {
-            return undefined;
-        }
-
-        const grossProfit: number = this.#grossProfit as number;
-        const swap: number = this.#swap as number;
-        const commission: number = this.#commission as number;
-
-        return grossProfit + swap + commission;
+        return this.#grossProfit + this.#swap + this.#commission;
     }
 
     /* *** *** *** Reiryoku Technologies *** *** *** */
@@ -213,4 +225,31 @@ export abstract class MidaBrokerDeal {
         this.#closedByDeals.push(closedByDeal);
         this.#emitter.notifyListeners("close", { closedByDeal, });
     }
+}
+
+/* *** *** *** Reiryoku Technologies *** *** *** */
+/*           *** *** Utilities *** ***           */
+
+export function filterExecutedDeals (deals: MidaBrokerDeal[]): MidaBrokerDeal[] {
+    const executedDeals: MidaBrokerDeal[] = [];
+
+    for (const deal of deals) {
+        if (deal.isExecuted) {
+            executedDeals.push(deal);
+        }
+    }
+
+    return executedDeals;
+}
+
+export function filterRejectedDeals (deals: MidaBrokerDeal[]): MidaBrokerDeal[] {
+    const rejectedDeals: MidaBrokerDeal[] = [];
+
+    for (const deal of deals) {
+        if (deal.isRejected) {
+            rejectedDeals.push(deal);
+        }
+    }
+
+    return rejectedDeals;
 }

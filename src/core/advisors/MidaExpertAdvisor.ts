@@ -1,4 +1,26 @@
-import { MidaExpertAdvisorComponent } from "#advisors/MidaExpertAdvisorComponent";
+/*
+ * Copyright Reiryoku Technologies and its contributors, https://www.reiryoku.com
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+*/
+
+import { MidaExpertAdvisorComponent, filterEnabledComponents } from "#advisors/MidaExpertAdvisorComponent";
 import { MidaExpertAdvisorParameters } from "#advisors/MidaExpertAdvisorParameters";
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 import { MidaBrokerDeal } from "#deals/MidaBrokerDeal";
@@ -27,7 +49,9 @@ export abstract class MidaExpertAdvisor {
     readonly #components: MidaExpertAdvisorComponent[];
     readonly #emitter: MidaEmitter;
 
-    protected constructor ({ brokerAccount, }: MidaExpertAdvisorParameters) {
+    protected constructor ({
+        brokerAccount,
+    }: MidaExpertAdvisorParameters) {
         this.#brokerAccount = brokerAccount;
         this.#isOperative = false;
         this.#orders = [];
@@ -52,6 +76,10 @@ export abstract class MidaExpertAdvisor {
         return [ ...this.#orders, ];
     }
 
+    public get components (): MidaExpertAdvisorComponent[] {
+        return [ ...this.#components, ];
+    }
+
     protected get capturedTicks (): MidaSymbolTick[] {
         return [ ...this.#capturedTicks, ];
     }
@@ -60,20 +88,8 @@ export abstract class MidaExpertAdvisor {
         return this.#marketWatcher;
     }
 
-    public get components (): MidaExpertAdvisorComponent[] {
-        return [ ...this.#components, ];
-    }
-
     public get enabledComponents (): MidaExpertAdvisorComponent[] {
-        const enabledComponents: MidaExpertAdvisorComponent[] = [];
-
-        for (const component of this.#components) {
-            if (component.enabled) {
-                enabledComponents.push(component);
-            }
-        }
-
-        return enabledComponents;
+        return filterEnabledComponents(this.#components);
     }
 
     public get filledOrders (): MidaBrokerOrder[] {
@@ -276,15 +292,6 @@ export abstract class MidaExpertAdvisor {
     }
 
     async #configure (): Promise<void> {
-        for (const component of this.enabledComponents) {
-            try {
-                await component.configure();
-            }
-            catch (error) {
-                console.log(error);
-            }
-        }
-
         try {
             await this.configure();
         }

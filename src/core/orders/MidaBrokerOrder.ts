@@ -1,3 +1,25 @@
+/*
+ * Copyright Reiryoku Technologies and its contributors, https://www.reiryoku.com
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+*/
+
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 import { MidaDate } from "#dates/MidaDate";
 import { MidaBrokerDeal } from "#deals/MidaBrokerDeal";
@@ -155,6 +177,13 @@ export abstract class MidaBrokerOrder {
         return this.#isStopOut;
     }
 
+    public get isExecuted (): boolean {
+        return (
+            this.#status === MidaBrokerOrderStatus.PARTIALLY_FILLED
+            || this.#status === MidaBrokerOrderStatus.FILLED
+        );
+    }
+
     public get filledVolume (): number {
         let filledVolume: number = 0;
 
@@ -165,12 +194,8 @@ export abstract class MidaBrokerOrder {
         return filledVolume;
     }
 
-    public get isFilled (): boolean {
-        return this.#status === MidaBrokerOrderStatus.FILLED;
-    }
-
     public get executionPrice (): number | undefined {
-        if (this.status !== MidaBrokerOrderStatus.FILLED) {
+        if (!this.isExecuted) {
             return undefined;
         }
 
@@ -212,7 +237,7 @@ export abstract class MidaBrokerOrder {
     }
 
     public get isRejected (): boolean {
-        return this.rejectionType !== undefined;
+        return this.#status === MidaBrokerOrderStatus.REJECTED;
     }
 
     get #position (): MidaBrokerPosition | undefined {
@@ -319,4 +344,31 @@ export abstract class MidaBrokerOrder {
         this.#deals.push(deal);
         this.#emitter.notifyListeners("deal", { deal, });
     }
+}
+
+/* *** *** *** Reiryoku Technologies *** *** *** */
+/*           *** *** Utilities *** ***           */
+
+export function filterPendingOrders (orders: MidaBrokerOrder[]): MidaBrokerOrder[] {
+    const pendingOrders: MidaBrokerOrder[] = [];
+
+    for (const order of orders) {
+        if (order.status === MidaBrokerOrderStatus.PENDING) {
+            pendingOrders.push(order);
+        }
+    }
+
+    return pendingOrders;
+}
+
+export function filterExecutedOrders (orders: MidaBrokerOrder[]): MidaBrokerOrder[] {
+    const executedOrders: MidaBrokerOrder[] = [];
+
+    for (const order of orders) {
+        if (order.isExecuted) {
+            executedOrders.push(order);
+        }
+    }
+
+    return executedOrders;
 }

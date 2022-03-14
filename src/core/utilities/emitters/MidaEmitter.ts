@@ -1,7 +1,7 @@
 import { MidaEvent } from "#events/MidaEvent";
 import { MidaEventListener } from "#events/MidaEventListener";
 import { GenericObject } from "#utilities/GenericObject";
-import { MidaUtilities } from "#utilities/MidaUtilities";
+import { generateUuid } from "#utilities/MidaUtilities";
 
 export class MidaEmitter {
     static readonly #ANY_TYPE_KEY: string = "*";
@@ -15,7 +15,7 @@ export class MidaEmitter {
         let uuid: string;
 
         do {
-            uuid = MidaUtilities.generateUuid();
+            uuid = generateUuid();
         }
         while (this.#uuidExists(uuid)); // This software deals with money, better to avoid even the most improbable events
 

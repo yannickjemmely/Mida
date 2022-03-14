@@ -1,25 +1,48 @@
+/*
+ * Copyright Reiryoku Technologies and its contributors, https://www.reiryoku.com
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+*/
+
 import { MidaExpertAdvisor } from "#advisors/MidaExpertAdvisor";
 import { MidaExpertAdvisorComponentParameters } from "#advisors/MidaExpertAdvisorComponentParameters";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 
 export abstract class MidaExpertAdvisorComponent {
-    readonly #expertAdvisor: MidaExpertAdvisor;
+    #expertAdvisor?: MidaExpertAdvisor;
     readonly #requiredComponents: string[];
     readonly #uniquePerAdvisor: boolean;
-    #enabled: boolean;
+    #isEnabled: boolean;
+    #isConfigured: boolean;
 
     protected constructor ({
-        expertAdvisor,
         requiredComponents = [],
         uniquePerAdvisor = false,
     }: MidaExpertAdvisorComponentParameters) {
-        this.#expertAdvisor = expertAdvisor;
+        this.#expertAdvisor = undefined;
         this.#requiredComponents = requiredComponents;
         this.#uniquePerAdvisor = uniquePerAdvisor;
-        this.#enabled = false;
+        this.#isEnabled = false;
+        this.#isConfigured = false;
     }
 
-    public get expertAdvisor (): MidaExpertAdvisor {
+    public get expertAdvisor (): MidaExpertAdvisor | undefined {
         return this.#expertAdvisor;
     }
 
@@ -31,15 +54,27 @@ export abstract class MidaExpertAdvisorComponent {
         return this.#uniquePerAdvisor;
     }
 
-    public get enabled (): boolean {
-        return this.#enabled;
+    public get isEnabled (): boolean {
+        return this.#isEnabled;
     }
 
-    public set enabled (enabled: boolean) {
-        this.#enabled = enabled;
+    public set isEnabled (enabled: boolean) {
+        this.#isEnabled = enabled;
     }
 
-    public abstract configure (): Promise<void>;
+    public async activate (expertAdvisor: MidaExpertAdvisor): Promise<void> {
+        if (this.#isConfigured) {
+            return;
+        }
+
+        this.#expertAdvisor = expertAdvisor;
+
+        await this.configure();
+
+        this.#isConfigured = true;
+    }
+
+    protected abstract configure (): Promise<void>;
 
     public async onTick (tick: MidaSymbolTick): Promise<void> {
         // Silence is golden
@@ -48,4 +83,19 @@ export abstract class MidaExpertAdvisorComponent {
     public async onLateTick (tick: MidaSymbolTick): Promise<void> {
         // Silence is golden
     }
+}
+
+/* *** *** *** Reiryoku Technologies *** *** *** */
+/*           *** *** Utilities *** ***           */
+
+export function filterEnabledComponents (components: MidaExpertAdvisorComponent[]): MidaExpertAdvisorComponent[] {
+    const enabledComponents: MidaExpertAdvisorComponent[] = [];
+
+    for (const component of components) {
+        if (component.isEnabled) {
+            enabledComponents.push(component);
+        }
+    }
+
+    return enabledComponents;
 }
