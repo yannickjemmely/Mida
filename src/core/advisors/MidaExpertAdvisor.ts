@@ -26,9 +26,8 @@ import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 import { MidaBrokerDeal } from "#deals/MidaBrokerDeal";
 import { MidaEvent } from "#events/MidaEvent";
 import { MidaEventListener } from "#events/MidaEventListener";
-import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
+import { MidaBrokerOrder, filterExecutedOrders } from "#orders/MidaBrokerOrder";
 import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
-import { MidaBrokerOrderStatus } from "#orders/MidaBrokerOrderStatus";
 import { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
 import { MidaBrokerPosition } from "#positions/MidaBrokerPosition";
 import { MidaBrokerPositionStatus } from "#positions/MidaBrokerPositionStatus";
@@ -92,22 +91,14 @@ export abstract class MidaExpertAdvisor {
         return filterEnabledComponents(this.#components);
     }
 
-    public get filledOrders (): MidaBrokerOrder[] {
-        const filledOrders: MidaBrokerOrder[] = [];
-
-        for (const order of this.#orders) {
-            if (order.status === MidaBrokerOrderStatus.FILLED) {
-                filledOrders.push(order);
-            }
-        }
-
-        return filledOrders;
+    public get executedOrders (): MidaBrokerOrder[] {
+        return filterExecutedOrders(this.#orders);
     }
 
     public get filledOrdersDeals (): MidaBrokerDeal[] {
         const deals: MidaBrokerDeal[] = [];
 
-        for (const order of this.filledOrders) {
+        for (const order of this.executedOrders) {
             deals.push(...order.deals);
         }
 
@@ -117,7 +108,7 @@ export abstract class MidaExpertAdvisor {
     public get positions (): MidaBrokerPosition[] {
         const positions: Map<string, MidaBrokerPosition> = new Map();
 
-        for (const order of this.filledOrders) {
+        for (const order of this.executedOrders) {
             const position: MidaBrokerPosition = order.position as MidaBrokerPosition;
 
             positions.set(position.id, position);

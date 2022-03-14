@@ -22,12 +22,13 @@
 
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 import { MidaDate } from "#dates/MidaDate";
-import { MidaBrokerDeal } from "#deals/MidaBrokerDeal";
+import { MidaBrokerDeal, filterExecutedDeals } from "#deals/MidaBrokerDeal";
 import { MidaBrokerDealStatus } from "#deals/MidaBrokerDealStatus";
 import { MidaEvent } from "#events/MidaEvent";
 import { MidaEventListener } from "#events/MidaEventListener";
 import { MidaBrokerOrderDirection } from "#orders/MidaBrokerOrderDirection";
 import { MidaBrokerOrderExecutionType } from "#orders/MidaBrokerOrderExecutionType";
+import { MidaBrokerOrderFillType } from "#orders/MidaBrokerOrderFillType";
 import { MidaBrokerOrderParameters } from "#orders/MidaBrokerOrderParameters";
 import { MidaBrokerOrderPurpose } from "#orders/MidaBrokerOrderPurpose";
 import { MidaBrokerOrderRejectionType } from "#orders/MidaBrokerOrderRejectionType";
@@ -157,6 +158,10 @@ export abstract class MidaBrokerOrder {
         return [ ...this.#deals, ];
     }
 
+    public get executedDeals (): MidaBrokerDeal[] {
+        return filterExecutedDeals(this.#deals);
+    }
+
     public get position (): MidaBrokerPosition | undefined {
         return this.#position;
     }
@@ -178,20 +183,29 @@ export abstract class MidaBrokerOrder {
     }
 
     public get isExecuted (): boolean {
-        return (
-            this.#status === MidaBrokerOrderStatus.PARTIALLY_FILLED
-            || this.#status === MidaBrokerOrderStatus.FILLED
-        );
+        return this.#status === MidaBrokerOrderStatus.EXECUTED;
     }
 
     public get filledVolume (): number {
         let filledVolume: number = 0;
 
-        for (const deal of this.#deals) {
-            filledVolume += deal.filledVolume;
+        for (const deal of this.executedDeals) {
+            filledVolume += deal.volume;
         }
 
         return filledVolume;
+    }
+
+    public get fillType (): MidaBrokerOrderFillType | undefined {
+        if (!this.isExecuted) {
+            return undefined;
+        }
+
+        if (this.filledVolume === this.#requestedVolume) {
+            return MidaBrokerOrderFillType.FULL;
+        }
+
+        return MidaBrokerOrderFillType.PARTIAL;
     }
 
     public get executionPrice (): number | undefined {
@@ -201,12 +215,10 @@ export abstract class MidaBrokerOrder {
 
         let priceVolumeProduct: number = 0;
 
-        for (const deal of this.#deals) {
-            if (deal.status === MidaBrokerDealStatus.PARTIALLY_FILLED || deal.status === MidaBrokerDealStatus.FILLED) {
-                const executionPrice: number = deal.executionPrice as number;
+        for (const deal of this.executedDeals) {
+            const executionPrice: number = deal.executionPrice as number;
 
-                priceVolumeProduct += executionPrice * deal.filledVolume;
-            }
+            priceVolumeProduct += executionPrice * deal.volume;
         }
 
         return priceVolumeProduct / this.filledVolume;
@@ -230,10 +242,6 @@ export abstract class MidaBrokerOrder {
         }
 
         return MidaBrokerOrderExecutionType.MARKET;
-    }
-
-    public get lastDeal (): MidaBrokerDeal | undefined {
-        return this.#deals[this.#deals.length - 1];
     }
 
     public get isRejected (): boolean {
@@ -299,13 +307,8 @@ export abstract class MidaBrokerOrder {
 
                 break;
             }
-            case MidaBrokerOrderStatus.PARTIALLY_FILLED: {
-                this.#emitter.notifyListeners("partial-fill");
-
-                break;
-            }
-            case MidaBrokerOrderStatus.FILLED: {
-                this.#emitter.notifyListeners("fill");
+            case MidaBrokerOrderStatus.EXECUTED: {
+                this.#emitter.notifyListeners("execute");
 
                 break;
             }

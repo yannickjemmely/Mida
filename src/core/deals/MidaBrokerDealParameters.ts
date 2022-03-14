@@ -37,7 +37,7 @@ export type MidaBrokerDealParameters = {
     id: string;
     order: MidaBrokerOrder | (() => MidaBrokerOrder);
     position?: MidaBrokerPosition | (() => MidaBrokerPosition);
-    filledVolume?: number;
+    volume?: number;
     direction: MidaBrokerDealDirection;
     status: MidaBrokerDealStatus;
     purpose: MidaBrokerDealPurpose;

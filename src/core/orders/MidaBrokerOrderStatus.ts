@@ -26,7 +26,6 @@ export enum MidaBrokerOrderStatus {
     ACCEPTED = "accepted",
     PENDING = "pending",
     CANCELLED = "cancelled",
-    PARTIALLY_FILLED = "partially-filled",
-    FILLED = "filled",
+    EXECUTED = "executed",
     EXPIRED = "expired",
 }

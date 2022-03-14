@@ -20,7 +20,7 @@
  * THE SOFTWARE.
 */
 
-export enum MidaBrokerDealStatus {
-    EXECUTED = "executed",
-    REJECTED = "rejected",
+export enum MidaBrokerOrderFillType {
+    PARTIAL = "partial",
+    FULL = "full",
 }

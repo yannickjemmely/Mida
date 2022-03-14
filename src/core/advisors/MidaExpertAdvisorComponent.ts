@@ -62,7 +62,7 @@ export abstract class MidaExpertAdvisorComponent {
         this.#isEnabled = enabled;
     }
 
-    public async activate (expertAdvisor: MidaExpertAdvisor): Promise<void> {
+    public async link (expertAdvisor: MidaExpertAdvisor): Promise<void> {
         if (this.#isConfigured) {
             return;
         }

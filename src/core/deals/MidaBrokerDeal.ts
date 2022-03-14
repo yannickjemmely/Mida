@@ -34,7 +34,7 @@ export abstract class MidaBrokerDeal {
     readonly #id: string;
     readonly #orderGetter: MidaBrokerOrder | (() => MidaBrokerOrder);
     readonly #positionGetter?: MidaBrokerPosition | (() => MidaBrokerPosition);
-    readonly #filledVolume: number;
+    readonly #volume: number;
     readonly #direction: MidaBrokerDealDirection;
     readonly #status: MidaBrokerDealStatus;
     readonly #purpose: MidaBrokerDealPurpose;
@@ -54,7 +54,7 @@ export abstract class MidaBrokerDeal {
         id,
         order,
         position,
-        filledVolume,
+        volume,
         direction,
         status,
         purpose,
@@ -72,7 +72,7 @@ export abstract class MidaBrokerDeal {
         this.#id = id;
         this.#orderGetter = order;
         this.#positionGetter = position;
-        this.#filledVolume = filledVolume ?? 0;
+        this.#volume = volume ?? 0;
         this.#direction = direction;
         this.#status = status;
         this.#purpose = purpose;
@@ -105,12 +105,8 @@ export abstract class MidaBrokerDeal {
         return this.order.symbol;
     }
 
-    public get requestedVolume (): number {
-        return this.order.requestedVolume;
-    }
-
-    public get filledVolume (): number {
-        return this.#filledVolume;
+    public get volume (): number {
+        return this.#volume;
     }
 
     public get direction (): MidaBrokerDealDirection {
@@ -171,6 +167,10 @@ export abstract class MidaBrokerDeal {
         return this.#swap;
     }
 
+    public get netProfit (): number | undefined {
+        return this.#grossProfit + this.#commission + this.#swap;
+    }
+
     public get rejectionType (): MidaBrokerDealRejectionType | undefined {
         return this.#rejectionType;
     }
@@ -184,10 +184,7 @@ export abstract class MidaBrokerDeal {
     }
 
     public get isExecuted (): boolean {
-        return (
-            this.#status === MidaBrokerDealStatus.PARTIALLY_FILLED
-            || this.#status === MidaBrokerDealStatus.FILLED
-        );
+        return this.#status === MidaBrokerDealStatus.EXECUTED;
     }
 
     public get isRejected (): boolean {
@@ -210,10 +207,6 @@ export abstract class MidaBrokerDeal {
         return this.#positionGetter;
     }
 
-    public get netProfit (): number | undefined {
-        return this.#grossProfit + this.#swap + this.#commission;
-    }
-
     /* *** *** *** Reiryoku Technologies *** *** *** */
 
     protected onClose (closedByDeal: MidaBrokerDeal): void {
@@ -228,7 +221,6 @@ export abstract class MidaBrokerDeal {
 }
 
 /* *** *** *** Reiryoku Technologies *** *** *** */
-/*           *** *** Utilities *** ***           */
 
 export function filterExecutedDeals (deals: MidaBrokerDeal[]): MidaBrokerDeal[] {
     const executedDeals: MidaBrokerDeal[] = [];
