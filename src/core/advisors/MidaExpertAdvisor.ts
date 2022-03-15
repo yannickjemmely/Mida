@@ -23,7 +23,11 @@
 import { MidaExpertAdvisorComponent, filterEnabledComponents } from "#advisors/MidaExpertAdvisorComponent";
 import { MidaExpertAdvisorParameters } from "#advisors/MidaExpertAdvisorParameters";
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
-import { MidaBrokerDeal } from "#deals/MidaBrokerDeal";
+import {
+    MidaBrokerDeal,
+    filterExecutedDeals,
+    getDealsFromOrders,
+} from "#deals/MidaBrokerDeal";
 import { MidaEvent } from "#events/MidaEvent";
 import { MidaEventListener } from "#events/MidaEventListener";
 import { MidaBrokerOrder, filterExecutedOrders } from "#orders/MidaBrokerOrder";
@@ -75,6 +79,10 @@ export abstract class MidaExpertAdvisor {
         return [ ...this.#orders, ];
     }
 
+    public get deals (): MidaBrokerDeal[] {
+        return getDealsFromOrders(this.#orders);
+    }
+
     public get components (): MidaExpertAdvisorComponent[] {
         return [ ...this.#components, ];
     }
@@ -95,14 +103,8 @@ export abstract class MidaExpertAdvisor {
         return filterExecutedOrders(this.#orders);
     }
 
-    public get filledOrdersDeals (): MidaBrokerDeal[] {
-        const deals: MidaBrokerDeal[] = [];
-
-        for (const order of this.executedOrders) {
-            deals.push(...order.deals);
-        }
-
-        return deals;
+    public get executedDeals (): MidaBrokerDeal[] {
+        return filterExecutedDeals(this.deals);
     }
 
     public get positions (): MidaBrokerPosition[] {

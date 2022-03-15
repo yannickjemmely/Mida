@@ -1,10 +1,13 @@
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
-import { MidaBrokerDeal } from "#deals/MidaBrokerDeal";
+import {
+    MidaBrokerDeal,
+    filterExecutedDeals,
+    getDealsFromOrders,
+} from "#deals/MidaBrokerDeal";
 import { MidaEvent } from "#events/MidaEvent";
 import { MidaEventListener } from "#events/MidaEventListener";
-import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
+import { MidaBrokerOrder, filterExecutedOrders } from "#orders/MidaBrokerOrder";
 import { MidaBrokerOrderDirection } from "#orders/MidaBrokerOrderDirection";
-import { MidaBrokerOrderStatus } from "#orders/MidaBrokerOrderStatus";
 import { MidaBrokerPositionDirection } from "#positions/MidaBrokerPositionDirection";
 import { MidaBrokerPositionHistory } from "#positions/MidaBrokerPositionHistory";
 import { MidaBrokerPositionParameters } from "#positions/MidaBrokerPositionParameters";
@@ -39,6 +42,10 @@ export abstract class MidaBrokerPosition {
         return [ ...this.#orders, ];
     }
 
+    public get deals (): MidaBrokerDeal[] {
+        return getDealsFromOrders(this.#orders);
+    }
+
     public get protection (): MidaBrokerPositionProtection {
         return this.#protection;
     }
@@ -47,44 +54,30 @@ export abstract class MidaBrokerPosition {
         return [ ...this.#tags, ];
     }
 
-    public get filledOrders (): MidaBrokerOrder[] {
-        const filledOrders: MidaBrokerOrder[] = [];
-
-        for (const order of this.#orders) {
-            if (order.status === MidaBrokerOrderStatus.FILLED) {
-                filledOrders.push(order);
-            }
-        }
-
-        return filledOrders;
+    public get executedOrders (): MidaBrokerOrder[] {
+        return filterExecutedOrders(this.#orders);
     }
 
-    public get firstFilledOrder (): MidaBrokerOrder {
-        return this.filledOrders[0];
+    public get executedDeals (): MidaBrokerDeal[] {
+        return filterExecutedDeals(this.deals);
     }
 
-    public get filledOrdersDeals (): MidaBrokerDeal[] {
-        const deals: MidaBrokerDeal[] = [];
-
-        for (const order of this.filledOrders) {
-            deals.push(...order.deals);
-        }
-
-        return deals;
+    public get firstExecutedOrder (): MidaBrokerOrder {
+        return this.executedOrders[0];
     }
 
     public get symbol (): string {
-        return this.firstFilledOrder.symbol;
+        return this.firstExecutedOrder.symbol;
     }
 
     public get history (): MidaBrokerPositionHistory {
         const positionDirectionHistory: MidaBrokerPositionDirection[] = [];
-        const directionChangeHistory: MidaBrokerOrderDirection[] = [ this.firstFilledOrder.direction, ];
+        const directionChangeHistory: MidaBrokerOrderDirection[] = [ this.firstExecutedOrder.direction, ];
         let currentDirection: MidaBrokerOrderDirection = directionChangeHistory[0];
         let openVolume: number = 0;
         let closedVolume: number = 0;
 
-        for (const order of this.filledOrders) {
+        for (const order of this.executedOrders) {
             if (order.direction === currentDirection) {
                 openVolume += order.filledVolume;
             }
@@ -143,7 +136,7 @@ export abstract class MidaBrokerPosition {
     }
 
     public get brokerAccount (): MidaBrokerAccount {
-        return this.firstFilledOrder.brokerAccount;
+        return this.firstExecutedOrder.brokerAccount;
     }
 
     public get takeProfit (): number | undefined {
@@ -161,7 +154,7 @@ export abstract class MidaBrokerPosition {
     public get realizedGrossProfit (): number {
         let grossProfit: number = 0;
 
-        for (const deal of this.filledOrdersDeals) {
+        for (const deal of this.executedDeals) {
             if (deal.isClosing) {
                 grossProfit += deal.grossProfit as number;
             }
@@ -173,7 +166,7 @@ export abstract class MidaBrokerPosition {
     public get realizedSwap (): number {
         let swap: number = 0;
 
-        for (const deal of this.filledOrdersDeals) {
+        for (const deal of this.executedDeals) {
             if (deal.isClosing) {
                 swap += deal.swap as number;
             }
@@ -185,7 +178,7 @@ export abstract class MidaBrokerPosition {
     public get realizedCommission (): number {
         let commission: number = 0;
 
-        for (const deal of this.filledOrdersDeals) {
+        for (const deal of this.executedDeals) {
             if (deal.isClosing) {
                 commission += deal.commission as number;
             }

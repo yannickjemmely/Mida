@@ -245,3 +245,13 @@ export function filterRejectedDeals (deals: MidaBrokerDeal[]): MidaBrokerDeal[] 
 
     return rejectedDeals;
 }
+
+export function getDealsFromOrders (orders: MidaBrokerOrder[]): MidaBrokerDeal[] {
+    const deals: MidaBrokerDeal[] = [];
+
+    for (const order of orders) {
+        deals.push(...order.deals);
+    }
+
+    return deals;
+}
