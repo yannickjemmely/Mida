@@ -4,7 +4,7 @@
 </p>
 <br>
 <p align="center">
-    <b>A JavaScript framework to easily operate in global financial markets</b>
+    <b>A JavaScript framework for trading in global financial markets</b>
 </p>
 <br>
 <p align="center">
@@ -21,25 +21,42 @@
 <br><br>
 
 ## Introduction
-Mida is a JavaScript framework designed to trade financial assets such as stocks, crypto, forex or commodities,
-create solid and maintainable expert advisors on large scale, analyze markets and cover all the necessities of
-retail and institutional algorithmic traders.
+Mida is a JavaScript framework for trading financial assets such as stocks, crypto, forex or commodities.
+It is designed to provide a solid and scalable environment for creating trading bots, indicators,
+market analysis tools or just trading applications depending on use cases.
 
-Join the [Discord](https://discord.gg/cKyWTUsr3q) and [Telegram](https://t.me/joinmida) community.
+Join the community on [Discord](https://discord.gg/cKyWTUsr3q) and [Telegram](https://t.me/joinmida)
+to get help you with your first steps.
 <br>
+
+## Table of contents
+* [Ecosystem](#ecosystem)
+* [Installation](#installation)
+* [Usage](#usage)
+    * [Account login](#account-login)
+    * [Balance, equity and margin](#balance-equity-and-margin)
+    * [Orders, deals and positions](#orders-deals-and-positions)
+    * [Symbols and assets](#symbols-and-assets)
+    * [Ticks and candlesticks](#ticks-and-candlesticks)
+    * [Trading bots (expert advisors)](#trading-bots-expert-advisors)
+* [Disclaimer](#disclaimer)
+* [Contributors](#contributors)
+
+## Ecosystem
+The Mida core is enriched by plugins and other projects.
+
+| Project                  | Status                        | Description                     |
+| -----------              | -----------                   | -----------                     |
+| [Mida cTrader](https://github.com/Reiryoku-Technologies/Mida-cTrader)     | [![Image](https://img.shields.io/npm/v/@reiryoku/mida-ctrader)](https://www.npmjs.com/package/@reiryoku/mida-ctrader)        | For using cTrader accounts           |
+| [Apollo](https://github.com/Reiryoku-Technologies/Apollo)                 | [![Image](https://img.shields.io/npm/v/@reiryoku/apollo)](https://www.npmjs.com/package/@reiryoku/apollo)                    | For getting real-time economic data  |
 
 ## Installation
 ```console
-npm i @reiryoku/mida
-```
-
-To use cTrader broker accounts, also install the Mida cTrader plugin
-```console
-npm i @reiryoku/mida-ctrader
+npm i @reiryoku/mida @reiryoku/mida-ctrader
 ```
 
 ## Usage
-### Broker account login
+### Account login
 How to login into a cTrader broker account.
 ```javascript
 const { Mida, MidaBroker, } = require("@reiryoku/mida");
@@ -56,10 +73,21 @@ const myAccount = await MidaBroker.login("cTrader", {
 });
 ```
 
-To get a `clientId`, `clientSecret` and `accessToken` you must create an account on
+To get a `clientId`, `clientSecret` and `accessToken` you have to create an account on
 [cTrader Open API](https://connect.spotware.com).
 
-### Broker orders and positions
+### Balance, equity and margin
+How to get the account balance, equity and margin.
+```javascript
+const { MidaBrokerOrderDirection, } = require("@reiryoku/mida");
+
+console.log(await myAccount.getBalance());
+console.log(await myAccount.getEquity());
+console.log(await myAccount.getFreeMargin());
+console.log(await myAccount.getUsedMargin());
+```
+
+### Orders, deals and positions
 How top open a long position for Bitcoin against USD.
 ```javascript
 const { MidaBrokerOrderDirection, } = require("@reiryoku/mida");
@@ -72,6 +100,8 @@ const myOrder = await myAccount.placeOrder({
 
 console.log(myOrder.id);
 console.log(myOrder.executionPrice);
+console.log(myOrder.position);
+console.log(myOrder.deals);
 ```
 
 How to open a short position for EUR against USD.
@@ -86,6 +116,8 @@ const myOrder = await myAccount.placeOrder({
 
 console.log(myOrder.id);
 console.log(myOrder.executionPrice);
+console.log(myOrder.position);
+console.log(myOrder.deals);
 ```
 
 How to open a short position for Apple stocks with error handler.
@@ -139,7 +171,7 @@ const myOrder = await myAccount.placeOrder({
 });
 ```
 
-How to open volume for an open position
+How to open volume for an open position.
 ```javascript
 const {
     MidaBrokerOrderDirection,
@@ -157,7 +189,7 @@ await myAccount.placeOrder({
 });
 ```
 
-How to close volume for an open position
+How to close volume for an open position.
 ```javascript
 const {
     MidaBrokerOrderDirection,
@@ -175,7 +207,7 @@ await myAccount.placeOrder({
 });
 ```
 
-How to close an open position
+How to close an open position.
 ```javascript
 const {
     MidaBrokerOrderDirection,
@@ -195,7 +227,13 @@ await myAccount.placeOrder({
 });
 ```
 
-### Symbols
+How to retrieve all open positions and pending orders.
+```javascript
+console.log(await myAccount.getOpenPositions());
+console.log(await myAccount.getPendingOrders());
+```
+
+### Symbols and assets
 How to retrieve all symbols available for your broker account.
 ```javascript
 const symbols = await myAccount.getSymbols();
@@ -213,6 +251,8 @@ if (!symbol) {
 else {
     console.log(symbol.digits);
     console.log(symbol.leverage);
+    console.log(symbol.baseAsset);
+    console.log(symbol.quoteAsset);
     console.log(await symbol.isMarketOpen());
 }
 ```
@@ -229,6 +269,7 @@ console.log(`Bitcoin price is ${price} US dollars`);
 console.log(await myAccount.getSymbolBid("BTCUSD"));
 ```
 
+### Ticks and candlesticks
 How to listen the ticks of a symbol.
 ```javascript
 const { MidaMarketWatcher, } = require("@reiryoku/mida");
@@ -242,6 +283,18 @@ marketWatcher.on("tick", (event) => {
     
     console.log(`Bitcoin price is now ${tick.bid} US dollars`);
 });
+```
+
+How to get the candlesticks of a symbol (candlesticks and bars are generically called periods).
+```javascript
+const { MidaTimeframe, } = require("@reiryoku/mida");
+
+const periods = await myAccount.getSymbolPeriods("EURUSD", MidaTimeframe.M30);
+const lastPeriod = periods[periods.length - 1];
+
+console.log("Last candlestick start time: " + lastPeriod.startTime);
+console.log("Last candlestick OHLC: " + lastPeriod.ohlc);
+console.log("Last candlestick close price: " + lastPeriod.close);
 ```
 
 How to listen when candlesticks are closed.
@@ -279,8 +332,8 @@ marketWatcher.on("period-close", (event) => {
 });
 ```
 
-### Expert advisors
-How to create an expert advisor.
+### Trading bots (expert advisors)
+How to create a trading bot (or expert advisor)
 ```javascript
 const {
     MidaExpertAdvisor,
@@ -310,7 +363,7 @@ class MyExpertAdvisor extends MidaExpertAdvisor {
 }
 ```
 
-How to execute an expert advisor.
+How to execute a trading bot.
 ```javascript
 const { MidaBroker, } = require("@reiryoku/mida");
 const { MyExpertAdvisor, } = require("./my-expert-advisor"); 
@@ -319,19 +372,6 @@ const myAccount = await MidaBroker.login(/* ... */);
 const myAdvisor = new MyExpertAdvisor({ brokerAccount: myAccount, });
 
 await myAdvisor.start();
-```
-
-### Candlesticks
-How to get the candlesticks of a symbol (candlesticks and bars are generically called periods).
-```javascript
-const { MidaTimeframe, } = require("@reiryoku/mida");
-
-const periods = await myAccount.getSymbolPeriods("EURUSD", MidaTimeframe.M30);
-const lastPeriod = periods[periods.length - 1];
-
-console.log("Last candlestick start time: " + lastPeriod.startTime);
-console.log("Last candlestick OHLC: " + lastPeriod.ohlc);
-console.log("Last candlestick close price: " + lastPeriod.close);
 ```
 
 ## Disclaimer

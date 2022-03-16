@@ -1,3 +1,6 @@
+### Features
+* Update documentation [#12](https://github.com/Reiryoku-Technologies/Mida/pull/12)
+
 ### Bug fixes
 * Correctly update position protection when `onProtectionChange` is called [#11](https://github.com/Reiryoku-Technologies/Mida/pull/11)
 
