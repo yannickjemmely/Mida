@@ -43,12 +43,12 @@ to get help you with your first steps.
 * [Contributors](#contributors)
 
 ## Ecosystem
-The Mida core is enriched by plugins and other projects.
+Projects that enrich Mida.
 
 | Project                  | Status                        | Description                     |
 | -----------              | -----------                   | -----------                     |
-| [Mida cTrader](https://github.com/Reiryoku-Technologies/Mida-cTrader)     | [![Image](https://img.shields.io/npm/v/@reiryoku/mida-ctrader)](https://www.npmjs.com/package/@reiryoku/mida-ctrader)        | For using cTrader accounts           |
-| [Apollo](https://github.com/Reiryoku-Technologies/Apollo)                 | [![Image](https://img.shields.io/npm/v/@reiryoku/apollo)](https://www.npmjs.com/package/@reiryoku/apollo)                    | For getting real-time economic data  |
+| [Mida cTrader](https://github.com/Reiryoku-Technologies/Mida-cTrader)     | [![Image](https://img.shields.io/npm/v/@reiryoku/mida-ctrader)](https://www.npmjs.com/package/@reiryoku/mida-ctrader)        | A plugin for using cTrader accounts            |
+| [Apollo](https://github.com/Reiryoku-Technologies/Apollo)                 | [![Image](https://img.shields.io/npm/v/@reiryoku/apollo)](https://www.npmjs.com/package/@reiryoku/apollo)                    | A library for getting real-time economic data  |
 
 ## Installation
 ```console
