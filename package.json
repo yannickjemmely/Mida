@@ -1,7 +1,7 @@
 {
     "name": "@reiryoku/mida",
-    "version": "3.1.0",
-    "description": "A JavaScript framework to easily operate in global financial markets",
+    "version": "4.0.0",
+    "description": "A JavaScript framework for trading in global financial markets",
     "license": "MIT",
     "homepage": "https://github.com/Reiryoku-Technologies/Mida",
     "bugs": {

@@ -1,4 +1,12 @@
 ### Features
+* Update documentation [#12](https://github.com/Reiryoku-Technologies/Mida/pull/12)
+
+### Bug fixes
+* Correctly update position protection when `onProtectionChange` is called [#11](https://github.com/Reiryoku-Technologies/Mida/pull/11)
+
+4.0.0 - 27-02-2022
+===================
+### Features
 * Update documentation ([#6](https://github.com/Reiryoku-Technologies/Mida/pull/6))
 * **_BREAKING_** Add assets to symbols, creating a symbol now requires passing the base asset and quote asset, creating an asset no longer requires passing an id ([#5](https://github.com/Reiryoku-Technologies/Mida/pull/5))
 * **_BREAKING_** Remove `openPosition` method from broker accounts (use directly `placeOrder`), rename `MidaSymbolPrice` to `MidaSymbolPriceType`, add general improvements ([#7](https://github.com/Reiryoku-Technologies/Mida/pull/7))
