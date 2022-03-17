@@ -23,6 +23,7 @@
 import { MidaExpertAdvisor } from "#advisors/MidaExpertAdvisor";
 import { MidaExpertAdvisorComponentParameters } from "#advisors/MidaExpertAdvisorComponentParameters";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
+import { GenericObject } from "#utilities/GenericObject";
 
 export abstract class MidaExpertAdvisorComponent {
     #expertAdvisor?: MidaExpertAdvisor;
@@ -62,7 +63,7 @@ export abstract class MidaExpertAdvisorComponent {
         this.#isEnabled = enabled;
     }
 
-    public async link (expertAdvisor: MidaExpertAdvisor): Promise<void> {
+    async #link (expertAdvisor: MidaExpertAdvisor): Promise<void> {
         if (this.#isConfigured) {
             return;
         }
@@ -83,10 +84,37 @@ export abstract class MidaExpertAdvisorComponent {
     public async onLateTick (tick: MidaSymbolTick): Promise<void> {
         // Silence is golden
     }
+
+    /* *** *** *** Reiryoku Technologies *** *** *** */
+
+    static readonly #installedComponents: Map<string, typeof MidaExpertAdvisorComponent> = new Map();
+
+    public static get installedComponents (): string[] {
+        return [ ...MidaExpertAdvisorComponent.#installedComponents.keys(), ];
+    }
+
+    public static add (name: string, componentConstructor: typeof MidaExpertAdvisorComponent): void {
+        if (MidaExpertAdvisorComponent.#installedComponents.has(name)) {
+            return;
+        }
+
+        MidaExpertAdvisorComponent.#installedComponents.set(name, componentConstructor);
+    }
+
+    public static async create (name: string, parameters: GenericObject = {}): MidaExpertAdvisorComponent | undefined {
+        const componentConstructor: any | undefined = MidaExpertAdvisorComponent.#installedComponents.get(name);
+
+        if (!componentConstructor) {
+            return undefined;
+        }
+
+        const component: MidaExpertAdvisorComponent = new componentConstructor(parameters);
+
+        await component.#link({} as MidaExpertAdvisor);
+    }
 }
 
 /* *** *** *** Reiryoku Technologies *** *** *** */
-/*           *** *** Utilities *** ***           */
 
 export function filterEnabledComponents (components: MidaExpertAdvisorComponent[]): MidaExpertAdvisorComponent[] {
     const enabledComponents: MidaExpertAdvisorComponent[] = [];

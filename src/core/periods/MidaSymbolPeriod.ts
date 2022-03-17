@@ -94,7 +94,7 @@ export class MidaSymbolPeriod implements IMidaEquatable {
 
     /** The period end date */
     public get endDate (): MidaDate {
-        return new MidaDate(this.#startDate.timestamp + this.#timeframe * 1000);
+        return this.#startDate.add(this.#timeframe * 1000);
     }
 
     /** The period momentum */
@@ -164,87 +164,87 @@ export class MidaSymbolPeriod implements IMidaEquatable {
             && this.timeframe === object.timeframe
         );
     }
+}
 
-    /**
-     * Used to compose periods from a set of ticks
-     * @param ticks The ticks
-     * @param startTime The start time of the first period
-     * @param timeframe The periods timeframe
-     * @param priceType The periods price type (bid or ask)
-     * @param limit Limit the length of composed periods
-     */
-    // eslint-disable-next-line max-lines-per-function
-    public static fromTicks (
-        ticks: MidaSymbolTick[],
-        startTime: MidaDate,
-        timeframe: number,
-        priceType: MidaSymbolPriceType = MidaSymbolPriceType.BID,
-        limit: number = -1
-    ): MidaSymbolPeriod[] {
-        if (ticks.length < 1 || timeframe <= 0) {
-            return [];
-        }
-
-        let periodStartTime: MidaDate = startTime;
-
-        function getNextPeriodEndTime (): MidaDate {
-            return new MidaDate(periodStartTime.timestamp + timeframe * 1000);
-        }
-
-        const periods: MidaSymbolPeriod[] = [];
-        let periodTicks: MidaSymbolTick[] = [];
-        let periodEndTime: MidaDate = getNextPeriodEndTime();
-
-        function tryComposePeriod (): void {
-            if (periodTicks.length < 1) {
-                return;
-            }
-
-            periods.push(new MidaSymbolPeriod({
-                symbol: ticks[0].symbol,
-                startDate: periodStartTime,
-                priceType,
-                open: periodTicks[0][priceType],
-                high: Math.max(...periodTicks.map((tick: MidaSymbolTick): number => tick[priceType])),
-                low: Math.min(...periodTicks.map((tick: MidaSymbolTick): number => tick[priceType])),
-                close: periodTicks[periodTicks.length - 1][priceType],
-                volume: periodTicks.length,
-                timeframe,
-                ticks: [ ...periodTicks, ],
-            }));
-
-            periodTicks = [];
-        }
-
-        for (const tick of ticks) {
-            if (limit > -1 && periods.length === limit) {
-                return periods;
-            }
-
-            if (tick.date < periodStartTime) {
-                continue;
-            }
-
-            let periodHasEnded: boolean = false;
-
-            while (tick.date > periodEndTime) {
-                periodStartTime = new MidaDate(periodEndTime.timestamp);
-                periodEndTime = getNextPeriodEndTime();
-
-                if (!periodHasEnded) {
-                    periodHasEnded = true;
-                }
-            }
-
-            if (periodHasEnded) {
-                tryComposePeriod();
-            }
-
-            periodTicks.push(tick);
-        }
-
-        tryComposePeriod();
-
-        return periods;
+/**
+ * Used to compose periods from a set of ticks
+ * @param ticks The ticks
+ * @param startTime The start time of the first period
+ * @param timeframe The periods timeframe
+ * @param priceType The periods price type (bid or ask)
+ * @param limit Limit the length of composed periods
+ */
+// eslint-disable-next-line max-lines-per-function
+export function fromTicks (
+    ticks: MidaSymbolTick[],
+    startTime: MidaDate,
+    timeframe: number,
+    priceType: MidaSymbolPriceType = MidaSymbolPriceType.BID,
+    limit: number = -1
+): MidaSymbolPeriod[] {
+    if (ticks.length < 1 || timeframe <= 0) {
+        return [];
     }
+
+    let periodStartTime: MidaDate = startTime;
+
+    function getNextPeriodEndTime (): MidaDate {
+        return new MidaDate(periodStartTime.timestamp + timeframe * 1000);
+    }
+
+    const periods: MidaSymbolPeriod[] = [];
+    let periodTicks: MidaSymbolTick[] = [];
+    let periodEndTime: MidaDate = getNextPeriodEndTime();
+
+    function tryComposePeriod (): void {
+        if (periodTicks.length < 1) {
+            return;
+        }
+
+        periods.push(new MidaSymbolPeriod({
+            symbol: ticks[0].symbol,
+            startDate: periodStartTime,
+            priceType,
+            open: periodTicks[0][priceType],
+            high: Math.max(...periodTicks.map((tick: MidaSymbolTick): number => tick[priceType])),
+            low: Math.min(...periodTicks.map((tick: MidaSymbolTick): number => tick[priceType])),
+            close: periodTicks[periodTicks.length - 1][priceType],
+            volume: periodTicks.length,
+            timeframe,
+            ticks: [ ...periodTicks, ],
+        }));
+
+        periodTicks = [];
+    }
+
+    for (const tick of ticks) {
+        if (limit > -1 && periods.length === limit) {
+            return periods;
+        }
+
+        if (tick.date < periodStartTime) {
+            continue;
+        }
+
+        let periodHasEnded: boolean = false;
+
+        while (tick.date > periodEndTime) {
+            periodStartTime = new MidaDate(periodEndTime.timestamp);
+            periodEndTime = getNextPeriodEndTime();
+
+            if (!periodHasEnded) {
+                periodHasEnded = true;
+            }
+        }
+
+        if (periodHasEnded) {
+            tryComposePeriod();
+        }
+
+        periodTicks.push(tick);
+    }
+
+    tryComposePeriod();
+
+    return periods;
 }

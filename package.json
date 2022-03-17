@@ -32,9 +32,6 @@
         "src",
         "tests"
     ],
-    "dependencies": {
-        "uuid": "^8.3.2"
-    },
     "devDependencies": {
         "@reiryoku/eslint-config-reiryoku": "^1.0.0",
         "@types/jest": "^26.0.20",
