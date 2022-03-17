@@ -15,7 +15,7 @@ export class MidaEmitterAsync {
         let uuid: string;
 
         do {
-            uuid = MidaUtilities.generateUuid();
+            uuid = MidaUtilities.randomUuid();
         }
         while (this.#uuidExists(uuid)); // This software deals with money, better to avoid even the most improbable things
 

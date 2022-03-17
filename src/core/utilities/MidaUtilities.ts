@@ -20,8 +20,8 @@
  * THE SOFTWARE.
 */
 
-import { GenericObject } from "#utilities/GenericObject";
 import * as crypto from "crypto";
+import { GenericObject } from "#utilities/GenericObject";
 
 export namespace MidaUtilities {
     // Used to get the minutes difference between two dates
@@ -89,18 +89,7 @@ export namespace MidaUtilities {
         return options;
     }
 
-    // Used to get the percentage of a number
-    export function getPercentageOf (subject: number, percentage: number): number {
-        return percentage / 100 * subject;
-    }
-
-    // Used to get what percentage of a number a number is
-    export function getWhatPercentageOf (subject: number, whatPercentage: number): number {
-        return whatPercentage / subject * 100;
-    }
-
-    export function generateUuid (): string {
-        // @ts-ignore
+    export function randomUuid (): string {
         return crypto.randomUUID();
     }
 
