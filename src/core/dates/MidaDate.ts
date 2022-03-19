@@ -21,11 +21,12 @@
 */
 
 import { MidaDateParameters } from "#dates/MidaDateParameters";
+import { MidaDateUtilities } from "#dates/MidaDateUtilities";
 import { IMidaCloneable } from "#utilities/cloneable/IMidaCloneable";
 import { IMidaEquatable } from "#utilities/equatable/IMidaEquatable";
 import { GenericObject } from "#utilities/GenericObject";
 
-/** Represents an immutable UTC date */
+/** Represents an immutable date */
 export class MidaDate implements IMidaCloneable, IMidaEquatable {
     readonly #date: Date;
 
@@ -57,13 +58,13 @@ export class MidaDate implements IMidaCloneable, IMidaEquatable {
                     this.#date = new Date(date);
                 }
                 else {
-                    this.#date = new Date();
+                    this.#date = new Date(MidaDateUtilities.utcTimestamp());
                 }
 
                 break;
             }
             default: {
-                this.#date = new Date();
+                this.#date = new Date(MidaDateUtilities.utcTimestamp());
             }
         }
     }
@@ -112,6 +113,14 @@ export class MidaDate implements IMidaCloneable, IMidaEquatable {
         return new MidaDate(this.timestamp - milliseconds);
     }
 
+    public differenceInMinutes (date: MidaDate): number {
+        return Math.abs(this.timestamp - date.timestamp) / 60000;
+    }
+
+    public differenceInDays (date: MidaDate): number {
+        return Math.abs(this.timestamp - date.timestamp) / 86400000;
+    }
+
     public toString (): string {
         return this.iso;
     }
@@ -121,7 +130,7 @@ export class MidaDate implements IMidaCloneable, IMidaEquatable {
     }
 
     public clone (): MidaDate {
-        return new MidaDate({ date: this.#date, });
+        return new MidaDate(this);
     }
 
     public equals (object: GenericObject): boolean {

@@ -21,6 +21,6 @@
 */
 
 export enum MidaBrokerOrderFillType {
-    PARTIAL = "partial",
     FULL = "full",
+    PARTIAL = "partial",
 }

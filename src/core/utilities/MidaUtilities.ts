@@ -24,19 +24,6 @@ import * as crypto from "crypto";
 import { GenericObject } from "#utilities/GenericObject";
 
 export namespace MidaUtilities {
-    // Used to get the minutes difference between two dates
-    export function getMinutesBetweenDates (a: Date, b: Date): number {
-        return Math.round(Math.abs(a.getTime() - b.getTime()) / 60000);
-    }
-
-    // Used to get the days difference between two dates
-    export function getDaysBetweenDates (a: Date, b: Date): number {
-        const normalizedLeftDate: number = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
-        const normalizedRightDate: number = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
-
-        return Math.floor(Math.abs((normalizedLeftDate - normalizedRightDate) / (1000 * 60 * 60 * 24)));
-    }
-
     // Used to create a Promise resolved after a given number of milliseconds
     export async function wait (milliseconds: number): Promise<void> {
         await new Promise((resolve: any): any => setTimeout(resolve, milliseconds));

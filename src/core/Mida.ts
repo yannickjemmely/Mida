@@ -22,20 +22,17 @@
 
 import { MidaBroker } from "#brokers/MidaBroker";
 import { MidaPlugin } from "#plugins/MidaPlugin";
-import { MidaPluginActions } from "#plugins/MidaPluginActions";
+import { baseActions } from "#plugins/MidaPluginActions";
 import { GenericObject } from "#utilities/GenericObject";
 
 class Mida {
-    static readonly #installedPlugins: Map<string, MidaPlugin> = new Map();
-    static readonly #pluginActions: MidaPluginActions = {
-        addBroker (broker: MidaBroker): void {
-            MidaBroker.add(broker);
-        },
-    };
-
     private constructor () {
         // Silence is golden
     }
+
+    /* *** *** *** Reiryoku Technologies *** *** *** */
+
+    static readonly #installedPlugins: Map<string, MidaPlugin> = new Map();
 
     public static get installedPlugins (): MidaPlugin[] {
         return [ ...Mida.#installedPlugins.values(), ];
@@ -44,15 +41,15 @@ class Mida {
     public static use (plugin: MidaPlugin | any /* Avoids a warning on non-TS projects using Mida */, options?: GenericObject): void {
         const pluginId: string | undefined = plugin?.id;
 
-        if (!pluginId || Mida.isPluginInstalled(pluginId)) {
+        if (!pluginId || Mida.pluginIsInstalled(pluginId)) {
             return;
         }
 
-        plugin.install(Mida.#pluginActions, options);
+        plugin.install(baseActions, options);
         Mida.#installedPlugins.set(pluginId, plugin);
     }
 
-    public static isPluginInstalled (id: string): boolean {
+    public static pluginIsInstalled (id: string): boolean {
         return Mida.#installedPlugins.has(id);
     }
 }

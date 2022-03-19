@@ -20,18 +20,14 @@
  * THE SOFTWARE.
 */
 
-import { MidaBroker } from "#brokers/MidaBroker";
+export namespace MidaDateUtilities {
+    export function utcTimestamp (): number {
+        const actualDate: Date = new Date();
 
-export type MidaPluginBaseActions = {
-    addBroker (broker: MidaBroker): void;
-};
-
-export type MidaPluginActions = MidaPluginBaseActions;
-
-/* *** *** *** Reiryoku Technologies *** *** *** */
-
-export const baseActions: MidaPluginActions = {
-    addBroker (broker: MidaBroker): void {
-        MidaBroker.add(broker);
-    },
-};
+        return Date.UTC(
+            actualDate.getUTCFullYear(), actualDate.getUTCMonth(), actualDate.getUTCDate(),
+            actualDate.getUTCHours(), actualDate.getUTCMinutes(), actualDate.getUTCSeconds(),
+            actualDate.getUTCMilliseconds()
+        );
+    }
+}

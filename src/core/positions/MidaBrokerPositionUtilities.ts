@@ -20,18 +20,31 @@
  * THE SOFTWARE.
 */
 
-import { MidaBroker } from "#brokers/MidaBroker";
+import { MidaBrokerPosition } from "#positions/MidaBrokerPosition";
+import { MidaBrokerPositionStatus } from "#positions/MidaBrokerPositionStatus";
 
-export type MidaPluginBaseActions = {
-    addBroker (broker: MidaBroker): void;
-};
+export namespace MidaBrokerPositionUtilities {
+    export function filterOpenPositions (positions: MidaBrokerPosition[]): MidaBrokerPosition[] {
+        const openPositions: MidaBrokerPosition[] = [];
 
-export type MidaPluginActions = MidaPluginBaseActions;
+        for (const position of positions) {
+            if (position.status === MidaBrokerPositionStatus.OPEN) {
+                openPositions.push(position);
+            }
+        }
 
-/* *** *** *** Reiryoku Technologies *** *** *** */
+        return openPositions;
+    }
 
-export const baseActions: MidaPluginActions = {
-    addBroker (broker: MidaBroker): void {
-        MidaBroker.add(broker);
-    },
-};
+    export function filterClosedPositions (positions: MidaBrokerPosition[]): MidaBrokerPosition[] {
+        const closedPositions: MidaBrokerPosition[] = [];
+
+        for (const position of positions) {
+            if (position.status === MidaBrokerPositionStatus.CLOSED) {
+                closedPositions.push(position);
+            }
+        }
+
+        return closedPositions;
+    }
+}
