@@ -348,30 +348,3 @@ export abstract class MidaBrokerOrder {
         this.#emitter.notifyListeners("deal", { deal, });
     }
 }
-
-/* *** *** *** Reiryoku Technologies *** *** *** */
-/*           *** *** Utilities *** ***           */
-
-export function filterPendingOrders (orders: MidaBrokerOrder[]): MidaBrokerOrder[] {
-    const pendingOrders: MidaBrokerOrder[] = [];
-
-    for (const order of orders) {
-        if (order.status === MidaBrokerOrderStatus.PENDING) {
-            pendingOrders.push(order);
-        }
-    }
-
-    return pendingOrders;
-}
-
-export function filterExecutedOrders (orders: MidaBrokerOrder[]): MidaBrokerOrder[] {
-    const executedOrders: MidaBrokerOrder[] = [];
-
-    for (const order of orders) {
-        if (order.isExecuted) {
-            executedOrders.push(order);
-        }
-    }
-
-    return executedOrders;
-}

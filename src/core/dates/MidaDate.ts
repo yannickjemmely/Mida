@@ -29,6 +29,7 @@ import { GenericObject } from "#utilities/GenericObject";
 /** Represents an immutable date */
 export class MidaDate implements IMidaCloneable, IMidaEquatable {
     readonly #date: Date;
+    readonly #iso: string;
 
     public constructor (descriptor?: MidaDateParameters | string | number) {
         switch (typeof descriptor) {
@@ -67,6 +68,8 @@ export class MidaDate implements IMidaCloneable, IMidaEquatable {
                 this.#date = new Date(MidaDateUtilities.utcTimestamp());
             }
         }
+
+        this.#iso = this.#date.toISOString();
     }
 
     public get timestamp (): number {
@@ -102,7 +105,7 @@ export class MidaDate implements IMidaCloneable, IMidaEquatable {
     }
 
     public get iso (): string {
-        return this.#date.toISOString();
+        return this.#iso;
     }
 
     public add (milliseconds: number): MidaDate {
@@ -122,7 +125,7 @@ export class MidaDate implements IMidaCloneable, IMidaEquatable {
     }
 
     public toString (): string {
-        return this.iso;
+        return this.#iso;
     }
 
     public valueOf (): number {

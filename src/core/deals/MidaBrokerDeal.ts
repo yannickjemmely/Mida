@@ -219,39 +219,3 @@ export abstract class MidaBrokerDeal {
         this.#emitter.notifyListeners("close", { closedByDeal, });
     }
 }
-
-/* *** *** *** Reiryoku Technologies *** *** *** */
-
-export function filterExecutedDeals (deals: MidaBrokerDeal[]): MidaBrokerDeal[] {
-    const executedDeals: MidaBrokerDeal[] = [];
-
-    for (const deal of deals) {
-        if (deal.isExecuted) {
-            executedDeals.push(deal);
-        }
-    }
-
-    return executedDeals;
-}
-
-export function filterRejectedDeals (deals: MidaBrokerDeal[]): MidaBrokerDeal[] {
-    const rejectedDeals: MidaBrokerDeal[] = [];
-
-    for (const deal of deals) {
-        if (deal.isRejected) {
-            rejectedDeals.push(deal);
-        }
-    }
-
-    return rejectedDeals;
-}
-
-export function getDealsFromOrders (orders: MidaBrokerOrder[]): MidaBrokerDeal[] {
-    const deals: MidaBrokerDeal[] = [];
-
-    for (const order of orders) {
-        deals.push(...order.deals);
-    }
-
-    return deals;
-}

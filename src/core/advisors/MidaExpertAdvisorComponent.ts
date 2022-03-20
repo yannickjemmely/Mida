@@ -113,17 +113,3 @@ export abstract class MidaExpertAdvisorComponent {
         await component.#link({} as MidaExpertAdvisor);
     }
 }
-
-/* *** *** *** Reiryoku Technologies *** *** *** */
-
-export function filterEnabledComponents (components: MidaExpertAdvisorComponent[]): MidaExpertAdvisorComponent[] {
-    const enabledComponents: MidaExpertAdvisorComponent[] = [];
-
-    for (const component of components) {
-        if (component.isEnabled) {
-            enabledComponents.push(component);
-        }
-    }
-
-    return enabledComponents;
-}
