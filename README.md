@@ -43,8 +43,6 @@ to get help you with your first steps.
 * [Contributors](#contributors)
 
 ## Ecosystem
-Projects that enrich Mida.
-
 | Project                  | Status                        | Description                     |
 | -----------              | -----------                   | -----------                     |
 | [Mida cTrader](https://github.com/Reiryoku-Technologies/Mida-cTrader)     | [![Image](https://img.shields.io/npm/v/@reiryoku/mida-ctrader)](https://www.npmjs.com/package/@reiryoku/mida-ctrader)        | A plugin for using cTrader accounts            |
@@ -381,5 +379,5 @@ you should ensure that you understand the risks involved. Furthermore, Mida is n
 for commissions and other taxes applied to your operations, they depend on your broker or exchange. Mida and its authors
 are also not responsible for any technical inconvenience that may lead to money loss, for example a stop loss not being set.
 
-## Contributors
-The author and maintainer of the project is [Vasile Pește](https://github.com/Vasile-Peste) (vasile.peste@protonmail.ch).
+## Maintainer
+vasile.peste@reiryoku.com
