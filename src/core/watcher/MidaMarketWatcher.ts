@@ -27,7 +27,7 @@ import { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 import { GenericObject } from "#utilities/GenericObject";
-import { mergeOptions } from "#utilities/MidaUtilities";
+import { MidaUtilities } from "#utilities/MidaUtilities";
 import { MidaMarketWatcherDirectives } from "#watcher/MidaMarketWatcherDirectives";
 import { MidaMarketWatcherParameters } from "#watcher/MidaMarketWatcherParameters";
 
@@ -78,7 +78,7 @@ export class MidaMarketWatcher {
         }
 
         await this.#configureSymbolDirectives(symbol, directives);
-        this.#watchedSymbols.set(symbol, mergeOptions(actualDirectives, directives));
+        this.#watchedSymbols.set(symbol, MidaUtilities.mergeOptions(actualDirectives, directives));
     }
 
     public async unwatch (symbol: string): Promise<void> {

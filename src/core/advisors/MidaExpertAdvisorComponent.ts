@@ -26,33 +26,48 @@ import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { GenericObject } from "#utilities/GenericObject";
 
 export abstract class MidaExpertAdvisorComponent {
-    #expertAdvisor?: MidaExpertAdvisor;
-    readonly #requiredComponents: string[];
-    readonly #uniquePerAdvisor: boolean;
+    readonly #id: string;
+    readonly #name: string;
+    readonly #description: string;
+    readonly #version: string;
+    readonly #expertAdvisor: MidaExpertAdvisor;
     #isEnabled: boolean;
     #isConfigured: boolean;
 
     protected constructor ({
-        requiredComponents = [],
-        uniquePerAdvisor = false,
+        id,
+        name,
+        description,
+        version,
+        expertAdvisor,
     }: MidaExpertAdvisorComponentParameters) {
-        this.#expertAdvisor = undefined;
-        this.#requiredComponents = requiredComponents;
-        this.#uniquePerAdvisor = uniquePerAdvisor;
+        this.#id = id;
+        this.#name = name;
+        this.#description = description ?? "";
+        this.#version = version;
+        this.#expertAdvisor = expertAdvisor;
         this.#isEnabled = false;
         this.#isConfigured = false;
     }
 
+    public get id (): string {
+        return this.#id;
+    }
+
+    public get name (): string {
+        return this.#name;
+    }
+
+    public get description (): string {
+        return this.#description;
+    }
+
+    public get version (): string {
+        return this.#version;
+    }
+
     public get expertAdvisor (): MidaExpertAdvisor | undefined {
         return this.#expertAdvisor;
-    }
-
-    public get requiredComponents (): string[] {
-        return [ ...this.#requiredComponents, ];
-    }
-
-    public get uniquePerAdvisor (): boolean {
-        return this.#uniquePerAdvisor;
     }
 
     public get isEnabled (): boolean {
@@ -63,12 +78,10 @@ export abstract class MidaExpertAdvisorComponent {
         this.#isEnabled = enabled;
     }
 
-    async #link (expertAdvisor: MidaExpertAdvisor): Promise<void> {
+    async activate (): Promise<void> {
         if (this.#isConfigured) {
             return;
         }
-
-        this.#expertAdvisor = expertAdvisor;
 
         await this.configure();
 
@@ -101,15 +114,13 @@ export abstract class MidaExpertAdvisorComponent {
         MidaExpertAdvisorComponent.#installedComponents.set(name, componentConstructor);
     }
 
-    public static async create (name: string, parameters: GenericObject = {}): MidaExpertAdvisorComponent | undefined {
+    public static async create (name: string, parameters: GenericObject = {}): Promise<MidaExpertAdvisorComponent | undefined> {
         const componentConstructor: any | undefined = MidaExpertAdvisorComponent.#installedComponents.get(name);
 
         if (!componentConstructor) {
             return undefined;
         }
 
-        const component: MidaExpertAdvisorComponent = new componentConstructor(parameters);
-
-        await component.#link({} as MidaExpertAdvisor);
+        return new componentConstructor(parameters);
     }
 }

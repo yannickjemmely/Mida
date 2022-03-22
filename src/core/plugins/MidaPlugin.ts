@@ -27,19 +27,19 @@ import { GenericObject } from "#utilities/GenericObject";
 export abstract class MidaPlugin {
     readonly #id: string;
     readonly #name: string;
-    readonly #version: string;
     readonly #description: string;
+    readonly #version: string;
 
     protected constructor ({
         id,
         name,
+        description,
         version,
-        description = "",
     }: MidaPluginParameters) {
         this.#id = id;
         this.#name = name;
+        this.#description = description ?? "";
         this.#version = version;
-        this.#description = description;
     }
 
     public get id (): string {
@@ -50,12 +50,12 @@ export abstract class MidaPlugin {
         return this.#name;
     }
 
-    public get version (): string {
-        return this.#version;
-    }
-
     public get description (): string {
         return this.#description;
+    }
+
+    public get version (): string {
+        return this.#version;
     }
 
     public install (actions: MidaPluginActions, options?: GenericObject): void {

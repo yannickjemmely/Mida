@@ -21,15 +21,13 @@
 */
 
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
-import {
-    MidaBrokerDeal,
-    filterExecutedDeals,
-    getDealsFromOrders,
-} from "#deals/MidaBrokerDeal";
+import { MidaBrokerDeal } from "#deals/MidaBrokerDeal";
+import { MidaBrokerDealUtilities } from "#deals/MidaBrokerDealUtilities";
 import { MidaEvent } from "#events/MidaEvent";
 import { MidaEventListener } from "#events/MidaEventListener";
-import { MidaBrokerOrder, filterExecutedOrders } from "#orders/MidaBrokerOrder";
+import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
 import { MidaBrokerOrderDirection } from "#orders/MidaBrokerOrderDirection";
+import { MidaBrokerOrderUtilities } from "#orders/MidaBrokerOrderUtilities";
 import { MidaBrokerPositionDirection } from "#positions/MidaBrokerPositionDirection";
 import { MidaBrokerPositionHistory } from "#positions/MidaBrokerPositionHistory";
 import { MidaBrokerPositionParameters } from "#positions/MidaBrokerPositionParameters";
@@ -65,7 +63,7 @@ export abstract class MidaBrokerPosition {
     }
 
     public get deals (): MidaBrokerDeal[] {
-        return getDealsFromOrders(this.#orders);
+        return MidaBrokerDealUtilities.getDealsFromOrders(this.#orders);
     }
 
     public get protection (): MidaBrokerPositionProtection {
@@ -77,11 +75,11 @@ export abstract class MidaBrokerPosition {
     }
 
     public get executedOrders (): MidaBrokerOrder[] {
-        return filterExecutedOrders(this.#orders);
+        return MidaBrokerOrderUtilities.filterExecutedOrders(this.#orders);
     }
 
     public get executedDeals (): MidaBrokerDeal[] {
-        return filterExecutedDeals(this.deals);
+        return MidaBrokerDealUtilities.filterExecutedDeals(this.deals);
     }
 
     public get firstExecutedOrder (): MidaBrokerOrder {

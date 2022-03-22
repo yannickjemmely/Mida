@@ -22,8 +22,8 @@
 
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 import { MidaDate } from "#dates/MidaDate";
-import { MidaBrokerDeal, filterExecutedDeals } from "#deals/MidaBrokerDeal";
-import { MidaBrokerDealStatus } from "#deals/MidaBrokerDealStatus";
+import { MidaBrokerDeal } from "#deals/MidaBrokerDeal";
+import { MidaBrokerDealUtilities } from "#deals/MidaBrokerDealUtilities";
 import { MidaEvent } from "#events/MidaEvent";
 import { MidaEventListener } from "#events/MidaEventListener";
 import { MidaBrokerOrderDirection } from "#orders/MidaBrokerOrderDirection";
@@ -159,7 +159,7 @@ export abstract class MidaBrokerOrder {
     }
 
     public get executedDeals (): MidaBrokerDeal[] {
-        return filterExecutedDeals(this.#deals);
+        return MidaBrokerDealUtilities.filterExecutedDeals(this.#deals);
     }
 
     public get position (): MidaBrokerPosition | undefined {

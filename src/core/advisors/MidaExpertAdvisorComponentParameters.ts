@@ -20,6 +20,7 @@
  * THE SOFTWARE.
 */
 
+import { MidaExpertAdvisor } from "#advisors/MidaExpertAdvisor";
 import { MidaExpertAdvisorComponent } from "#advisors/MidaExpertAdvisorComponent";
 
 /**
@@ -27,6 +28,9 @@ import { MidaExpertAdvisorComponent } from "#advisors/MidaExpertAdvisorComponent
  * @see MidaExpertAdvisorComponent
  */
 export type MidaExpertAdvisorComponentParameters = {
-    requiredComponents?: string[];
-    uniquePerAdvisor?: boolean;
+    id: string;
+    name: string;
+    description?: string;
+    version: string;
+    expertAdvisor: MidaExpertAdvisor;
 };

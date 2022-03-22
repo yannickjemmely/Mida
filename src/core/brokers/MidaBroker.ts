@@ -26,28 +26,28 @@ import { GenericObject } from "#utilities/GenericObject";
 
 /** Represents a broker */
 export abstract class MidaBroker {
+    readonly #id: string;
     readonly #name: string;
-    readonly #legalName: string;
     readonly #websiteUri: string;
 
     protected constructor ({
+        id,
         name,
-        legalName,
         websiteUri,
     }: MidaBrokerParameters) {
+        this.#id = id;
         this.#name = name;
-        this.#legalName = legalName;
         this.#websiteUri = websiteUri;
+    }
+
+    /** The broker id */
+    public get id (): string {
+        return this.#id;
     }
 
     /** The broker name */
     public get name (): string {
         return this.#name;
-    }
-
-    /** The broker legal name */
-    public get legalName (): string {
-        return this.#legalName;
     }
 
     /** The broker website address */

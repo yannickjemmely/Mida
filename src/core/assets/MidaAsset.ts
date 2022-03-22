@@ -24,29 +24,32 @@ import { MidaAssetParameters } from "#assets/MidaAssetParameters";
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 
 export class MidaAsset {
+    readonly #id: string;
     readonly #name: string;
-    readonly #brokerAccount: MidaBrokerAccount;
     readonly #description: string;
     readonly #measurementUnit: string;
+    readonly #brokerAccount: MidaBrokerAccount;
 
     public constructor ({
+        id,
         name,
-        brokerAccount,
         description,
         measurementUnit,
+        brokerAccount,
     }: MidaAssetParameters) {
+        this.#id = id;
         this.#name = name;
-        this.#brokerAccount = brokerAccount;
         this.#description = description ?? "";
         this.#measurementUnit = measurementUnit ?? "";
+        this.#brokerAccount = brokerAccount;
+    }
+
+    public get id (): string {
+        return this.#id;
     }
 
     public get name (): string {
         return this.#name;
-    }
-
-    public get brokerAccount (): MidaBrokerAccount {
-        return this.#brokerAccount;
     }
 
     public get description (): string {
@@ -55,5 +58,9 @@ export class MidaAsset {
 
     public get measurementUnit (): string {
         return this.#measurementUnit;
+    }
+
+    public get brokerAccount (): MidaBrokerAccount {
+        return this.#brokerAccount;
     }
 }

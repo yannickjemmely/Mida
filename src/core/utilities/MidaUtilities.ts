@@ -76,7 +76,7 @@ export namespace MidaUtilities {
         return options;
     }
 
-    export function randomUuid (): string {
+    export function uuid (): string {
         return crypto.randomUUID();
     }
 

@@ -28,7 +28,9 @@ import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
  * @see MidaExpertAdvisor
  */
 export type MidaExpertAdvisorParameters = {
-    brokerAccount: MidaBrokerAccount;
-    version: string;
+    id: string;
+    name: string;
     description?: string;
+    version: string;
+    brokerAccount: MidaBrokerAccount;
 };
