@@ -262,8 +262,8 @@ export abstract class MidaBrokerOrder {
 
     public abstract cancel (): Promise<void>;
 
-    public on (type: string): Promise<MidaEvent>
-    public on (type: string, listener: MidaEventListener): string
+    public on (type: string): Promise<MidaEvent>;
+    public on (type: string, listener: MidaEventListener): string;
     public on (type: string, listener?: MidaEventListener): Promise<MidaEvent> | string {
         if (!listener) {
             return this.#emitter.on(type);

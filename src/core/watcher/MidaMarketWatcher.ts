@@ -114,8 +114,8 @@ export class MidaMarketWatcher {
         this.#lastClosedPeriods.get(symbol)?.set(timeframe, lastPeriod);
     }
 
-    public on (type: string): Promise<MidaEvent>
-    public on (type: string, listener: MidaEventListener): string
+    public on (type: string): Promise<MidaEvent>;
+    public on (type: string, listener: MidaEventListener): string;
     public on (type: string, listener?: MidaEventListener): Promise<MidaEvent> | string {
         if (!listener) {
             return this.#emitter.on(type);

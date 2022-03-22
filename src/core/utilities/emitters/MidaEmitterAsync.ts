@@ -62,8 +62,8 @@ export class MidaEmitterAsync {
         }
     }
 
-    public on (type: string): Promise<MidaEvent>
-    public on (type: string, listener: MidaEventListenerAsync): string
+    public on (type: string): Promise<MidaEvent>;
+    public on (type: string, listener: MidaEventListenerAsync): string;
     public on (type: string, listener?: MidaEventListenerAsync): Promise<MidaEvent> | string {
         if (!listener) {
             return new Promise((resolve: any): void => {
