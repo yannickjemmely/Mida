@@ -1,10 +1,33 @@
+/*
+ * Copyright Reiryoku Technologies and its contributors, https://www.reiryoku.com
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+*/
+
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 import { MidaBrokerDeal } from "#deals/MidaBrokerDeal";
+import { MidaBrokerDealUtilities } from "#deals/MidaBrokerDealUtilities";
 import { MidaEvent } from "#events/MidaEvent";
 import { MidaEventListener } from "#events/MidaEventListener";
 import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
 import { MidaBrokerOrderDirection } from "#orders/MidaBrokerOrderDirection";
-import { MidaBrokerOrderStatus } from "#orders/MidaBrokerOrderStatus";
+import { MidaBrokerOrderUtilities } from "#orders/MidaBrokerOrderUtilities";
 import { MidaBrokerPositionDirection } from "#positions/MidaBrokerPositionDirection";
 import { MidaBrokerPositionHistory } from "#positions/MidaBrokerPositionHistory";
 import { MidaBrokerPositionParameters } from "#positions/MidaBrokerPositionParameters";
@@ -39,6 +62,10 @@ export abstract class MidaBrokerPosition {
         return [ ...this.#orders, ];
     }
 
+    public get deals (): MidaBrokerDeal[] {
+        return MidaBrokerDealUtilities.getDealsFromOrders(this.#orders);
+    }
+
     public get protection (): MidaBrokerPositionProtection {
         return this.#protection;
     }
@@ -47,44 +74,30 @@ export abstract class MidaBrokerPosition {
         return [ ...this.#tags, ];
     }
 
-    public get filledOrders (): MidaBrokerOrder[] {
-        const filledOrders: MidaBrokerOrder[] = [];
-
-        for (const order of this.#orders) {
-            if (order.status === MidaBrokerOrderStatus.FILLED) {
-                filledOrders.push(order);
-            }
-        }
-
-        return filledOrders;
+    public get executedOrders (): MidaBrokerOrder[] {
+        return MidaBrokerOrderUtilities.filterExecutedOrders(this.#orders);
     }
 
-    public get firstFilledOrder (): MidaBrokerOrder {
-        return this.filledOrders[0];
+    public get executedDeals (): MidaBrokerDeal[] {
+        return MidaBrokerDealUtilities.filterExecutedDeals(this.deals);
     }
 
-    public get filledOrdersDeals (): MidaBrokerDeal[] {
-        const deals: MidaBrokerDeal[] = [];
-
-        for (const order of this.filledOrders) {
-            deals.push(...order.deals);
-        }
-
-        return deals;
+    public get firstExecutedOrder (): MidaBrokerOrder {
+        return this.executedOrders[0];
     }
 
     public get symbol (): string {
-        return this.firstFilledOrder.symbol;
+        return this.firstExecutedOrder.symbol;
     }
 
     public get history (): MidaBrokerPositionHistory {
         const positionDirectionHistory: MidaBrokerPositionDirection[] = [];
-        const directionChangeHistory: MidaBrokerOrderDirection[] = [ this.firstFilledOrder.direction, ];
+        const directionChangeHistory: MidaBrokerOrderDirection[] = [ this.firstExecutedOrder.direction, ];
         let currentDirection: MidaBrokerOrderDirection = directionChangeHistory[0];
         let openVolume: number = 0;
         let closedVolume: number = 0;
 
-        for (const order of this.filledOrders) {
+        for (const order of this.executedOrders) {
             if (order.direction === currentDirection) {
                 openVolume += order.filledVolume;
             }
@@ -143,7 +156,7 @@ export abstract class MidaBrokerPosition {
     }
 
     public get brokerAccount (): MidaBrokerAccount {
-        return this.firstFilledOrder.brokerAccount;
+        return this.firstExecutedOrder.brokerAccount;
     }
 
     public get takeProfit (): number | undefined {
@@ -161,7 +174,7 @@ export abstract class MidaBrokerPosition {
     public get realizedGrossProfit (): number {
         let grossProfit: number = 0;
 
-        for (const deal of this.filledOrdersDeals) {
+        for (const deal of this.executedDeals) {
             if (deal.isClosing) {
                 grossProfit += deal.grossProfit as number;
             }
@@ -173,7 +186,7 @@ export abstract class MidaBrokerPosition {
     public get realizedSwap (): number {
         let swap: number = 0;
 
-        for (const deal of this.filledOrdersDeals) {
+        for (const deal of this.executedDeals) {
             if (deal.isClosing) {
                 swap += deal.swap as number;
             }
@@ -185,7 +198,7 @@ export abstract class MidaBrokerPosition {
     public get realizedCommission (): number {
         let commission: number = 0;
 
-        for (const deal of this.filledOrdersDeals) {
+        for (const deal of this.executedDeals) {
             if (deal.isClosing) {
                 commission += deal.commission as number;
             }
@@ -256,8 +269,8 @@ export abstract class MidaBrokerPosition {
         this.#tags.delete(tag);
     }
 
-    public on (type: string): Promise<MidaEvent>
-    public on (type: string, listener: MidaEventListener): string
+    public on (type: string): Promise<MidaEvent>;
+    public on (type: string, listener: MidaEventListener): string;
     public on (type: string, listener?: MidaEventListener): Promise<MidaEvent> | string {
         if (!listener) {
             return this.#emitter.on(type);

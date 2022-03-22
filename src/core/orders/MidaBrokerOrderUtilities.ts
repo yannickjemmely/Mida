@@ -20,33 +20,31 @@
  * THE SOFTWARE.
 */
 
-import { MidaBrokerPositionDirection } from "#positions/MidaBrokerPositionDirection";
+import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
+import { MidaBrokerOrderStatus } from "#orders/MidaBrokerOrderStatus";
 
-export enum MidaBrokerOrderDirection {
-    BUY = "buy",
-    SELL = "sell",
-}
+export namespace MidaBrokerOrderUtilities {
+    export function filterPendingOrders (orders: MidaBrokerOrder[]): MidaBrokerOrder[] {
+        const pendingOrders: MidaBrokerOrder[] = [];
 
-export namespace MidaBrokerOrderDirection {
-    export function oppositeOf (direction: MidaBrokerOrderDirection): MidaBrokerOrderDirection {
-        switch (direction) {
-            case MidaBrokerOrderDirection.BUY: {
-                return MidaBrokerOrderDirection.SELL;
-            }
-            case MidaBrokerOrderDirection.SELL: {
-                return MidaBrokerOrderDirection.BUY;
+        for (const order of orders) {
+            if (order.status === MidaBrokerOrderStatus.PENDING) {
+                pendingOrders.push(order);
             }
         }
+
+        return pendingOrders;
     }
 
-    export function toPositionDirection (direction: MidaBrokerOrderDirection): MidaBrokerPositionDirection {
-        switch (direction) {
-            case MidaBrokerOrderDirection.BUY: {
-                return MidaBrokerPositionDirection.LONG;
-            }
-            case MidaBrokerOrderDirection.SELL: {
-                return MidaBrokerPositionDirection.SHORT;
+    export function filterExecutedOrders (orders: MidaBrokerOrder[]): MidaBrokerOrder[] {
+        const executedOrders: MidaBrokerOrder[] = [];
+
+        for (const order of orders) {
+            if (order.isExecuted) {
+                executedOrders.push(order);
             }
         }
+
+        return executedOrders;
     }
 }

@@ -1,3 +1,26 @@
+/*
+ * Copyright Reiryoku Technologies and its contributors, https://www.reiryoku.com
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+*/
+
+import { MidaDate } from "#dates/MidaDate";
 import { MidaEvent } from "#events/MidaEvent";
 import { MidaEventListener } from "#events/MidaEventListener";
 import { GenericObject } from "#utilities/GenericObject";
@@ -15,7 +38,7 @@ export class MidaEmitter {
         let uuid: string;
 
         do {
-            uuid = MidaUtilities.generateUuid();
+            uuid = MidaUtilities.uuid();
         }
         while (this.#uuidExists(uuid)); // This software deals with money, better to avoid even the most improbable events
 
@@ -39,8 +62,8 @@ export class MidaEmitter {
         }
     }
 
-    public on (type: string): Promise<MidaEvent>
-    public on (type: string, listener: MidaEventListener): string
+    public on (type: string): Promise<MidaEvent>;
+    public on (type: string, listener: MidaEventListener): string;
     public on (type: string, listener?: MidaEventListener): Promise<MidaEvent> | string {
         if (!listener) {
             return new Promise((resolve: any): void => {
@@ -58,7 +81,7 @@ export class MidaEmitter {
         const date: Date = new Date();
         const event: MidaEvent = new MidaEvent({
             type,
-            date,
+            date: new MidaDate(date.getTime()),
             descriptor,
         });
 
@@ -75,6 +98,10 @@ export class MidaEmitter {
         for (const listener of listenersOfType.values()) {
             listener(event);
         }
+    }
+
+    public removeAllListeners (): void {
+        this.#listeners.clear();
     }
 
     #uuidExists (uuid: string): boolean {
