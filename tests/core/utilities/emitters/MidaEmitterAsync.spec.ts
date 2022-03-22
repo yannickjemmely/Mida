@@ -20,6 +20,7 @@
  * THE SOFTWARE.
 */
 
+import { MidaDate } from "#dates/MidaDate";
 import { MidaEvent } from "#events/MidaEvent";
 import { MidaEmitterAsync } from "#utilities/emitters/MidaEmitterAsync";
 
@@ -113,7 +114,7 @@ describe("MidaEmitterAsync", () => {
 
             expect(lastEvent).not.toBe(undefined);
             expect(lastEvent.type).toBe(eventType);
-            expect(lastEvent.date).toBeInstanceOf(Date);
+            expect(lastEvent.date).toBeInstanceOf(MidaDate);
             expect(lastEvent.descriptor.code).toBe(200);
             expect(lastEvent.descriptor.status).toBe("success");
         });
