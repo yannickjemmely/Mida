@@ -1,6 +1,7 @@
 ### Features
 * Update documentation [#12](https://github.com/Reiryoku-Technologies/Mida/pull/12)
 * **_BREAKING_** Generic codebase changes and improvements [#13](https://github.com/Reiryoku-Technologies/Mida/pull/13)
+* Create position protection change types [#14](https://github.com/Reiryoku-Technologies/Mida/pull/14)
 
 ### Bug fixes
 * Correctly update position protection when `onProtectionChange` is called [#11](https://github.com/Reiryoku-Technologies/Mida/pull/11)
