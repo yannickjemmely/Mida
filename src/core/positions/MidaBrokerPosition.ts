@@ -305,8 +305,8 @@ export abstract class MidaBrokerPosition {
         this.#emitter.notifyListeners("order", { order, });
     }
 
-    // Only filled orders impact the position
-    protected onOrderFill (order: MidaBrokerOrder): void {
+    // Only executed orders impact the position
+    protected onOrderExecute (order: MidaBrokerOrder): void {
         const filledVolume = order.filledVolume;
 
         if (order.isClosing) {
