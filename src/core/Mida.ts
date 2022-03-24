@@ -118,9 +118,13 @@ export { MidaBrokerPosition } from "#positions/MidaBrokerPosition";
 export { MidaBrokerPositionDirection } from "#positions/MidaBrokerPositionDirection";
 export { MidaBrokerPositionHistory } from "#positions/MidaBrokerPositionHistory";
 export { MidaBrokerPositionParameters } from "#positions/MidaBrokerPositionParameters";
-export { MidaBrokerPositionProtection } from "#positions/MidaBrokerPositionProtection";
 export { MidaBrokerPositionStatus } from "#positions/MidaBrokerPositionStatus";
 export { MidaBrokerPositionUtilities } from "#positions/MidaBrokerPositionUtilities";
+
+export { MidaBrokerPositionProtection } from "#protections/MidaBrokerPositionProtection";
+export { MidaBrokerPositionProtectionChange } from "#protections/MidaBrokerPositionProtectionChange";
+export { MidaBrokerPositionProtectionChangeStatus } from "#protections/MidaBrokerPositionProtectionChangeStatus";
+export { MidaBrokerPositionProtectionChangeRejectionType } from "#protections/MidaBrokerPositionProtectionChangeRejectionType";
 
 export { MidaSymbolQuotation } from "#quotations/MidaSymbolQuotation";
 export { MidaSymbolQuotationParameters } from "#quotations/MidaSymbolQuotationParameters";

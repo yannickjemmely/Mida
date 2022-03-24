@@ -20,23 +20,12 @@
  * THE SOFTWARE.
 */
 
-import { MidaEventListener } from "#events/MidaEventListener";
-import { MidaBrokerOrderDirection } from "#orders/MidaBrokerOrderDirection";
-import { MidaBrokerOrderTimeInForce } from "#orders/MidaBrokerOrderTimeInForce";
 import { MidaBrokerPositionProtection } from "#protections/MidaBrokerPositionProtection";
+import { MidaBrokerPositionProtectionChangeRejectionType } from "#protections/MidaBrokerPositionProtectionChangeRejectionType";
+import { MidaBrokerPositionProtectionChangeStatus } from "#protections/MidaBrokerPositionProtectionChangeStatus";
 
-export type MidaBrokerOrderDirectives = {
-    symbol?: string;
-    direction: MidaBrokerOrderDirection;
-    volume: number;
-    limit?: number;
-    stop?: number;
-    protection?: MidaBrokerPositionProtection;
-    positionId?: string;
-    resolverEvents?: string[];
-    timeInForce?: MidaBrokerOrderTimeInForce;
-    expirationTimestamp?: number;
-    listeners?: {
-        [eventType: string]: MidaEventListener;
-    };
+export type MidaBrokerPositionProtectionChange = {
+    status: MidaBrokerPositionProtectionChangeStatus;
+    requestedProtection: MidaBrokerPositionProtection;
+    rejectionType?: MidaBrokerPositionProtectionChangeRejectionType;
 };

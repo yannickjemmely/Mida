@@ -22,7 +22,7 @@
 
 import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
 import { MidaBrokerPosition } from "#positions/MidaBrokerPosition";
-import { MidaBrokerPositionProtection } from "#positions/MidaBrokerPositionProtection";
+import { MidaBrokerPositionProtection } from "#protections/MidaBrokerPositionProtection";
 
 /**
  * The broker position constructor parameters
