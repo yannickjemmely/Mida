@@ -19,3 +19,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
 */
+
+export enum MidaBrokerPositionProtectionChangeRejectionType {
+    INVALID_TAKE_PROFIT = "invalid-take-profit",
+    INVALID_STOP_LOSS = "invalid-stop-loss",
+    UNKNOWN = "unknown",
+}

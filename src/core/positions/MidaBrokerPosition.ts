@@ -31,8 +31,9 @@ import { MidaBrokerOrderUtilities } from "#orders/MidaBrokerOrderUtilities";
 import { MidaBrokerPositionDirection } from "#positions/MidaBrokerPositionDirection";
 import { MidaBrokerPositionHistory } from "#positions/MidaBrokerPositionHistory";
 import { MidaBrokerPositionParameters } from "#positions/MidaBrokerPositionParameters";
-import { MidaBrokerPositionProtection } from "#positions/MidaBrokerPositionProtection";
 import { MidaBrokerPositionStatus } from "#positions/MidaBrokerPositionStatus";
+import { MidaBrokerPositionProtection } from "#protections/MidaBrokerPositionProtection";
+import { MidaBrokerPositionProtectionChange } from "#protections/MidaBrokerPositionProtectionChange";
 import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 
 export abstract class MidaBrokerPosition {
@@ -269,6 +270,18 @@ export abstract class MidaBrokerPosition {
         this.#tags.delete(tag);
     }
 
+    public async setTakeProfit (takeProfit: number | undefined): Promise<MidaBrokerPositionProtectionChange> {
+        return this.changeProtection({ takeProfit, });
+    }
+
+    public async setStopLoss (stopLoss: number | undefined): Promise<MidaBrokerPositionProtectionChange> {
+        return this.changeProtection({ stopLoss, });
+    }
+
+    public async setTrailingStopLoss (trailingStopLoss: boolean): Promise<MidaBrokerPositionProtectionChange> {
+        return this.changeProtection({ trailingStopLoss, });
+    }
+
     public on (type: string): Promise<MidaEvent>;
     public on (type: string, listener: MidaEventListener): string;
     public on (type: string, listener?: MidaEventListener): Promise<MidaEvent> | string {
@@ -283,13 +296,7 @@ export abstract class MidaBrokerPosition {
         this.#emitter.removeEventListener(uuid);
     }
 
-    public abstract modifyProtection (protection: MidaBrokerPositionProtection): Promise<void>;
-
-    public abstract setTakeProfit (takeProfit: number | undefined): Promise<void>;
-
-    public abstract setStopLoss (stopLoss: number | undefined): Promise<void>;
-
-    public abstract setTrailingStopLoss (trailingStopLoss: boolean): Promise<void>;
+    public abstract changeProtection (protection: MidaBrokerPositionProtection): Promise<MidaBrokerPositionProtectionChange>;
 
     /* *** *** *** Reiryoku Technologies *** *** *** */
 
