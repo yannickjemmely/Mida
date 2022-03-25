@@ -67,7 +67,7 @@ export class MidaEmitter {
     public on (type: string, listener?: MidaEventListener): Promise<MidaEvent> | string {
         if (!listener) {
             return new Promise((resolve: any): void => {
-                const uuid: string = this.addEventListener(type, async (event: MidaEvent): Promise<void> => {
+                const uuid: string = this.addEventListener(type, (event: MidaEvent): void => {
                     this.removeEventListener(uuid);
                     resolve(event);
                 });
@@ -75,6 +75,13 @@ export class MidaEmitter {
         }
 
         return this.addEventListener(type, listener);
+    }
+
+    public once (type: string, listener: MidaEventListener): void {
+        const uuid: string = this.addEventListener(type, (event: MidaEvent): void => {
+            this.removeEventListener(uuid);
+            listener(event);
+        });
     }
 
     public notifyListeners (type: string, descriptor?: GenericObject): void {
