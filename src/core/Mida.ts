@@ -94,6 +94,10 @@ export { MidaEventListener } from "#events/MidaEventListener";
 export { MidaEventListenerAsync } from "#events/MidaEventListenerAsync";
 export { MidaEventParameters } from "#events/MidaEventParameters";
 
+export { MidaIndicator } from "#indicators/MidaIndicator";
+export { MidaIndicatorIo } from "#indicators/MidaIndicatorIo";
+export { MidaIndicatorParameters } from "#indicators/MidaIndicatorParameters";
+
 export { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
 export { MidaBrokerOrderDirection } from "#orders/MidaBrokerOrderDirection";
 export { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
