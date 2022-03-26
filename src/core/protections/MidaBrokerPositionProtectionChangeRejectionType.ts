@@ -20,33 +20,8 @@
  * THE SOFTWARE.
 */
 
-import { MidaBrokerPositionDirection } from "#positions/MidaBrokerPositionDirection";
-
-export enum MidaBrokerOrderDirection {
-    BUY = "buy",
-    SELL = "sell",
-}
-
-export namespace MidaBrokerOrderDirection {
-    export function oppositeOf (direction: MidaBrokerOrderDirection): MidaBrokerOrderDirection {
-        switch (direction) {
-            case MidaBrokerOrderDirection.BUY: {
-                return MidaBrokerOrderDirection.SELL;
-            }
-            case MidaBrokerOrderDirection.SELL: {
-                return MidaBrokerOrderDirection.BUY;
-            }
-        }
-    }
-
-    export function toPositionDirection (direction: MidaBrokerOrderDirection): MidaBrokerPositionDirection {
-        switch (direction) {
-            case MidaBrokerOrderDirection.BUY: {
-                return MidaBrokerPositionDirection.LONG;
-            }
-            case MidaBrokerOrderDirection.SELL: {
-                return MidaBrokerPositionDirection.SHORT;
-            }
-        }
-    }
+export enum MidaBrokerPositionProtectionChangeRejectionType {
+    INVALID_TAKE_PROFIT = "invalid-take-profit",
+    INVALID_STOP_LOSS = "invalid-stop-loss",
+    UNKNOWN = "unknown",
 }

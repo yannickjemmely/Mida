@@ -20,33 +20,31 @@
  * THE SOFTWARE.
 */
 
-import { MidaBrokerPositionDirection } from "#positions/MidaBrokerPositionDirection";
+import { MidaBrokerPosition } from "#positions/MidaBrokerPosition";
+import { MidaBrokerPositionStatus } from "#positions/MidaBrokerPositionStatus";
 
-export enum MidaBrokerOrderDirection {
-    BUY = "buy",
-    SELL = "sell",
-}
+export namespace MidaBrokerPositionUtilities {
+    export function filterOpenPositions (positions: MidaBrokerPosition[]): MidaBrokerPosition[] {
+        const openPositions: MidaBrokerPosition[] = [];
 
-export namespace MidaBrokerOrderDirection {
-    export function oppositeOf (direction: MidaBrokerOrderDirection): MidaBrokerOrderDirection {
-        switch (direction) {
-            case MidaBrokerOrderDirection.BUY: {
-                return MidaBrokerOrderDirection.SELL;
-            }
-            case MidaBrokerOrderDirection.SELL: {
-                return MidaBrokerOrderDirection.BUY;
+        for (const position of positions) {
+            if (position.status === MidaBrokerPositionStatus.OPEN) {
+                openPositions.push(position);
             }
         }
+
+        return openPositions;
     }
 
-    export function toPositionDirection (direction: MidaBrokerOrderDirection): MidaBrokerPositionDirection {
-        switch (direction) {
-            case MidaBrokerOrderDirection.BUY: {
-                return MidaBrokerPositionDirection.LONG;
-            }
-            case MidaBrokerOrderDirection.SELL: {
-                return MidaBrokerPositionDirection.SHORT;
+    export function filterClosedPositions (positions: MidaBrokerPosition[]): MidaBrokerPosition[] {
+        const closedPositions: MidaBrokerPosition[] = [];
+
+        for (const position of positions) {
+            if (position.status === MidaBrokerPositionStatus.CLOSED) {
+                closedPositions.push(position);
             }
         }
+
+        return closedPositions;
     }
 }

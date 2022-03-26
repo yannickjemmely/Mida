@@ -20,33 +20,14 @@
  * THE SOFTWARE.
 */
 
-import { MidaBrokerPositionDirection } from "#positions/MidaBrokerPositionDirection";
+export namespace MidaDateUtilities {
+    export function utcTimestamp (): number {
+        const actualDate: Date = new Date();
 
-export enum MidaBrokerOrderDirection {
-    BUY = "buy",
-    SELL = "sell",
-}
-
-export namespace MidaBrokerOrderDirection {
-    export function oppositeOf (direction: MidaBrokerOrderDirection): MidaBrokerOrderDirection {
-        switch (direction) {
-            case MidaBrokerOrderDirection.BUY: {
-                return MidaBrokerOrderDirection.SELL;
-            }
-            case MidaBrokerOrderDirection.SELL: {
-                return MidaBrokerOrderDirection.BUY;
-            }
-        }
-    }
-
-    export function toPositionDirection (direction: MidaBrokerOrderDirection): MidaBrokerPositionDirection {
-        switch (direction) {
-            case MidaBrokerOrderDirection.BUY: {
-                return MidaBrokerPositionDirection.LONG;
-            }
-            case MidaBrokerOrderDirection.SELL: {
-                return MidaBrokerPositionDirection.SHORT;
-            }
-        }
+        return Date.UTC(
+            actualDate.getUTCFullYear(), actualDate.getUTCMonth(), actualDate.getUTCDate(),
+            actualDate.getUTCHours(), actualDate.getUTCMinutes(), actualDate.getUTCSeconds(),
+            actualDate.getUTCMilliseconds()
+        );
     }
 }

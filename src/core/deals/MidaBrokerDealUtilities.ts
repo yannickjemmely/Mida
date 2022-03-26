@@ -20,33 +20,41 @@
  * THE SOFTWARE.
 */
 
-import { MidaBrokerPositionDirection } from "#positions/MidaBrokerPositionDirection";
+import { MidaBrokerDeal } from "#deals/MidaBrokerDeal";
+import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
 
-export enum MidaBrokerOrderDirection {
-    BUY = "buy",
-    SELL = "sell",
-}
+export namespace MidaBrokerDealUtilities {
+    export function filterExecutedDeals (deals: MidaBrokerDeal[]): MidaBrokerDeal[] {
+        const executedDeals: MidaBrokerDeal[] = [];
 
-export namespace MidaBrokerOrderDirection {
-    export function oppositeOf (direction: MidaBrokerOrderDirection): MidaBrokerOrderDirection {
-        switch (direction) {
-            case MidaBrokerOrderDirection.BUY: {
-                return MidaBrokerOrderDirection.SELL;
-            }
-            case MidaBrokerOrderDirection.SELL: {
-                return MidaBrokerOrderDirection.BUY;
+        for (const deal of deals) {
+            if (deal.isExecuted) {
+                executedDeals.push(deal);
             }
         }
+
+        return executedDeals;
     }
 
-    export function toPositionDirection (direction: MidaBrokerOrderDirection): MidaBrokerPositionDirection {
-        switch (direction) {
-            case MidaBrokerOrderDirection.BUY: {
-                return MidaBrokerPositionDirection.LONG;
-            }
-            case MidaBrokerOrderDirection.SELL: {
-                return MidaBrokerPositionDirection.SHORT;
+    export function filterRejectedDeals (deals: MidaBrokerDeal[]): MidaBrokerDeal[] {
+        const rejectedDeals: MidaBrokerDeal[] = [];
+
+        for (const deal of deals) {
+            if (deal.isRejected) {
+                rejectedDeals.push(deal);
             }
         }
+
+        return rejectedDeals;
+    }
+
+    export function getDealsFromOrders (orders: MidaBrokerOrder[]): MidaBrokerDeal[] {
+        const deals: MidaBrokerDeal[] = [];
+
+        for (const order of orders) {
+            deals.push(...order.deals);
+        }
+
+        return deals;
     }
 }

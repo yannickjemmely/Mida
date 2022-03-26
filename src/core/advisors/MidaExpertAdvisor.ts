@@ -1,12 +1,36 @@
+/*
+ * Copyright Reiryoku Technologies and its contributors, https://www.reiryoku.com
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+*/
+
 import { MidaExpertAdvisorComponent } from "#advisors/MidaExpertAdvisorComponent";
+import { MidaExpertAdvisorComponentUtilities } from "#advisors/MidaExpertAdvisorComponentUtilities";
 import { MidaExpertAdvisorParameters } from "#advisors/MidaExpertAdvisorParameters";
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 import { MidaBrokerDeal } from "#deals/MidaBrokerDeal";
+import { MidaBrokerDealUtilities } from "#deals/MidaBrokerDealUtilities";
 import { MidaEvent } from "#events/MidaEvent";
 import { MidaEventListener } from "#events/MidaEventListener";
 import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
 import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
-import { MidaBrokerOrderStatus } from "#orders/MidaBrokerOrderStatus";
+import { MidaBrokerOrderUtilities } from "#orders/MidaBrokerOrderUtilities";
 import { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
 import { MidaBrokerPosition } from "#positions/MidaBrokerPosition";
 import { MidaBrokerPositionStatus } from "#positions/MidaBrokerPositionStatus";
@@ -16,28 +40,58 @@ import { GenericObject } from "#utilities/GenericObject";
 import { MidaMarketWatcher } from "#watcher/MidaMarketWatcher";
 
 export abstract class MidaExpertAdvisor {
+    readonly #id: string;
+    readonly #name: string;
+    readonly #description: string;
+    readonly #version: string;
     readonly #brokerAccount: MidaBrokerAccount;
     #isOperative: boolean;
     readonly #orders: MidaBrokerOrder[];
     readonly #capturedTicks: MidaSymbolTick[];
     readonly #tickEventQueue: MidaSymbolTick[];
-    #isTickEventLocked: boolean;
+    #tickEventIsLocked: boolean;
     #isConfigured: boolean;
     readonly #marketWatcher: MidaMarketWatcher;
     readonly #components: MidaExpertAdvisorComponent[];
     readonly #emitter: MidaEmitter;
 
-    protected constructor ({ brokerAccount, }: MidaExpertAdvisorParameters) {
+    protected constructor ({
+        id,
+        name,
+        description,
+        version,
+        brokerAccount,
+    }: MidaExpertAdvisorParameters) {
+        this.#id = id;
+        this.#name = name;
+        this.#description = description ?? "";
+        this.#version = version;
         this.#brokerAccount = brokerAccount;
         this.#isOperative = false;
         this.#orders = [];
         this.#capturedTicks = [];
         this.#tickEventQueue = [];
-        this.#isTickEventLocked = false;
+        this.#tickEventIsLocked = false;
         this.#isConfigured = false;
         this.#marketWatcher = new MidaMarketWatcher({ brokerAccount, });
         this.#components = [];
         this.#emitter = new MidaEmitter();
+    }
+
+    public get id (): string {
+        return this.#id;
+    }
+
+    public get name (): string {
+        return this.#name;
+    }
+
+    public get description (): string {
+        return this.#description;
+    }
+
+    public get version (): string {
+        return this.#version;
     }
 
     public get brokerAccount (): MidaBrokerAccount {
@@ -52,6 +106,14 @@ export abstract class MidaExpertAdvisor {
         return [ ...this.#orders, ];
     }
 
+    public get deals (): MidaBrokerDeal[] {
+        return MidaBrokerDealUtilities.getDealsFromOrders(this.#orders);
+    }
+
+    public get components (): MidaExpertAdvisorComponent[] {
+        return [ ...this.#components, ];
+    }
+
     protected get capturedTicks (): MidaSymbolTick[] {
         return [ ...this.#capturedTicks, ];
     }
@@ -60,48 +122,22 @@ export abstract class MidaExpertAdvisor {
         return this.#marketWatcher;
     }
 
-    public get components (): MidaExpertAdvisorComponent[] {
-        return [ ...this.#components, ];
-    }
-
     public get enabledComponents (): MidaExpertAdvisorComponent[] {
-        const enabledComponents: MidaExpertAdvisorComponent[] = [];
-
-        for (const component of this.#components) {
-            if (component.enabled) {
-                enabledComponents.push(component);
-            }
-        }
-
-        return enabledComponents;
+        return MidaExpertAdvisorComponentUtilities.filterEnabledComponents(this.#components);
     }
 
-    public get filledOrders (): MidaBrokerOrder[] {
-        const filledOrders: MidaBrokerOrder[] = [];
-
-        for (const order of this.#orders) {
-            if (order.status === MidaBrokerOrderStatus.FILLED) {
-                filledOrders.push(order);
-            }
-        }
-
-        return filledOrders;
+    public get executedOrders (): MidaBrokerOrder[] {
+        return MidaBrokerOrderUtilities.filterExecutedOrders(this.#orders);
     }
 
-    public get filledOrdersDeals (): MidaBrokerDeal[] {
-        const deals: MidaBrokerDeal[] = [];
-
-        for (const order of this.filledOrders) {
-            deals.push(...order.deals);
-        }
-
-        return deals;
+    public get executedDeals (): MidaBrokerDeal[] {
+        return MidaBrokerDealUtilities.filterExecutedDeals(this.deals);
     }
 
     public get positions (): MidaBrokerPosition[] {
         const positions: Map<string, MidaBrokerPosition> = new Map();
 
-        for (const order of this.filledOrders) {
+        for (const order of this.executedOrders) {
             const position: MidaBrokerPosition = order.position as MidaBrokerPosition;
 
             positions.set(position.id, position);
@@ -167,8 +203,8 @@ export abstract class MidaExpertAdvisor {
         this.notifyListeners("stop");
     }
 
-    public on (type: string): Promise<MidaEvent>
-    public on (type: string, listener: MidaEventListener): string
+    public on (type: string): Promise<MidaEvent>;
+    public on (type: string, listener: MidaEventListener): string;
     public on (type: string, listener?: MidaEventListener): Promise<MidaEvent> | string {
         if (!listener) {
             return this.#emitter.on(type);
@@ -225,11 +261,11 @@ export abstract class MidaExpertAdvisor {
     }
 
     async #onTickAsync (tick: MidaSymbolTick): Promise<void> {
-        if (this.#isTickEventLocked) {
+        if (this.#tickEventIsLocked) {
             this.#tickEventQueue.push(tick);
         }
 
-        this.#isTickEventLocked = true;
+        this.#tickEventIsLocked = true;
 
         // <components>
         for (const component of this.enabledComponents) {
@@ -259,7 +295,7 @@ export abstract class MidaExpertAdvisor {
         }
 
         const nextTick: MidaSymbolTick | undefined = this.#tickEventQueue.shift();
-        this.#isTickEventLocked = false;
+        this.#tickEventIsLocked = false;
 
         if (nextTick) {
             this.#onTickAsync(nextTick);
@@ -276,15 +312,6 @@ export abstract class MidaExpertAdvisor {
     }
 
     async #configure (): Promise<void> {
-        for (const component of this.enabledComponents) {
-            try {
-                await component.configure();
-            }
-            catch (error) {
-                console.log(error);
-            }
-        }
-
         try {
             await this.configure();
         }

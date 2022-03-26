@@ -1,11 +1,34 @@
+/*
+ * Copyright Reiryoku Technologies and its contributors, https://www.reiryoku.com
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+*/
+
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 import { MidaDate } from "#dates/MidaDate";
 import { MidaBrokerDeal } from "#deals/MidaBrokerDeal";
-import { MidaBrokerDealStatus } from "#deals/MidaBrokerDealStatus";
+import { MidaBrokerDealUtilities } from "#deals/MidaBrokerDealUtilities";
 import { MidaEvent } from "#events/MidaEvent";
 import { MidaEventListener } from "#events/MidaEventListener";
 import { MidaBrokerOrderDirection } from "#orders/MidaBrokerOrderDirection";
 import { MidaBrokerOrderExecutionType } from "#orders/MidaBrokerOrderExecutionType";
+import { MidaBrokerOrderFillType } from "#orders/MidaBrokerOrderFillType";
 import { MidaBrokerOrderParameters } from "#orders/MidaBrokerOrderParameters";
 import { MidaBrokerOrderPurpose } from "#orders/MidaBrokerOrderPurpose";
 import { MidaBrokerOrderRejectionType } from "#orders/MidaBrokerOrderRejectionType";
@@ -135,6 +158,10 @@ export abstract class MidaBrokerOrder {
         return [ ...this.#deals, ];
     }
 
+    public get executedDeals (): MidaBrokerDeal[] {
+        return MidaBrokerDealUtilities.filterExecutedDeals(this.#deals);
+    }
+
     public get position (): MidaBrokerPosition | undefined {
         return this.#position;
     }
@@ -155,33 +182,43 @@ export abstract class MidaBrokerOrder {
         return this.#isStopOut;
     }
 
+    public get isExecuted (): boolean {
+        return this.#status === MidaBrokerOrderStatus.EXECUTED;
+    }
+
     public get filledVolume (): number {
         let filledVolume: number = 0;
 
-        for (const deal of this.#deals) {
-            filledVolume += deal.filledVolume;
+        for (const deal of this.executedDeals) {
+            filledVolume += deal.volume;
         }
 
         return filledVolume;
     }
 
-    public get isFilled (): boolean {
-        return this.#status === MidaBrokerOrderStatus.FILLED;
+    public get fillType (): MidaBrokerOrderFillType | undefined {
+        if (!this.isExecuted) {
+            return undefined;
+        }
+
+        if (this.filledVolume === this.#requestedVolume) {
+            return MidaBrokerOrderFillType.FULL;
+        }
+
+        return MidaBrokerOrderFillType.PARTIAL;
     }
 
     public get executionPrice (): number | undefined {
-        if (this.status !== MidaBrokerOrderStatus.FILLED) {
+        if (!this.isExecuted) {
             return undefined;
         }
 
         let priceVolumeProduct: number = 0;
 
-        for (const deal of this.#deals) {
-            if (deal.status === MidaBrokerDealStatus.PARTIALLY_FILLED || deal.status === MidaBrokerDealStatus.FILLED) {
-                const executionPrice: number = deal.executionPrice as number;
+        for (const deal of this.executedDeals) {
+            const executionPrice: number = deal.executionPrice as number;
 
-                priceVolumeProduct += executionPrice * deal.filledVolume;
-            }
+            priceVolumeProduct += executionPrice * deal.volume;
         }
 
         return priceVolumeProduct / this.filledVolume;
@@ -207,12 +244,8 @@ export abstract class MidaBrokerOrder {
         return MidaBrokerOrderExecutionType.MARKET;
     }
 
-    public get lastDeal (): MidaBrokerDeal | undefined {
-        return this.#deals[this.#deals.length - 1];
-    }
-
     public get isRejected (): boolean {
-        return this.rejectionType !== undefined;
+        return this.#status === MidaBrokerOrderStatus.REJECTED;
     }
 
     get #position (): MidaBrokerPosition | undefined {
@@ -229,8 +262,8 @@ export abstract class MidaBrokerOrder {
 
     public abstract cancel (): Promise<void>;
 
-    public on (type: string): Promise<MidaEvent>
-    public on (type: string, listener: MidaEventListener): string
+    public on (type: string): Promise<MidaEvent>;
+    public on (type: string, listener: MidaEventListener): string;
     public on (type: string, listener?: MidaEventListener): Promise<MidaEvent> | string {
         if (!listener) {
             return this.#emitter.on(type);
@@ -274,13 +307,8 @@ export abstract class MidaBrokerOrder {
 
                 break;
             }
-            case MidaBrokerOrderStatus.PARTIALLY_FILLED: {
-                this.#emitter.notifyListeners("partial-fill");
-
-                break;
-            }
-            case MidaBrokerOrderStatus.FILLED: {
-                this.#emitter.notifyListeners("fill");
+            case MidaBrokerOrderStatus.EXECUTED: {
+                this.#emitter.notifyListeners("execute");
 
                 break;
             }
