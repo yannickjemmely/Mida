@@ -26,23 +26,15 @@ import { GenericObject } from "#utilities/GenericObject";
 
 /** Represents a broker */
 export abstract class MidaBroker {
-    readonly #id: string;
     readonly #name: string;
     readonly #websiteUri: string;
 
     protected constructor ({
-        id,
         name,
         websiteUri,
     }: MidaBrokerParameters) {
-        this.#id = id;
         this.#name = name;
         this.#websiteUri = websiteUri;
-    }
-
-    /** The broker id */
-    public get id (): string {
-        return this.#id;
     }
 
     /** The broker name */
@@ -69,19 +61,19 @@ export abstract class MidaBroker {
         return [ ...MidaBroker.#installedBrokers.values(), ];
     }
 
-    public static add (broker: MidaBroker): void {
-        if (MidaBroker.#installedBrokers.has(broker.name)) {
+    public static add (id: string, broker: MidaBroker): void {
+        if (MidaBroker.#installedBrokers.has(id)) {
             throw new Error();
         }
 
-        MidaBroker.#installedBrokers.set(broker.name, broker);
+        MidaBroker.#installedBrokers.set(id, broker);
     }
 
-    public static async login (name: string, parameters: GenericObject): Promise<MidaBrokerAccount> {
-        const broker: MidaBroker | undefined = MidaBroker.#installedBrokers.get(name);
+    public static async login (id: string, parameters: GenericObject): Promise<MidaBrokerAccount> {
+        const broker: MidaBroker | undefined = MidaBroker.#installedBrokers.get(id);
 
         if (!broker) {
-            throw Error();
+            throw new Error();
         }
 
         return broker.login(parameters);

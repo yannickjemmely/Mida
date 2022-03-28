@@ -40,7 +40,6 @@ import { GenericObject } from "#utilities/GenericObject";
 import { MidaMarketWatcher } from "#watcher/MidaMarketWatcher";
 
 export abstract class MidaExpertAdvisor {
-    readonly #id: string;
     readonly #name: string;
     readonly #description: string;
     readonly #version: string;
@@ -62,7 +61,6 @@ export abstract class MidaExpertAdvisor {
         version,
         brokerAccount,
     }: MidaExpertAdvisorParameters) {
-        this.#id = id;
         this.#name = name;
         this.#description = description ?? "";
         this.#version = version;
@@ -76,10 +74,6 @@ export abstract class MidaExpertAdvisor {
         this.#marketWatcher = new MidaMarketWatcher({ brokerAccount, });
         this.#components = [];
         this.#emitter = new MidaEmitter();
-    }
-
-    public get id (): string {
-        return this.#id;
     }
 
     public get name (): string {

@@ -26,7 +26,6 @@ import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { GenericObject } from "#utilities/GenericObject";
 
 export abstract class MidaExpertAdvisorComponent {
-    readonly #id: string;
     readonly #name: string;
     readonly #description: string;
     readonly #version: string;
@@ -35,23 +34,17 @@ export abstract class MidaExpertAdvisorComponent {
     #isConfigured: boolean;
 
     protected constructor ({
-        id,
         name,
         description,
         version,
         expertAdvisor,
     }: MidaExpertAdvisorComponentParameters) {
-        this.#id = id;
         this.#name = name;
         this.#description = description ?? "";
         this.#version = version;
         this.#expertAdvisor = expertAdvisor;
         this.#isEnabled = false;
         this.#isConfigured = false;
-    }
-
-    public get id (): string {
-        return this.#id;
     }
 
     public get name (): string {

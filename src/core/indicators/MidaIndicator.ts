@@ -25,29 +25,22 @@ import { MidaIndicatorParameters } from "#indicators/MidaIndicatorParameters";
 import { GenericObject } from "#utilities/GenericObject";
 
 export abstract class MidaIndicator {
-    readonly #id: string;
     readonly #name: string;
     readonly #description: string;
     readonly #version: string;
-    readonly #inputs: MidaIndicatorIo[];
-    readonly #value: MidaIndicatorIo[];
+    #inputs: MidaIndicatorIo[];
+    #values: MidaIndicatorIo[];
 
     protected constructor ({
-        id,
         name,
         description,
         version,
     }: MidaIndicatorParameters) {
-        this.#id = id;
         this.#name = name;
         this.#description = description ?? "";
         this.#version = version;
         this.#inputs = [];
-        this.#value = [];
-    }
-
-    public get id (): string {
-        return this.#id;
+        this.#values = [];
     }
 
     public get name (): string {
@@ -63,42 +56,52 @@ export abstract class MidaIndicator {
     }
 
     public get inputs (): MidaIndicatorIo[] {
-        return this.#inputs;
+        return [ ...this.#inputs, ];
     }
 
-    public get value (): MidaIndicatorIo[] {
-        return this.#value;
+    public get values (): MidaIndicatorIo[] {
+        return [ ...this.#values, ];
     }
 
-    public abstract next (input: MidaIndicatorIo[]): Promise<MidaIndicatorIo[]>;
+    public async next (input: MidaIndicatorIo[]): Promise<MidaIndicatorIo[]> {
+        const inputs: MidaIndicatorIo[] = [ ...this.inputs, ...input, ];
+        const value: MidaIndicatorIo[] = await this.calculate(inputs);
+
+        this.#inputs = inputs;
+        this.#values = value;
+
+        return value;
+    }
+
+    public abstract calculate (input: MidaIndicatorIo[]): Promise<MidaIndicatorIo[]>;
 
     /* *** *** *** Reiryoku Technologies *** *** *** */
 
-    static readonly #installedIndicators: Map<string, typeof MidaIndicator> = new Map();
+    static readonly #installedIndicators: Map<string, (parameters: GenericObject) => MidaIndicator> = new Map();
 
     public static get installedIndicators (): string[] {
         return [ ...MidaIndicator.#installedIndicators.keys(), ];
     }
 
-    public static add (name: string, indicatorConstructor: typeof MidaIndicator): void {
-        if (MidaIndicator.#installedIndicators.has(name)) {
+    public static add (id: string, indicatorConstructor: (parameters: GenericObject) => MidaIndicator): void {
+        if (MidaIndicator.#installedIndicators.has(id)) {
             return;
         }
 
-        MidaIndicator.#installedIndicators.set(name, indicatorConstructor);
+        MidaIndicator.#installedIndicators.set(id, indicatorConstructor);
     }
 
-    public static create (name: string, parameters: GenericObject = {}): MidaIndicator {
-        const indicatorConstructor: any | undefined = MidaIndicator.#installedIndicators.get(name);
+    public static new (id: string, parameters: GenericObject = {}): MidaIndicator {
+        const indicatorConstructor: ((parameters: GenericObject) => MidaIndicator) | undefined = MidaIndicator.#installedIndicators.get(id);
 
         if (!indicatorConstructor) {
             throw new Error();
         }
 
-        return new indicatorConstructor(parameters);
+        return indicatorConstructor(parameters);
     }
 
-    public static async calculate (name: string, input: MidaIndicatorIo[]): Promise<MidaIndicatorIo> {
-        return MidaIndicator.create(name).next(input);
+    public static async calculate (id: string, input: MidaIndicatorIo[]): Promise<MidaIndicatorIo> {
+        return MidaIndicator.new(id).calculate(input);
     }
 }

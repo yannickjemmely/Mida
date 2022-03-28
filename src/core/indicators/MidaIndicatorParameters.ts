@@ -27,7 +27,6 @@ import { MidaIndicator } from "#indicators/MidaIndicator";
  * @see MidaIndicator
  */
 export type MidaIndicatorParameters = {
-    id: string;
     name: string;
     description?: string;
     version: string;

@@ -28,7 +28,6 @@ import { MidaExpertAdvisorComponent } from "#advisors/MidaExpertAdvisorComponent
  * @see MidaExpertAdvisorComponent
  */
 export type MidaExpertAdvisorComponentParameters = {
-    id: string;
     name: string;
     description?: string;
     version: string;

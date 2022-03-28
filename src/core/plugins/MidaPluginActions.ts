@@ -21,9 +21,11 @@
 */
 
 import { MidaBroker } from "#brokers/MidaBroker";
+import { MidaIndicator } from "#indicators/MidaIndicator";
 
 export type MidaPluginBaseActions = {
     addBroker (broker: MidaBroker): void;
+    addIndicator (name: string, indicatorConstructor: typeof MidaIndicator): void;
 };
 
 export type MidaPluginActions = MidaPluginBaseActions;
@@ -33,5 +35,9 @@ export type MidaPluginActions = MidaPluginBaseActions;
 export const baseActions: MidaPluginActions = {
     addBroker (broker: MidaBroker): void {
         MidaBroker.add(broker);
+    },
+
+    addIndicator (name: string, indicatorConstructor: typeof MidaIndicator): void {
+        MidaIndicator.add(name, indicatorConstructor);
     },
 };

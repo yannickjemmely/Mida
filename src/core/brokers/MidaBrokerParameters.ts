@@ -27,8 +27,6 @@ import { MidaBroker } from "#brokers/MidaBroker";
  * @see MidaBroker
  */
 export type MidaBrokerParameters = {
-    /** The broker id */
-    id: string;
     /** The broker name */
     name: string;
     /** The broker website address */
