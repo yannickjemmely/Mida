@@ -22,10 +22,11 @@
 
 import { MidaBroker } from "#brokers/MidaBroker";
 import { MidaIndicator } from "#indicators/MidaIndicator";
+import { GenericObject } from "#utilities/GenericObject";
 
 export type MidaPluginBaseActions = {
-    addBroker (broker: MidaBroker): void;
-    addIndicator (name: string, indicatorConstructor: typeof MidaIndicator): void;
+    addBroker (id: string, broker: MidaBroker): void;
+    addIndicator (id: string, indicatorConstructor: (parameters: GenericObject) => MidaIndicator): void;
 };
 
 export type MidaPluginActions = MidaPluginBaseActions;
@@ -33,11 +34,11 @@ export type MidaPluginActions = MidaPluginBaseActions;
 /* *** *** *** Reiryoku Technologies *** *** *** */
 
 export const baseActions: MidaPluginActions = {
-    addBroker (broker: MidaBroker): void {
-        MidaBroker.add(broker);
+    addBroker (id: string, broker: MidaBroker): void {
+        MidaBroker.add(id, broker);
     },
 
-    addIndicator (name: string, indicatorConstructor: typeof MidaIndicator): void {
-        MidaIndicator.add(name, indicatorConstructor);
+    addIndicator (id: string, indicatorConstructor: (parameters: GenericObject) => MidaIndicator): void {
+        MidaIndicator.add(id, indicatorConstructor);
     },
 };
