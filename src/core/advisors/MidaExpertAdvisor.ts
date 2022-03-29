@@ -55,7 +55,6 @@ export abstract class MidaExpertAdvisor {
     readonly #emitter: MidaEmitter;
 
     protected constructor ({
-        id,
         name,
         description,
         version,

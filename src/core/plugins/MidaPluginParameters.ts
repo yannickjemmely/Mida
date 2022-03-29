@@ -27,7 +27,6 @@ import { MidaPlugin } from "#plugins/MidaPlugin";
  * @see MidaPlugin
  */
 export type MidaPluginParameters = {
-    id: string;
     name: string;
     description?: string;
     version: string;
