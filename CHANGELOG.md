@@ -1,3 +1,5 @@
+5.0.0 - 30-03-2022
+===================
 ### Features
 * Update documentation [#12](https://github.com/Reiryoku-Technologies/Mida/pull/12)
 * **_BREAKING_** Generic codebase changes and improvements [#13](https://github.com/Reiryoku-Technologies/Mida/pull/13)
