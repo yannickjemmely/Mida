@@ -21,7 +21,6 @@
 */
 
 export enum MidaBrokerPositionProtectionChangeRejectionType {
-    INVALID_TAKE_PROFIT = "invalid-take-profit",
-    INVALID_STOP_LOSS = "invalid-stop-loss",
+    INVALID_PROTECTION = "invalid-protection",
     UNKNOWN = "unknown",
 }
