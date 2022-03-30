@@ -1,3 +1,6 @@
+### Bugfix
+* Plugins ids are reintroduced [#16](https://github.com/Reiryoku-Technologies/Mida/pull/16)
+
 5.0.0 - 30-03-2022
 ===================
 ### Features
