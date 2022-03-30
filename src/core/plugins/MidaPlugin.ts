@@ -25,18 +25,25 @@ import { MidaPluginParameters } from "#plugins/MidaPluginParameters";
 import { GenericObject } from "#utilities/GenericObject";
 
 export abstract class MidaPlugin {
+    readonly #id: string;
     readonly #name: string;
     readonly #description: string;
     readonly #version: string;
 
     protected constructor ({
+        id,
         name,
         description,
         version,
     }: MidaPluginParameters) {
+        this.#id = id;
         this.#name = name;
         this.#description = description ?? "";
         this.#version = version;
+    }
+
+    public get id (): string {
+        return this.#id;
     }
 
     public get name (): string {
