@@ -1,3 +1,6 @@
+### Features
+* Update documentation according to latest API including plugins [#17](https://github.com/Reiryoku-Technologies/Mida/pull/17)
+
 5.0.1 - 31-03-2022
 ===================
 ### Bug fixes
