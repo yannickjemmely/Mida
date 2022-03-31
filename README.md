@@ -39,14 +39,16 @@ to get help you with your first steps.
     * [Symbols and assets](#symbols-and-assets)
     * [Ticks and candlesticks](#ticks-and-candlesticks)
     * [Trading bots (expert advisors)](#trading-bots-expert-advisors)
-* [Disclaimer](#disclaimer)
+    * [Technical indicators](#technical-indicators)
+* [License and disclaimer](#license-and-disclaimer)
 * [Contributors](#contributors)
 
 ## Ecosystem
 | Project                  | Status                        | Description                     |
 | -----------              | -----------                   | -----------                     |
-| [Mida cTrader](https://github.com/Reiryoku-Technologies/Mida-cTrader)     | [![Image](https://img.shields.io/npm/v/@reiryoku/mida-ctrader)](https://www.npmjs.com/package/@reiryoku/mida-ctrader)        | A plugin for using cTrader accounts            |
-| [Apollo](https://github.com/Reiryoku-Technologies/Apollo)                 | [![Image](https://img.shields.io/npm/v/@reiryoku/apollo)](https://www.npmjs.com/package/@reiryoku/apollo)                    | A library for getting real-time economic data  |
+| [Mida cTrader](https://github.com/Reiryoku-Technologies/Mida-cTrader)     | [![Image](https://img.shields.io/npm/v/@reiryoku/mida-ctrader)](https://www.npmjs.com/package/@reiryoku/mida-ctrader)        | A plugin for using cTrader accounts                |
+| [Mida Tulipan](https://github.com/Reiryoku-Technologies/Mida-Tulipan)     | [![Image](https://img.shields.io/npm/v/@reiryoku/mida-tulipan)](https://www.npmjs.com/package/@reiryoku/mida-tulipan)        | A plugin providing technical analysis indicators   |
+| [Apollo](https://github.com/Reiryoku-Technologies/Apollo)                 | [![Image](https://img.shields.io/npm/v/@reiryoku/apollo)](https://www.npmjs.com/package/@reiryoku/apollo)                    | A library for getting real-time economic data      |
 
 ## Installation
 ```console
@@ -62,7 +64,7 @@ const { Mida, MidaBroker, } = require("@reiryoku/mida");
 // Use the Mida cTrader plugin
 Mida.use(require("@reiryoku/mida-ctrader"));
 
-// Login into any cTrader broker account
+// Login into any cTrader account
 const myAccount = await MidaBroker.login("cTrader", {
     clientId: "",
     clientSecret: "",
@@ -144,7 +146,7 @@ if (myOrder.isRejected) {
             break;
         }
         case MidaBrokerOrderRejectionType.INVALID_SYMBOL: {
-            console.log("Your broker account doesn't support trading Apple stocks!");
+            console.log("Your account doesn't support trading Apple stocks!");
 
             break;
         }
@@ -231,6 +233,16 @@ console.log(await myAccount.getOpenPositions());
 console.log(await myAccount.getPendingOrders());
 ```
 
+How to set take profit and stop loss for a position.
+```javascript
+const myPosition = await myAccount.getPositionById("...");
+
+await myPosition.changeProtection({
+    takeProfit: 200,
+    stopLoss: 100,
+});
+```
+
 ### Symbols and assets
 How to retrieve all symbols available for your broker account.
 ```javascript
@@ -278,7 +290,7 @@ await marketWatcher.watch("BTCUSD", { watchTicks: true, });
 
 marketWatcher.on("tick", (event) => {
     const { tick, } = event.descriptor;
-    
+
     console.log(`Bitcoin price is now ${tick.bid} US dollars`);
 });
 ```
@@ -314,16 +326,16 @@ await marketWatcher.watch("BTCUSD", {
 
 marketWatcher.on("period-close", (event) => {
     const { period, } = event.descriptor;
-    
+
     switch (period.timeframe) {
         case MidaTimeframe.M5: {
             console.log(`M5 candlestick closed at ${period.close}`);
-            
+
             break;
         }
         case MidaTimeframe.H1: {
             console.log(`H1 candlestick closed at ${period.close}`);
-            
+
             break;
         }
     }
@@ -331,7 +343,7 @@ marketWatcher.on("period-close", (event) => {
 ```
 
 ### Trading bots (expert advisors)
-How to create a trading bot (or expert advisor)
+How to create a trading bot (or expert advisor).
 ```javascript
 const {
     MidaExpertAdvisor,
@@ -342,7 +354,7 @@ class MyExpertAdvisor extends MidaExpertAdvisor {
     constructor ({ brokerAccount, }) {
         super({ brokerAccount, });
     }
-    
+
     async configure () {
         await this.marketWatcher.watch("EURUSD", {
             watchTicks: true,
@@ -352,9 +364,9 @@ class MyExpertAdvisor extends MidaExpertAdvisor {
     }
 
     async onTick (tick) {
-        // Implement your strategy.
+        // Implement your strategy
     }
-    
+
     async onPeriodClose (period) {
         console.log(`H1 candlestick closed at ${period.open}`);
     }
@@ -364,7 +376,7 @@ class MyExpertAdvisor extends MidaExpertAdvisor {
 How to execute a trading bot.
 ```javascript
 const { MidaBroker, } = require("@reiryoku/mida");
-const { MyExpertAdvisor, } = require("./my-expert-advisor"); 
+const { MyExpertAdvisor, } = require("./my-expert-advisor");
 
 const myAccount = await MidaBroker.login(/* ... */);
 const myAdvisor = new MyExpertAdvisor({ brokerAccount: myAccount, });
@@ -372,12 +384,53 @@ const myAdvisor = new MyExpertAdvisor({ brokerAccount: myAccount, });
 await myAdvisor.start();
 ```
 
-## Disclaimer
-Operating in CFDs/Forex and generically in financial markets is highly speculative and carries a high level of risk.
-It's possible to lose all your capital. These products may not be suitable for everyone,
-you should ensure that you understand the risks involved. Furthermore, Mida is not responsible
-for commissions and other taxes applied to your operations, they depend on your broker or exchange. Mida and its authors
-are also not responsible for any technical inconvenience that may lead to money loss, for example a stop loss not being set.
+### Technical indicators
+Install the plugin providing technical analysis indicators.
+```javascript
+const { Mida, } = require("@reiryoku/mida");
 
-## Maintainer
-vasile.peste@reiryoku.com
+// Use the Mida Tulipan plugin
+Mida.use(require("@reiryoku/mida-tulipan"));
+```
+
+How to calculate SMA (Simple Moving Average).
+```javascript
+const { MidaIndicator, MidaTimeframe, } = require("@reiryoku/mida");
+
+// Get latest candlesticks on H1 timeframe
+const candlesticks = await myAccount.getSymbolPeriods("EURUSD", MidaTimeframe.H1);
+const closePrices = candlesticks.map((candlestick) => candlestick.close);
+
+// Calculate RSI on close prices, pass values from oldest to newest
+const smaValues = await MidaIndicator.new("SMA").calculate(closePrices);
+
+// Values are from oldest to newest
+console.log(smaValues);
+```
+
+How to calculate RSI (Relative Strength Index).
+```javascript
+const { MidaIndicator, MidaTimeframe, } = require("@reiryoku/mida");
+
+// Get latest candlesticks on H1 timeframe
+const candlesticks = await myAccount.getSymbolPeriods("BTCUSD", MidaTimeframe.H1);
+const closePrices = candlesticks.map((candlestick) => candlestick.close);
+
+// Calculate RSI on close prices, pass values from oldest to newest
+const rsiValues = await MidaIndicator.new("RSI").calculate(closePrices);
+
+// Values are from oldest to newest
+console.log(rsiValues);
+```
+
+## License and disclaimer
+[LICENSE](./LICENSE)<br><br>
+Trading in financial markets is highly speculative and carries a high level of risk.
+It's possible to lose all your capital. This project may not be suitable for everyone,
+you should ensure that you understand the risks involved. Furthermore Mida and its contributors
+are not responsible for any technical inconvenience that may lead to money loss, for example a stop loss not being set.
+
+## Contributors
+| Name                  | Contribution                | GitHub                                                | Contact                         |
+| -----------           | -----------                 | -----------                                           | -----------                     |
+| Vasile Pește          | Author and maintainer       | [Vasile-Peste](https://github.com/Vasile-Peste)       | vasile.peste@reiryoku.com       |
