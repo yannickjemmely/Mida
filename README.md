@@ -40,7 +40,7 @@ to get help you with your first steps.
     * [Ticks and candlesticks](#ticks-and-candlesticks)
     * [Trading bots (expert advisors)](#trading-bots-expert-advisors)
     * [Technical indicators](#technical-indicators)
-* [Disclaimer](#disclaimer)
+* [License and disclaimer](#license-and-disclaimer)
 * [Contributors](#contributors)
 
 ## Ecosystem
@@ -423,12 +423,12 @@ const rsiValues = await MidaIndicator.new("RSI").calculate(closePrices);
 console.log(rsiValues);
 ```
 
-## Disclaimer
-Operating in CFDs/Forex and generically in financial markets is highly speculative and carries a high level of risk.
-It's possible to lose all your capital. These products may not be suitable for everyone,
-you should ensure that you understand the risks involved. Furthermore, Mida is not responsible
-for commissions and other taxes applied to your operations, they depend on your broker or exchange. Mida and its authors
-are also not responsible for any technical inconvenience that may lead to money loss, for example a stop loss not being set.
+## License and disclaimer
+[LICENSE](./LICENSE).<br>
+Trading in financial markets is highly speculative and carries a high level of risk.
+It's possible to lose all your capital. This project may not be suitable for everyone,
+you should ensure that you understand the risks involved. Furthermore Mida and its authors
+are not responsible for any technical inconvenience that may lead to money loss, for example a stop loss not being set.
 
 ## Contributors
 vasile.peste@reiryoku.com
