@@ -431,6 +431,6 @@ you should ensure that you understand the risks involved. Furthermore Mida and i
 are not responsible for any technical inconvenience that may lead to money loss, for example a stop loss not being set.
 
 ## Contributors
-| Name                  | Contribution                | Contact                         |
-| -----------           | -----------                 | -----------                     |
-| Vasile Pește          | Author and maintainer       | vasile.peste@reiryoku.com       |
+| Name                  | Contribution                | GitHub                                                | Contact                         |
+| -----------           | -----------                 | -----------                                           | -----------                     |
+| Vasile Pește          | Author and maintainer       | [Vasile-Peste](https://github.com/Vasile-Peste)       | vasile.peste@reiryoku.com       |
