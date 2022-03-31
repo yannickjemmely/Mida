@@ -39,7 +39,7 @@ to get help you with your first steps.
     * [Symbols and assets](#symbols-and-assets)
     * [Ticks and candlesticks](#ticks-and-candlesticks)
     * [Trading bots (expert advisors)](#trading-bots-expert-advisors)
-    * [Indicators](#technical-indicators)
+    * [Technical indicators](#technical-indicators)
 * [Disclaimer](#disclaimer)
 * [Contributors](#contributors)
 
