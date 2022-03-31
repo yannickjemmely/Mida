@@ -39,7 +39,7 @@ to get help you with your first steps.
     * [Symbols and assets](#symbols-and-assets)
     * [Ticks and candlesticks](#ticks-and-candlesticks)
     * [Trading bots (expert advisors)](#trading-bots-expert-advisors)
-    * [Indicators](#indicators)
+    * [Indicators](#technical-indicators)
 * [Disclaimer](#disclaimer)
 * [Contributors](#contributors)
 
@@ -384,7 +384,7 @@ const myAdvisor = new MyExpertAdvisor({ brokerAccount: myAccount, });
 await myAdvisor.start();
 ```
 
-### Indicators
+### Technical indicators
 Install the plugin providing technical analysis indicators.
 ```javascript
 const { Mida, } = require("@reiryoku/mida");
@@ -430,5 +430,5 @@ you should ensure that you understand the risks involved. Furthermore, Mida is n
 for commissions and other taxes applied to your operations, they depend on your broker or exchange. Mida and its authors
 are also not responsible for any technical inconvenience that may lead to money loss, for example a stop loss not being set.
 
-## Maintainer
+## Contributors
 vasile.peste@reiryoku.com
