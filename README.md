@@ -343,7 +343,7 @@ marketWatcher.on("period-close", (event) => {
 ```
 
 ### Trading bots (expert advisors)
-How to create a trading bot (or expert advisor)
+How to create a trading bot (or expert advisor).
 ```javascript
 const {
     MidaExpertAdvisor,
@@ -364,7 +364,7 @@ class MyExpertAdvisor extends MidaExpertAdvisor {
     }
 
     async onTick (tick) {
-        // Implement your strategy.
+        // Implement your strategy
     }
 
     async onPeriodClose (period) {
@@ -393,7 +393,7 @@ const { Mida, } = require("@reiryoku/mida");
 Mida.use(require("@reiryoku/mida-tulipan"));
 ```
 
-How to calculate SMA (Simple Moving Average)
+How to calculate SMA (Simple Moving Average).
 ```javascript
 const { MidaIndicator, MidaTimeframe, } = require("@reiryoku/mida");
 
@@ -408,7 +408,7 @@ const smaValues = await MidaIndicator.new("SMA").calculate(closePrices);
 console.log(smaValues);
 ```
 
-How to calculate RSI (Relative Strength Index)
+How to calculate RSI (Relative Strength Index).
 ```javascript
 const { MidaIndicator, MidaTimeframe, } = require("@reiryoku/mida");
 
