@@ -425,12 +425,12 @@ console.log(rsiValues);
 
 ## License and disclaimer
 [LICENSE](./LICENSE)<br>
-
-### Disclaimer
 Trading in financial markets is highly speculative and carries a high level of risk.
 It's possible to lose all your capital. This project may not be suitable for everyone,
-you should ensure that you understand the risks involved. Furthermore Mida and its authors
+you should ensure that you understand the risks involved. Furthermore Mida and its contributors
 are not responsible for any technical inconvenience that may lead to money loss, for example a stop loss not being set.
 
 ## Contributors
-vasile.peste@reiryoku.com
+| Name                  | Contribution                | Contact                         |
+| -----------           | -----------                 | -----------                     |
+| Vasile Pește          | Author and maintainer       | vasile.peste@reiryoku.com       |
