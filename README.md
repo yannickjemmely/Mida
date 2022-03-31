@@ -424,7 +424,7 @@ console.log(rsiValues);
 ```
 
 ## License and disclaimer
-[LICENSE](./LICENSE)<br>
+[LICENSE](./LICENSE)<br><br>
 Trading in financial markets is highly speculative and carries a high level of risk.
 It's possible to lose all your capital. This project may not be suitable for everyone,
 you should ensure that you understand the risks involved. Furthermore Mida and its contributors
