@@ -154,6 +154,9 @@ if (myOrder.isRejected) {
 }
 ```
 
+<details>
+<summary>More examples</summary>
+
 How to open a long position for GBP against USD with stop loss and take profit.
 ```javascript
 const { MidaBrokerOrderDirection, } = require("@reiryoku/mida");
@@ -242,6 +245,8 @@ await myPosition.changeProtection({
     stopLoss: 100,
 });
 ```
+
+</details>
 
 ### Symbols and assets
 How to retrieve all symbols available for your broker account.
