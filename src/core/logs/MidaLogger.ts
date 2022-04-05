@@ -79,7 +79,8 @@ export class MidaLogger {
 
                 break;
             }
-            case MidaLogNamespace.ERROR: {
+            case MidaLogNamespace.ERROR:
+            case MidaLogNamespace.FATAL: {
                 logMethodName = "error";
 
                 break;
@@ -107,4 +108,14 @@ export class MidaLogger {
     public static error (message: string): void {
         MidaLogger.log(message, MidaLogNamespace.ERROR);
     }
+
+    public static fatal (message: string): void {
+        MidaLogger.log(message, MidaLogNamespace.FATAL);
+    }
 }
+
+export const debug = MidaLogger.debug;
+export const info = MidaLogger.info;
+export const warn = MidaLogger.warn;
+export const error = MidaLogger.error;
+export const fatal = MidaLogger.fatal;

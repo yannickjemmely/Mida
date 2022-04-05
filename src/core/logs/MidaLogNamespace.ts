@@ -21,10 +21,11 @@
 */
 
 export enum MidaLogNamespace {
-    ALL = 5,
-    DEBUG = 4,
-    INFO = 3,
-    WARN = 2,
-    ERROR = 1,
+    ALL = 6,
+    DEBUG = 5,
+    INFO = 4,
+    WARN = 3,
+    ERROR = 2,
+    FATAL = 1,
     OFF = 0,
 }
