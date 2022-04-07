@@ -1,5 +1,6 @@
 ### Features
 * Update documentation according to latest API including plugins [#17](https://github.com/Reiryoku-Technologies/Mida/pull/17)
+* Create and expose logging API [#18](https://github.com/Reiryoku-Technologies/Mida/pull/18)
 
 5.0.1 - 31-03-2022
 ===================
