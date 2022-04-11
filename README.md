@@ -79,8 +79,6 @@ To get a `clientId`, `clientSecret` and `accessToken` you have to create an acco
 ### Balance, equity and margin
 How to get the account balance, equity and margin.
 ```javascript
-const { MidaBrokerOrderDirection, } = require("@reiryoku/mida");
-
 console.log(await myAccount.getBalance());
 console.log(await myAccount.getEquity());
 console.log(await myAccount.getFreeMargin());
@@ -238,8 +236,6 @@ console.log(await myAccount.getPendingOrders());
 
 How to set take profit and stop loss for a position.
 ```javascript
-const myPosition = await myAccount.getPositionById("...");
-
 await myPosition.changeProtection({
     takeProfit: 200,
     stopLoss: 100,
