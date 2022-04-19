@@ -99,14 +99,7 @@ export { MidaIndicatorIo } from "#indicators/MidaIndicatorIo";
 export { MidaIndicatorParameters } from "#indicators/MidaIndicatorParameters";
 
 export { MidaLog } from "#logs/MidaLog";
-export {
-    MidaLogger,
-    debug,
-    info,
-    warn,
-    error,
-    fatal,
-} from "#logs/MidaLogger";
+export { MidaLogger } from "#logs/MidaLogger";
 export { MidaLogNamespace } from "#logs/MidaLogNamespace";
 export { MidaLogParameters } from "#logs/MidaLogParameters";
 
