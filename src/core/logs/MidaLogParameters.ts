@@ -24,5 +24,5 @@ import { MidaLogNamespace } from "#logs/MidaLogNamespace";
 
 export type MidaLogParameters = {
     message: string;
-    namespace?: MidaLogNamespace;
+    namespace: MidaLogNamespace;
 };

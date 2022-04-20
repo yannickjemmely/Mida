@@ -34,7 +34,7 @@ export class MidaLog {
         namespace,
     }: MidaLogParameters) {
         this.#message = message;
-        this.#namespace = namespace ?? MidaLogNamespace.INFO;
+        this.#namespace = namespace;
         this.#date = new MidaDate();
     }
 
