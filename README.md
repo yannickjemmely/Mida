@@ -376,10 +376,10 @@ class MyExpertAdvisor extends MidaExpertAdvisor {
 
 How to execute a trading bot.
 ```javascript
-const { MidaBroker, } = require("@reiryoku/mida");
+const { Mida, } = require("@reiryoku/mida");
 const { MyExpertAdvisor, } = require("./my-expert-advisor");
 
-const myAccount = await MidaBroker.login(/* ... */);
+const myAccount = await Mida.login(/* ... */);
 const myAdvisor = new MyExpertAdvisor({ brokerAccount: myAccount, });
 
 await myAdvisor.start();
