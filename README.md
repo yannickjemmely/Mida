@@ -52,8 +52,9 @@ to get help you with your first steps.
 | [Apollo](https://github.com/Reiryoku-Technologies/Apollo)                 | [![Image](https://img.shields.io/npm/v/@reiryoku/apollo)](https://www.npmjs.com/package/@reiryoku/apollo)                    | A library for getting real-time economic data      |
 
 ## Supported brokers
-All brokers available on the cTrader platform are supported, below some of the most famous and
-long-lived brokers
+Mida is broker-neutral, this means any broker could be easily integrated in
+the ecosystem, for now all brokers available on the cTrader platform are supported,
+below some of the most long-lived and popular ones
 <p align="center"> 
     <img src="images/supported-brokers.svg" alt="" width="855px">
 </p>
