@@ -55,7 +55,7 @@ to get help you with your first steps.
 All brokers available on the cTrader platform are supported, below some of the most famous and
 long-lived brokers
 <p align="center"> 
-    <img src="images/supported-brokers.svg" alt="" width="652px">
+    <img src="images/supported-brokers.svg" alt="" width="855px">
 </p>
 
 ## Installation
