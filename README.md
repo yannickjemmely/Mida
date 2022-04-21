@@ -31,6 +31,7 @@ to get help you with your first steps.
 
 ## Table of contents
 * [Ecosystem](#ecosystem)
+* [Supported brokers](#supported-brokers)
 * [Installation](#installation)
 * [Usage](#usage)
     * [Account login](#account-login)
@@ -49,6 +50,13 @@ to get help you with your first steps.
 | [Mida cTrader](https://github.com/Reiryoku-Technologies/Mida-cTrader)     | [![Image](https://img.shields.io/npm/v/@reiryoku/mida-ctrader)](https://www.npmjs.com/package/@reiryoku/mida-ctrader)        | A plugin for using cTrader accounts                |
 | [Mida Tulipan](https://github.com/Reiryoku-Technologies/Mida-Tulipan)     | [![Image](https://img.shields.io/npm/v/@reiryoku/mida-tulipan)](https://www.npmjs.com/package/@reiryoku/mida-tulipan)        | A plugin providing technical analysis indicators   |
 | [Apollo](https://github.com/Reiryoku-Technologies/Apollo)                 | [![Image](https://img.shields.io/npm/v/@reiryoku/apollo)](https://www.npmjs.com/package/@reiryoku/apollo)                    | A library for getting real-time economic data      |
+
+## Supported brokers
+All brokers available on the cTrader platform are supported, below some of the most famous and
+long-lived brokers
+<p align="center"> 
+    <img src="images/supported-brokers.svg" alt="" width="652px">
+</p>
 
 ## Installation
 ```console
