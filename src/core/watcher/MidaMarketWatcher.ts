@@ -21,6 +21,7 @@
 */
 
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
+import { MidaDateUtilities } from "#dates/MidaDateUtilities";
 import { MidaEvent } from "#events/MidaEvent";
 import { MidaEventListener } from "#events/MidaEventListener";
 import { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
@@ -30,6 +31,7 @@ import { GenericObject } from "#utilities/GenericObject";
 import { MidaUtilities } from "#utilities/MidaUtilities";
 import { MidaMarketWatcherDirectives } from "#watcher/MidaMarketWatcherDirectives";
 import { MidaMarketWatcherParameters } from "#watcher/MidaMarketWatcherParameters";
+import utcTimestamp = MidaDateUtilities.utcTimestamp;
 
 export class MidaMarketWatcher {
     readonly #brokerAccount: MidaBrokerAccount;
@@ -155,11 +157,18 @@ export class MidaMarketWatcher {
     // Used to check if the last known symbol period has been closed
     // Must be called approximately with a 1 minute interval
     async #checkClosedPeriod (symbol: string, timeframe: number): Promise<void> {
+        const lastLocalPeriod: MidaSymbolPeriod = this.#lastClosedPeriods.get(symbol)?.get(timeframe) as MidaSymbolPeriod;
+        const lastLocalPeriodCloseTimestamp: number = lastLocalPeriod.endDate.timestamp;
+
+        // Don't request the last period if the last known period has not ended yet
+        if (utcTimestamp() < lastLocalPeriodCloseTimestamp + timeframe) {
+            return;
+        }
+
         const periods: MidaSymbolPeriod[] = await this.#brokerAccount.getSymbolPeriods(symbol, timeframe);
         const lastPeriod: MidaSymbolPeriod = periods[periods.length - 1];
-        const lastLocalPeriod: MidaSymbolPeriod = this.#lastClosedPeriods.get(symbol)?.get(timeframe) as MidaSymbolPeriod;
 
-        if (lastPeriod.endDate.timestamp > lastLocalPeriod.endDate.timestamp) {
+        if (lastPeriod.endDate.timestamp > lastLocalPeriodCloseTimestamp) {
             this.#lastClosedPeriods.get(symbol)?.set(timeframe, lastPeriod);
             this.#onPeriodClose(lastPeriod);
         }
@@ -195,4 +204,45 @@ export class MidaMarketWatcher {
         }, roundMinute.valueOf() + 60000 - actualDate.valueOf() + 3000); // Invoke the function the next round minute plus 3s of margin
         // </periods>
     }
+}
+
+/** Shorthand for creating a ticks market watcher */
+export async function createTicksWatcher ({
+    symbol,
+    brokerAccount,
+    listener,
+}: {
+    symbol: string;
+    brokerAccount: MidaBrokerAccount;
+    listener: MidaEventListener;
+}): Promise<MidaMarketWatcher> {
+    const marketWatcher: MidaMarketWatcher = new MidaMarketWatcher({ brokerAccount, });
+
+    marketWatcher.on("tick", listener);
+    await marketWatcher.watch(symbol, { watchTicks: true, });
+
+    return marketWatcher;
+}
+
+/** Shorthand for creating a periods market watcher */
+export async function createPeriodsWatcher ({
+    symbol,
+    timeframes,
+    brokerAccount,
+    listener,
+}: {
+    symbol: string;
+    timeframes: number[];
+    brokerAccount: MidaBrokerAccount;
+    listener: MidaEventListener;
+}): Promise<MidaMarketWatcher> {
+    const marketWatcher: MidaMarketWatcher = new MidaMarketWatcher({ brokerAccount, });
+
+    marketWatcher.on("period-close", listener);
+    await marketWatcher.watch(symbol, {
+        watchPeriods: true,
+        timeframes,
+    });
+
+    return marketWatcher;
 }

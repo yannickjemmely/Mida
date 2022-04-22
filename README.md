@@ -55,9 +55,9 @@ to get help you with your first steps.
 Mida is broker-neutral, this means any broker could be easily integrated in
 the ecosystem, until now all brokers available on the cTrader platform are supported,
 below some of the most long-lived and popular ones,<br>
-**exchanges are coming soon. . .**
+**exchanges are coming soon...**
 <p align="center"> 
-    <img src="images/supported-brokers.svg" alt="" width="855px">
+    <img src="images/supported-brokers.svg" alt="" width="860px">
 </p>
 
 ## Installation
