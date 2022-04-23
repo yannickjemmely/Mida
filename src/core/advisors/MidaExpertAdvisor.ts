@@ -229,13 +229,15 @@ export abstract class MidaExpertAdvisor {
     }
 
     protected async watchTicks (symbol: string): Promise<void> {
-        return this.marketWatcher.watch(symbol, { watchTicks: true, });
+        await this.marketWatcher.watch(symbol, { watchTicks: true, });
     }
 
     protected async watchPeriods (symbol: string, timeframes: number[] | number): Promise<void> {
-        return this.marketWatcher.watch(symbol, {
+        const actualTimeframes: number[] = this.marketWatcher.getSymbolDirectives(symbol)?.timeframes ?? [];
+
+        await this.marketWatcher.watch(symbol, {
             watchPeriods: true,
-            timeframes: Array.isArray(timeframes) ? timeframes : [ timeframes, ],
+            timeframes: [ ...actualTimeframes, ...Array.isArray(timeframes) ? timeframes : [ timeframes, ], ],
         });
     }
 

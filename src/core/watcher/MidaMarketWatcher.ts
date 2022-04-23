@@ -66,10 +66,14 @@ export class MidaMarketWatcher {
     }
 
     public async watch (symbol: string, directives: MidaMarketWatcherDirectives): Promise<void> {
-        const actualDirectives: MidaMarketWatcherDirectives = this.#watchedSymbols.get(symbol) ?? {};
+        const timeframes: number[] | undefined = directives.timeframes;
+
+        if (Array.isArray(timeframes) && timeframes.length > 0) {
+            directives.timeframes = [ ...new Set(timeframes), ];
+        }
 
         await this.#configureSymbolDirectives(symbol, directives);
-        this.#watchedSymbols.set(symbol, mergeOptions(actualDirectives, directives));
+        this.#watchedSymbols.set(symbol, mergeOptions(this.#watchedSymbols.get(symbol) ?? {}, directives));
     }
 
     public async unwatch (symbol: string): Promise<void> {
