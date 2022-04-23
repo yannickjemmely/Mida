@@ -31,7 +31,8 @@ import { GenericObject } from "#utilities/GenericObject";
 import { MidaUtilities } from "#utilities/MidaUtilities";
 import { MidaMarketWatcherDirectives } from "#watcher/MidaMarketWatcherDirectives";
 import { MidaMarketWatcherParameters } from "#watcher/MidaMarketWatcherParameters";
-import utcTimestamp = MidaDateUtilities.utcTimestamp;
+
+const { utcTimestamp, } = MidaDateUtilities;
 
 export class MidaMarketWatcher {
     readonly #brokerAccount: MidaBrokerAccount;
