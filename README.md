@@ -367,11 +367,9 @@ class MyExpertAdvisor extends MidaExpertAdvisor {
     }
 
     async configure () {
-        await this.marketWatcher.watch("EURUSD", {
-            watchTicks: true,
-            watchPeriods: true,
-            timeframes: [ MidaTimeframe.H1, ],
-        });
+        // Every expert advisor has an integrated market watcher
+        await this.watchTicks("BTCUSD");
+        await this.watchPeriods("BTCUSD", MidaTimeframe.H1);
     }
 
     async onTick (tick) {
