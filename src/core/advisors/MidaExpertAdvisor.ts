@@ -196,10 +196,6 @@ export abstract class MidaExpertAdvisor {
         this.notifyListeners("stop");
     }
 
-    public async watchTicks (symbol: string): Promise<void> {
-        return this.marketWatcher.watch(symbol, { watchTicks: true, });
-    }
-
     public on (type: string): Promise<MidaEvent>;
     public on (type: string, listener: MidaEventListener): string;
     public on (type: string, listener?: MidaEventListener): Promise<MidaEvent> | string {
@@ -230,6 +226,21 @@ export abstract class MidaExpertAdvisor {
 
     protected async onStop (): Promise<void> {
         // Silence is golden
+    }
+
+    protected async watchTicks (symbol: string): Promise<void> {
+        return this.marketWatcher.watch(symbol, { watchTicks: true, });
+    }
+
+    protected async watchPeriods (symbol: string, timeframes: number[] | number): Promise<void> {
+        return this.marketWatcher.watch(symbol, {
+            watchPeriods: true,
+            timeframes: Array.isArray(timeframes) ? timeframes : [ timeframes, ],
+        });
+    }
+
+    protected async unwatch (symbol: string): Promise<void> {
+        await this.marketWatcher.unwatch(symbol);
     }
 
     protected async placeOrder (directives: MidaBrokerOrderDirectives): Promise<MidaBrokerOrder> {

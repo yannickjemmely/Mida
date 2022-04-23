@@ -1,7 +1,10 @@
 ### Features
 * Update documentation according to latest API including plugins [#17](https://github.com/Reiryoku-Technologies/Mida/pull/17)
 * Create and expose logging API [#18](https://github.com/Reiryoku-Technologies/Mida/pull/18)
-* **_BREAKING_** Don't expose logging API, remove `new` static method from `MidaIndicator` [#21](https://github.com/Reiryoku-Technologies/Mida/pull/21)
+* **_BREAKING_** Don't expose logger instance, remove `new` static method from `MidaIndicator` [#21](https://github.com/Reiryoku-Technologies/Mida/pull/21)
+* Update documentation, add showcase of supported brokers [#21](https://github.com/Reiryoku-Technologies/Mida/pull/21)
+* Reduce requests sent by `MarketWatcher` to the necessary [#21](https://github.com/Reiryoku-Technologies/Mida/pull/21)
+* **_BREAKING_** Remove `modifyDirectives` method from `MarketWatcher` (use `watch`) [#21](https://github.com/Reiryoku-Technologies/Mida/pull/21)
 
 5.0.1 - 31-03-2022
 ===================

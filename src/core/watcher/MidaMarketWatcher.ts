@@ -33,6 +33,7 @@ import { MidaMarketWatcherDirectives } from "#watcher/MidaMarketWatcherDirective
 import { MidaMarketWatcherParameters } from "#watcher/MidaMarketWatcherParameters";
 
 const { utcTimestamp, } = MidaDateUtilities;
+const { mergeOptions, } = MidaUtilities;
 
 export class MidaMarketWatcher {
     readonly #brokerAccount: MidaBrokerAccount;
@@ -65,23 +66,10 @@ export class MidaMarketWatcher {
     }
 
     public async watch (symbol: string, directives: MidaMarketWatcherDirectives): Promise<void> {
-        if (this.#watchedSymbols.has(symbol)) {
-            return;
-        }
+        const actualDirectives: MidaMarketWatcherDirectives = this.#watchedSymbols.get(symbol) ?? {};
 
         await this.#configureSymbolDirectives(symbol, directives);
-        this.#watchedSymbols.set(symbol, directives);
-    }
-
-    public async modifyDirectives (symbol: string, directives: MidaMarketWatcherDirectives): Promise<void> {
-        const actualDirectives: MidaMarketWatcherDirectives | undefined = this.#watchedSymbols.get(symbol);
-
-        if (!actualDirectives) {
-            return;
-        }
-
-        await this.#configureSymbolDirectives(symbol, directives);
-        this.#watchedSymbols.set(symbol, MidaUtilities.mergeOptions(actualDirectives, directives));
+        this.#watchedSymbols.set(symbol, mergeOptions(actualDirectives, directives));
     }
 
     public async unwatch (symbol: string): Promise<void> {
