@@ -102,10 +102,6 @@ export class MidaMarketWatcher {
     }
 
     async #configureSymbolTimeframe (symbol: string, timeframe: number): Promise<void> {
-        if (this.#lastClosedPeriods.get(symbol)?.has(timeframe)) {
-            return;
-        }
-
         const periods: MidaSymbolPeriod[] = await this.#brokerAccount.getSymbolPeriods(symbol, timeframe);
         const lastPeriod: MidaSymbolPeriod = periods[periods.length - 1];
 
@@ -204,45 +200,4 @@ export class MidaMarketWatcher {
         }, roundMinute.valueOf() + 60000 - actualDate.valueOf() + 3000); // Invoke the function the next round minute plus 3s of margin
         // </periods>
     }
-}
-
-/** Shorthand for creating a ticks market watcher */
-export async function createTicksWatcher ({
-    symbol,
-    brokerAccount,
-    listener,
-}: {
-    symbol: string;
-    brokerAccount: MidaBrokerAccount;
-    listener: MidaEventListener;
-}): Promise<MidaMarketWatcher> {
-    const marketWatcher: MidaMarketWatcher = new MidaMarketWatcher({ brokerAccount, });
-
-    marketWatcher.on("tick", listener);
-    await marketWatcher.watch(symbol, { watchTicks: true, });
-
-    return marketWatcher;
-}
-
-/** Shorthand for creating a periods market watcher */
-export async function createPeriodsWatcher ({
-    symbol,
-    timeframes,
-    brokerAccount,
-    listener,
-}: {
-    symbol: string;
-    timeframes: number[];
-    brokerAccount: MidaBrokerAccount;
-    listener: MidaEventListener;
-}): Promise<MidaMarketWatcher> {
-    const marketWatcher: MidaMarketWatcher = new MidaMarketWatcher({ brokerAccount, });
-
-    marketWatcher.on("period-close", listener);
-    await marketWatcher.watch(symbol, {
-        watchPeriods: true,
-        timeframes,
-    });
-
-    return marketWatcher;
 }
