@@ -5,6 +5,7 @@
 * Update documentation, add showcase of supported brokers [#21](https://github.com/Reiryoku-Technologies/Mida/pull/21)
 * Reduce requests sent by `MarketWatcher` to the necessary [#21](https://github.com/Reiryoku-Technologies/Mida/pull/21)
 * **_BREAKING_** Remove `modifyDirectives` method from `MarketWatcher` (use `watch`) [#21](https://github.com/Reiryoku-Technologies/Mida/pull/21)
+* Add `watchTicks`, `watchPeriods` and `unwatch` protected methods to `MidaExpertAdvisor` [#21](https://github.com/Reiryoku-Technologies/Mida/pull/21)
 
 5.0.1 - 31-03-2022
 ===================
