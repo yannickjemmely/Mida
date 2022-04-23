@@ -228,16 +228,29 @@ export abstract class MidaExpertAdvisor {
         // Silence is golden
     }
 
+    protected async watchTicks (symbol: string): Promise<void> {
+        await this.marketWatcher.watch(symbol, { watchTicks: true, });
+    }
+
+    protected async watchPeriods (symbol: string, timeframes: number[] | number): Promise<void> {
+        const actualTimeframes: number[] = this.marketWatcher.getSymbolDirectives(symbol)?.timeframes ?? [];
+
+        await this.marketWatcher.watch(symbol, {
+            watchPeriods: true,
+            timeframes: [ ...actualTimeframes, ...Array.isArray(timeframes) ? timeframes : [ timeframes, ], ],
+        });
+    }
+
+    protected async unwatch (symbol: string): Promise<void> {
+        await this.marketWatcher.unwatch(symbol);
+    }
+
     protected async placeOrder (directives: MidaBrokerOrderDirectives): Promise<MidaBrokerOrder> {
         const order: MidaBrokerOrder = await this.#brokerAccount.placeOrder(directives);
 
-        this.addOrder(order);
+        this.#orders.push(order);
 
         return order;
-    }
-
-    protected addOrder (order: MidaBrokerOrder): void {
-        // Silence is golden
     }
 
     protected notifyListeners (type: string, descriptor?: GenericObject): void {

@@ -91,7 +91,7 @@ export abstract class MidaIndicator {
         MidaIndicator.#installedIndicators.set(id, indicatorConstructor);
     }
 
-    public static new (id: string, parameters: GenericObject = {}): MidaIndicator {
+    public static create (id: string, parameters: GenericObject = {}): MidaIndicator {
         const indicatorConstructor: ((parameters: GenericObject) => MidaIndicator) | undefined = MidaIndicator.#installedIndicators.get(id);
 
         if (!indicatorConstructor) {
@@ -99,9 +99,5 @@ export abstract class MidaIndicator {
         }
 
         return indicatorConstructor(parameters);
-    }
-
-    public static async calculate (id: string, input: MidaIndicatorIo[]): Promise<MidaIndicatorIo> {
-        return MidaIndicator.new(id).calculate(input);
     }
 }

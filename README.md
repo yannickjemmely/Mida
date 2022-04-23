@@ -31,6 +31,7 @@ to get help you with your first steps.
 
 ## Table of contents
 * [Ecosystem](#ecosystem)
+* [Supported brokers](#supported-brokers)
 * [Installation](#installation)
 * [Usage](#usage)
     * [Account login](#account-login)
@@ -50,6 +51,15 @@ to get help you with your first steps.
 | [Mida Tulipan](https://github.com/Reiryoku-Technologies/Mida-Tulipan)     | [![Image](https://img.shields.io/npm/v/@reiryoku/mida-tulipan)](https://www.npmjs.com/package/@reiryoku/mida-tulipan)        | A plugin providing technical analysis indicators   |
 | [Apollo](https://github.com/Reiryoku-Technologies/Apollo)                 | [![Image](https://img.shields.io/npm/v/@reiryoku/apollo)](https://www.npmjs.com/package/@reiryoku/apollo)                    | A library for getting real-time economic data      |
 
+## Supported brokers
+Mida is broker-neutral, this means any broker could be easily integrated in
+the ecosystem, until now all brokers available on the cTrader platform are supported,
+below some of the most long-lived and popular ones,<br>
+**exchanges are coming soon...**
+<p align="center"> 
+    <img src="images/supported-brokers.svg" alt="" width="858px">
+</p>
+
 ## Installation
 ```console
 npm i @reiryoku/mida @reiryoku/mida-ctrader
@@ -59,13 +69,13 @@ npm i @reiryoku/mida @reiryoku/mida-ctrader
 ### Account login
 How to login into a cTrader broker account.
 ```javascript
-const { Mida, MidaBroker, } = require("@reiryoku/mida");
+const { Mida, } = require("@reiryoku/mida");
 
 // Use the Mida cTrader plugin
 Mida.use(require("@reiryoku/mida-ctrader"));
 
 // Login into any cTrader account
-const myAccount = await MidaBroker.login("cTrader", {
+const myAccount = await Mida.login("cTrader", {
     clientId: "",
     clientSecret: "",
     accessToken: "",
@@ -357,11 +367,9 @@ class MyExpertAdvisor extends MidaExpertAdvisor {
     }
 
     async configure () {
-        await this.marketWatcher.watch("EURUSD", {
-            watchTicks: true,
-            watchPeriods: true,
-            timeframes: [ MidaTimeframe.H1, ],
-        });
+        // Every expert advisor has an integrated market watcher
+        await this.watchTicks("BTCUSD");
+        await this.watchPeriods("BTCUSD", MidaTimeframe.H1);
     }
 
     async onTick (tick) {
@@ -376,10 +384,10 @@ class MyExpertAdvisor extends MidaExpertAdvisor {
 
 How to execute a trading bot.
 ```javascript
-const { MidaBroker, } = require("@reiryoku/mida");
+const { Mida, } = require("@reiryoku/mida");
 const { MyExpertAdvisor, } = require("./my-expert-advisor");
 
-const myAccount = await MidaBroker.login(/* ... */);
+const myAccount = await Mida.login(/* ... */);
 const myAdvisor = new MyExpertAdvisor({ brokerAccount: myAccount, });
 
 await myAdvisor.start();
@@ -396,32 +404,32 @@ Mida.use(require("@reiryoku/mida-tulipan"));
 
 How to calculate SMA (Simple Moving Average).
 ```javascript
-const { MidaIndicator, MidaTimeframe, } = require("@reiryoku/mida");
+const { Mida, MidaTimeframe, } = require("@reiryoku/mida");
 
 // Get latest candlesticks on H1 timeframe
 const candlesticks = await myAccount.getSymbolPeriods("EURUSD", MidaTimeframe.H1);
 const closePrices = candlesticks.map((candlestick) => candlestick.close);
 
 // Calculate RSI on close prices, pass values from oldest to newest
-const smaValues = await MidaIndicator.new("SMA").calculate(closePrices);
+const sma = await Mida.createIndicator("SMA").calculate(closePrices);
 
 // Values are from oldest to newest
-console.log(smaValues);
+console.log(sma);
 ```
 
 How to calculate RSI (Relative Strength Index).
 ```javascript
-const { MidaIndicator, MidaTimeframe, } = require("@reiryoku/mida");
+const { Mida, MidaTimeframe, } = require("@reiryoku/mida");
 
 // Get latest candlesticks on H1 timeframe
 const candlesticks = await myAccount.getSymbolPeriods("BTCUSD", MidaTimeframe.H1);
 const closePrices = candlesticks.map((candlestick) => candlestick.close);
 
 // Calculate RSI on close prices, pass values from oldest to newest
-const rsiValues = await MidaIndicator.new("RSI").calculate(closePrices);
+const rsi = await Mida.createIndicator("RSI").calculate(closePrices);
 
 // Values are from oldest to newest
-console.log(rsiValues);
+console.log(rsi);
 ```
 
 ## License and disclaimer

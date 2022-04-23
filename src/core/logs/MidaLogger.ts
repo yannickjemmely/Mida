@@ -24,28 +24,27 @@ import { MidaLog } from "#logs/MidaLog";
 import { MidaLogNamespace } from "#logs/MidaLogNamespace";
 
 export class MidaLogger {
+    readonly #logs: MidaLog[];
+    #namespace: MidaLogNamespace;
+
     private constructor () {
-        // Silence is golden
+        this.#logs = [];
+        this.#namespace = MidaLogNamespace.ALL;
     }
 
-    /* *** *** *** Reiryoku Technologies *** *** *** */
-
-    static readonly #logs: MidaLog[] = [];
-    static #namespace: MidaLogNamespace = MidaLogNamespace.ALL;
-
-    public static get logs (): MidaLog[] {
-        return [ ...MidaLogger.#logs, ];
+    public get logs (): MidaLog[] {
+        return [ ...this.#logs, ];
     }
 
-    public static get namespace (): MidaLogNamespace {
-        return MidaLogger.#namespace;
+    public get namespace (): MidaLogNamespace {
+        return this.#namespace;
     }
 
-    public static set namespace (namespace: MidaLogNamespace) {
-        MidaLogger.#namespace = namespace;
+    public set namespace (namespace: MidaLogNamespace) {
+        this.#namespace = namespace;
     }
 
-    public static log (message: string, namespace?: MidaLogNamespace): void {
+    public log (message: string, namespace: MidaLogNamespace = MidaLogNamespace.INFO): void {
         if (namespace === MidaLogNamespace.ALL || namespace === MidaLogNamespace.OFF) {
             return;
         }
@@ -55,9 +54,9 @@ export class MidaLogger {
             namespace,
         });
 
-        MidaLogger.#logs.push(log);
+        this.#logs.push(log);
 
-        if (MidaLogger.#namespace < log.namespace) {
+        if (this.#namespace < log.namespace) {
             return;
         }
 
@@ -93,29 +92,23 @@ export class MidaLogger {
         console[logMethodName](log.toString());
     }
 
-    public static debug (message: string): void {
-        MidaLogger.log(message, MidaLogNamespace.DEBUG);
+    public debug (message: string): void {
+        this.log(message, MidaLogNamespace.DEBUG);
     }
 
-    public static info (message: string): void {
-        MidaLogger.log(message, MidaLogNamespace.INFO);
+    public info (message: string): void {
+        this.log(message, MidaLogNamespace.INFO);
     }
 
-    public static warn (message: string): void {
-        MidaLogger.log(message, MidaLogNamespace.WARN);
+    public warn (message: string): void {
+        this.log(message, MidaLogNamespace.WARN);
     }
 
-    public static error (message: string): void {
-        MidaLogger.log(message, MidaLogNamespace.ERROR);
+    public error (message: string): void {
+        this.log(message, MidaLogNamespace.ERROR);
     }
 
-    public static fatal (message: string): void {
-        MidaLogger.log(message, MidaLogNamespace.FATAL);
+    public fatal (message: string): void {
+        this.log(message, MidaLogNamespace.FATAL);
     }
 }
-
-export const debug = MidaLogger.debug;
-export const info = MidaLogger.info;
-export const warn = MidaLogger.warn;
-export const error = MidaLogger.error;
-export const fatal = MidaLogger.fatal;

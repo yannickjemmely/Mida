@@ -21,6 +21,8 @@
 */
 
 import { MidaBroker } from "#brokers/MidaBroker";
+import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
+import { MidaIndicator } from "#indicators/MidaIndicator";
 import { MidaPlugin } from "#plugins/MidaPlugin";
 import { baseActions } from "#plugins/MidaPluginActions";
 import { GenericObject } from "#utilities/GenericObject";
@@ -51,6 +53,14 @@ class Mida {
 
     public static pluginIsInstalled (id: string): boolean {
         return Mida.#installedPlugins.has(id);
+    }
+
+    public static async login (id: string, parameters: GenericObject): Promise<MidaBrokerAccount> {
+        return MidaBroker.login(id, parameters);
+    }
+
+    public static createIndicator (id: string, parameters: GenericObject = {}): MidaIndicator {
+        return MidaIndicator.create(id, parameters);
     }
 }
 
@@ -99,14 +109,7 @@ export { MidaIndicatorIo } from "#indicators/MidaIndicatorIo";
 export { MidaIndicatorParameters } from "#indicators/MidaIndicatorParameters";
 
 export { MidaLog } from "#logs/MidaLog";
-export {
-    MidaLogger,
-    debug,
-    info,
-    warn,
-    error,
-    fatal,
-} from "#logs/MidaLogger";
+export { MidaLogger } from "#logs/MidaLogger";
 export { MidaLogNamespace } from "#logs/MidaLogNamespace";
 export { MidaLogParameters } from "#logs/MidaLogParameters";
 
