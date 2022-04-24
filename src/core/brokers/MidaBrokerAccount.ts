@@ -177,7 +177,7 @@ export abstract class MidaBrokerAccount {
     public abstract getPositionById (id: string): Promise<MidaBrokerPosition | undefined>;
 
     /**
-     * Used to place an order.
+     * Used to place an order
      * @param directives The order directives
      */
     public abstract placeOrder (directives: MidaBrokerOrderDirectives): Promise<MidaBrokerOrder>;
