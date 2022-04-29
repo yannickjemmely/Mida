@@ -1,6 +1,7 @@
 <br><br>
 <p align="center"> 
-    <img src="images/logo.svg" alt="Mida" width="352px">
+    <img src="images/logo-light.svg#gh-light-mode-only" alt="Mida" width="352px">
+    <img src="images/logo-dark.svg#gh-dark-mode-only" alt="Mida" width="352px">
 </p>
 <br>
 <p align="center">
@@ -58,7 +59,7 @@ the ecosystem, until now all brokers available on the cTrader platform are suppo
 below some of the most long-lived and popular ones,<br>
 **exchanges are coming soon...**
 <p align="center"> 
-    <img src="images/supported-brokers.svg" alt="" width="858px">
+    <img src="images/featured-brokers.svg" alt="" width="858px">
 </p>
 
 ## Installation
