@@ -29,8 +29,8 @@ import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 import { GenericObject } from "#utilities/GenericObject";
 import { MidaUtilities } from "#utilities/MidaUtilities";
-import { MidaMarketWatcherDirectives } from "#watcher/MidaMarketWatcherDirectives";
-import { MidaMarketWatcherParameters } from "#watcher/MidaMarketWatcherParameters";
+import { MidaMarketWatcherDirectives } from "#watchers/MidaMarketWatcherDirectives";
+import { MidaMarketWatcherParameters } from "#watchers/MidaMarketWatcherParameters";
 
 const { utcTimestamp, } = MidaDateUtilities;
 const { mergeOptions, } = MidaUtilities;

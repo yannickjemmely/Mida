@@ -21,7 +21,7 @@
 */
 
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
-import { MidaMarketWatcher } from "#watcher/MidaMarketWatcher";
+import { MidaMarketWatcher } from "#watchers/MidaMarketWatcher";
 
 /**
  * The market watcher constructor parameters

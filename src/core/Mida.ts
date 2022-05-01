@@ -164,7 +164,7 @@ export { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 export { GenericObject } from "#utilities/GenericObject";
 export { MidaUtilities } from "#utilities/MidaUtilities";
 
-export { MidaMarketWatcher } from "#watcher/MidaMarketWatcher";
-export { MidaMarketWatcherDirectives } from "#watcher/MidaMarketWatcherDirectives";
-export { MidaMarketWatcherParameters } from "#watcher/MidaMarketWatcherParameters";
+export { MidaMarketWatcher } from "#watchers/MidaMarketWatcher";
+export { MidaMarketWatcherDirectives } from "#watchers/MidaMarketWatcherDirectives";
+export { MidaMarketWatcherParameters } from "#watchers/MidaMarketWatcherParameters";
 // </public-api>

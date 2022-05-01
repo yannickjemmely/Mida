@@ -37,7 +37,7 @@ import { MidaBrokerPositionStatus } from "#positions/MidaBrokerPositionStatus";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 import { GenericObject } from "#utilities/GenericObject";
-import { MidaMarketWatcher } from "#watcher/MidaMarketWatcher";
+import { MidaMarketWatcher } from "#watchers/MidaMarketWatcher";
 
 export abstract class MidaExpertAdvisor {
     readonly #name: string;

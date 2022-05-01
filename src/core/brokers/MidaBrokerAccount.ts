@@ -38,7 +38,7 @@ import { MidaSymbolPriceType } from "#symbols/MidaSymbolPriceType";
 import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 import { GenericObject } from "#utilities/GenericObject";
-import { MidaMarketWatcher } from "#watcher/MidaMarketWatcher";
+import { MidaMarketWatcher } from "#watchers/MidaMarketWatcher";
 
 /** Represents a broker account */
 export abstract class MidaBrokerAccount {
