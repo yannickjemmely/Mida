@@ -30,6 +30,7 @@ import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
 import { MidaBrokerPosition } from "#positions/MidaBrokerPosition";
 import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 
+/** Represents a deal (or trade) */
 export abstract class MidaBrokerDeal {
     readonly #id: string;
     readonly #orderGetter: MidaBrokerOrder | (() => MidaBrokerOrder);
@@ -41,11 +42,10 @@ export abstract class MidaBrokerDeal {
     readonly #requestDate: MidaDate;
     readonly #executionDate?: MidaDate;
     readonly #rejectionDate?: MidaDate;
-    readonly #closedByDeals?: MidaBrokerDeal[];
-    readonly #closedDeals?: MidaBrokerDeal[];
     readonly #executionPrice?: number;
     readonly #grossProfit: number;
     readonly #commission: number;
+    readonly #commissionAsset: string;
     readonly #swap: number;
     readonly #rejectionType?: MidaBrokerDealRejectionType;
     readonly #emitter: MidaEmitter;
@@ -61,11 +61,10 @@ export abstract class MidaBrokerDeal {
         requestDate,
         executionDate,
         rejectionDate,
-        closedByDeals,
-        closedDeals,
         executionPrice,
         grossProfit,
         commission,
+        commissionAsset,
         swap,
         rejectionType,
     }: MidaBrokerDealParameters) {
@@ -79,11 +78,10 @@ export abstract class MidaBrokerDeal {
         this.#requestDate = requestDate;
         this.#executionDate = executionDate;
         this.#rejectionDate = rejectionDate;
-        this.#closedByDeals = closedByDeals;
-        this.#closedDeals = closedDeals;
         this.#executionPrice = executionPrice;
         this.#grossProfit = grossProfit ?? 0;
         this.#commission = commission ?? 0;
+        this.#commissionAsset = commissionAsset;
         this.#swap = swap ?? 0;
         this.#rejectionType = rejectionType;
         this.#emitter = new MidaEmitter();
@@ -133,24 +131,6 @@ export abstract class MidaBrokerDeal {
         return this.#rejectionDate;
     }
 
-    public get closedByDeals (): MidaBrokerDeal[] | undefined {
-        // Only opening deals can be closed
-        if (this.isClosing || !Array.isArray(this.#closedByDeals)) {
-            return undefined;
-        }
-
-        return [ ...this.#closedByDeals, ];
-    }
-
-    public get closedDeals (): MidaBrokerDeal[] | undefined {
-        // Only closing deals can close opening deals
-        if (this.isOpening || !Array.isArray(this.#closedDeals)) {
-            return undefined;
-        }
-
-        return [ ...this.#closedDeals, ];
-    }
-
     public get executionPrice (): number | undefined {
         return this.#executionPrice;
     }
@@ -161,6 +141,10 @@ export abstract class MidaBrokerDeal {
 
     public get commission (): number {
         return this.#commission;
+    }
+
+    public get commissionAsset (): string {
+        return this.#commissionAsset;
     }
 
     public get swap (): number {
@@ -205,17 +189,5 @@ export abstract class MidaBrokerDeal {
         }
 
         return this.#positionGetter;
-    }
-
-    /* *** *** *** Reiryoku Technologies *** *** *** */
-
-    protected onClose (closedByDeal: MidaBrokerDeal): void {
-        // Only opening deals can be closed
-        if (!this.isOpening || !Array.isArray(this.#closedByDeals)) {
-            return;
-        }
-
-        this.#closedByDeals.push(closedByDeal);
-        this.#emitter.notifyListeners("close", { closedByDeal, });
     }
 }

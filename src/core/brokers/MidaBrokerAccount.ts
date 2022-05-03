@@ -22,6 +22,7 @@
 
 import { MidaAsset } from "#assets/MidaAsset";
 import { MidaBroker } from "#brokers/MidaBroker";
+import { MidaBrokerAccountAssetStatement } from "#brokers/MidaBrokerAccountAssetStatement";
 import { MidaBrokerAccountOperativity } from "#brokers/MidaBrokerAccountOperativity";
 import { MidaBrokerAccountParameters } from "#brokers/MidaBrokerAccountParameters";
 import { MidaBrokerAccountPositionAccounting } from "#brokers/MidaBrokerAccountPositionAccounting";
@@ -34,8 +35,6 @@ import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
 import { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
 import { MidaBrokerPosition } from "#positions/MidaBrokerPosition";
 import { MidaSymbol } from "#symbols/MidaSymbol";
-import { MidaSymbolPriceType } from "#symbols/MidaSymbolPriceType";
-import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 import { GenericObject } from "#utilities/GenericObject";
 import { MidaMarketWatcher } from "#watchers/MidaMarketWatcher";
@@ -46,8 +45,7 @@ export abstract class MidaBrokerAccount {
     readonly #broker: MidaBroker;
     readonly #creationDate: MidaDate;
     readonly #ownerName: string;
-    readonly #depositCurrencyIso: string;
-    readonly #depositCurrencyDigits: number;
+    readonly #depositAsset: string;
     readonly #operativity: MidaBrokerAccountOperativity;
     readonly #positionAccounting: MidaBrokerAccountPositionAccounting;
     readonly #indicativeLeverage: number;
@@ -58,8 +56,7 @@ export abstract class MidaBrokerAccount {
         broker,
         creationDate,
         ownerName,
-        depositCurrencyIso,
-        depositCurrencyDigits,
+        depositAsset,
         operativity,
         positionAccounting,
         indicativeLeverage,
@@ -68,113 +65,86 @@ export abstract class MidaBrokerAccount {
         this.#broker = broker;
         this.#creationDate = creationDate;
         this.#ownerName = ownerName;
-        this.#depositCurrencyIso = depositCurrencyIso;
-        this.#depositCurrencyDigits = depositCurrencyDigits;
+        this.#depositAsset = depositAsset;
         this.#operativity = operativity;
         this.#positionAccounting = positionAccounting;
         this.#indicativeLeverage = indicativeLeverage;
         this.#emitter = new MidaEmitter();
     }
 
-    /** The account id */
+    /** The id */
     public get id (): string {
         return this.#id;
     }
 
-    /** The account broker */
+    /** The broker */
     public get broker (): MidaBroker {
         return this.#broker;
     }
 
-    /** The account creation date */
+    /** The creation date */
     public get creationDate (): MidaDate {
         return this.#creationDate;
     }
 
-    /** The account owner name, might be empty due to privacy regulations */
+    /** The owner name, might be empty due to privacy regulations */
     public get ownerName (): string {
         return this.#ownerName;
     }
 
-    /** The account deposit currency ISO code */
-    public get depositCurrencyIso (): string {
-        return this.#depositCurrencyIso;
+    /** The deposit asset */
+    public get depositAsset (): string {
+        return this.#depositAsset;
     }
 
-    /** The account deposit currency digits */
-    public get depositCurrencyDigits (): number {
-        return this.#depositCurrencyDigits;
-    }
-
-    /** The account operativity (demo or real) */
+    /** The operativity (demo or real) */
     public get operativity (): MidaBrokerAccountOperativity {
         return this.#operativity;
     }
 
-    /** The account position accounting (hedged or netted) */
+    /** The positioning (hedged or netted) */
     public get positionAccounting (): MidaBrokerAccountPositionAccounting {
         return this.#positionAccounting;
     }
 
-    /** The account indicative leverage */
+    /** The indicative leverage */
     public get indicativeLeverage (): number {
         return this.#indicativeLeverage;
     }
 
-    /** Indicates if the account operativity is demo */
+    /** Indicates if the operativity is demo */
     public get isDemo (): boolean {
         return this.operativity === MidaBrokerAccountOperativity.DEMO;
     }
 
-    /** Indicates if the account position accounting is hedged */
+    /** Indicates if the positioning is hedged */
     public get isHedged (): boolean {
         return this.#positionAccounting === MidaBrokerAccountPositionAccounting.HEDGED;
     }
 
-    /** Used to get the account balance */
+    /** Used to get the deposit asset balance */
     public abstract getBalance (): Promise<number>;
 
-    /** Used to get the account equity */
+    /** Used to get the assets balance */
+    public abstract getBalanceSheet (): Promise<MidaBrokerAccountAssetStatement[]>;
+
+    /** Used to get the deposit asset balance if all the owned assets were liquidated */
     public abstract getEquity (): Promise<number>;
 
-    /** Used to get the account used margin */
+    /** Used to get the used margin */
     public abstract getUsedMargin (): Promise<number>;
 
-    /** Used to get the account orders */
-    public abstract getOrders (fromTimestamp: number, toTimestamp: number): Promise<MidaBrokerOrder[]>;
+    /** Used to get the orders */
+    public abstract getOrders (symbol: string): Promise<MidaBrokerOrder[]>;
 
-    /** Used to get the account pending orders */
+    /** Used to get the pending orders */
     public abstract getPendingOrders (): Promise<MidaBrokerOrder[]>;
 
-    /** Used to get the account deals */
-    public abstract getDeals (fromTimestamp: number, toTimestamp: number): Promise<MidaBrokerDeal[]>;
+    /** Used to get the deals (or trades) */
+    public abstract getDeals (symbol: string): Promise<MidaBrokerDeal[]>;
 
-    /** Used to get the account positions */
-    public abstract getPositions (fromTimestamp: number, toTimestamp: number): Promise<MidaBrokerPosition[]>;
-
-    /** Used to get the account open positions */
+    /** Used to get the open positions */
     public abstract getOpenPositions (): Promise<MidaBrokerPosition[]>;
-
-    /** Used to get the account available assets */
-    public abstract getAssets (): Promise<MidaAsset[]>;
-
-    /**
-     * Used to get an order by its id
-     * @param id The order id
-     */
-    public abstract getOrderById (id: string): Promise<MidaBrokerOrder | undefined>;
-
-    /**
-     * Used to get a deal by its id
-     * @param id The order id
-     */
-    public abstract getDealById (id: string): Promise<MidaBrokerDeal | undefined>;
-
-    /**
-     * Used to get a position by its id
-     * @param id The order id
-     */
-    public abstract getPositionById (id: string): Promise<MidaBrokerPosition | undefined>;
 
     /**
      * Used to place an order
@@ -182,7 +152,28 @@ export abstract class MidaBrokerAccount {
      */
     public abstract placeOrder (directives: MidaBrokerOrderDirectives): Promise<MidaBrokerOrder>;
 
-    /** Used to get the account available symbols */
+    /** Used to get the available assets */
+    public abstract getAssets (): Promise<string[]>;
+
+    /**
+     * Used to get an asset by its string representation
+     * @param asset The string representation of the symbol
+     */
+    public abstract getAsset (asset: string): Promise<MidaAsset>;
+
+    /**
+     * Used to get the balance of an asset
+     * @param asset The string representation of the symbol
+     */
+    public abstract getAssetStatement (asset: string): Promise<MidaBrokerAccountAssetStatement>;
+
+    /**
+     * Used to get the deposit address of a crypto asset
+     * @param asset The string representation of the symbol
+     */
+    public abstract getAssetDepositAddress (asset: string): Promise<string>;
+
+    /** Used to get the available symbols */
     public abstract getSymbols (): Promise<string[]>;
 
     /**
@@ -201,15 +192,8 @@ export abstract class MidaBrokerAccount {
      * Used to get the most recent periods of a symbol
      * @param symbol The string representation of the symbol
      * @param timeframe The periods timeframe
-     * @param priceType The periods priceType
      */
-    public abstract getSymbolPeriods (symbol: string, timeframe: number, priceType?: MidaSymbolPriceType): Promise<MidaSymbolPeriod[]>;
-
-    /**
-     * Used to get the latest symbol tick
-     * @param symbol The string representation of the symbol
-     */
-    public abstract getSymbolLastTick (symbol: string): Promise<MidaSymbolTick>;
+    public abstract getSymbolPeriods (symbol: string, timeframe: number): Promise<MidaSymbolPeriod[]>;
 
     /**
      * Used to get the latest symbol bid quote
@@ -224,24 +208,26 @@ export abstract class MidaBrokerAccount {
     public abstract getSymbolAsk (symbol: string): Promise<number>;
 
     /**
+     * Used to get the average price of a symbol
+     @param symbol The string representation of the symbol
+     */
+    public abstract getSymbolAveragePrice (symbol: string): Promise<number>;
+
+    /**
      * Used to watch the ticks of a symbol
-     * Prefer using a market watcher instead
      * @see MidaMarketWatcher
      * @param symbol The string representation of the symbol
      */
     public abstract watchSymbolTicks (symbol: string): Promise<void>;
 
-    /** Used to disconnect the account */
-    public abstract logout (): Promise<void>;
-
-    /** Used to get the account free margin */
+    /** Used to get the free margin */
     public async getFreeMargin (): Promise<number> {
         const [ equity, usedMargin, ]: number[] = await Promise.all([ this.getEquity(), this.getUsedMargin(), ]);
 
         return equity - usedMargin;
     }
 
-    /** Used to get the account margin level, returns NaN if no margin is used */
+    /** Used to get the margin level, returns NaN if no margin is used */
     public async getMarginLevel (): Promise<number> {
         const [ equity, usedMargin, ]: number[] = await Promise.all([ this.getEquity(), this.getUsedMargin(), ]);
 
@@ -269,9 +255,4 @@ export abstract class MidaBrokerAccount {
     protected notifyListeners (type: string, descriptor?: GenericObject): void {
         this.#emitter.notifyListeners(type, descriptor);
     }
-
-    // protected onOrder (): void;
-    // protected onDeal (): void;
-    // protected onDeposit (): void;
-    // protected onWithdraw (): void;
 }

@@ -24,7 +24,6 @@ import { MidaAsset } from "#assets/MidaAsset";
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 import { MidaSymbolCategory } from "#symbols/MidaSymbolCategory";
 import { MidaSymbolParameters } from "#symbols/MidaSymbolParameters";
-import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
 import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 import { GenericObject } from "#utilities/GenericObject";
 
@@ -120,11 +119,6 @@ export class MidaSymbol {
         return this.#lotUnits;
     }
 
-    /** Used to get the latest symbol tick */
-    public async getLastTick (): Promise<MidaSymbolTick | undefined> {
-        return this.#brokerAccount.getSymbolLastTick(this.#symbol);
-    }
-
     /** Used to get the latest symbol bid quote */
     public async getBid (): Promise<number> {
         return this.#brokerAccount.getSymbolBid(this.#symbol);
@@ -149,9 +143,3 @@ export class MidaSymbol {
         this.#emitter.notifyListeners(type, descriptor);
     }
 }
-
-/*
-export interface MidaSymbol {
-    on (type: "tick", listener?: MidaEventListener): Promise<MidaEvent> | string;
-}
-*/
