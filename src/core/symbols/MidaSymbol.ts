@@ -20,20 +20,19 @@
  * THE SOFTWARE.
 */
 
-import { MidaAsset } from "#assets/MidaAsset";
 import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 import { MidaSymbolCategory } from "#symbols/MidaSymbolCategory";
 import { MidaSymbolParameters } from "#symbols/MidaSymbolParameters";
 import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 import { GenericObject } from "#utilities/GenericObject";
 
-/** Represents a symbol */
+/** Represents a */
 export class MidaSymbol {
     readonly #symbol: string;
     readonly #brokerAccount: MidaBrokerAccount;
     readonly #description: string;
-    readonly #baseAsset: MidaAsset;
-    readonly #quoteAsset: MidaAsset;
+    readonly #baseAsset: string;
+    readonly #quoteAsset: string;
     readonly #type: MidaSymbolCategory;
     readonly #digits: number;
     readonly #leverage: number;
@@ -69,72 +68,77 @@ export class MidaSymbol {
         this.#emitter = new MidaEmitter();
     }
 
-    /** The symbol broker account */
+    /** The broker account */
     public get brokerAccount (): MidaBrokerAccount {
         return this.#brokerAccount;
     }
 
-    /** The symbol description */
+    /** The description */
     public get description (): string {
         return this.#description;
     }
 
-    /** The symbol base asset */
-    public get baseAsset (): MidaAsset {
+    /** The base asset */
+    public get baseAsset (): string {
         return this.#baseAsset;
     }
 
-    /** The symbol quote asset */
-    public get quoteAsset (): MidaAsset {
+    /** The quote asset */
+    public get quoteAsset (): string {
         return this.#quoteAsset;
     }
 
-    /** The symbol type */
+    /** The type */
     public get type (): MidaSymbolCategory {
         return this.#type;
     }
 
-    /** The symbol digits */
+    /** The digits */
     public get digits (): number {
         return this.#digits;
     }
 
-    /** The symbol leverage */
+    /** The leverage */
     public get leverage (): number {
         return this.#leverage;
     }
 
-    /** The symbol minimum lots order */
+    /** The minimum order lots */
     public get minLots (): number {
         return this.#minLots;
     }
 
-    /** The symbol maximum lots order */
+    /** The maximum order lots */
     public get maxLots (): number {
         return this.#maxLots;
     }
 
-    /** The symbol units for one lot */
+    /** The units for one lot */
     public get lotUnits (): number {
         return this.#lotUnits;
     }
 
-    /** Used to get the latest symbol bid quote */
+    /** Used to get the current bid price */
     public async getBid (): Promise<number> {
         return this.#brokerAccount.getSymbolBid(this.#symbol);
     }
 
-    /** Used to get the latest symbol ask quote */
+    /** Used to get the current ask price */
     public async getAsk (): Promise<number> {
         return this.#brokerAccount.getSymbolAsk(this.#symbol);
     }
 
-    /** Used to know if the symbol market is open */
+    /** Used to get the current average price */
+    public async getAveragePrice (): Promise<number> {
+        return this.#brokerAccount.getSymbolAveragePrice(this.#symbol);
+    }
+
+    /** Used to know if the market is open */
     public async isMarketOpen (): Promise<boolean> {
         return this.#brokerAccount.isSymbolMarketOpen(this.#symbol);
     }
 
-    /** Used to get the symbol represented as string */
+    /** Used to get the string representation */
     public toString (): string {
         return this.#symbol;
     }

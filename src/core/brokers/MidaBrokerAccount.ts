@@ -196,19 +196,19 @@ export abstract class MidaBrokerAccount {
     public abstract getSymbolPeriods (symbol: string, timeframe: number): Promise<MidaSymbolPeriod[]>;
 
     /**
-     * Used to get the latest symbol bid quote
+     * Used to get the current bid price of a symbol
      * @param symbol The string representation of the symbol
      */
     public abstract getSymbolBid (symbol: string): Promise<number>;
 
     /**
-     * Used to get the latest symbol ask quote
+     * Used to get the current ask price of a symbol
      * @param symbol The string representation of the symbol
      */
     public abstract getSymbolAsk (symbol: string): Promise<number>;
 
     /**
-     * Used to get the average price of a symbol
+     * Used to get the current average price of a symbol
      @param symbol The string representation of the symbol
      */
     public abstract getSymbolAveragePrice (symbol: string): Promise<number>;
