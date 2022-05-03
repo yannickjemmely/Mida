@@ -65,8 +65,8 @@ export class MidaSymbolQuotation implements IMidaCloneable, IMidaEquatable {
         return this.#ask;
     }
 
-    /** The quotation mid price */
-    public get mid (): number {
+    /** The quotation average price */
+    public get averagePrice (): number {
         return (this.#bid + this.#ask) / 2;
     }
 

@@ -104,6 +104,11 @@ export class MidaSymbolTick implements IMidaCloneable, IMidaEquatable {
         return this.#quotation.ask;
     }
 
+    /** The tick average price */
+    public get averagePrice (): number {
+        return this.#quotation.averagePrice;
+    }
+
     /** The tick spread */
     public get spread (): number {
         return this.#quotation.spread;
