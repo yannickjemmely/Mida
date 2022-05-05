@@ -214,7 +214,7 @@ export function getTradesFromOrders (orders: MidaOrder[]): MidaTrade[] {
     const trades: MidaTrade[] = [];
 
     for (const order of orders) {
-        trades.push(...order.deals);
+        trades.push(...order.trades);
     }
 
     return trades;

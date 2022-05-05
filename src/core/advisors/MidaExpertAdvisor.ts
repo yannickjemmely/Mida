@@ -20,21 +20,20 @@
  * THE SOFTWARE.
 */
 
-import { MidaExpertAdvisorComponent } from "#advisors/MidaExpertAdvisorComponent";
-import { MidaExpertAdvisorComponentUtilities } from "#advisors/MidaExpertAdvisorComponentUtilities";
-import { MidaExpertAdvisorParameters } from "#advisors/MidaExpertAdvisorParameters";
 import { MidaTradingAccount } from "#accounts/MidaTradingAccount";
-import { MidaTrade } from "#deals/MidaTrade";
-import { MidaBrokerDealUtilities } from "#deals/MidaBrokerDealUtilities";
+import { MidaExpertAdvisorComponent, filterEnabledComponents } from "#advisors/MidaExpertAdvisorComponent";
+import { MidaExpertAdvisorParameters } from "#advisors/MidaExpertAdvisorParameters";
 import { MidaEvent } from "#events/MidaEvent";
 import { MidaEventListener } from "#events/MidaEventListener";
-import { MidaOrder } from "#orders/MidaOrder";
+import { MidaOrder, filterExecutedOrders } from "#orders/MidaOrder";
 import { MidaOrderDirectives } from "#orders/MidaOrderDirectives";
-import { MidaBrokerOrderUtilities } from "#orders/MidaBrokerOrderUtilities";
 import { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
-import { MidaPosition } from "#positions/MidaPosition";
-import { MidaPositionStatusType } from "#positions/MidaPositionStatusType";
 import { MidaTick } from "#ticks/MidaTick";
+import {
+    MidaTrade,
+    filterExecutedTrades,
+    getTradesFromOrders,
+} from "#trades/MidaTrade";
 import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 import { GenericObject } from "#utilities/GenericObject";
 import { MidaMarketWatcher } from "#watchers/MidaMarketWatcher";
@@ -43,7 +42,7 @@ export abstract class MidaExpertAdvisor {
     readonly #name: string;
     readonly #description: string;
     readonly #version: string;
-    readonly #brokerAccount: MidaTradingAccount;
+    readonly #tradingAccount: MidaTradingAccount;
     #isOperative: boolean;
     readonly #orders: MidaOrder[];
     readonly #capturedTicks: MidaTick[];
@@ -63,7 +62,7 @@ export abstract class MidaExpertAdvisor {
         this.#name = name;
         this.#description = description ?? "";
         this.#version = version;
-        this.#brokerAccount = brokerAccount;
+        this.#tradingAccount = brokerAccount;
         this.#isOperative = false;
         this.#orders = [];
         this.#capturedTicks = [];
@@ -87,8 +86,8 @@ export abstract class MidaExpertAdvisor {
         return this.#version;
     }
 
-    public get brokerAccount (): MidaTradingAccount {
-        return this.#brokerAccount;
+    public get tradingAccount (): MidaTradingAccount {
+        return this.#tradingAccount;
     }
 
     public get isOperative (): boolean {
@@ -99,8 +98,8 @@ export abstract class MidaExpertAdvisor {
         return [ ...this.#orders, ];
     }
 
-    public get deals (): MidaTrade[] {
-        return MidaBrokerDealUtilities.getDealsFromOrders(this.#orders);
+    public get trades (): MidaTrade[] {
+        return getTradesFromOrders(this.#orders);
     }
 
     public get components (): MidaExpertAdvisorComponent[] {
@@ -116,40 +115,15 @@ export abstract class MidaExpertAdvisor {
     }
 
     public get enabledComponents (): MidaExpertAdvisorComponent[] {
-        return MidaExpertAdvisorComponentUtilities.filterEnabledComponents(this.#components);
+        return filterEnabledComponents(this.#components);
     }
 
     public get executedOrders (): MidaOrder[] {
-        return MidaBrokerOrderUtilities.filterExecutedOrders(this.#orders);
+        return filterExecutedOrders(this.#orders);
     }
 
-    public get executedDeals (): MidaTrade[] {
-        return MidaBrokerDealUtilities.filterExecutedDeals(this.deals);
-    }
-
-    public get positions (): MidaPosition[] {
-        const positions: Map<string, MidaPosition> = new Map();
-
-        for (const order of this.executedOrders) {
-            const position: MidaPosition = order.position as MidaPosition;
-
-            positions.set(position.id, position);
-        }
-
-        return [ ...positions.values(), ];
-    }
-
-    public get openPositions (): MidaPosition[] {
-        const positions: MidaPosition[] = this.positions;
-        const openPositions: MidaPosition[] = [];
-
-        for (const position of positions) {
-            if (position.status === MidaPositionStatusType.OPEN) {
-                openPositions.push(position);
-            }
-        }
-
-        return openPositions;
+    public get executedTrades (): MidaTrade[] {
+        return filterExecutedTrades(this.trades);
     }
 
     public async start (): Promise<void> {
@@ -246,7 +220,7 @@ export abstract class MidaExpertAdvisor {
     }
 
     protected async placeOrder (directives: MidaOrderDirectives): Promise<MidaOrder> {
-        const order: MidaOrder = await this.#brokerAccount.placeOrder(directives);
+        const order: MidaOrder = await this.#tradingAccount.placeOrder(directives);
 
         this.#orders.push(order);
 

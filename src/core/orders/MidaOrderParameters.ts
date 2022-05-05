@@ -36,6 +36,7 @@ import { MidaTrade } from "#trades/MidaTrade";
  */
 export type MidaOrderParameters = {
     id: string;
+    tradingAccount: MidaTradingAccount;
     symbol: string;
     requestedVolume: number;
     directionType: MidaOrderDirectionType;
@@ -46,8 +47,7 @@ export type MidaOrderParameters = {
     creationDate?: MidaDate;
     lastUpdateDate?: MidaDate;
     timeInForceType: MidaOrderTimeInForceType;
-    trades?: MidaTrade[];
+    trades: MidaTrade[];
     rejectionType?: MidaOrderRejectionType;
     isStopOut?: boolean;
-    tradingAccount: MidaTradingAccount;
 };

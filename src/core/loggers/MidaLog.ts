@@ -21,8 +21,8 @@
 */
 
 import { MidaDate } from "#dates/MidaDate";
-import { MidaLogNamespace } from "#logs/MidaLogNamespace";
-import { MidaLogParameters } from "#logs/MidaLogParameters";
+import { MidaLogNamespace } from "#loggers/MidaLogNamespace";
+import { MidaLogParameters } from "#loggers/MidaLogParameters";
 
 export class MidaLog {
     readonly #message: string;

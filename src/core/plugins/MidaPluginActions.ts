@@ -20,12 +20,12 @@
  * THE SOFTWARE.
 */
 
-import { MidaTradingService } from "#brokers/MidaTradingService";
+import { MidaTradingPlatform } from "#platforms/MidaTradingPlatform";
 import { MidaIndicator } from "#indicators/MidaIndicator";
 import { GenericObject } from "#utilities/GenericObject";
 
 export type MidaPluginBaseActions = {
-    addBroker (id: string, broker: MidaTradingService): void;
+    addBroker (id: string, platform: MidaTradingPlatform): void;
     addIndicator (id: string, indicatorConstructor: (parameters: GenericObject) => MidaIndicator): void;
 };
 
@@ -34,8 +34,8 @@ export type MidaPluginActions = MidaPluginBaseActions;
 /* *** *** *** Reiryoku Technologies *** *** *** */
 
 export const baseActions: MidaPluginActions = {
-    addBroker (id: string, broker: MidaTradingService): void {
-        MidaTradingService.add(id, broker);
+    addBroker (id: string, platform: MidaTradingPlatform): void {
+        MidaTradingPlatform.add(id, platform);
     },
 
     addIndicator (id: string, indicatorConstructor: (parameters: GenericObject) => MidaIndicator): void {

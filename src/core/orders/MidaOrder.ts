@@ -32,9 +32,7 @@ import { MidaOrderPurposeType } from "#orders/MidaOrderPurposeType";
 import { MidaOrderRejectionType } from "#orders/MidaOrderRejectionType";
 import { MidaOrderStatusType } from "#orders/MidaOrderStatusType";
 import { MidaOrderTimeInForceType } from "#orders/MidaOrderTimeInForceType";
-import { MidaPosition } from "#positions/MidaPosition";
-import { MidaBrokerDealUtilities } from "#trades/MidaBrokerDealUtilities";
-import { MidaTrade } from "#trades/MidaTrade";
+import { filterExecutedTrades, MidaTrade } from "#trades/MidaTrade";
 import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 
 /** Represents an order */
@@ -43,16 +41,15 @@ export abstract class MidaOrder {
     readonly #tradingAccount: MidaTradingAccount;
     readonly #symbol: string;
     #requestedVolume: number;
-    readonly #direction: MidaOrderDirectionType;
-    readonly #purpose: MidaOrderPurposeType;
+    readonly #directionType: MidaOrderDirectionType;
+    readonly #purposeType: MidaOrderPurposeType;
     #limitPrice?: number;
     #stopPrice?: number;
-    #status: MidaOrderStatusType;
+    #statusType: MidaOrderStatusType;
     #creationDate?: MidaDate;
     #lastUpdateDate?: MidaDate;
-    readonly #timeInForce: MidaOrderTimeInForceType;
-    readonly #deals: MidaTrade[];
-    #positionGetter?: MidaPosition | (() => MidaPosition);
+    readonly #timeInForceType: MidaOrderTimeInForceType;
+    readonly #trades: MidaTrade[];
     #rejectionType?: MidaOrderRejectionType;
     readonly #isStopOut: boolean;
     readonly #emitter: MidaEmitter;
@@ -62,16 +59,15 @@ export abstract class MidaOrder {
         tradingAccount,
         symbol,
         requestedVolume,
-        direction,
-        purpose,
+        directionType,
+        purposeType,
         limitPrice,
         stopPrice,
-        status,
+        statusType,
         creationDate,
         lastUpdateDate,
-        timeInForce,
-        deals,
-        position,
+        timeInForceType,
+        trades,
         rejectionType,
         isStopOut,
     }: MidaOrderParameters) {
@@ -79,16 +75,15 @@ export abstract class MidaOrder {
         this.#tradingAccount = tradingAccount;
         this.#symbol = symbol;
         this.#requestedVolume = requestedVolume;
-        this.#direction = direction;
-        this.#purpose = purpose;
+        this.#directionType = directionType;
+        this.#purposeType = purposeType;
         this.#limitPrice = limitPrice;
         this.#stopPrice = stopPrice;
-        this.#status = status;
+        this.#statusType = statusType;
         this.#creationDate = creationDate;
         this.#lastUpdateDate = lastUpdateDate;
-        this.#timeInForce = timeInForce;
-        this.#deals = deals ?? [];
-        this.#positionGetter = position;
+        this.#timeInForceType = timeInForceType;
+        this.#trades = trades;
         this.#rejectionType = rejectionType;
         this.#isStopOut = isStopOut ?? false;
         this.#emitter = new MidaEmitter();
@@ -114,12 +109,12 @@ export abstract class MidaOrder {
         return this.#requestedVolume;
     }
 
-    public get direction (): MidaOrderDirectionType {
-        return this.#direction;
+    public get directionType (): MidaOrderDirectionType {
+        return this.#directionType;
     }
 
-    public get purpose (): MidaOrderPurposeType {
-        return this.#purpose;
+    public get purposeType (): MidaOrderPurposeType {
+        return this.#purposeType;
     }
 
     public get limitPrice (): number | undefined {
@@ -130,8 +125,8 @@ export abstract class MidaOrder {
         return this.#stopPrice;
     }
 
-    public get status (): MidaOrderStatusType {
-        return this.#status;
+    public get statusType (): MidaOrderStatusType {
+        return this.#statusType;
     }
 
     public get creationDate (): MidaDate | undefined {
@@ -150,24 +145,12 @@ export abstract class MidaOrder {
         this.#lastUpdateDate = lastUpdateDate;
     }
 
-    public get timeInForce (): MidaOrderTimeInForceType {
-        return this.#timeInForce;
+    public get timeInForceType (): MidaOrderTimeInForceType {
+        return this.#timeInForceType;
     }
 
-    public get deals (): MidaTrade[] {
-        return [ ...this.#deals, ];
-    }
-
-    public get executedDeals (): MidaTrade[] {
-        return MidaBrokerDealUtilities.filterExecutedDeals(this.#deals);
-    }
-
-    public get position (): MidaPosition | undefined {
-        return this.#position;
-    }
-
-    protected set position (position: MidaPosition | undefined) {
-        this.#position = position;
+    public get trades (): MidaTrade[] {
+        return this.#trades;
     }
 
     public get rejectionType (): MidaOrderRejectionType | undefined {
@@ -183,14 +166,18 @@ export abstract class MidaOrder {
     }
 
     public get isExecuted (): boolean {
-        return this.#status === MidaOrderStatusType.EXECUTED;
+        return this.#statusType === MidaOrderStatusType.EXECUTED;
+    }
+
+    public get executedTrades (): MidaTrade[] {
+        return filterExecutedTrades(this.#trades);
     }
 
     public get filledVolume (): number {
         let filledVolume: number = 0;
 
-        for (const deal of this.executedDeals) {
-            filledVolume += deal.volume;
+        for (const trade of this.executedTrades) {
+            filledVolume += trade.volume;
         }
 
         return filledVolume;
@@ -215,21 +202,21 @@ export abstract class MidaOrder {
 
         let priceVolumeProduct: number = 0;
 
-        for (const deal of this.executedDeals) {
-            const executionPrice: number = deal.executionPrice as number;
+        for (const trade of this.executedTrades) {
+            const executionPrice: number = trade.executionPrice as number;
 
-            priceVolumeProduct += executionPrice * deal.volume;
+            priceVolumeProduct += executionPrice * trade.volume;
         }
 
         return priceVolumeProduct / this.filledVolume;
     }
 
     public get isOpening (): boolean {
-        return this.#purpose === MidaOrderPurposeType.OPEN;
+        return this.#purposeType === MidaOrderPurposeType.OPEN;
     }
 
     public get isClosing (): boolean {
-        return this.#purpose === MidaOrderPurposeType.CLOSE;
+        return this.#purposeType === MidaOrderPurposeType.CLOSE;
     }
 
     public get executionType (): MidaOrderExecutionType {
@@ -245,19 +232,7 @@ export abstract class MidaOrder {
     }
 
     public get isRejected (): boolean {
-        return this.#status === MidaOrderStatusType.REJECTED;
-    }
-
-    get #position (): MidaPosition | undefined {
-        if (typeof this.#positionGetter === "function") {
-            return this.#positionGetter();
-        }
-
-        return this.#positionGetter;
-    }
-
-    set #position (position: MidaPosition | (() => MidaPosition) | undefined) {
-        this.#positionGetter = position;
+        return this.#statusType === MidaOrderStatusType.REJECTED;
     }
 
     public abstract cancel (): Promise<void>;
@@ -278,15 +253,15 @@ export abstract class MidaOrder {
 
     /* *** *** *** Reiryoku Technologies *** *** *** */
 
-    protected onStatusChange (status: MidaOrderStatusType): void {
-        if (this.#status === status) {
+    protected onStatusChange (statusType: MidaOrderStatusType): void {
+        if (this.#statusType === statusType) {
             return;
         }
 
-        const previousStatus: MidaOrderStatusType = this.#status;
-        this.#status = status;
+        const previousStatusType: MidaOrderStatusType = this.#statusType;
+        this.#statusType = statusType;
 
-        switch (status) {
+        switch (statusType) {
             case MidaOrderStatusType.REJECTED: {
                 this.#emitter.notifyListeners("reject");
 
@@ -319,7 +294,7 @@ export abstract class MidaOrder {
             }
         }
 
-        this.#emitter.notifyListeners("status-change", { status, previousStatus, });
+        this.#emitter.notifyListeners("status-change", { status: statusType, previousStatus: previousStatusType, });
     }
 
     protected onPendingPriceChange (price: number): void {
@@ -343,8 +318,32 @@ export abstract class MidaOrder {
         this.#emitter.notifyListeners("pending-volume-change", { volume, });
     }
 
-    protected onDeal (deal: MidaTrade): void {
-        this.#deals.push(deal);
-        this.#emitter.notifyListeners("deal", { deal, });
+    protected onTrade (trade: MidaTrade): void {
+        this.#trades.push(trade);
+        this.#emitter.notifyListeners("trade", { trade, });
     }
+}
+
+export function filterPendingOrders (orders: MidaOrder[]): MidaOrder[] {
+    const pendingOrders: MidaOrder[] = [];
+
+    for (const order of orders) {
+        if (order.statusType === MidaOrderStatusType.PENDING) {
+            pendingOrders.push(order);
+        }
+    }
+
+    return pendingOrders;
+}
+
+export function filterExecutedOrders (orders: MidaOrder[]): MidaOrder[] {
+    const executedOrders: MidaOrder[] = [];
+
+    for (const order of orders) {
+        if (order.isExecuted) {
+            executedOrders.push(order);
+        }
+    }
+
+    return executedOrders;
 }

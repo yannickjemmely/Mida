@@ -20,7 +20,7 @@
  * THE SOFTWARE.
 */
 
-import { MidaLogNamespace } from "#logs/MidaLogNamespace";
+import { MidaLogNamespace } from "#loggers/MidaLogNamespace";
 
 export type MidaLogParameters = {
     message: string;
