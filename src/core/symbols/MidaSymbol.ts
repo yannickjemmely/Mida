@@ -25,7 +25,7 @@ import { MidaSymbolParameters } from "#symbols/MidaSymbolParameters";
 import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 import { GenericObject } from "#utilities/GenericObject";
 
-/** Represents a */
+/** Represents a symbol */
 export class MidaSymbol {
     readonly #symbol: string;
     readonly #brokerAccount: MidaTradingAccount;
@@ -124,7 +124,7 @@ export class MidaSymbol {
         return this.#brokerAccount.getSymbolAveragePrice(this.#symbol);
     }
 
-    /** Used to know if the market is open */
+    /** Indicates if the market is open */
     public async isMarketOpen (): Promise<boolean> {
         return this.#brokerAccount.isSymbolMarketOpen(this.#symbol);
     }
