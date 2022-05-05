@@ -23,7 +23,7 @@
 import { MidaDate } from "#dates/MidaDate";
 import { MidaSymbolPeriodParameters } from "#periods/MidaSymbolPeriodParameters";
 import { MidaSymbolPriceType } from "#symbols/MidaSymbolPriceType";
-import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
+import { MidaTick } from "#ticks/MidaTick";
 import { IMidaEquatable } from "#utilities/equatable/IMidaEquatable";
 import { GenericObject } from "#utilities/GenericObject";
 
@@ -38,7 +38,7 @@ export class MidaSymbolPeriod implements IMidaEquatable {
     readonly #close: number;
     readonly #volume: number;
     readonly #timeframe: number;
-    readonly #ticks?: MidaSymbolTick[];
+    readonly #ticks?: MidaTick[];
 
     public constructor ({
         symbol,
@@ -110,7 +110,7 @@ export class MidaSymbolPeriod implements IMidaEquatable {
     }
 
     /** The period ticks, usually ticks are not registered */
-    public get ticks (): readonly MidaSymbolTick[] | undefined {
+    public get ticks (): readonly MidaTick[] | undefined {
         return this.#ticks;
     }
 

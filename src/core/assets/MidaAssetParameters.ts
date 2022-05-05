@@ -20,17 +20,16 @@
  * THE SOFTWARE.
 */
 
+import { MidaTradingAccount } from "#accounts/MidaTradingAccount";
 import { MidaAsset } from "#assets/MidaAsset";
-import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
 
 /**
  * The asset constructor parameters
  * @see MidaAsset
  */
 export type MidaAssetParameters = {
-    id: string;
-    name: string;
+    asset: string;
     description?: string;
     measurementUnit?: string;
-    brokerAccount: MidaBrokerAccount;
+    tradingAccount: MidaTradingAccount;
 };

@@ -20,36 +20,27 @@
  * THE SOFTWARE.
 */
 
+import { MidaTradingAccount } from "#accounts/MidaTradingAccount";
 import { MidaAssetParameters } from "#assets/MidaAssetParameters";
-import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
+import { MidaAssetStatement } from "#assets/MidaAssetStatement";
 
+/** Represents an asset */
 export class MidaAsset {
-    readonly #id: string;
-    readonly #name: string;
+    readonly #asset: string;
     readonly #description: string;
     readonly #measurementUnit: string;
-    readonly #brokerAccount: MidaBrokerAccount;
+    readonly #tradingAccount: MidaTradingAccount;
 
     public constructor ({
-        id,
-        name,
+        asset,
         description,
         measurementUnit,
-        brokerAccount,
+        tradingAccount,
     }: MidaAssetParameters) {
-        this.#id = id;
-        this.#name = name;
+        this.#asset = asset;
         this.#description = description ?? "";
         this.#measurementUnit = measurementUnit ?? "";
-        this.#brokerAccount = brokerAccount;
-    }
-
-    public get id (): string {
-        return this.#id;
-    }
-
-    public get name (): string {
-        return this.#name;
+        this.#tradingAccount = tradingAccount;
     }
 
     public get description (): string {
@@ -60,7 +51,15 @@ export class MidaAsset {
         return this.#measurementUnit;
     }
 
-    public get brokerAccount (): MidaBrokerAccount {
-        return this.#brokerAccount;
+    public get tradingAccount (): MidaTradingAccount {
+        return this.#tradingAccount;
+    }
+
+    public toString (): string {
+        return this.#asset;
+    }
+
+    public async getBalance (): Promise<MidaAssetStatement> {
+        return this.#tradingAccount.getAssetBalance(this.#asset);
     }
 }

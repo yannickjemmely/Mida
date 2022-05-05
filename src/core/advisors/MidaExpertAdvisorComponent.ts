@@ -22,7 +22,7 @@
 
 import { MidaExpertAdvisor } from "#advisors/MidaExpertAdvisor";
 import { MidaExpertAdvisorComponentParameters } from "#advisors/MidaExpertAdvisorComponentParameters";
-import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
+import { MidaTick } from "#ticks/MidaTick";
 import { GenericObject } from "#utilities/GenericObject";
 
 export abstract class MidaExpertAdvisorComponent {
@@ -83,11 +83,11 @@ export abstract class MidaExpertAdvisorComponent {
 
     protected abstract configure (): Promise<void>;
 
-    public async onTick (tick: MidaSymbolTick): Promise<void> {
+    public async onTick (tick: MidaTick): Promise<void> {
         // Silence is golden
     }
 
-    public async onLateTick (tick: MidaSymbolTick): Promise<void> {
+    public async onLateTick (tick: MidaTick): Promise<void> {
         // Silence is golden
     }
 
@@ -116,4 +116,16 @@ export abstract class MidaExpertAdvisorComponent {
 
         return new componentConstructor(parameters);
     }
+}
+
+export function filterEnabledComponents (components: MidaExpertAdvisorComponent[]): MidaExpertAdvisorComponent[] {
+    const enabledComponents: MidaExpertAdvisorComponent[] = [];
+
+    for (const component of components) {
+        if (component.isEnabled) {
+            enabledComponents.push(component);
+        }
+    }
+
+    return enabledComponents;
 }

@@ -23,7 +23,7 @@
 import { MidaDate } from "#dates/MidaDate";
 import { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
 import { MidaSymbolPriceType } from "#symbols/MidaSymbolPriceType";
-import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
+import { MidaTick } from "#ticks/MidaTick";
 
 export namespace MidaSymbolPeriodUtilities {
     /**
@@ -36,7 +36,7 @@ export namespace MidaSymbolPeriodUtilities {
      */
     // eslint-disable-next-line max-lines-per-function
     export function composePeriods (
-        ticks: MidaSymbolTick[],
+        ticks: MidaTick[],
         startTime: MidaDate,
         timeframe: number,
         priceType: MidaSymbolPriceType = MidaSymbolPriceType.BID,
@@ -53,7 +53,7 @@ export namespace MidaSymbolPeriodUtilities {
         }
 
         const periods: MidaSymbolPeriod[] = [];
-        let periodTicks: MidaSymbolTick[] = [];
+        let periodTicks: MidaTick[] = [];
         let periodEndTime: MidaDate = getNextPeriodEndTime();
 
         function tryComposePeriod (): void {
@@ -66,8 +66,8 @@ export namespace MidaSymbolPeriodUtilities {
                 startDate: periodStartTime,
                 priceType,
                 open: periodTicks[0][priceType],
-                high: Math.max(...periodTicks.map((tick: MidaSymbolTick): number => tick[priceType])),
-                low: Math.min(...periodTicks.map((tick: MidaSymbolTick): number => tick[priceType])),
+                high: Math.max(...periodTicks.map((tick: MidaTick): number => tick[priceType])),
+                low: Math.min(...periodTicks.map((tick: MidaTick): number => tick[priceType])),
                 close: periodTicks[periodTicks.length - 1][priceType],
                 volume: periodTicks.length,
                 timeframe,

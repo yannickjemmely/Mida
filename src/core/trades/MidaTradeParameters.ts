@@ -20,16 +20,36 @@
  * THE SOFTWARE.
 */
 
-import { MidaExpertAdvisor } from "#advisors/MidaExpertAdvisor";
 import { MidaTradingAccount } from "#accounts/MidaTradingAccount";
+import { MidaDate } from "#dates/MidaDate";
+import { MidaTrade } from "#trades/MidaTrade";
+import { MidaTradeDirectionType } from "#trades/MidaTradeDirectionType";
+import { MidaTradePurposeType } from "#trades/MidaTradePurposeType";
+import { MidaTradeRejectionType } from "#trades/MidaTradeRejectionType";
+import { MidaTradeStatusType } from "#trades/MidaTradeStatusType";
 
 /**
- * The expert advisor constructor parameters
- * @see MidaExpertAdvisor
+ * The trade constructor parameters
+ * @see MidaTrade
  */
-export type MidaExpertAdvisorParameters = {
-    name: string;
-    description?: string;
-    version: string;
-    brokerAccount: MidaTradingAccount;
+export type MidaTradeParameters = {
+    id: string;
+    orderId: string;
+    tradingAccount: MidaTradingAccount;
+    symbol: string;
+    volume: number;
+    directionType: MidaTradeDirectionType;
+    statusType: MidaTradeStatusType;
+    purposeType: MidaTradePurposeType;
+    requestDate: MidaDate;
+    executionDate?: MidaDate;
+    rejectionDate?: MidaDate;
+    executionPrice?: number;
+    grossProfit?: number;
+    grossProfitAsset?: string;
+    commission?: number;
+    commissionAsset?: string;
+    swap?: number;
+    swapAsset?: string;
+    rejectionType?: MidaTradeRejectionType;
 };

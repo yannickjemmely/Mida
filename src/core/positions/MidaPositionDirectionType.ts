@@ -20,16 +20,20 @@
  * THE SOFTWARE.
 */
 
-import { MidaExpertAdvisor } from "#advisors/MidaExpertAdvisor";
-import { MidaTradingAccount } from "#accounts/MidaTradingAccount";
+export enum MidaPositionDirectionType {
+    LONG = "long",
+    SHORT = "short",
+}
 
-/**
- * The expert advisor constructor parameters
- * @see MidaExpertAdvisor
- */
-export type MidaExpertAdvisorParameters = {
-    name: string;
-    description?: string;
-    version: string;
-    brokerAccount: MidaTradingAccount;
-};
+export namespace MidaPositionDirectionType {
+    export function oppositeOf (direction: MidaPositionDirectionType): MidaPositionDirectionType {
+        switch (direction) {
+            case MidaPositionDirectionType.LONG: {
+                return MidaPositionDirectionType.SHORT;
+            }
+            case MidaPositionDirectionType.SHORT: {
+                return MidaPositionDirectionType.LONG;
+            }
+        }
+    }
+}

@@ -20,7 +20,7 @@
  * THE SOFTWARE.
 */
 
-import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
+import { MidaTradingAccount } from "#accounts/MidaTradingAccount";
 import { MidaMarketWatcher } from "#watchers/MidaMarketWatcher";
 
 /**
@@ -28,5 +28,5 @@ import { MidaMarketWatcher } from "#watchers/MidaMarketWatcher";
  * @see MidaMarketWatcher
  */
 export type MidaMarketWatcherParameters = {
-    brokerAccount: MidaBrokerAccount;
+    brokerAccount: MidaTradingAccount;
 };

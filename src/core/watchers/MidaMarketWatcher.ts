@@ -20,12 +20,12 @@
  * THE SOFTWARE.
 */
 
-import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
+import { MidaTradingAccount } from "#accounts/MidaTradingAccount";
 import { MidaDateUtilities } from "#dates/MidaDateUtilities";
 import { MidaEvent } from "#events/MidaEvent";
 import { MidaEventListener } from "#events/MidaEventListener";
 import { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
-import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
+import { MidaTick } from "#ticks/MidaTick";
 import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 import { GenericObject } from "#utilities/GenericObject";
 import { MidaUtilities } from "#utilities/MidaUtilities";
@@ -36,7 +36,7 @@ const { utcTimestamp, } = MidaDateUtilities;
 const { mergeOptions, } = MidaUtilities;
 
 export class MidaMarketWatcher {
-    readonly #brokerAccount: MidaBrokerAccount;
+    readonly #brokerAccount: MidaTradingAccount;
     readonly #watchedSymbols: Map<string, MidaMarketWatcherDirectives>;
     readonly #lastClosedPeriods: Map<string, Map<number, MidaSymbolPeriod>>;
     readonly #emitter: MidaEmitter;
@@ -53,7 +53,7 @@ export class MidaMarketWatcher {
         this.#configureListeners();
     }
 
-    public get brokerAccount (): MidaBrokerAccount {
+    public get brokerAccount (): MidaTradingAccount {
         return this.#brokerAccount;
     }
 
@@ -163,7 +163,7 @@ export class MidaMarketWatcher {
         }
     }
 
-    #onTick (tick: MidaSymbolTick): void {
+    #onTick (tick: MidaTick): void {
         const directives: MidaMarketWatcherDirectives | undefined = this.#watchedSymbols.get(tick.symbol);
 
         if (directives?.watchTicks) {

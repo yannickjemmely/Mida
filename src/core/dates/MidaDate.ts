@@ -26,7 +26,7 @@ import { IMidaCloneable } from "#utilities/cloneable/IMidaCloneable";
 import { IMidaEquatable } from "#utilities/equatable/IMidaEquatable";
 import { GenericObject } from "#utilities/GenericObject";
 
-/** Represents an immutable date */
+/** Represents an immutable UTC date */
 export class MidaDate implements IMidaCloneable, IMidaEquatable {
     readonly #date: Date;
     readonly #iso: string;

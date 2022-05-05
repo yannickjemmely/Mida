@@ -20,16 +20,16 @@
  * THE SOFTWARE.
 */
 
-import { MidaExpertAdvisor } from "#advisors/MidaExpertAdvisor";
-import { MidaTradingAccount } from "#accounts/MidaTradingAccount";
-
-/**
- * The expert advisor constructor parameters
- * @see MidaExpertAdvisor
- */
-export type MidaExpertAdvisorParameters = {
-    name: string;
-    description?: string;
-    version: string;
-    brokerAccount: MidaTradingAccount;
-};
+export enum MidaOrderRejectionType {
+    MARKET_CLOSED = "market-closed",
+    SYMBOL_NOT_FOUND = "symbol-not-found",
+    SYMBOL_TRADING_DISABLED = "symbol-trading-disabled",
+    POSITION_NOT_FOUND = "position-not-found",
+    NOT_ENOUGH_MONEY = "not-enough-money",
+    NO_LIQUIDITY = "no-liquidity",
+    INVALID_VOLUME = "invalid-volume",
+    INVALID_TAKE_PROFIT = "invalid-take-profit",
+    INVALID_STOP_LOSS = "invalid-stop-loss",
+    INVALID_EXPIRATION = "invalid-expiration",
+    UNKNOWN = "unknown",
+}

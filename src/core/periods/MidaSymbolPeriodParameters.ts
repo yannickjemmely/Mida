@@ -23,7 +23,7 @@
 import { MidaDate } from "#dates/MidaDate";
 import { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
 import { MidaSymbolPriceType } from "#symbols/MidaSymbolPriceType";
-import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
+import { MidaTick } from "#ticks/MidaTick";
 
 /**
  * The symbol period constructor parameters
@@ -39,5 +39,5 @@ export type MidaSymbolPeriodParameters = {
     high: number;
     volume: number;
     timeframe: number;
-    ticks?: MidaSymbolTick[];
+    ticks?: MidaTick[];
 };

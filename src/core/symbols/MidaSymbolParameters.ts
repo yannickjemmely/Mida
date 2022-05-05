@@ -20,9 +20,8 @@
  * THE SOFTWARE.
 */
 
-import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
+import { MidaTradingAccount } from "#accounts/MidaTradingAccount";
 import { MidaSymbol } from "#symbols/MidaSymbol";
-import { MidaSymbolCategory } from "#symbols/MidaSymbolCategory";
 
 /**
  * The symbol constructor parameters
@@ -30,11 +29,10 @@ import { MidaSymbolCategory } from "#symbols/MidaSymbolCategory";
  */
 export type MidaSymbolParameters = {
     symbol: string;
-    brokerAccount: MidaBrokerAccount;
+    brokerAccount: MidaTradingAccount;
     description: string;
     baseAsset: string;
     quoteAsset: string;
-    type: MidaSymbolCategory;
     digits: number;
     leverage: number;
     minLots: number;

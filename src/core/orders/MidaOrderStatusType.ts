@@ -20,16 +20,12 @@
  * THE SOFTWARE.
 */
 
-import { MidaExpertAdvisor } from "#advisors/MidaExpertAdvisor";
-import { MidaTradingAccount } from "#accounts/MidaTradingAccount";
-
-/**
- * The expert advisor constructor parameters
- * @see MidaExpertAdvisor
- */
-export type MidaExpertAdvisorParameters = {
-    name: string;
-    description?: string;
-    version: string;
-    brokerAccount: MidaTradingAccount;
-};
+export enum MidaOrderStatusType {
+    REQUESTED = "requested",
+    REJECTED = "rejected",
+    ACCEPTED = "accepted",
+    PENDING = "pending",
+    CANCELLED = "cancelled",
+    EXECUTED = "executed",
+    EXPIRED = "expired",
+}

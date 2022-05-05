@@ -20,16 +20,14 @@
  * THE SOFTWARE.
 */
 
-import { MidaExpertAdvisor } from "#advisors/MidaExpertAdvisor";
 import { MidaTradingAccount } from "#accounts/MidaTradingAccount";
+import { MidaDate } from "#dates/MidaDate";
 
-/**
- * The expert advisor constructor parameters
- * @see MidaExpertAdvisor
- */
-export type MidaExpertAdvisorParameters = {
-    name: string;
-    description?: string;
-    version: string;
-    brokerAccount: MidaTradingAccount;
+export type MidaAssetStatement = {
+    tradingAccount: MidaTradingAccount;
+    date: MidaDate;
+    asset: string;
+    freeVolume: number;
+    lockedVolume: number;
+    borrowedVolume: number;
 };

@@ -20,16 +20,20 @@
  * THE SOFTWARE.
 */
 
-import { MidaExpertAdvisor } from "#advisors/MidaExpertAdvisor";
 import { MidaTradingAccount } from "#accounts/MidaTradingAccount";
+import { MidaPosition } from "#positions/MidaPosition";
+import { MidaPositionDirectionType } from "#positions/MidaPositionDirectionType";
+import { MidaBrokerPositionProtection } from "#protections/MidaBrokerPositionProtection";
 
 /**
- * The expert advisor constructor parameters
- * @see MidaExpertAdvisor
+ * The position constructor parameters
+ * @see MidaPosition
  */
-export type MidaExpertAdvisorParameters = {
-    name: string;
-    description?: string;
-    version: string;
-    brokerAccount: MidaTradingAccount;
+export type MidaPositionParameters = {
+    id: string;
+    tradingAccount: MidaTradingAccount;
+    symbol: string;
+    volume: number;
+    directionType: MidaPositionDirectionType;
+    protection?: MidaBrokerPositionProtection;
 };

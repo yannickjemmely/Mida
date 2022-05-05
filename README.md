@@ -59,7 +59,7 @@ the ecosystem, until now all brokers available on the cTrader platform are suppo
 below some of the most long-lived and popular ones,<br>
 **exchanges are coming soon...**
 <p align="center"> 
-    <img src="images/featured-brokers.svg" alt="" width="858px">
+    <img src="images/features-platforms.svg" alt="" width="858px">
 </p>
 
 ## Installation

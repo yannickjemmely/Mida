@@ -20,16 +20,10 @@
  * THE SOFTWARE.
 */
 
-import { MidaExpertAdvisor } from "#advisors/MidaExpertAdvisor";
-import { MidaTradingAccount } from "#accounts/MidaTradingAccount";
-
-/**
- * The expert advisor constructor parameters
- * @see MidaExpertAdvisor
- */
-export type MidaExpertAdvisorParameters = {
-    name: string;
-    description?: string;
-    version: string;
-    brokerAccount: MidaTradingAccount;
-};
+export enum MidaOrderTimeInForceType {
+    GOOD_TILL_DATE = "good-till-date",
+    GOOD_TILL_CANCEL = "good-till-cancel",
+    IMMEDIATE_OR_CANCEL = "immediate-or-cancel",
+    FILL_OR_KILL = "fill-or-kill",
+    MARKET_ON_OPEN = "market-on-open",
+}

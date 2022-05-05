@@ -20,8 +20,7 @@
  * THE SOFTWARE.
 */
 
-import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
-import { MidaSymbolCategory } from "#symbols/MidaSymbolCategory";
+import { MidaTradingAccount } from "#accounts/MidaTradingAccount";
 import { MidaSymbolParameters } from "#symbols/MidaSymbolParameters";
 import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 import { GenericObject } from "#utilities/GenericObject";
@@ -29,11 +28,10 @@ import { GenericObject } from "#utilities/GenericObject";
 /** Represents a */
 export class MidaSymbol {
     readonly #symbol: string;
-    readonly #brokerAccount: MidaBrokerAccount;
+    readonly #brokerAccount: MidaTradingAccount;
     readonly #description: string;
     readonly #baseAsset: string;
     readonly #quoteAsset: string;
-    readonly #type: MidaSymbolCategory;
     readonly #digits: number;
     readonly #leverage: number;
     readonly #minLots: number;
@@ -47,7 +45,6 @@ export class MidaSymbol {
         description,
         baseAsset,
         quoteAsset,
-        type,
         digits,
         leverage,
         minLots,
@@ -59,7 +56,6 @@ export class MidaSymbol {
         this.#description = description;
         this.#baseAsset = baseAsset;
         this.#quoteAsset = quoteAsset;
-        this.#type = type;
         this.#digits = digits;
         this.#leverage = leverage;
         this.#minLots = minLots;
@@ -69,7 +65,7 @@ export class MidaSymbol {
     }
 
     /** The broker account */
-    public get brokerAccount (): MidaBrokerAccount {
+    public get brokerAccount (): MidaTradingAccount {
         return this.#brokerAccount;
     }
 
@@ -86,11 +82,6 @@ export class MidaSymbol {
     /** The quote asset */
     public get quoteAsset (): string {
         return this.#quoteAsset;
-    }
-
-    /** The type */
-    public get type (): MidaSymbolCategory {
-        return this.#type;
     }
 
     /** The digits */

@@ -20,15 +20,15 @@
  * THE SOFTWARE.
 */
 
-import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
-import { MidaBrokerOrderStatus } from "#orders/MidaBrokerOrderStatus";
+import { MidaOrder } from "#orders/MidaOrder";
+import { MidaOrderStatusType } from "#orders/MidaOrderStatusType";
 
 export namespace MidaBrokerOrderUtilities {
-    export function filterPendingOrders (orders: MidaBrokerOrder[]): MidaBrokerOrder[] {
-        const pendingOrders: MidaBrokerOrder[] = [];
+    export function filterPendingOrders (orders: MidaOrder[]): MidaOrder[] {
+        const pendingOrders: MidaOrder[] = [];
 
         for (const order of orders) {
-            if (order.status === MidaBrokerOrderStatus.PENDING) {
+            if (order.status === MidaOrderStatusType.PENDING) {
                 pendingOrders.push(order);
             }
         }
@@ -36,8 +36,8 @@ export namespace MidaBrokerOrderUtilities {
         return pendingOrders;
     }
 
-    export function filterExecutedOrders (orders: MidaBrokerOrder[]): MidaBrokerOrder[] {
-        const executedOrders: MidaBrokerOrder[] = [];
+    export function filterExecutedOrders (orders: MidaOrder[]): MidaOrder[] {
+        const executedOrders: MidaOrder[] = [];
 
         for (const order of orders) {
             if (order.isExecuted) {

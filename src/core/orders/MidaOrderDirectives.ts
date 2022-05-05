@@ -20,16 +20,23 @@
  * THE SOFTWARE.
 */
 
-import { MidaExpertAdvisor } from "#advisors/MidaExpertAdvisor";
-import { MidaTradingAccount } from "#accounts/MidaTradingAccount";
+import { MidaEventListener } from "#events/MidaEventListener";
+import { MidaOrderDirectionType } from "#orders/MidaOrderDirectionType";
+import { MidaOrderTimeInForceType } from "#orders/MidaOrderTimeInForceType";
+import { MidaBrokerPositionProtection } from "#protections/MidaBrokerPositionProtection";
 
-/**
- * The expert advisor constructor parameters
- * @see MidaExpertAdvisor
- */
-export type MidaExpertAdvisorParameters = {
-    name: string;
-    description?: string;
-    version: string;
-    brokerAccount: MidaTradingAccount;
+export type MidaOrderDirectives = {
+    symbol?: string;
+    direction: MidaOrderDirectionType;
+    volume: number;
+    limit?: number;
+    stop?: number;
+    protection?: MidaBrokerPositionProtection;
+    positionId?: string;
+    resolverEvents?: string[];
+    timeInForce?: MidaOrderTimeInForceType;
+    expirationTimestamp?: number;
+    listeners?: {
+        [eventType: string]: MidaEventListener;
+    };
 };

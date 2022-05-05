@@ -20,16 +20,22 @@
  * THE SOFTWARE.
 */
 
-import { MidaExpertAdvisor } from "#advisors/MidaExpertAdvisor";
-import { MidaTradingAccount } from "#accounts/MidaTradingAccount";
+import { MidaDate } from "#dates/MidaDate";
+import { MidaSymbolQuotation } from "#quotations/MidaSymbolQuotation";
+import { MidaTick } from "#ticks/MidaTick";
+import { MidaTickMovementType } from "#ticks/MidaTickMovementType";
 
 /**
- * The expert advisor constructor parameters
- * @see MidaExpertAdvisor
+ * The symbol tick constructor parameters
+ * @see MidaTick
  */
-export type MidaExpertAdvisorParameters = {
-    name: string;
-    description?: string;
-    version: string;
-    brokerAccount: MidaTradingAccount;
+export type MidaTickParameters = {
+    symbol?: string;
+    bid?: number;
+    ask?: number;
+    date?: MidaDate;
+    movementType: MidaTickMovementType;
+    quotation?: MidaSymbolQuotation;
+    previousTick?: MidaTick;
+    nextTick?: MidaTick;
 };
