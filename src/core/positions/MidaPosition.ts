@@ -24,11 +24,11 @@ import { MidaTradingAccount } from "#accounts/MidaTradingAccount";
 import { MidaEvent } from "#events/MidaEvent";
 import { MidaEventListener } from "#events/MidaEventListener";
 import { MidaOrder } from "#orders/MidaOrder";
-import { MidaPositionDirectionType } from "#positions/MidaPositionDirectionType";
+import { MidaPositionDirection } from "#positions/MidaPositionDirection";
 import { MidaPositionParameters } from "#positions/MidaPositionParameters";
-import { MidaPositionStatusType } from "#positions/MidaPositionStatusType";
-import { MidaBrokerPositionProtection } from "#protections/MidaBrokerPositionProtection";
-import { MidaBrokerPositionProtectionChange } from "#protections/MidaBrokerPositionProtectionChange";
+import { MidaPositionStatus } from "#positions/MidaPositionStatus";
+import { MidaProtection } from "#protections/MidaProtection";
+import { MidaProtectionChange } from "#protections/MidaProtectionChange";
 import { MidaTrade } from "#trades/MidaTrade";
 import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 
@@ -37,8 +37,8 @@ export abstract class MidaPosition {
     readonly #tradingAccount: MidaTradingAccount;
     readonly #symbol: string;
     #volume: number;
-    #directionType: MidaPositionDirectionType;
-    readonly #protection: MidaBrokerPositionProtection;
+    #direction: MidaPositionDirection;
+    readonly #protection: MidaProtection;
     readonly #emitter: MidaEmitter;
 
     protected constructor ({
@@ -46,14 +46,14 @@ export abstract class MidaPosition {
         tradingAccount,
         symbol,
         volume,
-        directionType,
+        direction,
         protection,
     }: MidaPositionParameters) {
         this.#id = id;
         this.#tradingAccount = tradingAccount;
         this.#symbol = symbol;
         this.#volume = volume;
-        this.#directionType = directionType;
+        this.#direction = direction;
         this.#protection = protection ?? {};
         this.#emitter = new MidaEmitter();
     }
@@ -74,16 +74,16 @@ export abstract class MidaPosition {
         return this.#volume;
     }
 
-    public get directionType (): MidaPositionDirectionType {
-        return this.#directionType;
+    public get direction (): MidaPositionDirection {
+        return this.#direction;
     }
 
-    public get statusType (): MidaPositionStatusType {
+    public get status (): MidaPositionStatus {
         if (this.volume === 0) {
-            return MidaPositionStatusType.CLOSED;
+            return MidaPositionStatus.CLOSED;
         }
 
-        return MidaPositionStatusType.OPEN;
+        return MidaPositionStatus.OPEN;
     }
 
     public abstract getUsedMargin (): Promise<number>;
@@ -94,7 +94,7 @@ export abstract class MidaPosition {
 
     public abstract getUnrealizedCommission (): Promise<number>;
 
-    public abstract changeProtection (protection: MidaBrokerPositionProtection): Promise<MidaBrokerPositionProtectionChange>;
+    public abstract changeProtection (protection: MidaProtection): Promise<MidaProtectionChange>;
 
     public abstract addVolume (volume: number): Promise<MidaOrder>;
 
@@ -108,15 +108,15 @@ export abstract class MidaPosition {
         return this.subtractVolume(this.volume);
     }
 
-    public async setTakeProfit (takeProfit: number | undefined): Promise<MidaBrokerPositionProtectionChange> {
+    public async setTakeProfit (takeProfit: number | undefined): Promise<MidaProtectionChange> {
         return this.changeProtection({ takeProfit, });
     }
 
-    public async setStopLoss (stopLoss: number | undefined): Promise<MidaBrokerPositionProtectionChange> {
+    public async setStopLoss (stopLoss: number | undefined): Promise<MidaProtectionChange> {
         return this.changeProtection({ stopLoss, });
     }
 
-    public async setTrailingStopLoss (trailingStopLoss: boolean): Promise<MidaBrokerPositionProtectionChange> {
+    public async setTrailingStopLoss (trailingStopLoss: boolean): Promise<MidaProtectionChange> {
         return this.changeProtection({ trailingStopLoss, });
     }
 
@@ -144,11 +144,11 @@ export abstract class MidaPosition {
             this.#volume = Math.abs(volumeDifference);
 
             if (volumeDifference > 0) {
-                if (this.directionType === MidaPositionDirectionType.LONG) {
-                    this.#directionType = MidaPositionDirectionType.SHORT;
+                if (this.direction === MidaPositionDirection.LONG) {
+                    this.#direction = MidaPositionDirection.SHORT;
                 }
                 else {
-                    this.#directionType = MidaPositionDirectionType.LONG;
+                    this.#direction = MidaPositionDirection.LONG;
                 }
 
                 this.#emitter.notifyListeners("reverse");
@@ -168,7 +168,7 @@ export abstract class MidaPosition {
         this.#emitter.notifyListeners("trade", { trade, });
     }
 
-    protected onProtectionChange (protection: MidaBrokerPositionProtection): void {
+    protected onProtectionChange (protection: MidaProtection): void {
         const {
             takeProfit,
             stopLoss,

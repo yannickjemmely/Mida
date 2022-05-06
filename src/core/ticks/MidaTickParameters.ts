@@ -21,9 +21,9 @@
 */
 
 import { MidaDate } from "#dates/MidaDate";
-import { MidaSymbolQuotation } from "#quotations/MidaSymbolQuotation";
+import { MidaQuotation } from "#quotations/MidaQuotation";
 import { MidaTick } from "#ticks/MidaTick";
-import { MidaTickMovementType } from "#ticks/MidaTickMovementType";
+import { MidaTickMovement } from "#ticks/MidaTickMovement";
 
 /**
  * The symbol tick constructor parameters
@@ -34,8 +34,8 @@ export type MidaTickParameters = {
     bid?: number;
     ask?: number;
     date?: MidaDate;
-    movementType: MidaTickMovementType;
-    quotation?: MidaSymbolQuotation;
+    movement: MidaTickMovement;
+    quotation?: MidaQuotation;
     previousTick?: MidaTick;
     nextTick?: MidaTick;
 };

@@ -20,12 +20,7 @@
  * THE SOFTWARE.
 */
 
-import { MidaBrokerPositionProtection } from "#protections/MidaBrokerPositionProtection";
-import { MidaBrokerPositionProtectionChangeRejectionType } from "#protections/MidaBrokerPositionProtectionChangeRejectionType";
-import { MidaBrokerPositionProtectionChangeStatus } from "#protections/MidaBrokerPositionProtectionChangeStatus";
-
-export type MidaBrokerPositionProtectionChange = {
-    status: MidaBrokerPositionProtectionChangeStatus;
-    requestedProtection: MidaBrokerPositionProtection;
-    rejectionType?: MidaBrokerPositionProtectionChangeRejectionType;
-};
+export enum MidaTradePurpose {
+    OPEN = "open",
+    CLOSE = "close",
+}

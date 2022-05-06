@@ -21,20 +21,20 @@
 */
 
 import { MidaEventListener } from "#events/MidaEventListener";
-import { MidaOrderDirectionType } from "#orders/MidaOrderDirectionType";
-import { MidaOrderTimeInForceType } from "#orders/MidaOrderTimeInForceType";
-import { MidaBrokerPositionProtection } from "#protections/MidaBrokerPositionProtection";
+import { MidaOrderDirection } from "#orders/MidaOrderDirection";
+import { MidaOrderTimeInForce } from "#orders/MidaOrderTimeInForce";
+import { MidaProtection } from "#protections/MidaProtection";
 
 export type MidaOrderDirectives = {
     symbol?: string;
-    direction: MidaOrderDirectionType;
+    direction: MidaOrderDirection;
     volume: number;
     limit?: number;
     stop?: number;
-    protection?: MidaBrokerPositionProtection;
+    protection?: MidaProtection;
     positionId?: string;
     resolverEvents?: string[];
-    timeInForce?: MidaOrderTimeInForceType;
+    timeInForce?: MidaOrderTimeInForce;
     expirationTimestamp?: number;
     listeners?: {
         [eventType: string]: MidaEventListener;

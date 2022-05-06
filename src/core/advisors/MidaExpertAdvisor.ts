@@ -27,7 +27,7 @@ import { MidaEvent } from "#events/MidaEvent";
 import { MidaEventListener } from "#events/MidaEventListener";
 import { MidaOrder, filterExecutedOrders } from "#orders/MidaOrder";
 import { MidaOrderDirectives } from "#orders/MidaOrderDirectives";
-import { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
+import { MidaPeriod } from "#periods/MidaPeriod";
 import { MidaTick } from "#ticks/MidaTick";
 import {
     MidaTrade,
@@ -57,19 +57,19 @@ export abstract class MidaExpertAdvisor {
         name,
         description,
         version,
-        brokerAccount,
+        tradingAccount,
     }: MidaExpertAdvisorParameters) {
         this.#name = name;
         this.#description = description ?? "";
         this.#version = version;
-        this.#tradingAccount = brokerAccount;
+        this.#tradingAccount = tradingAccount;
         this.#isOperative = false;
         this.#orders = [];
         this.#capturedTicks = [];
         this.#tickEventQueue = [];
         this.#tickEventIsLocked = false;
         this.#isConfigured = false;
-        this.#marketWatcher = new MidaMarketWatcher({ brokerAccount, });
+        this.#marketWatcher = new MidaMarketWatcher({ tradingAccount, });
         this.#components = [];
         this.#emitter = new MidaEmitter();
     }
@@ -194,7 +194,7 @@ export abstract class MidaExpertAdvisor {
         // Silence is golden
     }
 
-    protected async onPeriodClose (period: MidaSymbolPeriod): Promise<void> {
+    protected async onPeriodClose (period: MidaPeriod): Promise<void> {
         // Silence is golden
     }
 
@@ -282,7 +282,7 @@ export abstract class MidaExpertAdvisor {
         }
     }
 
-    #onPeriodClose (period: MidaSymbolPeriod): void {
+    #onPeriodClose (period: MidaPeriod): void {
         try {
             this.onPeriodClose(period);
         }

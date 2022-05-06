@@ -23,11 +23,11 @@
 import { MidaTradingAccount } from "#accounts/MidaTradingAccount";
 import { MidaDate } from "#dates/MidaDate";
 import { MidaOrder } from "#orders/MidaOrder";
-import { MidaTradeDirectionType } from "#trades/MidaTradeDirectionType";
+import { MidaTradeDirection } from "#trades/MidaTradeDirection";
 import { MidaTradeParameters } from "#trades/MidaTradeParameters";
-import { MidaTradePurposeType } from "#trades/MidaTradePurposeType";
-import { MidaTradeRejectionType } from "#trades/MidaTradeRejectionType";
-import { MidaTradeStatusType } from "#trades/MidaTradeStatusType";
+import { MidaTradePurpose } from "#trades/MidaTradePurpose";
+import { MidaTradeRejection } from "#trades/MidaTradeRejection";
+import { MidaTradeStatus } from "#trades/MidaTradeStatus";
 
 /** Represents a trade (or deal) */
 export abstract class MidaTrade {
@@ -36,9 +36,9 @@ export abstract class MidaTrade {
     readonly #tradingAccount: MidaTradingAccount;
     readonly #symbol: string;
     readonly #volume: number;
-    readonly #directionType: MidaTradeDirectionType;
-    readonly #statusType: MidaTradeStatusType;
-    readonly #purposeType: MidaTradePurposeType;
+    readonly #direction: MidaTradeDirection;
+    readonly #status: MidaTradeStatus;
+    readonly #purpose: MidaTradePurpose;
     readonly #requestDate: MidaDate;
     readonly #executionDate?: MidaDate;
     readonly #rejectionDate?: MidaDate;
@@ -49,7 +49,7 @@ export abstract class MidaTrade {
     readonly #commissionAsset: string;
     readonly #swap: number;
     readonly #swapAsset: string;
-    readonly #rejectionType?: MidaTradeRejectionType;
+    readonly #rejection?: MidaTradeRejection;
 
     protected constructor ({
         id,
@@ -57,9 +57,9 @@ export abstract class MidaTrade {
         tradingAccount,
         symbol,
         volume,
-        directionType,
-        statusType,
-        purposeType,
+        direction,
+        status,
+        purpose,
         requestDate,
         executionDate,
         rejectionDate,
@@ -70,16 +70,16 @@ export abstract class MidaTrade {
         commissionAsset,
         swap,
         swapAsset,
-        rejectionType,
+        rejection,
     }: MidaTradeParameters) {
         this.#id = id;
         this.#orderId = orderId;
         this.#tradingAccount = tradingAccount;
         this.#symbol = symbol;
         this.#volume = volume;
-        this.#directionType = directionType;
-        this.#statusType = statusType;
-        this.#purposeType = purposeType;
+        this.#direction = direction;
+        this.#status = status;
+        this.#purpose = purpose;
         this.#requestDate = requestDate;
         this.#executionDate = executionDate;
         this.#rejectionDate = rejectionDate;
@@ -90,7 +90,7 @@ export abstract class MidaTrade {
         this.#commissionAsset = commissionAsset ?? "";
         this.#swap = swap ?? 0;
         this.#swapAsset = swapAsset ?? "";
-        this.#rejectionType = rejectionType;
+        this.#rejection = rejection;
     }
 
     public get id (): string {
@@ -113,16 +113,16 @@ export abstract class MidaTrade {
         return this.#volume;
     }
 
-    public get directionType (): MidaTradeDirectionType {
-        return this.#directionType;
+    public get direction (): MidaTradeDirection {
+        return this.#direction;
     }
 
-    public get statusType (): MidaTradeStatusType {
-        return this.#statusType;
+    public get status (): MidaTradeStatus {
+        return this.#status;
     }
 
-    public get purposeType (): MidaTradePurposeType {
-        return this.#purposeType;
+    public get purpose (): MidaTradePurpose {
+        return this.#purpose;
     }
 
     public get requestDate (): MidaDate {
@@ -165,24 +165,24 @@ export abstract class MidaTrade {
         return this.#swapAsset;
     }
 
-    public get rejectionType (): MidaTradeRejectionType | undefined {
-        return this.#rejectionType;
+    public get rejection (): MidaTradeRejection | undefined {
+        return this.#rejection;
     }
 
     public get isOpening (): boolean {
-        return this.#purposeType === MidaTradePurposeType.OPEN;
+        return this.#purpose === MidaTradePurpose.OPEN;
     }
 
     public get isClosing (): boolean {
-        return this.#purposeType === MidaTradePurposeType.CLOSE;
+        return this.#purpose === MidaTradePurpose.CLOSE;
     }
 
     public get isExecuted (): boolean {
-        return this.#statusType === MidaTradeStatusType.EXECUTED;
+        return this.#status === MidaTradeStatus.EXECUTED;
     }
 
     public get isRejected (): boolean {
-        return this.#statusType === MidaTradeStatusType.REJECTED;
+        return this.#status === MidaTradeStatus.REJECTED;
     }
 }
 

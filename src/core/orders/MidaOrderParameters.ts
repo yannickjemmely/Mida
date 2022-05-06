@@ -23,11 +23,11 @@
 import { MidaTradingAccount } from "#accounts/MidaTradingAccount";
 import { MidaDate } from "#dates/MidaDate";
 import { MidaOrder } from "#orders/MidaOrder";
-import { MidaOrderDirectionType } from "#orders/MidaOrderDirectionType";
-import { MidaOrderPurposeType } from "#orders/MidaOrderPurposeType";
-import { MidaOrderRejectionType } from "#orders/MidaOrderRejectionType";
-import { MidaOrderStatusType } from "#orders/MidaOrderStatusType";
-import { MidaOrderTimeInForceType } from "#orders/MidaOrderTimeInForceType";
+import { MidaOrderDirection } from "#orders/MidaOrderDirection";
+import { MidaOrderPurpose } from "#orders/MidaOrderPurpose";
+import { MidaOrderRejection } from "#orders/MidaOrderRejection";
+import { MidaOrderStatus } from "#orders/MidaOrderStatus";
+import { MidaOrderTimeInForce } from "#orders/MidaOrderTimeInForce";
 import { MidaTrade } from "#trades/MidaTrade";
 
 /**
@@ -39,15 +39,15 @@ export type MidaOrderParameters = {
     tradingAccount: MidaTradingAccount;
     symbol: string;
     requestedVolume: number;
-    directionType: MidaOrderDirectionType;
-    purposeType: MidaOrderPurposeType;
+    direction: MidaOrderDirection;
+    purpose: MidaOrderPurpose;
     limitPrice?: number;
     stopPrice?: number;
-    statusType: MidaOrderStatusType;
+    status: MidaOrderStatus;
     creationDate?: MidaDate;
     lastUpdateDate?: MidaDate;
-    timeInForceType: MidaOrderTimeInForceType;
+    timeInForce: MidaOrderTimeInForce;
     trades: MidaTrade[];
-    rejectionType?: MidaOrderRejectionType;
+    rejection?: MidaOrderRejection;
     isStopOut?: boolean;
 };

@@ -20,7 +20,12 @@
  * THE SOFTWARE.
 */
 
-export enum MidaTradePurposeType {
-    OPEN = "open",
-    CLOSE = "close",
+export enum MidaOrderStatus {
+    REQUESTED = "requested",
+    REJECTED = "rejected",
+    ACCEPTED = "accepted",
+    PENDING = "pending",
+    CANCELLED = "cancelled",
+    EXECUTED = "executed",
+    EXPIRED = "expired",
 }

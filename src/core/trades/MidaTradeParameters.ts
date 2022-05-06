@@ -23,10 +23,10 @@
 import { MidaTradingAccount } from "#accounts/MidaTradingAccount";
 import { MidaDate } from "#dates/MidaDate";
 import { MidaTrade } from "#trades/MidaTrade";
-import { MidaTradeDirectionType } from "#trades/MidaTradeDirectionType";
-import { MidaTradePurposeType } from "#trades/MidaTradePurposeType";
-import { MidaTradeRejectionType } from "#trades/MidaTradeRejectionType";
-import { MidaTradeStatusType } from "#trades/MidaTradeStatusType";
+import { MidaTradeDirection } from "#trades/MidaTradeDirection";
+import { MidaTradePurpose } from "#trades/MidaTradePurpose";
+import { MidaTradeRejection } from "#trades/MidaTradeRejection";
+import { MidaTradeStatus } from "#trades/MidaTradeStatus";
 
 /**
  * The trade constructor parameters
@@ -38,9 +38,9 @@ export type MidaTradeParameters = {
     tradingAccount: MidaTradingAccount;
     symbol: string;
     volume: number;
-    directionType: MidaTradeDirectionType;
-    statusType: MidaTradeStatusType;
-    purposeType: MidaTradePurposeType;
+    direction: MidaTradeDirection;
+    status: MidaTradeStatus;
+    purpose: MidaTradePurpose;
     requestDate: MidaDate;
     executionDate?: MidaDate;
     rejectionDate?: MidaDate;
@@ -51,5 +51,5 @@ export type MidaTradeParameters = {
     commissionAsset?: string;
     swap?: number;
     swapAsset?: string;
-    rejectionType?: MidaTradeRejectionType;
+    rejection?: MidaTradeRejection;
 };

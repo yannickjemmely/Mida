@@ -21,17 +21,17 @@
 */
 
 import { MidaDate } from "#dates/MidaDate";
-import { MidaSymbolPeriodParameters } from "#periods/MidaSymbolPeriodParameters";
-import { MidaSymbolPriceType } from "#symbols/MidaSymbolPriceType";
+import { MidaPeriodParameters } from "#periods/MidaPeriodParameters";
+import { MidaQuotationPrice } from "#quotations/MidaQuotationPrice";
 import { MidaTick } from "#ticks/MidaTick";
 import { IMidaEquatable } from "#utilities/equatable/IMidaEquatable";
 import { GenericObject } from "#utilities/GenericObject";
 
-/** Represents a symbol period (commonly named bar or candlestick) */
-export class MidaSymbolPeriod implements IMidaEquatable {
+/** Represents a period (commonly named bar or candlestick) */
+export class MidaPeriod implements IMidaEquatable {
     readonly #symbol: string;
     readonly #startDate: MidaDate;
-    readonly #priceType: MidaSymbolPriceType;
+    readonly #quotationPrice: MidaQuotationPrice;
     readonly #open: number;
     readonly #high: number;
     readonly #low: number;
@@ -43,7 +43,7 @@ export class MidaSymbolPeriod implements IMidaEquatable {
     public constructor ({
         symbol,
         startDate,
-        priceType,
+        quotationPrice,
         open,
         high,
         low,
@@ -51,10 +51,10 @@ export class MidaSymbolPeriod implements IMidaEquatable {
         volume,
         timeframe,
         ticks,
-    }: MidaSymbolPeriodParameters) {
+    }: MidaPeriodParameters) {
         this.#symbol = symbol;
         this.#startDate = startDate;
-        this.#priceType = priceType;
+        this.#quotationPrice = quotationPrice;
         this.#open = open;
         this.#high = high;
         this.#low = low;
@@ -74,9 +74,9 @@ export class MidaSymbolPeriod implements IMidaEquatable {
         return this.#startDate;
     }
 
-    /** The price type represented by the period (bid or ask) */
-    public get priceType (): MidaSymbolPriceType {
-        return this.#priceType;
+    /** The price represented by the period (bid or ask) */
+    public get quotationPrice (): MidaQuotationPrice {
+        return this.#quotationPrice;
     }
 
     /** The period open price */
@@ -180,10 +180,85 @@ export class MidaSymbolPeriod implements IMidaEquatable {
      */
     public equals (object: GenericObject): boolean {
         return (
-            object instanceof MidaSymbolPeriod
+            object instanceof MidaPeriod
             && this.symbol === object.symbol
             && this.startDate.timestamp === object.startDate.timestamp
             && this.timeframe === object.timeframe
         );
     }
+}
+
+// eslint-disable-next-line max-lines-per-function
+export function composePeriods (
+    ticks: MidaTick[],
+    startTime: MidaDate,
+    timeframe: number,
+    quotationPrice: MidaQuotationPrice = MidaQuotationPrice.BID,
+    limit: number = -1
+): MidaPeriod[] {
+    if (ticks.length < 1 || timeframe <= 0) {
+        return [];
+    }
+
+    let periodStartTime: MidaDate = startTime;
+
+    function getNextPeriodEndTime (): MidaDate {
+        return new MidaDate(periodStartTime.timestamp + timeframe * 1000);
+    }
+
+    const periods: MidaPeriod[] = [];
+    let periodTicks: MidaTick[] = [];
+    let periodEndTime: MidaDate = getNextPeriodEndTime();
+
+    function tryComposePeriod (): void {
+        if (periodTicks.length < 1) {
+            return;
+        }
+
+        periods.push(new MidaPeriod({
+            symbol: ticks[0].symbol,
+            startDate: periodStartTime,
+            quotationPrice,
+            open: periodTicks[0][quotationPrice],
+            high: Math.max(...periodTicks.map((tick: MidaTick): number => tick[quotationPrice])),
+            low: Math.min(...periodTicks.map((tick: MidaTick): number => tick[quotationPrice])),
+            close: periodTicks[periodTicks.length - 1][quotationPrice],
+            volume: periodTicks.length,
+            timeframe,
+            ticks: [ ...periodTicks, ],
+        }));
+
+        periodTicks = [];
+    }
+
+    for (const tick of ticks) {
+        if (limit > -1 && periods.length === limit) {
+            return periods;
+        }
+
+        if (tick.date < periodStartTime) {
+            continue;
+        }
+
+        let periodHasEnded: boolean = false;
+
+        while (tick.date > periodEndTime) {
+            periodStartTime = new MidaDate(periodEndTime.timestamp);
+            periodEndTime = getNextPeriodEndTime();
+
+            if (!periodHasEnded) {
+                periodHasEnded = true;
+            }
+        }
+
+        if (periodHasEnded) {
+            tryComposePeriod();
+        }
+
+        periodTicks.push(tick);
+    }
+
+    tryComposePeriod();
+
+    return periods;
 }

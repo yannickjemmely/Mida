@@ -20,7 +20,7 @@
  * THE SOFTWARE.
 */
 
-export enum MidaOrderPurposeType {
-    OPEN = "open",
-    CLOSE = "close",
+export enum MidaOrderFill {
+    FULL = "full",
+    PARTIAL = "partial",
 }

@@ -20,8 +20,7 @@
  * THE SOFTWARE.
 */
 
-export enum MidaTradeRejectionType {
-    NO_LIQUIDITY = "no-liquidity",
-    MISSED = "missed",
-    UNKNOWN = "unknown",
+export enum MidaPositionStatus {
+    OPEN = "open",
+    CLOSED = "closed",
 }

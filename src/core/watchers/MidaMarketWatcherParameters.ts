@@ -28,5 +28,5 @@ import { MidaMarketWatcher } from "#watchers/MidaMarketWatcher";
  * @see MidaMarketWatcher
  */
 export type MidaMarketWatcherParameters = {
-    brokerAccount: MidaTradingAccount;
+    tradingAccount: MidaTradingAccount;
 };

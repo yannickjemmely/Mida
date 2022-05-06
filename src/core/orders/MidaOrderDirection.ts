@@ -20,7 +20,33 @@
  * THE SOFTWARE.
 */
 
-export enum MidaTradeDirectionType {
+import { MidaPositionDirection } from "#positions/MidaPositionDirection";
+
+export enum MidaOrderDirection {
     BUY = "buy",
     SELL = "sell",
+}
+
+export namespace MidaOrderDirectionType {
+    export function oppositeOf (direction: MidaOrderDirection): MidaOrderDirection {
+        switch (direction) {
+            case MidaOrderDirectionType.BUY: {
+                return MidaOrderDirectionType.SELL;
+            }
+            case MidaOrderDirectionType.SELL: {
+                return MidaOrderDirectionType.BUY;
+            }
+        }
+    }
+
+    export function toPositionDirection (direction: MidaOrderDirection): MidaPositionDirection {
+        switch (direction) {
+            case MidaOrderDirectionType.BUY: {
+                return MidaPositionDirection.LONG;
+            }
+            case MidaOrderDirectionType.SELL: {
+                return MidaPositionDirection.SHORT;
+            }
+        }
+    }
 }

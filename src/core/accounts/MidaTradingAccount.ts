@@ -20,9 +20,9 @@
  * THE SOFTWARE.
 */
 
-import { MidaTradingAccountOperativityType } from "#accounts/MidaTradingAccountOperativityType";
+import { MidaTradingAccountOperativity } from "#accounts/MidaTradingAccountOperativity";
 import { MidaTradingAccountParameters } from "#accounts/MidaTradingAccountParameters";
-import { MidaTradingAccountPositionAccountingType } from "#accounts/MidaTradingAccountPositionAccountingType";
+import { MidaTradingAccountPositionAccounting } from "#accounts/MidaTradingAccountPositionAccounting";
 import { MidaAsset } from "#assets/MidaAsset";
 import { MidaAssetStatement } from "#assets/MidaAssetStatement";
 import { MidaDate } from "#dates/MidaDate";
@@ -30,7 +30,7 @@ import { MidaEvent } from "#events/MidaEvent";
 import { MidaEventListener } from "#events/MidaEventListener";
 import { MidaOrder } from "#orders/MidaOrder";
 import { MidaOrderDirectives } from "#orders/MidaOrderDirectives";
-import { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
+import { MidaPeriod } from "#periods/MidaPeriod";
 import { MidaTradingPlatform } from "#platforms/MidaTradingPlatform";
 import { MidaPosition } from "#positions/MidaPosition";
 import { MidaSymbol } from "#symbols/MidaSymbol";
@@ -46,8 +46,8 @@ export abstract class MidaTradingAccount {
     readonly #creationDate: MidaDate;
     readonly #ownerName: string;
     readonly #primaryAsset: string;
-    readonly #operativityType: MidaTradingAccountOperativityType;
-    readonly #positionAccountingType: MidaTradingAccountPositionAccountingType;
+    readonly #operativity: MidaTradingAccountOperativity;
+    readonly #positionAccounting: MidaTradingAccountPositionAccounting;
     readonly #indicativeLeverage: number;
     readonly #emitter: MidaEmitter;
 
@@ -57,8 +57,8 @@ export abstract class MidaTradingAccount {
         creationDate,
         ownerName,
         primaryAsset,
-        operativityType,
-        positionAccountingType,
+        operativity,
+        positionAccounting,
         indicativeLeverage,
     }: MidaTradingAccountParameters) {
         this.#id = id;
@@ -66,8 +66,8 @@ export abstract class MidaTradingAccount {
         this.#creationDate = creationDate;
         this.#ownerName = ownerName;
         this.#primaryAsset = primaryAsset;
-        this.#operativityType = operativityType;
-        this.#positionAccountingType = positionAccountingType;
+        this.#operativity = operativity;
+        this.#positionAccounting = positionAccounting;
         this.#indicativeLeverage = indicativeLeverage;
         this.#emitter = new MidaEmitter();
     }
@@ -97,14 +97,14 @@ export abstract class MidaTradingAccount {
         return this.#primaryAsset;
     }
 
-    /** The account operativity type (demo or real) */
-    public get operativityType (): MidaTradingAccountOperativityType {
-        return this.#operativityType;
+    /** The account operativity (demo or real) */
+    public get operativity (): MidaTradingAccountOperativity {
+        return this.#operativity;
     }
 
-    /** The account position accounting type (hedged or netted) */
-    public get positionAccountingType (): MidaTradingAccountPositionAccountingType {
-        return this.#positionAccountingType;
+    /** The account position accounting (hedged or netted) */
+    public get positionAccounting (): MidaTradingAccountPositionAccounting {
+        return this.#positionAccounting;
     }
 
     /** The account indicative leverage */
@@ -114,12 +114,12 @@ export abstract class MidaTradingAccount {
 
     /** Indicates if the account operativity is demo */
     public get isDemo (): boolean {
-        return this.operativityType === MidaTradingAccountOperativityType.DEMO;
+        return this.operativity === MidaTradingAccountOperativity.DEMO;
     }
 
     /** Indicates if the account positioning is hedged */
     public get isHedged (): boolean {
-        return this.#positionAccountingType === MidaTradingAccountPositionAccountingType.HEDGED;
+        return this.#positionAccounting === MidaTradingAccountPositionAccounting.HEDGED;
     }
 
     /** Used to get the account primary asset balance */
@@ -200,7 +200,7 @@ export abstract class MidaTradingAccount {
      * @param symbol The string representation of the symbol
      * @param timeframe The periods timeframe
      */
-    public abstract getSymbolPeriods (symbol: string, timeframe: number): Promise<MidaSymbolPeriod[]>;
+    public abstract getSymbolPeriods (symbol: string, timeframe: number): Promise<MidaPeriod[]>;
 
     /**
      * Used to get the current bid price of a symbol

@@ -20,7 +20,20 @@
  * THE SOFTWARE.
 */
 
-export enum MidaBrokerPositionProtectionChangeRejectionType {
-    INVALID_PROTECTION = "invalid-protection",
-    UNKNOWN = "unknown",
+export enum MidaPositionDirection {
+    LONG = "long",
+    SHORT = "short",
+}
+
+export namespace MidaPositionDirectionType {
+    export function oppositeOf (direction: MidaPositionDirection): MidaPositionDirection {
+        switch (direction) {
+            case MidaPositionDirectionType.LONG: {
+                return MidaPositionDirectionType.SHORT;
+            }
+            case MidaPositionDirectionType.SHORT: {
+                return MidaPositionDirectionType.LONG;
+            }
+        }
+    }
 }

@@ -20,20 +20,7 @@
  * THE SOFTWARE.
 */
 
-export enum MidaPositionDirectionType {
-    LONG = "long",
-    SHORT = "short",
-}
-
-export namespace MidaPositionDirectionType {
-    export function oppositeOf (direction: MidaPositionDirectionType): MidaPositionDirectionType {
-        switch (direction) {
-            case MidaPositionDirectionType.LONG: {
-                return MidaPositionDirectionType.SHORT;
-            }
-            case MidaPositionDirectionType.SHORT: {
-                return MidaPositionDirectionType.LONG;
-            }
-        }
-    }
+export enum MidaProtectionChangeStatus {
+    SUCCEEDED = "succeeded",
+    REJECTED = "rejected",
 }

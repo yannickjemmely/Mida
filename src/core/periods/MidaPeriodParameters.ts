@@ -20,33 +20,24 @@
  * THE SOFTWARE.
 */
 
-import { MidaPositionDirectionType } from "#positions/MidaPositionDirectionType";
+import { MidaDate } from "#dates/MidaDate";
+import { MidaPeriod } from "#periods/MidaPeriod";
+import { MidaQuotationPrice } from "#quotations/MidaQuotationPrice";
+import { MidaTick } from "#ticks/MidaTick";
 
-export enum MidaOrderDirectionType {
-    BUY = "buy",
-    SELL = "sell",
-}
-
-export namespace MidaOrderDirectionType {
-    export function oppositeOf (direction: MidaOrderDirectionType): MidaOrderDirectionType {
-        switch (direction) {
-            case MidaOrderDirectionType.BUY: {
-                return MidaOrderDirectionType.SELL;
-            }
-            case MidaOrderDirectionType.SELL: {
-                return MidaOrderDirectionType.BUY;
-            }
-        }
-    }
-
-    export function toPositionDirection (direction: MidaOrderDirectionType): MidaPositionDirectionType {
-        switch (direction) {
-            case MidaOrderDirectionType.BUY: {
-                return MidaPositionDirectionType.LONG;
-            }
-            case MidaOrderDirectionType.SELL: {
-                return MidaPositionDirectionType.SHORT;
-            }
-        }
-    }
-}
+/**
+ * The symbol period constructor parameters
+ * @see MidaPeriod
+ */
+export type MidaPeriodParameters = {
+    symbol: string;
+    startDate: MidaDate;
+    quotationPrice: MidaQuotationPrice;
+    open: number;
+    close: number;
+    low: number;
+    high: number;
+    volume: number;
+    timeframe: number;
+    ticks?: MidaTick[];
+};

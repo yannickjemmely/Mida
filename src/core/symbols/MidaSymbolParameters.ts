@@ -29,7 +29,7 @@ import { MidaSymbol } from "#symbols/MidaSymbol";
  */
 export type MidaSymbolParameters = {
     symbol: string;
-    brokerAccount: MidaTradingAccount;
+    tradingAccount: MidaTradingAccount;
     description: string;
     baseAsset: string;
     quoteAsset: string;

@@ -20,8 +20,7 @@
  * THE SOFTWARE.
 */
 
-export type MidaBrokerPositionProtection = {
-    stopLoss?: number;
-    trailingStopLoss?: boolean;
-    takeProfit?: number;
-};
+export enum MidaTradingAccountOperativity {
+    DEMO = "demo",
+    REAL = "real",
+}

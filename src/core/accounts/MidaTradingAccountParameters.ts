@@ -21,8 +21,8 @@
 */
 
 import { MidaTradingAccount } from "#accounts/MidaTradingAccount";
-import { MidaTradingAccountOperativityType } from "#accounts/MidaTradingAccountOperativityType";
-import { MidaTradingAccountPositionAccountingType } from "#accounts/MidaTradingAccountPositionAccountingType";
+import { MidaTradingAccountOperativity } from "#accounts/MidaTradingAccountOperativity";
+import { MidaTradingAccountPositionAccounting } from "#accounts/MidaTradingAccountPositionAccounting";
 import { MidaDate } from "#dates/MidaDate";
 import { MidaTradingPlatform } from "#platforms/MidaTradingPlatform";
 
@@ -36,7 +36,7 @@ export type MidaTradingAccountParameters = {
     creationDate: MidaDate;
     ownerName: string;
     primaryAsset: string;
-    operativityType: MidaTradingAccountOperativityType;
-    positionAccountingType: MidaTradingAccountPositionAccountingType;
+    operativity: MidaTradingAccountOperativity;
+    positionAccounting: MidaTradingAccountPositionAccounting;
     indicativeLeverage: number;
 };

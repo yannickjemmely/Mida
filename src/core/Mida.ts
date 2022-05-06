@@ -85,20 +85,20 @@ export { MidaTradingPlatform } from "#platforms/MidaTradingPlatform";
 export { MidaTradingPlatformParameters } from "#platforms/MidaTradingPlatformParameters";
 
 export { MidaTradingAccount } from "#accounts/MidaTradingAccount";
-export { MidaTradingAccountOperativityType } from "#accounts/MidaTradingAccountOperativityType";
+export { MidaTradingAccountOperativity } from "#accounts/MidaTradingAccountOperativity";
 export { MidaTradingAccountParameters } from "#accounts/MidaTradingAccountParameters";
-export { MidaTradingAccountPositionAccountingType } from "#accounts/MidaTradingAccountPositionAccountingType";
+export { MidaTradingAccountPositionAccounting } from "#accounts/MidaTradingAccountPositionAccounting";
 
 export { MidaDate } from "#dates/MidaDate";
 export { MidaDateParameters } from "#dates/MidaDateParameters";
 export { MidaDateUtilities } from "#dates/MidaDateUtilities";
 
 export { MidaTrade } from "#trades/MidaTrade";
-export { MidaTradeDirectionType } from "#trades/MidaTradeDirectionType";
+export { MidaTradeDirection } from "#trades/MidaTradeDirection";
 export { MidaTradeParameters } from "#trades/MidaTradeParameters";
-export { MidaTradePurposeType } from "#trades/MidaTradePurposeType";
-export { MidaTradeRejectionType } from "#trades/MidaTradeRejectionType";
-export { MidaTradeStatusType } from "#trades/MidaTradeStatusType";
+export { MidaTradePurpose } from "#trades/MidaTradePurpose";
+export { MidaTradeRejection } from "#trades/MidaTradeRejection";
+export { MidaTradeStatus } from "#trades/MidaTradeStatus";
 
 export { MidaError } from "#errors/MidaError";
 export { MidaErrorParameters } from "#errors/MidaErrorParameters";
@@ -119,18 +119,18 @@ export { MidaLogNamespace } from "#loggers/MidaLogNamespace";
 export { MidaLogParameters } from "#loggers/MidaLogParameters";
 
 export { MidaOrder } from "#orders/MidaOrder";
-export { MidaOrderDirectionType } from "#orders/MidaOrderDirectionType";
+export { MidaOrderDirection } from "#orders/MidaOrderDirection";
 export { MidaOrderDirectives } from "#orders/MidaOrderDirectives";
-export { MidaOrderExecutionType } from "#orders/MidaOrderExecutionType";
-export { MidaOrderFillType } from "#orders/MidaOrderFillType";
+export { MidaOrderExecution } from "#orders/MidaOrderExecution";
+export { MidaOrderFill } from "#orders/MidaOrderFill";
 export { MidaOrderParameters } from "#orders/MidaOrderParameters";
-export { MidaOrderPurposeType } from "#orders/MidaOrderPurposeType";
-export { MidaOrderRejectionType } from "#orders/MidaOrderRejectionType";
-export { MidaOrderStatusType } from "#orders/MidaOrderStatusType";
-export { MidaOrderTimeInForceType } from "#orders/MidaOrderTimeInForceType";
+export { MidaOrderPurpose } from "#orders/MidaOrderPurpose";
+export { MidaOrderRejection } from "#orders/MidaOrderRejection";
+export { MidaOrderStatus } from "#orders/MidaOrderStatus";
+export { MidaOrderTimeInForce } from "#orders/MidaOrderTimeInForce";
 
-export { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
-export { MidaSymbolPeriodParameters } from "#periods/MidaSymbolPeriodParameters";
+export { MidaPeriod } from "#periods/MidaPeriod";
+export { MidaPeriodParameters } from "#periods/MidaPeriodParameters";
 export { MidaSymbolPeriodUtilities } from "#periods/MidaSymbolPeriodUtilities";
 
 export { MidaPlugin } from "#plugins/MidaPlugin";
@@ -138,25 +138,25 @@ export { MidaPluginActions } from "#plugins/MidaPluginActions";
 export { MidaPluginParameters } from "#plugins/MidaPluginParameters";
 
 export { MidaPosition } from "#positions/MidaPosition";
-export { MidaPositionDirectionType } from "#positions/MidaPositionDirectionType";
+export { MidaPositionDirection } from "#positions/MidaPositionDirection";
 export { MidaPositionParameters } from "#positions/MidaPositionParameters";
-export { MidaPositionStatusType } from "#positions/MidaPositionStatusType";
+export { MidaPositionStatus } from "#positions/MidaPositionStatus";
 
-export { MidaBrokerPositionProtection } from "#protections/MidaBrokerPositionProtection";
-export { MidaBrokerPositionProtectionChange } from "#protections/MidaBrokerPositionProtectionChange";
-export { MidaBrokerPositionProtectionChangeStatus } from "#protections/MidaBrokerPositionProtectionChangeStatus";
-export { MidaBrokerPositionProtectionChangeRejectionType } from "#protections/MidaBrokerPositionProtectionChangeRejectionType";
+export { MidaProtection } from "#protections/MidaProtection";
+export { MidaProtectionChange } from "#protections/MidaProtectionChange";
+export { MidaProtectionChangeStatus } from "#protections/MidaProtectionChangeStatus";
+export { MidaProtectionChangeRejection } from "#protections/MidaProtectionChangeRejection";
 
-export { MidaSymbolQuotation } from "#quotations/MidaSymbolQuotation";
-export { MidaSymbolQuotationParameters } from "#quotations/MidaSymbolQuotationParameters";
+export { MidaQuotation } from "#quotations/MidaQuotation";
+export { MidaQuotationParameters } from "#quotations/MidaQuotationParameters";
 
 export { MidaSymbol } from "#symbols/MidaSymbol";
 export { MidaSymbolParameters } from "#symbols/MidaSymbolParameters";
-export { MidaSymbolPriceType } from "#symbols/MidaSymbolPriceType";
+export { MidaQuotationPrice } from "#quotations/MidaQuotationPrice";
 export { MidaSymbolTradeStatus } from "#symbols/MidaSymbolTradeStatus";
 
 export { MidaTick } from "#ticks/MidaTick";
-export { MidaTickMovementType } from "#ticks/MidaTickMovementType";
+export { MidaTickMovement } from "#ticks/MidaTickMovement";
 export { MidaTickParameters } from "#ticks/MidaTickParameters";
 
 export { MidaTimeframe } from "#timeframes/MidaTimeframe";

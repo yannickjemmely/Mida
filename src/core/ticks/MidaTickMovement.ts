@@ -20,7 +20,8 @@
  * THE SOFTWARE.
 */
 
-export enum MidaOrderFillType {
-    FULL = "full",
-    PARTIAL = "partial",
+export enum MidaTickMovement {
+    BID = "bid",
+    ASK = "ask",
+    BID_ASK = "bid-ask",
 }

@@ -21,8 +21,8 @@
 */
 
 import { MidaDate } from "#dates/MidaDate";
-import { MidaSymbolQuotation } from "#quotations/MidaSymbolQuotation";
-import { MidaTickMovementType } from "#ticks/MidaTickMovementType";
+import { MidaQuotation } from "#quotations/MidaQuotation";
+import { MidaTickMovement } from "#ticks/MidaTickMovement";
 import { MidaTickParameters } from "#ticks/MidaTickParameters";
 import { IMidaCloneable } from "#utilities/cloneable/IMidaCloneable";
 import { IMidaEquatable } from "#utilities/equatable/IMidaEquatable";
@@ -30,9 +30,9 @@ import { GenericObject } from "#utilities/GenericObject";
 
 /** Represents a symbol tick */
 export class MidaTick implements IMidaCloneable, IMidaEquatable {
-    readonly #quotation: MidaSymbolQuotation;
+    readonly #quotation: MidaQuotation;
     readonly #date: MidaDate;
-    readonly #movementType: MidaTickMovementType;
+    readonly #movement: MidaTickMovement;
     readonly #previousTick?: MidaTick;
     readonly #nextTick?: MidaTick;
 
@@ -41,7 +41,7 @@ export class MidaTick implements IMidaCloneable, IMidaEquatable {
         bid,
         ask,
         date,
-        movementType,
+        movement,
         quotation,
         previousTick,
         nextTick,
@@ -50,7 +50,7 @@ export class MidaTick implements IMidaCloneable, IMidaEquatable {
             this.#quotation = quotation;
         }
         else {
-            this.#quotation = new MidaSymbolQuotation({
+            this.#quotation = new MidaQuotation({
                 symbol: symbol as string,
                 bid: bid as number,
                 ask: ask as number,
@@ -59,13 +59,13 @@ export class MidaTick implements IMidaCloneable, IMidaEquatable {
         }
 
         this.#date = this.#quotation.date;
-        this.#movementType = movementType;
+        this.#movement = movement;
         this.#previousTick = previousTick;
         this.#nextTick = nextTick;
     }
 
     /** The tick quotation */
-    public get quotation (): MidaSymbolQuotation {
+    public get quotation (): MidaQuotation {
         return this.#quotation;
     }
 
@@ -74,9 +74,9 @@ export class MidaTick implements IMidaCloneable, IMidaEquatable {
         return this.#date;
     }
 
-    /** The tick movement type */
-    public get movementType (): MidaTickMovementType {
-        return this.#movementType;
+    /** The tick movement */
+    public get movement (): MidaTickMovement {
+        return this.#movement;
     }
 
     /** The tick previous to this */
@@ -118,7 +118,7 @@ export class MidaTick implements IMidaCloneable, IMidaEquatable {
         return new MidaTick({
             quotation: this.#quotation.clone(),
             date: this.#date.clone(),
-            movementType: this.#movementType,
+            movement: this.#movement,
             previousTick: this.#previousTick?.clone(),
             nextTick: this.#nextTick?.clone(),
         });

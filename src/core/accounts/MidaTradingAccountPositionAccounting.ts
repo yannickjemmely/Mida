@@ -20,7 +20,7 @@
  * THE SOFTWARE.
 */
 
-export enum MidaTradeStatusType {
-    EXECUTED = "executed",
-    REJECTED = "rejected",
+export enum MidaTradingAccountPositionAccounting {
+    HEDGED = "hedged",
+    NETTED = "netted",
 }

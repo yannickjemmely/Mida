@@ -20,7 +20,8 @@
  * THE SOFTWARE.
 */
 
-export enum MidaSymbolPriceType {
-    BID = "bid",
-    ASK = "ask",
+export enum MidaOrderExecution {
+    MARKET = "market",
+    LIMIT = "limit",
+    STOP = "stop",
 }

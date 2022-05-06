@@ -20,12 +20,7 @@
  * THE SOFTWARE.
 */
 
-export enum MidaOrderStatusType {
-    REQUESTED = "requested",
-    REJECTED = "rejected",
-    ACCEPTED = "accepted",
-    PENDING = "pending",
-    CANCELLED = "cancelled",
-    EXECUTED = "executed",
-    EXPIRED = "expired",
+export enum MidaProtectionChangeRejection {
+    INVALID_PROTECTION = "invalid-protection",
+    UNKNOWN = "unknown",
 }

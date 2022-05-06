@@ -31,5 +31,5 @@ export type MidaExpertAdvisorParameters = {
     name: string;
     description?: string;
     version: string;
-    brokerAccount: MidaTradingAccount;
+    tradingAccount: MidaTradingAccount;
 };

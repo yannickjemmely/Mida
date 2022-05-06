@@ -20,8 +20,7 @@
  * THE SOFTWARE.
 */
 
-export enum MidaTickMovementType {
-    BID = "bid",
-    ASK = "ask",
-    BID_ASK = "bid-ask",
+export enum MidaTradeDirection {
+    BUY = "buy",
+    SELL = "sell",
 }

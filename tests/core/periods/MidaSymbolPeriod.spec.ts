@@ -21,15 +21,15 @@
 */
 
 import { MidaDate } from "#dates/MidaDate";
-import { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
-import { MidaSymbolPriceType } from "#symbols/MidaSymbolPriceType";
+import { MidaPeriod } from "#periods/MidaPeriod";
+import { MidaQuotationPrice } from "#quotations/MidaQuotationPrice";
 import { MidaTimeframe } from "#timeframes/MidaTimeframe";
 
 describe("MidaSymbolPeriod", () => {
-    const bidPeriod: MidaSymbolPeriod = new MidaSymbolPeriod({
+    const bidPeriod: MidaPeriod = new MidaPeriod({
         symbol: "TEST",
         startDate: new MidaDate(),
-        priceType: MidaSymbolPriceType.BID,
+        priceType: MidaQuotationPrice.BID,
         open: 10,
         high: 50,
         low: 3,

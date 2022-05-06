@@ -22,8 +22,8 @@
 
 import { MidaTradingAccount } from "#accounts/MidaTradingAccount";
 import { MidaPosition } from "#positions/MidaPosition";
-import { MidaPositionDirectionType } from "#positions/MidaPositionDirectionType";
-import { MidaBrokerPositionProtection } from "#protections/MidaBrokerPositionProtection";
+import { MidaPositionDirection } from "#positions/MidaPositionDirection";
+import { MidaProtection } from "#protections/MidaProtection";
 
 /**
  * The position constructor parameters
@@ -34,6 +34,6 @@ export type MidaPositionParameters = {
     tradingAccount: MidaTradingAccount;
     symbol: string;
     volume: number;
-    directionType: MidaPositionDirectionType;
-    protection?: MidaBrokerPositionProtection;
+    direction: MidaPositionDirection;
+    protection?: MidaProtection;
 };

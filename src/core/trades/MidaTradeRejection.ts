@@ -20,7 +20,8 @@
  * THE SOFTWARE.
 */
 
-export enum MidaBrokerPositionProtectionChangeStatus {
-    SUCCEEDED = "succeeded",
-    REJECTED = "rejected",
+export enum MidaTradeRejection {
+    NO_LIQUIDITY = "no-liquidity",
+    MISSED = "missed",
+    UNKNOWN = "unknown",
 }

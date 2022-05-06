@@ -20,7 +20,16 @@
  * THE SOFTWARE.
 */
 
-export enum MidaTradingAccountOperativityType {
-    DEMO = "demo",
-    REAL = "real",
-}
+import { MidaDate } from "#dates/MidaDate";
+import { MidaQuotation } from "#quotations/MidaQuotation";
+
+/**
+ * The symbol quotation constructor parameters
+ * @see MidaQuotation
+ */
+export type MidaQuotationParameters = {
+    symbol: string;
+    date: MidaDate;
+    bid: number;
+    ask: number;
+};

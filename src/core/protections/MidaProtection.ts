@@ -20,7 +20,8 @@
  * THE SOFTWARE.
 */
 
-export enum MidaPositionStatusType {
-    OPEN = "open",
-    CLOSED = "closed",
-}
+export type MidaProtection = {
+    stopLoss?: number;
+    trailingStopLoss?: boolean;
+    takeProfit?: number;
+};
