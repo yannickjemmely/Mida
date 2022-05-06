@@ -129,9 +129,8 @@ export { MidaOrderRejection } from "#orders/MidaOrderRejection";
 export { MidaOrderStatus } from "#orders/MidaOrderStatus";
 export { MidaOrderTimeInForce } from "#orders/MidaOrderTimeInForce";
 
-export { MidaPeriod } from "#periods/MidaPeriod";
+export { MidaPeriod, composePeriods } from "#periods/MidaPeriod";
 export { MidaPeriodParameters } from "#periods/MidaPeriodParameters";
-export { MidaSymbolPeriodUtilities } from "#periods/MidaSymbolPeriodUtilities";
 
 export { MidaPlugin } from "#plugins/MidaPlugin";
 export { MidaPluginActions } from "#plugins/MidaPluginActions";

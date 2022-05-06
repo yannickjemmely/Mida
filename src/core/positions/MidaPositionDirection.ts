@@ -25,14 +25,14 @@ export enum MidaPositionDirection {
     SHORT = "short",
 }
 
-export namespace MidaPositionDirectionType {
+export namespace MidaPositionDirection {
     export function oppositeOf (direction: MidaPositionDirection): MidaPositionDirection {
         switch (direction) {
-            case MidaPositionDirectionType.LONG: {
-                return MidaPositionDirectionType.SHORT;
+            case MidaPositionDirection.LONG: {
+                return MidaPositionDirection.SHORT;
             }
-            case MidaPositionDirectionType.SHORT: {
-                return MidaPositionDirectionType.LONG;
+            case MidaPositionDirection.SHORT: {
+                return MidaPositionDirection.LONG;
             }
         }
     }

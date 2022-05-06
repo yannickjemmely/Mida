@@ -144,12 +144,7 @@ export abstract class MidaPosition {
             this.#volume = Math.abs(volumeDifference);
 
             if (volumeDifference > 0) {
-                if (this.direction === MidaPositionDirection.LONG) {
-                    this.#direction = MidaPositionDirection.SHORT;
-                }
-                else {
-                    this.#direction = MidaPositionDirection.LONG;
-                }
+                this.#direction = MidaPositionDirection.oppositeOf(this.#direction);
 
                 this.#emitter.notifyListeners("reverse");
             }

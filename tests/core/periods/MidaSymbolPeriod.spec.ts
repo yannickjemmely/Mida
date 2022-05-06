@@ -29,7 +29,7 @@ describe("MidaSymbolPeriod", () => {
     const bidPeriod: MidaPeriod = new MidaPeriod({
         symbol: "TEST",
         startDate: new MidaDate(),
-        priceType: MidaQuotationPrice.BID,
+        quotationPrice: MidaQuotationPrice.BID,
         open: 10,
         high: 50,
         low: 3,
