@@ -165,7 +165,7 @@ export abstract class MidaTradingAccount {
      * Used to get an asset by its string representation
      * @param asset The string representation of the asset
      */
-    public abstract getAsset (asset: string): Promise<MidaAsset>;
+    public abstract getAsset (asset: string): Promise<MidaAsset | undefined>;
 
     /**
      * Used to get the balance of an asset
@@ -176,9 +176,9 @@ export abstract class MidaTradingAccount {
     /**
      * Used to get the deposit address of a crypto asset
      * @param asset The string representation of the asset
-     * @param network The string representation of the network
+     * @param net The string representation of the network
      */
-    public abstract getCryptoAssetDepositAddress (asset: string, network: string): Promise<string>;
+    public abstract getCryptoAssetDepositAddress (asset: string, net: string): Promise<string>;
 
     /** Used to get the account available symbols */
     public abstract getSymbols (): Promise<string[]>;

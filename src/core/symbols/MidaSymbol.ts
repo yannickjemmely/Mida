@@ -32,7 +32,6 @@ export class MidaSymbol {
     readonly #description: string;
     readonly #baseAsset: string;
     readonly #quoteAsset: string;
-    readonly #digits: number;
     readonly #leverage: number;
     readonly #minLots: number;
     readonly #maxLots: number;
@@ -45,7 +44,6 @@ export class MidaSymbol {
         description,
         baseAsset,
         quoteAsset,
-        digits,
         leverage,
         minLots,
         maxLots,
@@ -56,7 +54,6 @@ export class MidaSymbol {
         this.#description = description;
         this.#baseAsset = baseAsset;
         this.#quoteAsset = quoteAsset;
-        this.#digits = digits;
         this.#leverage = leverage;
         this.#minLots = minLots;
         this.#maxLots = maxLots;
@@ -82,11 +79,6 @@ export class MidaSymbol {
     /** The symbol quote asset */
     public get quoteAsset (): string {
         return this.#quoteAsset;
-    }
-
-    /** The symbol digits */
-    public get digits (): number {
-        return this.#digits;
     }
 
     /** The symbol leverage */

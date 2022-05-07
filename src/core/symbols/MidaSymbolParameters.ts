@@ -33,7 +33,6 @@ export type MidaSymbolParameters = {
     description: string;
     baseAsset: string;
     quoteAsset: string;
-    digits: number;
     leverage: number;
     minLots: number;
     maxLots: number;

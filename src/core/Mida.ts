@@ -80,6 +80,7 @@ export { MidaExpertAdvisorParameters } from "#advisors/MidaExpertAdvisorParamete
 
 export { MidaAsset } from "#assets/MidaAsset";
 export { MidaAssetParameters } from "#assets/MidaAssetParameters";
+export { MidaAssetStatement } from "#assets/MidaAssetStatement";
 
 export { MidaTradingPlatform } from "#platforms/MidaTradingPlatform";
 export { MidaTradingPlatformParameters } from "#platforms/MidaTradingPlatformParameters";
