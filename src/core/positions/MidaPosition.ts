@@ -78,6 +78,22 @@ export abstract class MidaPosition {
         return this.#direction;
     }
 
+    public get protection (): MidaProtection {
+        return { ...this.#protection, };
+    }
+
+    public get takeProfit (): number | undefined {
+        return this.#protection.takeProfit;
+    }
+
+    public get stopLoss (): number | undefined {
+        return this.#protection.stopLoss;
+    }
+
+    public get trailingStopLoss (): boolean | undefined {
+        return this.#protection.trailingStopLoss;
+    }
+
     public get status (): MidaPositionStatus {
         if (this.volume === 0) {
             return MidaPositionStatus.CLOSED;

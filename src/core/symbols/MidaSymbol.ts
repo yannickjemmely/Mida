@@ -23,7 +23,6 @@
 import { MidaTradingAccount } from "#accounts/MidaTradingAccount";
 import { MidaSymbolParameters } from "#symbols/MidaSymbolParameters";
 import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
-import { GenericObject } from "#utilities/GenericObject";
 
 /** Represents a symbol */
 export class MidaSymbol {
@@ -124,9 +123,5 @@ export class MidaSymbol {
     /** Used to get the string representation */
     public toString (): string {
         return this.#symbol;
-    }
-
-    #notifyListeners (type: string, descriptor?: GenericObject): void {
-        this.#emitter.notifyListeners(type, descriptor);
     }
 }
