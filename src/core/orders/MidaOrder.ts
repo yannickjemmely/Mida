@@ -50,6 +50,7 @@ export abstract class MidaOrder {
     #lastUpdateDate?: MidaDate;
     readonly #timeInForce: MidaOrderTimeInForce;
     readonly #trades: MidaTrade[];
+    #positionId: string;
     #rejection?: MidaOrderRejection;
     readonly #isStopOut: boolean;
     readonly #emitter: MidaEmitter;
@@ -68,6 +69,7 @@ export abstract class MidaOrder {
         lastUpdateDate,
         timeInForce,
         trades,
+        positionId,
         rejection,
         isStopOut,
     }: MidaOrderParameters) {
@@ -84,6 +86,7 @@ export abstract class MidaOrder {
         this.#lastUpdateDate = lastUpdateDate;
         this.#timeInForce = timeInForce;
         this.#trades = trades;
+        this.#positionId = positionId ?? "";
         this.#rejection = rejection;
         this.#isStopOut = isStopOut ?? false;
         this.#emitter = new MidaEmitter();
@@ -151,6 +154,14 @@ export abstract class MidaOrder {
 
     public get trades (): MidaTrade[] {
         return this.#trades;
+    }
+
+    public get positionId (): string {
+        return this.#positionId;
+    }
+
+    protected set positionId (positionId: string) {
+        this.#positionId = positionId;
     }
 
     public get rejection (): MidaOrderRejection | undefined {

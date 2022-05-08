@@ -48,6 +48,7 @@ export type MidaOrderParameters = {
     lastUpdateDate?: MidaDate;
     timeInForce: MidaOrderTimeInForce;
     trades: MidaTrade[];
+    positionId?: string;
     rejection?: MidaOrderRejection;
     isStopOut?: boolean;
 };

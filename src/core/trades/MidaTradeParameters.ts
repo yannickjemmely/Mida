@@ -35,6 +35,7 @@ import { MidaTradeStatus } from "#trades/MidaTradeStatus";
 export type MidaTradeParameters = {
     id: string;
     orderId: string;
+    positionId: string;
     tradingAccount: MidaTradingAccount;
     symbol: string;
     volume: number;

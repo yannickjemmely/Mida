@@ -33,6 +33,7 @@ import { MidaTradeStatus } from "#trades/MidaTradeStatus";
 export abstract class MidaTrade {
     readonly #id: string;
     readonly #orderId: string;
+    readonly #positionId: string;
     readonly #tradingAccount: MidaTradingAccount;
     readonly #symbol: string;
     readonly #volume: number;
@@ -54,6 +55,7 @@ export abstract class MidaTrade {
     protected constructor ({
         id,
         orderId,
+        positionId,
         tradingAccount,
         symbol,
         volume,
@@ -74,6 +76,7 @@ export abstract class MidaTrade {
     }: MidaTradeParameters) {
         this.#id = id;
         this.#orderId = orderId;
+        this.#positionId = positionId;
         this.#tradingAccount = tradingAccount;
         this.#symbol = symbol;
         this.#volume = volume;
@@ -99,6 +102,10 @@ export abstract class MidaTrade {
 
     public get orderId (): string {
         return this.#orderId;
+    }
+
+    public get positionId (): string {
+        return this.#positionId;
     }
 
     public get tradingAccount (): MidaTradingAccount {
