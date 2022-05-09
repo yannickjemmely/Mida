@@ -42,7 +42,6 @@ export type MidaTradeParameters = {
     direction: MidaTradeDirection;
     status: MidaTradeStatus;
     purpose: MidaTradePurpose;
-    requestDate: MidaDate;
     executionDate?: MidaDate;
     rejectionDate?: MidaDate;
     executionPrice?: number;

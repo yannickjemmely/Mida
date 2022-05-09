@@ -100,27 +100,27 @@ export class MidaSymbol {
         return this.#lotUnits;
     }
 
-    /** Used to get the current bid price */
+    /** Used to get the symbol current best bid price */
     public async getBid (): Promise<number> {
         return this.#tradingAccount.getSymbolBid(this.#symbol);
     }
 
-    /** Used to get the current ask price */
+    /** Used to get the symbol current best ask price */
     public async getAsk (): Promise<number> {
         return this.#tradingAccount.getSymbolAsk(this.#symbol);
     }
 
-    /** Used to get the current average price */
+    /** Used to get the symbol current average price */
     public async getAveragePrice (): Promise<number> {
         return this.#tradingAccount.getSymbolAveragePrice(this.#symbol);
     }
 
-    /** Indicates if the market is open */
+    /** Indicates if the symbol market is open */
     public async isMarketOpen (): Promise<boolean> {
         return this.#tradingAccount.isSymbolMarketOpen(this.#symbol);
     }
 
-    /** Used to get the string representation */
+    /** Used to get the string representation of the symbol */
     public toString (): string {
         return this.#symbol;
     }

@@ -40,7 +40,6 @@ export abstract class MidaTrade {
     readonly #direction: MidaTradeDirection;
     readonly #status: MidaTradeStatus;
     readonly #purpose: MidaTradePurpose;
-    readonly #requestDate: MidaDate;
     readonly #executionDate?: MidaDate;
     readonly #rejectionDate?: MidaDate;
     readonly #executionPrice?: number;
@@ -62,7 +61,6 @@ export abstract class MidaTrade {
         direction,
         status,
         purpose,
-        requestDate,
         executionDate,
         rejectionDate,
         executionPrice,
@@ -83,7 +81,6 @@ export abstract class MidaTrade {
         this.#direction = direction;
         this.#status = status;
         this.#purpose = purpose;
-        this.#requestDate = requestDate;
         this.#executionDate = executionDate;
         this.#rejectionDate = rejectionDate;
         this.#executionPrice = executionPrice;
@@ -130,10 +127,6 @@ export abstract class MidaTrade {
 
     public get purpose (): MidaTradePurpose {
         return this.#purpose;
-    }
-
-    public get requestDate (): MidaDate {
-        return this.#requestDate;
     }
 
     public get executionDate (): MidaDate | undefined {

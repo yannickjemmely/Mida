@@ -55,27 +55,27 @@ export abstract class MidaTradingPlatform {
 
     /* *** *** *** Reiryoku Technologies *** *** *** */
 
-    static readonly #installedBrokers: Map<string, MidaTradingPlatform> = new Map();
+    static readonly #installedPlatforms: Map<string, MidaTradingPlatform> = new Map();
 
-    public static get installedBrokers (): MidaTradingPlatform[] {
-        return [ ...MidaTradingPlatform.#installedBrokers.values(), ];
+    public static get installedPlatforms (): MidaTradingPlatform[] {
+        return [ ...MidaTradingPlatform.#installedPlatforms.values(), ];
     }
 
-    public static add (id: string, broker: MidaTradingPlatform): void {
-        if (MidaTradingPlatform.#installedBrokers.has(id)) {
+    public static add (id: string, platform: MidaTradingPlatform): void {
+        if (MidaTradingPlatform.#installedPlatforms.has(id)) {
             throw new Error();
         }
 
-        MidaTradingPlatform.#installedBrokers.set(id, broker);
+        MidaTradingPlatform.#installedPlatforms.set(id, platform);
     }
 
     public static async login (id: string, parameters: GenericObject): Promise<MidaTradingAccount> {
-        const broker: MidaTradingPlatform | undefined = MidaTradingPlatform.#installedBrokers.get(id);
+        const platform: MidaTradingPlatform | undefined = MidaTradingPlatform.#installedPlatforms.get(id);
 
-        if (!broker) {
+        if (!platform) {
             throw new Error();
         }
 
-        return broker.login(parameters);
+        return platform.login(parameters);
     }
 }
