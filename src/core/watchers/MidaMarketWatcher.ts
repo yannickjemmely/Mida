@@ -31,12 +31,14 @@ import { GenericObject } from "#utilities/GenericObject";
 import { MidaUtilities } from "#utilities/MidaUtilities";
 import { MidaMarketWatcherDirectives } from "#watchers/MidaMarketWatcherDirectives";
 import { MidaMarketWatcherParameters } from "#watchers/MidaMarketWatcherParameters";
+import { isA } from "@jest/expect-utils";
 
 const { utcTimestamp, } = MidaDateUtilities;
 const { mergeOptions, } = MidaUtilities;
 
 export class MidaMarketWatcher {
     readonly #tradingAccount: MidaTradingAccount;
+    #isActive: boolean;
     readonly #watchedSymbols: Map<string, MidaMarketWatcherDirectives>;
     readonly #lastClosedPeriods: Map<string, Map<number, MidaPeriod>>;
     readonly #emitter: MidaEmitter;
@@ -46,6 +48,7 @@ export class MidaMarketWatcher {
 
     public constructor ({ tradingAccount, }: MidaMarketWatcherParameters) {
         this.#tradingAccount = tradingAccount;
+        this.#isActive = true;
         this.#watchedSymbols = new Map();
         this.#lastClosedPeriods = new Map();
         this.#emitter = new MidaEmitter();
@@ -55,6 +58,14 @@ export class MidaMarketWatcher {
 
     public get tradingAccount (): MidaTradingAccount {
         return this.#tradingAccount;
+    }
+
+    public get isActive (): boolean {
+        return this.#isActive;
+    }
+
+    public set isActive (isActive: boolean) {
+        this.#isActive = isActive;
     }
 
     public get watchedSymbols (): string[] {
@@ -120,10 +131,16 @@ export class MidaMarketWatcher {
     }
 
     protected notifyListeners (type: string, descriptor?: GenericObject): void {
-        this.#emitter.notifyListeners(type, descriptor);
+        if (this.isActive) {
+            this.#emitter.notifyListeners(type, descriptor);
+        }
     }
 
     async #checkNewClosedPeriods (): Promise<void> {
+        if (!this.isActive) {
+            return;
+        }
+
         for (const symbol of this.watchedSymbols) {
             const directives: MidaMarketWatcherDirectives = this.#watchedSymbols.get(symbol) as MidaMarketWatcherDirectives;
             const timeframes: number[] | undefined = directives.timeframes;

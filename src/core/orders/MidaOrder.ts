@@ -195,7 +195,7 @@ export abstract class MidaOrder {
     }
 
     public get fill (): MidaOrderFill | undefined {
-        if (!this.isExecuted) {
+        if (this.executedTrades.length === 0) {
             return undefined;
         }
 
@@ -207,7 +207,7 @@ export abstract class MidaOrder {
     }
 
     public get executionPrice (): number | undefined {
-        if (!this.isExecuted) {
+        if (this.executedTrades.length === 0) {
             return undefined;
         }
 

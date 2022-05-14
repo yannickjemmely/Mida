@@ -149,6 +149,9 @@ export abstract class MidaExpertAdvisor {
         }
 
         this.notifyListeners("start");
+
+        // Activate market watcher
+        this.#marketWatcher.isActive = true;
     }
 
     public async stop (): Promise<void> {
@@ -168,6 +171,9 @@ export abstract class MidaExpertAdvisor {
         }
 
         this.notifyListeners("stop");
+
+        // Deactivate market watcher
+        this.#marketWatcher.isActive = false;
     }
 
     public on (type: string): Promise<MidaEvent>;
