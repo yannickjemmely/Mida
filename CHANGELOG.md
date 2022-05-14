@@ -1,3 +1,5 @@
+7.0.0 - 14-05-2022
+===================
 ## Features
 * **_BREAKING_** Refactor part of APIs names to reflect platform-neutrality [#22](https://github.com/Reiryoku-Technologies/Mida/pull/22)
 
