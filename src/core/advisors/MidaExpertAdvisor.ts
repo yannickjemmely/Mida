@@ -1,5 +1,5 @@
 /*
- * Copyright Reiryoku Technologies and its contributors, https://www.reiryoku.com
+ * Copyright Reiryoku Technologies and its contributors, www.reiryoku.com, www.mida.org
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,21 +20,20 @@
  * THE SOFTWARE.
 */
 
-import { MidaExpertAdvisorComponent } from "#advisors/MidaExpertAdvisorComponent";
-import { MidaExpertAdvisorComponentUtilities } from "#advisors/MidaExpertAdvisorComponentUtilities";
+import { MidaTradingAccount } from "#accounts/MidaTradingAccount";
+import { MidaExpertAdvisorComponent, filterEnabledComponents } from "#advisors/MidaExpertAdvisorComponent";
 import { MidaExpertAdvisorParameters } from "#advisors/MidaExpertAdvisorParameters";
-import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
-import { MidaBrokerDeal } from "#deals/MidaBrokerDeal";
-import { MidaBrokerDealUtilities } from "#deals/MidaBrokerDealUtilities";
 import { MidaEvent } from "#events/MidaEvent";
 import { MidaEventListener } from "#events/MidaEventListener";
-import { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
-import { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
-import { MidaBrokerOrderUtilities } from "#orders/MidaBrokerOrderUtilities";
-import { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
-import { MidaBrokerPosition } from "#positions/MidaBrokerPosition";
-import { MidaBrokerPositionStatus } from "#positions/MidaBrokerPositionStatus";
-import { MidaSymbolTick } from "#ticks/MidaSymbolTick";
+import { MidaOrder, filterExecutedOrders } from "#orders/MidaOrder";
+import { MidaOrderDirectives } from "#orders/MidaOrderDirectives";
+import { MidaPeriod } from "#periods/MidaPeriod";
+import { MidaTick } from "#ticks/MidaTick";
+import {
+    MidaTrade,
+    filterExecutedTrades,
+    getTradesFromOrders,
+} from "#trades/MidaTrade";
 import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
 import { GenericObject } from "#utilities/GenericObject";
 import { MidaMarketWatcher } from "#watchers/MidaMarketWatcher";
@@ -43,11 +42,11 @@ export abstract class MidaExpertAdvisor {
     readonly #name: string;
     readonly #description: string;
     readonly #version: string;
-    readonly #brokerAccount: MidaBrokerAccount;
+    readonly #tradingAccount: MidaTradingAccount;
     #isOperative: boolean;
-    readonly #orders: MidaBrokerOrder[];
-    readonly #capturedTicks: MidaSymbolTick[];
-    readonly #tickEventQueue: MidaSymbolTick[];
+    readonly #orders: MidaOrder[];
+    readonly #capturedTicks: MidaTick[];
+    readonly #tickEventQueue: MidaTick[];
     #tickEventIsLocked: boolean;
     #isConfigured: boolean;
     readonly #marketWatcher: MidaMarketWatcher;
@@ -58,19 +57,19 @@ export abstract class MidaExpertAdvisor {
         name,
         description,
         version,
-        brokerAccount,
+        tradingAccount,
     }: MidaExpertAdvisorParameters) {
         this.#name = name;
         this.#description = description ?? "";
         this.#version = version;
-        this.#brokerAccount = brokerAccount;
+        this.#tradingAccount = tradingAccount;
         this.#isOperative = false;
         this.#orders = [];
         this.#capturedTicks = [];
         this.#tickEventQueue = [];
         this.#tickEventIsLocked = false;
         this.#isConfigured = false;
-        this.#marketWatcher = new MidaMarketWatcher({ brokerAccount, });
+        this.#marketWatcher = new MidaMarketWatcher({ tradingAccount, });
         this.#components = [];
         this.#emitter = new MidaEmitter();
     }
@@ -87,27 +86,27 @@ export abstract class MidaExpertAdvisor {
         return this.#version;
     }
 
-    public get brokerAccount (): MidaBrokerAccount {
-        return this.#brokerAccount;
+    public get tradingAccount (): MidaTradingAccount {
+        return this.#tradingAccount;
     }
 
     public get isOperative (): boolean {
         return this.#isOperative;
     }
 
-    public get orders (): MidaBrokerOrder[] {
+    public get orders (): MidaOrder[] {
         return [ ...this.#orders, ];
     }
 
-    public get deals (): MidaBrokerDeal[] {
-        return MidaBrokerDealUtilities.getDealsFromOrders(this.#orders);
+    public get trades (): MidaTrade[] {
+        return getTradesFromOrders(this.#orders);
     }
 
     public get components (): MidaExpertAdvisorComponent[] {
         return [ ...this.#components, ];
     }
 
-    protected get capturedTicks (): MidaSymbolTick[] {
+    protected get capturedTicks (): MidaTick[] {
         return [ ...this.#capturedTicks, ];
     }
 
@@ -116,40 +115,15 @@ export abstract class MidaExpertAdvisor {
     }
 
     public get enabledComponents (): MidaExpertAdvisorComponent[] {
-        return MidaExpertAdvisorComponentUtilities.filterEnabledComponents(this.#components);
+        return filterEnabledComponents(this.#components);
     }
 
-    public get executedOrders (): MidaBrokerOrder[] {
-        return MidaBrokerOrderUtilities.filterExecutedOrders(this.#orders);
+    public get executedOrders (): MidaOrder[] {
+        return filterExecutedOrders(this.#orders);
     }
 
-    public get executedDeals (): MidaBrokerDeal[] {
-        return MidaBrokerDealUtilities.filterExecutedDeals(this.deals);
-    }
-
-    public get positions (): MidaBrokerPosition[] {
-        const positions: Map<string, MidaBrokerPosition> = new Map();
-
-        for (const order of this.executedOrders) {
-            const position: MidaBrokerPosition = order.position as MidaBrokerPosition;
-
-            positions.set(position.id, position);
-        }
-
-        return [ ...positions.values(), ];
-    }
-
-    public get openPositions (): MidaBrokerPosition[] {
-        const positions: MidaBrokerPosition[] = this.positions;
-        const openPositions: MidaBrokerPosition[] = [];
-
-        for (const position of positions) {
-            if (position.status === MidaBrokerPositionStatus.OPEN) {
-                openPositions.push(position);
-            }
-        }
-
-        return openPositions;
+    public get executedTrades (): MidaTrade[] {
+        return filterExecutedTrades(this.trades);
     }
 
     public async start (): Promise<void> {
@@ -175,6 +149,9 @@ export abstract class MidaExpertAdvisor {
         }
 
         this.notifyListeners("start");
+
+        // Activate market watcher
+        this.#marketWatcher.isActive = true;
     }
 
     public async stop (): Promise<void> {
@@ -194,6 +171,9 @@ export abstract class MidaExpertAdvisor {
         }
 
         this.notifyListeners("stop");
+
+        // Deactivate market watcher
+        this.#marketWatcher.isActive = false;
     }
 
     public on (type: string): Promise<MidaEvent>;
@@ -216,11 +196,11 @@ export abstract class MidaExpertAdvisor {
         // Silence is golden
     }
 
-    protected async onTick (tick: MidaSymbolTick): Promise<void> {
+    protected async onTick (tick: MidaTick): Promise<void> {
         // Silence is golden
     }
 
-    protected async onPeriodClose (period: MidaSymbolPeriod): Promise<void> {
+    protected async onPeriodClose (period: MidaPeriod): Promise<void> {
         // Silence is golden
     }
 
@@ -245,8 +225,8 @@ export abstract class MidaExpertAdvisor {
         await this.marketWatcher.unwatch(symbol);
     }
 
-    protected async placeOrder (directives: MidaBrokerOrderDirectives): Promise<MidaBrokerOrder> {
-        const order: MidaBrokerOrder = await this.#brokerAccount.placeOrder(directives);
+    protected async placeOrder (directives: MidaOrderDirectives): Promise<MidaOrder> {
+        const order: MidaOrder = await this.#tradingAccount.placeOrder(directives);
 
         this.#orders.push(order);
 
@@ -257,7 +237,7 @@ export abstract class MidaExpertAdvisor {
         this.#emitter.notifyListeners(type, descriptor);
     }
 
-    #onTick (tick: MidaSymbolTick): void {
+    #onTick (tick: MidaTick): void {
         if (!this.#isOperative) {
             return;
         }
@@ -266,7 +246,7 @@ export abstract class MidaExpertAdvisor {
         this.#onTickAsync(tick);
     }
 
-    async #onTickAsync (tick: MidaSymbolTick): Promise<void> {
+    async #onTickAsync (tick: MidaTick): Promise<void> {
         if (this.#tickEventIsLocked) {
             this.#tickEventQueue.push(tick);
         }
@@ -300,7 +280,7 @@ export abstract class MidaExpertAdvisor {
             console.error(error);
         }
 
-        const nextTick: MidaSymbolTick | undefined = this.#tickEventQueue.shift();
+        const nextTick: MidaTick | undefined = this.#tickEventQueue.shift();
         this.#tickEventIsLocked = false;
 
         if (nextTick) {
@@ -308,7 +288,7 @@ export abstract class MidaExpertAdvisor {
         }
     }
 
-    #onPeriodClose (period: MidaSymbolPeriod): void {
+    #onPeriodClose (period: MidaPeriod): void {
         try {
             this.onPeriodClose(period);
         }

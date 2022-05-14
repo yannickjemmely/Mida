@@ -1,5 +1,5 @@
 /*
- * Copyright Reiryoku Technologies and its contributors, https://www.reiryoku.com
+ * Copyright Reiryoku Technologies and its contributors, www.reiryoku.com, www.mida.org
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,9 +20,10 @@
  * THE SOFTWARE.
 */
 
-import { MidaBroker } from "#brokers/MidaBroker";
-import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
+import { MidaTradingAccount } from "#accounts/MidaTradingAccount";
+import { MidaTradingPlatform } from "#platforms/MidaTradingPlatform";
 import { MidaIndicator } from "#indicators/MidaIndicator";
+import { MidaLogger } from "#loggers/MidaLogger";
 import { MidaPlugin } from "#plugins/MidaPlugin";
 import { baseActions } from "#plugins/MidaPluginActions";
 import { GenericObject } from "#utilities/GenericObject";
@@ -34,7 +35,12 @@ class Mida {
 
     /* *** *** *** Reiryoku Technologies *** *** *** */
 
+    static readonly #logger: MidaLogger = new MidaLogger();
     static readonly #installedPlugins: Map<string, MidaPlugin> = new Map();
+
+    public static get logger (): MidaLogger {
+        return this.#logger;
+    }
 
     public static get installedPlugins (): MidaPlugin[] {
         return [ ...Mida.#installedPlugins.values(), ];
@@ -55,8 +61,8 @@ class Mida {
         return Mida.#installedPlugins.has(id);
     }
 
-    public static async login (id: string, parameters: GenericObject): Promise<MidaBrokerAccount> {
-        return MidaBroker.login(id, parameters);
+    public static async login (id: string, parameters: GenericObject): Promise<MidaTradingAccount> {
+        return MidaTradingPlatform.login(id, parameters);
     }
 
     public static createIndicator (id: string, parameters: GenericObject = {}): MidaIndicator {
@@ -70,30 +76,30 @@ export { Mida };
 export { MidaExpertAdvisor } from "#advisors/MidaExpertAdvisor";
 export { MidaExpertAdvisorComponent } from "#advisors/MidaExpertAdvisorComponent";
 export { MidaExpertAdvisorComponentParameters } from "#advisors/MidaExpertAdvisorComponentParameters";
-export { MidaExpertAdvisorComponentUtilities } from "#advisors/MidaExpertAdvisorComponentUtilities";
 export { MidaExpertAdvisorParameters } from "#advisors/MidaExpertAdvisorParameters";
 
 export { MidaAsset } from "#assets/MidaAsset";
 export { MidaAssetParameters } from "#assets/MidaAssetParameters";
+export { MidaAssetStatement } from "#assets/MidaAssetStatement";
 
-export { MidaBroker } from "#brokers/MidaBroker";
-export { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
-export { MidaBrokerAccountOperativity } from "#brokers/MidaBrokerAccountOperativity";
-export { MidaBrokerAccountParameters } from "#brokers/MidaBrokerAccountParameters";
-export { MidaBrokerAccountPositionAccounting } from "#brokers/MidaBrokerAccountPositionAccounting";
-export { MidaBrokerParameters } from "#brokers/MidaBrokerParameters";
+export { MidaTradingPlatform } from "#platforms/MidaTradingPlatform";
+export { MidaTradingPlatformParameters } from "#platforms/MidaTradingPlatformParameters";
+
+export { MidaTradingAccount } from "#accounts/MidaTradingAccount";
+export { MidaTradingAccountOperativity } from "#accounts/MidaTradingAccountOperativity";
+export { MidaTradingAccountParameters } from "#accounts/MidaTradingAccountParameters";
+export { MidaTradingAccountPositionAccounting } from "#accounts/MidaTradingAccountPositionAccounting";
 
 export { MidaDate } from "#dates/MidaDate";
 export { MidaDateParameters } from "#dates/MidaDateParameters";
 export { MidaDateUtilities } from "#dates/MidaDateUtilities";
 
-export { MidaBrokerDeal } from "#deals/MidaBrokerDeal";
-export { MidaBrokerDealDirection } from "#deals/MidaBrokerDealDirection";
-export { MidaBrokerDealParameters } from "#deals/MidaBrokerDealParameters";
-export { MidaBrokerDealPurpose } from "#deals/MidaBrokerDealPurpose";
-export { MidaBrokerDealRejectionType } from "#deals/MidaBrokerDealRejectionType";
-export { MidaBrokerDealStatus } from "#deals/MidaBrokerDealStatus";
-export { MidaBrokerDealUtilities } from "#deals/MidaBrokerDealUtilities";
+export { MidaTrade } from "#trades/MidaTrade";
+export { MidaTradeDirection } from "#trades/MidaTradeDirection";
+export { MidaTradeParameters } from "#trades/MidaTradeParameters";
+export { MidaTradePurpose } from "#trades/MidaTradePurpose";
+export { MidaTradeRejection } from "#trades/MidaTradeRejection";
+export { MidaTradeStatus } from "#trades/MidaTradeStatus";
 
 export { MidaError } from "#errors/MidaError";
 export { MidaErrorParameters } from "#errors/MidaErrorParameters";
@@ -108,55 +114,50 @@ export { MidaIndicator } from "#indicators/MidaIndicator";
 export { MidaIndicatorIo } from "#indicators/MidaIndicatorIo";
 export { MidaIndicatorParameters } from "#indicators/MidaIndicatorParameters";
 
-export { MidaLog } from "#logs/MidaLog";
-export { MidaLogger } from "#logs/MidaLogger";
-export { MidaLogNamespace } from "#logs/MidaLogNamespace";
-export { MidaLogParameters } from "#logs/MidaLogParameters";
+export { MidaLog } from "#loggers/MidaLog";
+export { MidaLogger } from "#loggers/MidaLogger";
+export { MidaLogNamespace } from "#loggers/MidaLogNamespace";
+export { MidaLogParameters } from "#loggers/MidaLogParameters";
 
-export { MidaBrokerOrder } from "#orders/MidaBrokerOrder";
-export { MidaBrokerOrderDirection } from "#orders/MidaBrokerOrderDirection";
-export { MidaBrokerOrderDirectives } from "#orders/MidaBrokerOrderDirectives";
-export { MidaBrokerOrderExecutionType } from "#orders/MidaBrokerOrderExecutionType";
-export { MidaBrokerOrderFillType } from "#orders/MidaBrokerOrderFillType";
-export { MidaBrokerOrderParameters } from "#orders/MidaBrokerOrderParameters";
-export { MidaBrokerOrderPurpose } from "#orders/MidaBrokerOrderPurpose";
-export { MidaBrokerOrderRejectionType } from "#orders/MidaBrokerOrderRejectionType";
-export { MidaBrokerOrderStatus } from "#orders/MidaBrokerOrderStatus";
-export { MidaBrokerOrderTimeInForce } from "#orders/MidaBrokerOrderTimeInForce";
-export { MidaBrokerOrderUtilities } from "#orders/MidaBrokerOrderUtilities";
+export { MidaOrder } from "#orders/MidaOrder";
+export { MidaOrderDirection } from "#orders/MidaOrderDirection";
+export { MidaOrderDirectives } from "#orders/MidaOrderDirectives";
+export { MidaOrderExecution } from "#orders/MidaOrderExecution";
+export { MidaOrderFill } from "#orders/MidaOrderFill";
+export { MidaOrderParameters } from "#orders/MidaOrderParameters";
+export { MidaOrderPurpose } from "#orders/MidaOrderPurpose";
+export { MidaOrderRejection } from "#orders/MidaOrderRejection";
+export { MidaOrderStatus } from "#orders/MidaOrderStatus";
+export { MidaOrderTimeInForce } from "#orders/MidaOrderTimeInForce";
 
-export { MidaSymbolPeriod } from "#periods/MidaSymbolPeriod";
-export { MidaSymbolPeriodParameters } from "#periods/MidaSymbolPeriodParameters";
-export { MidaSymbolPeriodUtilities } from "#periods/MidaSymbolPeriodUtilities";
+export { MidaPeriod, composePeriods } from "#periods/MidaPeriod";
+export { MidaPeriodParameters } from "#periods/MidaPeriodParameters";
 
 export { MidaPlugin } from "#plugins/MidaPlugin";
 export { MidaPluginActions } from "#plugins/MidaPluginActions";
 export { MidaPluginParameters } from "#plugins/MidaPluginParameters";
 
-export { MidaBrokerPosition } from "#positions/MidaBrokerPosition";
-export { MidaBrokerPositionDirection } from "#positions/MidaBrokerPositionDirection";
-export { MidaBrokerPositionHistory } from "#positions/MidaBrokerPositionHistory";
-export { MidaBrokerPositionParameters } from "#positions/MidaBrokerPositionParameters";
-export { MidaBrokerPositionStatus } from "#positions/MidaBrokerPositionStatus";
-export { MidaBrokerPositionUtilities } from "#positions/MidaBrokerPositionUtilities";
+export { MidaPosition } from "#positions/MidaPosition";
+export { MidaPositionDirection } from "#positions/MidaPositionDirection";
+export { MidaPositionParameters } from "#positions/MidaPositionParameters";
+export { MidaPositionStatus } from "#positions/MidaPositionStatus";
 
-export { MidaBrokerPositionProtection } from "#protections/MidaBrokerPositionProtection";
-export { MidaBrokerPositionProtectionChange } from "#protections/MidaBrokerPositionProtectionChange";
-export { MidaBrokerPositionProtectionChangeStatus } from "#protections/MidaBrokerPositionProtectionChangeStatus";
-export { MidaBrokerPositionProtectionChangeRejectionType } from "#protections/MidaBrokerPositionProtectionChangeRejectionType";
+export { MidaProtection } from "#protections/MidaProtection";
+export { MidaProtectionChange } from "#protections/MidaProtectionChange";
+export { MidaProtectionChangeStatus } from "#protections/MidaProtectionChangeStatus";
+export { MidaProtectionChangeRejection } from "#protections/MidaProtectionChangeRejection";
 
-export { MidaSymbolQuotation } from "#quotations/MidaSymbolQuotation";
-export { MidaSymbolQuotationParameters } from "#quotations/MidaSymbolQuotationParameters";
+export { MidaQuotation } from "#quotations/MidaQuotation";
+export { MidaQuotationParameters } from "#quotations/MidaQuotationParameters";
 
 export { MidaSymbol } from "#symbols/MidaSymbol";
-export { MidaSymbolCategory } from "#symbols/MidaSymbolCategory";
 export { MidaSymbolParameters } from "#symbols/MidaSymbolParameters";
-export { MidaSymbolPriceType } from "#symbols/MidaSymbolPriceType";
+export { MidaQuotationPrice } from "#quotations/MidaQuotationPrice";
 export { MidaSymbolTradeStatus } from "#symbols/MidaSymbolTradeStatus";
 
-export { MidaSymbolTick } from "#ticks/MidaSymbolTick";
-export { MidaSymbolTickMovementType } from "#ticks/MidaSymbolTickMovementType";
-export { MidaSymbolTickParameters } from "#ticks/MidaSymbolTickParameters";
+export { MidaTick } from "#ticks/MidaTick";
+export { MidaTickMovement } from "#ticks/MidaTickMovement";
+export { MidaTickParameters } from "#ticks/MidaTickParameters";
 
 export { MidaTimeframe } from "#timeframes/MidaTimeframe";
 

@@ -1,5 +1,5 @@
 /*
- * Copyright Reiryoku Technologies and its contributors, https://www.reiryoku.com
+ * Copyright Reiryoku Technologies and its contributors, www.reiryoku.com, www.mida.org
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,10 +20,8 @@
  * THE SOFTWARE.
 */
 
-import { MidaAsset } from "#assets/MidaAsset";
-import { MidaBrokerAccount } from "#brokers/MidaBrokerAccount";
+import { MidaTradingAccount } from "#accounts/MidaTradingAccount";
 import { MidaSymbol } from "#symbols/MidaSymbol";
-import { MidaSymbolCategory } from "#symbols/MidaSymbolCategory";
 
 /**
  * The symbol constructor parameters
@@ -31,12 +29,10 @@ import { MidaSymbolCategory } from "#symbols/MidaSymbolCategory";
  */
 export type MidaSymbolParameters = {
     symbol: string;
-    brokerAccount: MidaBrokerAccount;
+    tradingAccount: MidaTradingAccount;
     description: string;
-    baseAsset: MidaAsset;
-    quoteAsset: MidaAsset;
-    type: MidaSymbolCategory;
-    digits: number;
+    baseAsset: string;
+    quoteAsset: string;
     leverage: number;
     minLots: number;
     maxLots: number;

@@ -1,5 +1,5 @@
 /*
- * Copyright Reiryoku Technologies and its contributors, https://www.reiryoku.com
+ * Copyright Reiryoku Technologies and its contributors, www.reiryoku.com, www.mida.org
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,12 +20,12 @@
  * THE SOFTWARE.
 */
 
-import { MidaBroker } from "#brokers/MidaBroker";
+import { MidaTradingPlatform } from "#platforms/MidaTradingPlatform";
 import { MidaIndicator } from "#indicators/MidaIndicator";
 import { GenericObject } from "#utilities/GenericObject";
 
 export type MidaPluginBaseActions = {
-    addBroker (id: string, broker: MidaBroker): void;
+    addPlatform (id: string, platform: MidaTradingPlatform): void;
     addIndicator (id: string, indicatorConstructor: (parameters: GenericObject) => MidaIndicator): void;
 };
 
@@ -34,8 +34,8 @@ export type MidaPluginActions = MidaPluginBaseActions;
 /* *** *** *** Reiryoku Technologies *** *** *** */
 
 export const baseActions: MidaPluginActions = {
-    addBroker (id: string, broker: MidaBroker): void {
-        MidaBroker.add(id, broker);
+    addPlatform (id: string, platform: MidaTradingPlatform): void {
+        MidaTradingPlatform.add(id, platform);
     },
 
     addIndicator (id: string, indicatorConstructor: (parameters: GenericObject) => MidaIndicator): void {
