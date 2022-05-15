@@ -85,6 +85,8 @@ const myAccount = await Mida.login("Binance/Spot", {
 });
 ```
 
+To get an `apiKey` and `apiSecret` you need a Binance account,
+[create one here](https://accounts.binance.com/en/register?ref=172142672).<br>
 For more examples with different trading platforms
 read the [complete documentation](https://www.mida.org/documentation).
 
