@@ -67,7 +67,6 @@ the Binance and cTrader platforms are supported.
 <p align="center"> 
     <img src="images/featured-platforms.svg" alt="" width="624px">
 </p>
-<br>
 
 ## Installation
 To get started just use the command below in your terminal.
