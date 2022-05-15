@@ -63,9 +63,11 @@ to get help you with your first steps.
 Mida is platform-neutral, this means that any trading platform
 can be easily integrated in the ecosystem, until now
 the Binance and cTrader platforms are supported.
+<br>
 <p align="center"> 
-    <img src="images/featured-platforms.svg" alt="" width="858px">
+    <img src="images/featured-platforms.svg" alt="" width="624px">
 </p>
+<br>
 
 ## Installation
 To get started just use the command below in your terminal.
