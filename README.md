@@ -5,7 +5,7 @@
 </p>
 <br>
 <p align="center">
-    <b>A JavaScript framework for trading in global financial markets</b>
+    <b>The TypeScript framework for trading in financial markets</b>
     <br><br>
     <a href="https://www.mida.org">Home</a> &mdash;
     <a href="https://www.mida.org/documentation">Documentation</a> &mdash;
