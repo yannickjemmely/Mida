@@ -64,7 +64,7 @@ Mida is platform neutral, this means any trading platform could
 be easily integrated into the ecosystem.
 Here are some of the most popular platforms supported by Mida.
 
-<br>
+<br><br>
 <p align="center"> 
     <img src="images/featured-platforms.svg" alt="" width="598px">
 </p>
