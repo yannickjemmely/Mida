@@ -27,9 +27,9 @@
 
 ## Introduction
 Mida is the TypeScript framework for trading financial assets such as stocks,
-crypto, forex or commodities. It is designed to provide a solid, versatile and
-platform-neutral environment for creating trading bots, indicators, market
-analysis tools or just trading applications depending on use cases.
+crypto, forex or commodities. It is designed from the ground up to provide a solid,
+versatile and platform-neutral environment for creating trading bots, indicators,
+market analysis tools or just trading applications depending on use cases.
 
 Join the community on [Discord](https://discord.gg/cKyWTUsr3q) and [Telegram](https://t.me/joinmida)
 to get help you with your first steps.
