@@ -84,7 +84,6 @@ const myAccount = await Mida.login("Binance/Spot", {
     apiSecret: "...",
 });
 ```
-
 To get an `apiKey` and `apiSecret` you need to [create a Binance account](https://accounts.binance.com/en/register?ref=172142672).<br>
 
 ### Balance, equity and margin
