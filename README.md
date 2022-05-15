@@ -293,7 +293,7 @@ const {
 
 const marketWatcher = new MidaMarketWatcher({ tradingAccount: myAccount, });
 
-await marketWatcher.watch("BTCUSD", {
+await marketWatcher.watch("BTCUSDT", {
     watchPeriods: true,
     timeframes: [
         MidaTimeframe.M5,
@@ -400,7 +400,7 @@ How to calculate RSI (Relative Strength Index).
 const { Mida, MidaTimeframe, } = require("@reiryoku/mida");
 
 // Get latest candlesticks on H1 timeframe
-const candlesticks = await myAccount.getSymbolPeriods("BTCUSD", MidaTimeframe.H1);
+const candlesticks = await myAccount.getSymbolPeriods("BTCUSDT", MidaTimeframe.H1);
 const closePrices = candlesticks.map((candlestick) => candlestick.close);
 
 // Calculate RSI on close prices, pass values from oldest to newest
