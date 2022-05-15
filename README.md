@@ -61,7 +61,7 @@ to get help you with your first steps.
 
 ## Supported platforms
 Mida is platform-neutral, this means that any trading platform 
-can be easily integrated and used in the ecosystem, until now
+can be easily integrated in the ecosystem, until now
 the Binance and cTrader platforms are supported.
 <p align="center"> 
     <img src="images/featured-platforms.svg" alt="" width="858px">
@@ -86,7 +86,7 @@ const myAccount = await Mida.login("Binance/Spot", {
 ```
 
 For more examples with different trading platforms
-read the [full documentation](https://www.mida.org/documentation).
+read the [complete documentation](https://www.mida.org/documentation).
 
 ### Balance, equity and margin
 How to get the account balance, equity and margin.
