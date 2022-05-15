@@ -7,7 +7,7 @@
 <p align="center">
     <b>A JavaScript framework for trading in global financial markets</b>
     <br><br>
-    <a href="https://www.mida.org" target="_blank">Home</a> /
+    <a href="https://www.mida.org" target="_blank">Home</a> &mdash;
     <a href="https://www.mida.org/documentation" target="_blank">Documentation</a>
 </p>
 <br>
