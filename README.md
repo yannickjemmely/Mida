@@ -60,7 +60,7 @@ to get help you with your first steps.
 | [Apollo](https://github.com/Reiryoku-Technologies/Apollo)             | [![Image](https://img.shields.io/npm/v/@reiryoku/apollo)](https://www.npmjs.com/package/@reiryoku/apollo)             | A library for getting real-time economic data         |
 
 ## Supported platforms
-Mida is platform neutral, this means any trading platform could
+Mida is platform-neutral, this means any trading platform could
 be easily integrated in the ecosystem.<br>
 Here are some of the most popular platforms supported by Mida.
 
