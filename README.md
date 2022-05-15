@@ -68,7 +68,7 @@ Here are some of the most popular platforms supported by Mida.
 <p align="center"> 
     <img src="images/featured-platforms.svg" alt="" width="598px">
 </p>
-<br>
+<br><br>
 
 ## Installation
 To get started just use the command below in your terminal.
