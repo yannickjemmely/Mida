@@ -60,7 +60,7 @@ to get help you with your first steps.
 | [Apollo](https://github.com/Reiryoku-Technologies/Apollo)             | [![Image](https://img.shields.io/npm/v/@reiryoku/apollo)](https://www.npmjs.com/package/@reiryoku/apollo)             | A library for getting real-time economic data         |
 
 ## Supported platforms
-Mida is platform-neutral, this means that any trading platform 
+Mida is platform-neutral, this means that any trading platform
 can be easily integrated in the ecosystem, until now
 the Binance and cTrader platforms are supported.
 <p align="center"> 
@@ -98,64 +98,64 @@ console.log(await myAccount.getUsedMargin());
 ```
 
 ### Orders, deals and positions
-How top open a long position for Bitcoin against USD.
+How top open a long position for Bitcoin against USDT.
 ```javascript
-const { MidaBrokerOrderDirection, } = require("@reiryoku/mida");
+const { MidaOrderDirection, } = require("@reiryoku/mida");
 
 const myOrder = await myAccount.placeOrder({
-    symbol: "BTCUSD",
-    direction: MidaBrokerOrderDirection.BUY,
+    symbol: "BTCUSDT",
+    direction: MidaOrderDirection.BUY,
     volume: 1,
 });
 
 console.log(myOrder.id);
 console.log(myOrder.executionPrice);
-console.log(myOrder.position);
-console.log(myOrder.deals);
+console.log(myOrder.positionId);
+console.log(myOrder.trades);
 ```
 
 How to open a short position for EUR against USD.
 ```javascript
-const { MidaBrokerOrderDirection, } = require("@reiryoku/mida");
+const { MidaOrderDirection, } = require("@reiryoku/mida");
 
 const myOrder = await myAccount.placeOrder({
     symbol: "EURUSD",
-    direction: MidaBrokerOrderDirection.SELL,
+    direction: MidaOrderDirection.SELL,
     volume: 0.1,
 });
 
 console.log(myOrder.id);
 console.log(myOrder.executionPrice);
-console.log(myOrder.position);
-console.log(myOrder.deals);
+console.log(myOrder.positionId);
+console.log(myOrder.trades);
 ```
 
-How to open a short position for Apple stocks with error handler.
+How to open a long position for Apple stocks with error handler.
 ```javascript
 const {
-    MidaBrokerOrderDirection,
-    MidaBrokerOrderRejectionType,
+    MidaOrderDirection,
+    MidaOrderRejection,
 } = require("@reiryoku/mida");
 
 const myOrder = await myAccount.placeOrder({
     symbol: "#AAPL",
-    direction: MidaBrokerOrderDirection.SELL,
-    volume: 1,
+    direction: MidaOrderDirection.BUY,
+    volume: 888,
 });
 
 if (myOrder.isRejected) {
-    switch (myOrder.rejectionType) {
-        case MidaBrokerOrderRejectionType.MARKET_CLOSED: {
+    switch (myOrder.rejection) {
+        case MidaOrderRejection.MARKET_CLOSED: {
             console.log("#AAPL market is closed!");
 
             break;
         }
-        case MidaBrokerOrderRejectionType.NOT_ENOUGH_MONEY: {
+        case MidaOrderRejection.NOT_ENOUGH_MONEY: {
             console.log("You don't have enough money in your account!");
 
             break;
         }
-        case MidaBrokerOrderRejectionType.INVALID_SYMBOL: {
+        case MidaOrderRejection.INVALID_SYMBOL: {
             console.log("Your account doesn't support trading Apple stocks!");
 
             break;
@@ -169,13 +169,13 @@ if (myOrder.isRejected) {
 
 How to open a long position for GBP against USD with stop loss and take profit.
 ```javascript
-const { MidaBrokerOrderDirection, } = require("@reiryoku/mida");
+const { MidaOrderDirection, } = require("@reiryoku/mida");
 
 const symbol = "GBPUSD";
 const lastBid = await myAccount.getSymbolBid(symbol);
 const myOrder = await myAccount.placeOrder({
     symbol,
-    direction: MidaBrokerOrderDirection.BUY,
+    direction: MidaOrderDirection.BUY,
     volume: 0.1,
     protection: {
         stopLoss: lastBid - 0.0010, // <= SL 10 pips
@@ -184,47 +184,11 @@ const myOrder = await myAccount.placeOrder({
 });
 ```
 
-How to open volume for an open position.
-```javascript
-const {
-    MidaBrokerOrderDirection,
-    MidaBrokerPositionDirection,
-} = require("@reiryoku/mida");
-
-const myPosition = await myAccount.getPositionById("...");
-
-await myPosition.addVolume(1);
-// or
-await myAccount.placeOrder({
-    positionId: myPosition.id,
-    direction: myPosition.direction === MidaBrokerPositionDirection.LONG ? MidaBrokerOrderDirection.BUY : MidaBrokerOrderDirection.SELL,
-    volume: 1,
-});
-```
-
-How to close volume for an open position.
-```javascript
-const {
-    MidaBrokerOrderDirection,
-    MidaBrokerPositionDirection,
-} = require("@reiryoku/mida");
-
-const myPosition = await myAccount.getPositionById("...");
-
-await myPosition.subtractVolume(1);
-// or
-await myAccount.placeOrder({
-    positionId: myPosition.id,
-    direction: myPosition.direction === MidaBrokerPositionDirection.LONG ? MidaBrokerOrderDirection.SELL : MidaBrokerOrderDirection.BUY,
-    volume: 1,
-});
-```
-
 How to close an open position.
 ```javascript
 const {
-    MidaBrokerOrderDirection,
-    MidaBrokerPositionDirection,
+    MidaOrderDirection,
+    MidaPositionDirection,
 } = require("@reiryoku/mida");
 
 const myPosition = await myAccount.getPositionById("...");
@@ -235,7 +199,7 @@ await myPosition.subtractVolume(myPosition.volume);
 // or
 await myAccount.placeOrder({
     positionId: myPosition.id,
-    direction: myPosition.direction === MidaBrokerPositionDirection.LONG ? MidaBrokerOrderDirection.SELL : MidaBrokerOrderDirection.BUY,
+    direction: myPosition.direction === MidaPositionDirection.LONG ? MidaOrderDirection.SELL : MidaOrderDirection.BUY,
     volume: myPosition.volume,
 });
 ```
@@ -257,7 +221,7 @@ await myPosition.changeProtection({
 </details>
 
 ### Symbols and assets
-How to retrieve all symbols available for your broker account.
+How to retrieve all symbols available for your trading account.
 ```javascript
 const symbols = await myAccount.getSymbols();
 
@@ -282,14 +246,14 @@ else {
 
 How to get the price of a symbol.
 ```javascript
-const symbol = await myAccount.getSymbol("BTCUSD");
+const symbol = await myAccount.getSymbol("BTCUSDT");
 const price = await symbol.getBid();
 
-console.log(`Bitcoin price is ${price} US dollars`);
+console.log(`Bitcoin price is ${price} USDT`);
 
 // or
 
-console.log(await myAccount.getSymbolBid("BTCUSD"));
+console.log(await myAccount.getSymbolBid("BTCUSDT"));
 ```
 
 ### Ticks and candlesticks
@@ -297,14 +261,14 @@ How to listen the ticks of a symbol.
 ```javascript
 const { MidaMarketWatcher, } = require("@reiryoku/mida");
 
-const marketWatcher = new MidaMarketWatcher({ brokerAccount: myAccount, });
+const marketWatcher = new MidaMarketWatcher({ tradingAccount: myAccount, });
 
-await marketWatcher.watch("BTCUSD", { watchTicks: true, });
+await marketWatcher.watch("BTCUSDT", { watchTicks: true, });
 
 marketWatcher.on("tick", (event) => {
     const { tick, } = event.descriptor;
 
-    console.log(`Bitcoin price is now ${tick.bid} US dollars`);
+    console.log(`Bitcoin price is now ${tick.bid} USDT`);
 });
 ```
 
@@ -327,7 +291,7 @@ const {
     MidaTimeframe,
 } = require("@reiryoku/mida");
 
-const marketWatcher = new MidaMarketWatcher({ brokerAccount: myAccount, });
+const marketWatcher = new MidaMarketWatcher({ tradingAccount: myAccount, });
 
 await marketWatcher.watch("BTCUSD", {
     watchPeriods: true,
@@ -363,15 +327,23 @@ const {
     MidaTimeframe,
 } = require("@reiryoku/mida");
 
-class MyExpertAdvisor extends MidaExpertAdvisor {
-    constructor ({ brokerAccount, }) {
-        super({ brokerAccount, });
+class MyTradingStrategy extends MidaExpertAdvisor {
+    constructor ({ tradingAccount, }) {
+        super({
+            name: "MyTradingStrategy",
+            version: "1.0.0",
+            tradingAccount,
+        });
     }
 
     async configure () {
         // Every expert advisor has an integrated market watcher
-        await this.watchTicks("BTCUSD");
-        await this.watchPeriods("BTCUSD", MidaTimeframe.H1);
+        await this.watchTicks("BTCUSDT");
+        await this.watchPeriods("BTCUSDT", MidaTimeframe.H1);
+    }
+
+    async onStart () {
+        console.log("The trading bot has started...");
     }
 
     async onTick (tick) {
@@ -380,6 +352,10 @@ class MyExpertAdvisor extends MidaExpertAdvisor {
 
     async onPeriodClose (period) {
         console.log(`H1 candlestick closed at ${period.open}`);
+    }
+
+    async onStop () {
+        console.log("The trading bot has been interrupted...");
     }
 }
 ```
@@ -390,7 +366,7 @@ const { Mida, } = require("@reiryoku/mida");
 const { MyExpertAdvisor, } = require("./my-expert-advisor");
 
 const myAccount = await Mida.login(/* ... */);
-const myAdvisor = new MyExpertAdvisor({ brokerAccount: myAccount, });
+const myAdvisor = new MyExpertAdvisor({ tradingAccount: myAccount, });
 
 await myAdvisor.start();
 ```
@@ -442,6 +418,6 @@ you should ensure that you understand the risks involved. Mida and its contribut
 are not responsible for any technical inconvenience that may lead to money loss, for example a stop loss not being set.
 
 ## Contributors
-| Name                  | Contribution                | GitHub                                                | Contact                         |
-| -----------           | -----------                 | -----------                                           | -----------                     |
-| Vasile Pește          | Author and maintainer       | [Vasile-Peste](https://github.com/Vasile-Peste)       | vasile.peste@reiryoku.com       |
+| Name         | Contribution          | GitHub                                          | Contact                   |
+|--------------|-----------------------|-------------------------------------------------|---------------------------|
+| Vasile Pește | Author and maintainer | [Vasile-Peste](https://github.com/Vasile-Peste) | vasile.peste@reiryoku.com |
