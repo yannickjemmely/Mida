@@ -7,7 +7,7 @@
 <p align="center">
     <b>A JavaScript framework for trading in global financial markets</b>
     <br><br>
-    <a href="https://www.mida.org" target="_blank">www.mida.org</a> /
+    <a href="https://www.mida.org" target="_blank">Home</a> /
     <a href="https://www.mida.org/documentation" target="_blank">Documentation</a>
 </p>
 <br>
@@ -25,9 +25,10 @@
 <br><br>
 
 ## Introduction
-Mida is a JavaScript framework for trading financial assets such as stocks, crypto, forex or commodities.
-It is designed to provide a solid and scalable environment for creating trading bots, indicators,
-market analysis tools or just trading applications depending on use cases.
+Mida is the TypeScript framework for trading financial assets such as stocks,
+crypto, forex or commodities. It is designed to provide a solid, versatile and
+platform-neutral environment for creating trading bots, indicators, market
+analysis tools or just trading applications depending on use cases.
 
 Join the community on [Discord](https://discord.gg/cKyWTUsr3q) and [Telegram](https://t.me/joinmida)
 to get help you with your first steps.
@@ -35,7 +36,7 @@ to get help you with your first steps.
 
 ## Table of contents
 * [Ecosystem](#ecosystem)
-* [Supported brokers](#supported-brokers)
+* [Supported platforms](#supported-platforms)
 * [Installation](#installation)
 * [Usage](#usage)
     * [Account login](#account-login)
@@ -52,44 +53,39 @@ to get help you with your first steps.
 | Project                                                               | Status                                                                                                                | Description                                           |
 |-----------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------|
 | [Mida](https://github.com/Reiryoku-Technologies/Mida)                 | [![Image](https://img.shields.io/npm/v/@reiryoku/mida)](https://www.npmjs.com/package/@reiryoku/mida)                 | The Mida core                                         |
+| [Mida Binance](https://github.com/Reiryoku-Technologies/Mida-Binance) | [![Image](https://img.shields.io/npm/v/@reiryoku/mida-binance)](https://www.npmjs.com/package/@reiryoku/mida-binance) | A Mida plugin for trading with Binance                |
 | [Mida cTrader](https://github.com/Reiryoku-Technologies/Mida-cTrader) | [![Image](https://img.shields.io/npm/v/@reiryoku/mida-ctrader)](https://www.npmjs.com/package/@reiryoku/mida-ctrader) | A Mida plugin for using cTrader accounts              |
 | [Mida Tulipan](https://github.com/Reiryoku-Technologies/Mida-Tulipan) | [![Image](https://img.shields.io/npm/v/@reiryoku/mida-tulipan)](https://www.npmjs.com/package/@reiryoku/mida-tulipan) | A Mida plugin providing technical analysis indicators |
 | [Apollo](https://github.com/Reiryoku-Technologies/Apollo)             | [![Image](https://img.shields.io/npm/v/@reiryoku/apollo)](https://www.npmjs.com/package/@reiryoku/apollo)             | A library for getting real-time economic data         |
 
-## Supported brokers
-Mida is broker-neutral, this means any broker could be easily integrated in
-the ecosystem, until now all brokers available on the cTrader platform are supported,
-below some of the most long-lived and popular ones,<br>
-**exchanges are coming soon...**
+## Supported platforms
+Mida is platform-neutral, this means that any trading platform 
+can be easily integrated and used in the ecosystem, until now
+the Binance and cTrader platforms are supported.
 <p align="center"> 
     <img src="images/featured-platforms.svg" alt="" width="858px">
 </p>
 
 ## Installation
+To get started just use the command below in your terminal.
 ```console
-npm i @reiryoku/mida @reiryoku/mida-ctrader
+npm init mida
 ```
 
 ## Usage
 ### Account login
-How to login into a cTrader broker account.
+How to login into a Binance Spot account.
 ```javascript
 const { Mida, } = require("@reiryoku/mida");
 
-// Use the Mida cTrader plugin
-Mida.use(require("@reiryoku/mida-ctrader"));
-
-// Login into any cTrader account
-const myAccount = await Mida.login("cTrader", {
-    clientId: "",
-    clientSecret: "",
-    accessToken: "",
-    cTraderBrokerAccountId: "",
+const myAccount = await Mida.login("Binance/Spot", {
+    apiKey: "...",
+    apiSecret: "...",
 });
 ```
 
-To get a `clientId`, `clientSecret` and `accessToken` you have to create an account on
-[cTrader Open API](https://connect.spotware.com).
+For more examples with different trading platforms
+read the [full documentation](https://www.mida.org/documentation).
 
 ### Balance, equity and margin
 How to get the account balance, equity and margin.
