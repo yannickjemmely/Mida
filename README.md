@@ -66,7 +66,7 @@ Here are some of the most popular platforms supported by Mida.
 
 <br><br>
 <p align="center"> 
-    <img src="images/featured-platforms.svg" alt="" width="598px">
+    <img src="images/featured-platforms.svg" alt="" width="594px">
 </p>
 <br><br>
 
