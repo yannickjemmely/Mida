@@ -5,7 +5,7 @@
 </p>
 <br>
 <p align="center">
-    <b>The TypeScript framework for trading in financial markets</b>
+    <b>The framework for trading in global financial markets</b>
     <br><br>
     <a href="https://www.mida.org">Home</a> &mdash;
     <a href="https://www.mida.org/documentation">Documentation</a> &mdash;
@@ -26,10 +26,14 @@
 <br><br>
 
 ## Introduction
-Mida is the TypeScript framework for trading financial assets such as stocks,
+Mida is the framework for trading financial assets such as stocks,
 crypto, forex or commodities. It is designed from the ground up to provide a solid,
-versatile and platform-neutral environment for creating trading bots, indicators,
+versatile and platform-neutral environment for creating trading systems, indicators,
 market analysis tools or just trading applications depending on use cases.
+
+The Mida ecosystem is built from the ground up in TypeScript and C++ for
+performance-critical parts. The framework can be used with JavaScript/TypeScript
+on Node.js.
 
 Join the community on [Discord](https://discord.gg/cKyWTUsr3q) and [Telegram](https://t.me/joinmida)
 to get help you with your first steps.
@@ -45,7 +49,7 @@ to get help you with your first steps.
     * [Orders, deals and positions](#orders-deals-and-positions)
     * [Symbols and assets](#symbols-and-assets)
     * [Ticks and candlesticks](#ticks-and-candlesticks)
-    * [Trading bots (expert advisors)](#trading-bots-expert-advisors)
+    * [Trading systems](#trading-systems)
     * [Technical indicators](#technical-indicators)
 * [License and disclaimer](#license-and-disclaimer)
 * [Contributors](#contributors)
@@ -61,8 +65,8 @@ to get help you with your first steps.
 
 ## Supported platforms
 Mida is platform-neutral, this means any trading platform could
-be easily integrated in the ecosystem.<br>
-Here are some of the most popular platforms supported by Mida.
+be easily integrated in the ecosystem. Here are some of the most
+popular platforms supported by Mida.
 
 <br><br>
 <p align="center"> 
@@ -71,7 +75,8 @@ Here are some of the most popular platforms supported by Mida.
 <br><br>
 
 ## Installation
-To get started just use the command below in your terminal.
+To get started use the command below in your terminal,
+the installer will pop up and create an empty Mida project.
 ```console
 npm init mida
 ```
@@ -80,7 +85,7 @@ npm init mida
 ### Account login
 How to login into a Binance Spot account.
 ```javascript
-const { Mida, } = require("@reiryoku/mida");
+import { Mida, } from "@reiryoku/mida";
 
 const myAccount = await Mida.login("Binance/Spot", {
     apiKey: "...",
@@ -88,6 +93,19 @@ const myAccount = await Mida.login("Binance/Spot", {
 });
 ```
 To get an `apiKey` and `apiSecret` you need to [create a Binance account](https://accounts.binance.com/en/register?ref=172142672).<br>
+
+How to login into a cTrader account.
+```javascript
+import { Mida, } from "@reiryoku/mida";
+
+const myAccount = await Mida.login("cTrader", {
+    clientId: "...",
+    clientSecret: "...",
+    accessToken: "...",
+    cTraderBrokerAccountId: "...",
+});
+```
+To get a `clientId`, `clientSecret`, `accessToken` and `cTraderBrokerAccountId` you need to [create a cTrader Open API account](https://www.mida.org/open-api/).<br>
 
 ### Balance, equity and margin
 How to get the account balance, equity and margin.
@@ -101,7 +119,7 @@ console.log(await myAccount.getUsedMargin());
 ### Orders, deals and positions
 How top open a long position for Bitcoin against USDT.
 ```javascript
-const { MidaOrderDirection, } = require("@reiryoku/mida");
+import { MidaOrderDirection, } from "@reiryoku/mida";
 
 const myOrder = await myAccount.placeOrder({
     symbol: "BTCUSDT",
@@ -117,7 +135,7 @@ console.log(myOrder.trades);
 
 How to open a short position for EUR against USD.
 ```javascript
-const { MidaOrderDirection, } = require("@reiryoku/mida");
+import { MidaOrderDirection, } from "@reiryoku/mida";
 
 const myOrder = await myAccount.placeOrder({
     symbol: "EURUSD",
@@ -133,10 +151,10 @@ console.log(myOrder.trades);
 
 How to open a long position for Apple stocks with error handler.
 ```javascript
-const {
+import {
     MidaOrderDirection,
     MidaOrderRejection,
-} = require("@reiryoku/mida");
+} from "@reiryoku/mida";
 
 const myOrder = await myAccount.placeOrder({
     symbol: "#AAPL",
@@ -170,7 +188,7 @@ if (myOrder.isRejected) {
 
 How to open a long position for GBP against USD with stop loss and take profit.
 ```javascript
-const { MidaOrderDirection, } = require("@reiryoku/mida");
+import { MidaOrderDirection, } from "@reiryoku/mida";
 
 const symbol = "GBPUSD";
 const lastBid = await myAccount.getSymbolBid(symbol);
@@ -187,10 +205,10 @@ const myOrder = await myAccount.placeOrder({
 
 How to close an open position.
 ```javascript
-const {
+import {
     MidaOrderDirection,
     MidaPositionDirection,
-} = require("@reiryoku/mida");
+} from "@reiryoku/mida";
 
 const myPosition = await myAccount.getPositionById("...");
 
@@ -260,7 +278,7 @@ console.log(await myAccount.getSymbolBid("BTCUSDT"));
 ### Ticks and candlesticks
 How to listen the ticks of a symbol.
 ```javascript
-const { MidaMarketWatcher, } = require("@reiryoku/mida");
+import { MidaMarketWatcher, } from "@reiryoku/mida";
 
 const marketWatcher = new MidaMarketWatcher({ tradingAccount: myAccount, });
 
@@ -275,7 +293,7 @@ marketWatcher.on("tick", (event) => {
 
 How to get the candlesticks of a symbol (candlesticks and bars are generically called periods).
 ```javascript
-const { MidaTimeframe, } = require("@reiryoku/mida");
+import { MidaTimeframe, } from "@reiryoku/mida";
 
 const periods = await myAccount.getSymbolPeriods("EURUSD", MidaTimeframe.M30);
 const lastPeriod = periods[periods.length - 1];
@@ -287,10 +305,10 @@ console.log("Last candlestick close price: " + lastPeriod.close);
 
 How to listen when candlesticks are closed.
 ```javascript
-const {
+import {
     MidaMarketWatcher,
     MidaTimeframe,
-} = require("@reiryoku/mida");
+} from "@reiryoku/mida";
 
 const marketWatcher = new MidaMarketWatcher({ tradingAccount: myAccount, });
 
@@ -320,13 +338,13 @@ marketWatcher.on("period-close", (event) => {
 });
 ```
 
-### Trading bots (expert advisors)
-How to create a trading bot (or expert advisor).
+### Trading systems
+How to create a trading system (or trading bot).
 ```javascript
-const {
+import {
     MidaExpertAdvisor,
     MidaTimeframe,
-} = require("@reiryoku/mida");
+} from "@reiryoku/mida";
 
 class MyTradingStrategy extends MidaExpertAdvisor {
     constructor ({ tradingAccount, }) {
@@ -363,8 +381,8 @@ class MyTradingStrategy extends MidaExpertAdvisor {
 
 How to execute a trading bot.
 ```javascript
-const { Mida, } = require("@reiryoku/mida");
-const { MyExpertAdvisor, } = require("./my-expert-advisor");
+import { Mida, } from "@reiryoku/mida";
+import { MyExpertAdvisor, } from "./MyExpertAdvisor";
 
 const myAccount = await Mida.login(/* ... */);
 const myAdvisor = new MyExpertAdvisor({ tradingAccount: myAccount, });
@@ -375,15 +393,16 @@ await myAdvisor.start();
 ### Technical indicators
 Install the plugin providing technical analysis indicators.
 ```javascript
-const { Mida, } = require("@reiryoku/mida");
+import { Mida, } from "@reiryoku/mida";
+import { TulipanPlugin, } from "@reiryoku/mida-tulipan";
 
 // Use the Mida Tulipan plugin
-Mida.use(require("@reiryoku/mida-tulipan"));
+Mida.use(new TulipanPlugin());
 ```
 
 How to calculate SMA (Simple Moving Average).
 ```javascript
-const { Mida, MidaTimeframe, } = require("@reiryoku/mida");
+import { Mida, MidaTimeframe, } from "@reiryoku/mida";
 
 // Get latest candlesticks on H1 timeframe
 const candlesticks = await myAccount.getSymbolPeriods("EURUSD", MidaTimeframe.H1);
@@ -398,7 +417,7 @@ console.log(sma);
 
 How to calculate RSI (Relative Strength Index).
 ```javascript
-const { Mida, MidaTimeframe, } = require("@reiryoku/mida");
+import { Mida, MidaTimeframe, } from "@reiryoku/mida";
 
 // Get latest candlesticks on H1 timeframe
 const candlesticks = await myAccount.getSymbolPeriods("BTCUSDT", MidaTimeframe.H1);
