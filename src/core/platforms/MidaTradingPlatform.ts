@@ -20,9 +20,9 @@
  * THE SOFTWARE.
 */
 
-import { MidaTradingAccount } from "#accounts/MidaTradingAccount";
-import { MidaTradingPlatformParameters } from "#platforms/MidaTradingPlatformParameters";
-import { GenericObject } from "#utilities/GenericObject";
+import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
+import { MidaTradingPlatformParameters, } from "#platforms/MidaTradingPlatformParameters";
+import { GenericObject, } from "#utilities/GenericObject";
 
 /** Represents a trading platform */
 export abstract class MidaTradingPlatform {

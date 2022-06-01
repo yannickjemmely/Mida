@@ -20,8 +20,8 @@
  * THE SOFTWARE.
 */
 
-import { MidaExpertAdvisor } from "#advisors/MidaExpertAdvisor";
-import { MidaTradingAccount } from "#accounts/MidaTradingAccount";
+import { MidaExpertAdvisor, } from "#advisors/MidaExpertAdvisor";
+import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
 
 /**
  * The expert advisor constructor parameters

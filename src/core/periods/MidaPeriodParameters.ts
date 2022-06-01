@@ -20,10 +20,10 @@
  * THE SOFTWARE.
 */
 
-import { MidaDate } from "#dates/MidaDate";
-import { MidaPeriod } from "#periods/MidaPeriod";
-import { MidaQuotationPrice } from "#quotations/MidaQuotationPrice";
-import { MidaTick } from "#ticks/MidaTick";
+import { MidaDate, } from "#dates/MidaDate";
+import { MidaPeriod, } from "#periods/MidaPeriod";
+import { MidaQuotationPrice, } from "#quotations/MidaQuotationPrice";
+import { MidaTick, } from "#ticks/MidaTick";
 
 /**
  * The symbol period constructor parameters

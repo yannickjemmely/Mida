@@ -20,7 +20,7 @@
  * THE SOFTWARE.
 */
 
-import { MidaDate } from "#dates/MidaDate";
+import { MidaDate, } from "#dates/MidaDate";
 
 /**
  * The date constructor parameters

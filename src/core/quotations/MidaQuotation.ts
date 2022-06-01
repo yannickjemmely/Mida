@@ -20,11 +20,11 @@
  * THE SOFTWARE.
 */
 
-import { MidaDate } from "#dates/MidaDate";
-import { MidaQuotationParameters } from "#quotations/MidaQuotationParameters";
-import { IMidaCloneable } from "#utilities/cloneable/IMidaCloneable";
-import { IMidaEquatable } from "#utilities/equatable/IMidaEquatable";
-import { GenericObject } from "#utilities/GenericObject";
+import { MidaDate, } from "#dates/MidaDate";
+import { MidaQuotationParameters, } from "#quotations/MidaQuotationParameters";
+import { IMidaCloneable, } from "#utilities/cloneable/IMidaCloneable";
+import { IMidaEquatable, } from "#utilities/equatable/IMidaEquatable";
+import { GenericObject, } from "#utilities/GenericObject";
 
 /** Represents a symbol quotation */
 export class MidaQuotation implements IMidaCloneable, IMidaEquatable {

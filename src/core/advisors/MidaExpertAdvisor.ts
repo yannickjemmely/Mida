@@ -20,23 +20,23 @@
  * THE SOFTWARE.
 */
 
-import { MidaTradingAccount } from "#accounts/MidaTradingAccount";
-import { MidaExpertAdvisorComponent, filterEnabledComponents } from "#advisors/MidaExpertAdvisorComponent";
-import { MidaExpertAdvisorParameters } from "#advisors/MidaExpertAdvisorParameters";
-import { MidaEvent } from "#events/MidaEvent";
-import { MidaEventListener } from "#events/MidaEventListener";
-import { MidaOrder, filterExecutedOrders } from "#orders/MidaOrder";
-import { MidaOrderDirectives } from "#orders/MidaOrderDirectives";
-import { MidaPeriod } from "#periods/MidaPeriod";
-import { MidaTick } from "#ticks/MidaTick";
+import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
+import { MidaExpertAdvisorComponent, filterEnabledComponents, } from "#advisors/MidaExpertAdvisorComponent";
+import { MidaExpertAdvisorParameters, } from "#advisors/MidaExpertAdvisorParameters";
+import { MidaEvent, } from "#events/MidaEvent";
+import { MidaEventListener, } from "#events/MidaEventListener";
+import { MidaOrder, filterExecutedOrders, } from "#orders/MidaOrder";
+import { MidaOrderDirectives, } from "#orders/MidaOrderDirectives";
+import { MidaPeriod, } from "#periods/MidaPeriod";
+import { MidaTick, } from "#ticks/MidaTick";
 import {
     MidaTrade,
     filterExecutedTrades,
     getTradesFromOrders,
 } from "#trades/MidaTrade";
-import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
-import { GenericObject } from "#utilities/GenericObject";
-import { MidaMarketWatcher } from "#watchers/MidaMarketWatcher";
+import { MidaEmitter, } from "#utilities/emitters/MidaEmitter";
+import { GenericObject, } from "#utilities/GenericObject";
+import { MidaMarketWatcher, } from "#watchers/MidaMarketWatcher";
 
 export abstract class MidaExpertAdvisor {
     readonly #name: string;

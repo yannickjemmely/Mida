@@ -20,9 +20,9 @@
  * THE SOFTWARE.
 */
 
-import { MidaDate } from "#dates/MidaDate";
-import { MidaEvent } from "#events/MidaEvent";
-import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
+import { MidaDate, } from "#dates/MidaDate";
+import { MidaEvent, } from "#events/MidaEvent";
+import { MidaEmitter, } from "#utilities/emitters/MidaEmitter";
 
 // eslint-disable-next-line max-lines-per-function
 describe("MidaEmitter", () => {

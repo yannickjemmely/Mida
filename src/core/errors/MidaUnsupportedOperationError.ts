@@ -20,7 +20,7 @@
  * THE SOFTWARE.
 */
 
-import { MidaError } from "#errors/MidaError";
+import { MidaError, } from "#errors/MidaError";
 
 export class MidaUnsupportedOperationError extends MidaError {
     public constructor () {

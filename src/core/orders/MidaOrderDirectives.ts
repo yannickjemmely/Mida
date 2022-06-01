@@ -20,10 +20,10 @@
  * THE SOFTWARE.
 */
 
-import { MidaEventListener } from "#events/MidaEventListener";
-import { MidaOrderDirection } from "#orders/MidaOrderDirection";
-import { MidaOrderTimeInForce } from "#orders/MidaOrderTimeInForce";
-import { MidaProtection } from "#protections/MidaProtection";
+import { MidaEventListener, } from "#events/MidaEventListener";
+import { MidaOrderDirection, } from "#orders/MidaOrderDirection";
+import { MidaOrderTimeInForce, } from "#orders/MidaOrderTimeInForce";
+import { MidaProtection, } from "#protections/MidaProtection";
 
 export type MidaOrderDirectives = {
     symbol?: string;

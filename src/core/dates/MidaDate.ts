@@ -20,11 +20,11 @@
  * THE SOFTWARE.
 */
 
-import { MidaDateParameters } from "#dates/MidaDateParameters";
-import { MidaDateUtilities } from "#dates/MidaDateUtilities";
-import { IMidaCloneable } from "#utilities/cloneable/IMidaCloneable";
-import { IMidaEquatable } from "#utilities/equatable/IMidaEquatable";
-import { GenericObject } from "#utilities/GenericObject";
+import { MidaDateParameters, } from "#dates/MidaDateParameters";
+import { MidaDateUtilities, } from "#dates/MidaDateUtilities";
+import { IMidaCloneable, } from "#utilities/cloneable/IMidaCloneable";
+import { IMidaEquatable, } from "#utilities/equatable/IMidaEquatable";
+import { GenericObject, } from "#utilities/GenericObject";
 
 /** Represents an immutable UTC date */
 export class MidaDate implements IMidaCloneable, IMidaEquatable {

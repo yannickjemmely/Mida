@@ -20,10 +20,10 @@
  * THE SOFTWARE.
 */
 
-import { MidaDate } from "#dates/MidaDate";
-import { MidaPeriod } from "#periods/MidaPeriod";
-import { MidaQuotationPrice } from "#quotations/MidaQuotationPrice";
-import { MidaTimeframe } from "#timeframes/MidaTimeframe";
+import { MidaDate, } from "#dates/MidaDate";
+import { MidaPeriod, } from "#periods/MidaPeriod";
+import { MidaQuotationPrice, } from "#quotations/MidaQuotationPrice";
+import { MidaTimeframe, } from "#timeframes/MidaTimeframe";
 
 describe("MidaSymbolPeriod", () => {
     const bidPeriod: MidaPeriod = new MidaPeriod({

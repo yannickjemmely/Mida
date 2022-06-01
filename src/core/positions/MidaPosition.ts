@@ -20,17 +20,17 @@
  * THE SOFTWARE.
 */
 
-import { MidaTradingAccount } from "#accounts/MidaTradingAccount";
-import { MidaEvent } from "#events/MidaEvent";
-import { MidaEventListener } from "#events/MidaEventListener";
-import { MidaOrder } from "#orders/MidaOrder";
-import { MidaPositionDirection } from "#positions/MidaPositionDirection";
-import { MidaPositionParameters } from "#positions/MidaPositionParameters";
-import { MidaPositionStatus } from "#positions/MidaPositionStatus";
-import { MidaProtection } from "#protections/MidaProtection";
-import { MidaProtectionChange } from "#protections/MidaProtectionChange";
-import { MidaTrade } from "#trades/MidaTrade";
-import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
+import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
+import { MidaEvent, } from "#events/MidaEvent";
+import { MidaEventListener, } from "#events/MidaEventListener";
+import { MidaOrder, } from "#orders/MidaOrder";
+import { MidaPositionDirection, } from "#positions/MidaPositionDirection";
+import { MidaPositionParameters, } from "#positions/MidaPositionParameters";
+import { MidaPositionStatus, } from "#positions/MidaPositionStatus";
+import { MidaProtection, } from "#protections/MidaProtection";
+import { MidaProtectionChange, } from "#protections/MidaProtectionChange";
+import { MidaTrade, } from "#trades/MidaTrade";
+import { MidaEmitter, } from "#utilities/emitters/MidaEmitter";
 
 export abstract class MidaPosition {
     readonly #id: string;
@@ -152,7 +152,7 @@ export abstract class MidaPosition {
 
     /* *** *** *** Reiryoku Technologies *** *** *** */
 
-    protected onTradeExecute (trade: MidaTrade): void {
+    protected onTrade (trade: MidaTrade): void {
         const volume = trade.volume;
 
         if (trade.isClosing) {
@@ -177,6 +177,11 @@ export abstract class MidaPosition {
         }
 
         this.#emitter.notifyListeners("trade", { trade, });
+    }
+
+    /** @deprecated */
+    protected onTradeExecute (trade: MidaTrade): void {
+        this.onTrade(trade);
     }
 
     protected onProtectionChange (protection: MidaProtection): void {

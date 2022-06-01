@@ -20,7 +20,7 @@
  * THE SOFTWARE.
 */
 
-import { GenericObject } from "#utilities/GenericObject";
+import { GenericObject, } from "#utilities/GenericObject";
 
 export interface IMidaEquatable {
     equals (object: GenericObject): boolean;

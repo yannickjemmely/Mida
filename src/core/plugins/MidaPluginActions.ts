@@ -20,9 +20,9 @@
  * THE SOFTWARE.
 */
 
-import { MidaTradingPlatform } from "#platforms/MidaTradingPlatform";
-import { MidaIndicator } from "#indicators/MidaIndicator";
-import { GenericObject } from "#utilities/GenericObject";
+import { MidaTradingPlatform, } from "#platforms/MidaTradingPlatform";
+import { MidaIndicator, } from "#indicators/MidaIndicator";
+import { GenericObject, } from "#utilities/GenericObject";
 
 export type MidaPluginBaseActions = {
     addPlatform (id: string, platform: MidaTradingPlatform): void;

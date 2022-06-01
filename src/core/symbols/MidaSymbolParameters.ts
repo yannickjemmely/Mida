@@ -20,8 +20,8 @@
  * THE SOFTWARE.
 */
 
-import { MidaTradingAccount } from "#accounts/MidaTradingAccount";
-import { MidaSymbol } from "#symbols/MidaSymbol";
+import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
+import { MidaSymbol, } from "#symbols/MidaSymbol";
 
 /**
  * The symbol constructor parameters

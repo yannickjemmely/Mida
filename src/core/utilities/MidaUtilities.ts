@@ -21,7 +21,7 @@
 */
 
 import * as crypto from "crypto";
-import { GenericObject } from "#utilities/GenericObject";
+import { GenericObject, } from "#utilities/GenericObject";
 
 export namespace MidaUtilities {
     // Used to create a Promise resolved after a given number of milliseconds

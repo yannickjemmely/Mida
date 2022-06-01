@@ -20,10 +20,10 @@
  * THE SOFTWARE.
 */
 
-import { MidaExpertAdvisor } from "#advisors/MidaExpertAdvisor";
-import { MidaExpertAdvisorComponentParameters } from "#advisors/MidaExpertAdvisorComponentParameters";
-import { MidaTick } from "#ticks/MidaTick";
-import { GenericObject } from "#utilities/GenericObject";
+import { MidaExpertAdvisor, } from "#advisors/MidaExpertAdvisor";
+import { MidaExpertAdvisorComponentParameters, } from "#advisors/MidaExpertAdvisorComponentParameters";
+import { MidaTick, } from "#ticks/MidaTick";
+import { GenericObject, } from "#utilities/GenericObject";
 
 export abstract class MidaExpertAdvisorComponent {
     readonly #name: string;
@@ -71,7 +71,7 @@ export abstract class MidaExpertAdvisorComponent {
         this.#isEnabled = enabled;
     }
 
-    async activate (): Promise<void> {
+    public async activate (): Promise<void> {
         if (this.#isConfigured) {
             return;
         }

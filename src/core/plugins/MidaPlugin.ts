@@ -20,9 +20,9 @@
  * THE SOFTWARE.
 */
 
-import { MidaPluginActions } from "#plugins/MidaPluginActions";
-import { MidaPluginParameters } from "#plugins/MidaPluginParameters";
-import { GenericObject } from "#utilities/GenericObject";
+import { MidaPluginActions, } from "#plugins/MidaPluginActions";
+import { MidaPluginParameters, } from "#plugins/MidaPluginParameters";
+import { GenericObject, } from "#utilities/GenericObject";
 
 export abstract class MidaPlugin {
     readonly #id: string;

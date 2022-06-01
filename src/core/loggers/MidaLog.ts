@@ -20,9 +20,9 @@
  * THE SOFTWARE.
 */
 
-import { MidaDate } from "#dates/MidaDate";
-import { MidaLogNamespace } from "#loggers/MidaLogNamespace";
-import { MidaLogParameters } from "#loggers/MidaLogParameters";
+import { MidaDate, } from "#dates/MidaDate";
+import { MidaLogNamespace, } from "#loggers/MidaLogNamespace";
+import { MidaLogParameters, } from "#loggers/MidaLogParameters";
 
 export class MidaLog {
     readonly #message: string;

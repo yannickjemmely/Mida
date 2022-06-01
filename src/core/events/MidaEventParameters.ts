@@ -20,9 +20,9 @@
  * THE SOFTWARE.
 */
 
-import { MidaDate } from "#dates/MidaDate";
-import { MidaEvent } from "#events/MidaEvent";
-import { GenericObject } from "#utilities/GenericObject";
+import { MidaDate, } from "#dates/MidaDate";
+import { MidaEvent, } from "#events/MidaEvent";
+import { GenericObject, } from "#utilities/GenericObject";
 
 /**
  * The event constructor parameters

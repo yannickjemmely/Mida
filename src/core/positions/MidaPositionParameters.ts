@@ -20,10 +20,10 @@
  * THE SOFTWARE.
 */
 
-import { MidaTradingAccount } from "#accounts/MidaTradingAccount";
-import { MidaPosition } from "#positions/MidaPosition";
-import { MidaPositionDirection } from "#positions/MidaPositionDirection";
-import { MidaProtection } from "#protections/MidaProtection";
+import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
+import { MidaPosition, } from "#positions/MidaPosition";
+import { MidaPositionDirection, } from "#positions/MidaPositionDirection";
+import { MidaProtection, } from "#protections/MidaProtection";
 
 /**
  * The position constructor parameters

@@ -20,7 +20,7 @@
  * THE SOFTWARE.
 */
 
-import { MidaTimeframe } from "#timeframes/MidaTimeframe";
+import { MidaTimeframe, } from "#timeframes/MidaTimeframe";
 
 describe("MidaTimeframe", () => {
     describe(".H1", () => {

@@ -20,9 +20,9 @@
  * THE SOFTWARE.
 */
 
-import { MidaDate } from "#dates/MidaDate";
-import { MidaEventParameters } from "#events/MidaEventParameters";
-import { GenericObject } from "#utilities/GenericObject";
+import { MidaDate, } from "#dates/MidaDate";
+import { MidaEventParameters, } from "#events/MidaEventParameters";
+import { GenericObject, } from "#utilities/GenericObject";
 
 export class MidaEvent {
     readonly #type: string;
