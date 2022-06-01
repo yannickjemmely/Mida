@@ -20,11 +20,11 @@
  * THE SOFTWARE.
 */
 
-import { MidaTradingAccount } from "#accounts/MidaTradingAccount";
-import { MidaTradingAccountOperativity } from "#accounts/MidaTradingAccountOperativity";
-import { MidaTradingAccountPositionAccounting } from "#accounts/MidaTradingAccountPositionAccounting";
-import { MidaDate } from "#dates/MidaDate";
-import { MidaTradingPlatform } from "#platforms/MidaTradingPlatform";
+import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
+import { MidaTradingAccountOperativity, } from "#accounts/MidaTradingAccountOperativity";
+import { MidaTradingAccountPositionAccounting, } from "#accounts/MidaTradingAccountPositionAccounting";
+import { MidaDate, } from "#dates/MidaDate";
+import { MidaTradingPlatform, } from "#platforms/MidaTradingPlatform";
 
 /**
  * The trading account constructor parameters

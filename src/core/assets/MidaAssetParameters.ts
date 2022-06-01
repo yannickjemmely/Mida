@@ -20,8 +20,8 @@
  * THE SOFTWARE.
 */
 
-import { MidaTradingAccount } from "#accounts/MidaTradingAccount";
-import { MidaAsset } from "#assets/MidaAsset";
+import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
+import { MidaAsset, } from "#assets/MidaAsset";
 
 /**
  * The asset constructor parameters

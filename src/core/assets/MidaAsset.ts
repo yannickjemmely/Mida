@@ -20,9 +20,9 @@
  * THE SOFTWARE.
 */
 
-import { MidaTradingAccount } from "#accounts/MidaTradingAccount";
-import { MidaAssetParameters } from "#assets/MidaAssetParameters";
-import { MidaAssetStatement } from "#assets/MidaAssetStatement";
+import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
+import { MidaAssetParameters, } from "#assets/MidaAssetParameters";
+import { MidaAssetStatement, } from "#assets/MidaAssetStatement";
 
 /** Represents an asset */
 export class MidaAsset {

@@ -20,13 +20,13 @@
  * THE SOFTWARE.
 */
 
-import { MidaTradingAccount } from "#accounts/MidaTradingAccount";
-import { MidaDate } from "#dates/MidaDate";
-import { MidaTrade } from "#trades/MidaTrade";
-import { MidaTradeDirection } from "#trades/MidaTradeDirection";
-import { MidaTradePurpose } from "#trades/MidaTradePurpose";
-import { MidaTradeRejection } from "#trades/MidaTradeRejection";
-import { MidaTradeStatus } from "#trades/MidaTradeStatus";
+import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
+import { MidaDate, } from "#dates/MidaDate";
+import { MidaTrade, } from "#trades/MidaTrade";
+import { MidaTradeDirection, } from "#trades/MidaTradeDirection";
+import { MidaTradePurpose, } from "#trades/MidaTradePurpose";
+import { MidaTradeRejection, } from "#trades/MidaTradeRejection";
+import { MidaTradeStatus, } from "#trades/MidaTradeStatus";
 
 /**
  * The trade constructor parameters

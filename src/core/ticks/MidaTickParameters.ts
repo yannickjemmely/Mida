@@ -20,10 +20,10 @@
  * THE SOFTWARE.
 */
 
-import { MidaDate } from "#dates/MidaDate";
-import { MidaQuotation } from "#quotations/MidaQuotation";
-import { MidaTick } from "#ticks/MidaTick";
-import { MidaTickMovement } from "#ticks/MidaTickMovement";
+import { MidaDate, } from "#dates/MidaDate";
+import { MidaQuotation, } from "#quotations/MidaQuotation";
+import { MidaTick, } from "#ticks/MidaTick";
+import { MidaTickMovement, } from "#ticks/MidaTickMovement";
 
 /**
  * The symbol tick constructor parameters

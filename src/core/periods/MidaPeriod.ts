@@ -20,12 +20,12 @@
  * THE SOFTWARE.
 */
 
-import { MidaDate } from "#dates/MidaDate";
-import { MidaPeriodParameters } from "#periods/MidaPeriodParameters";
-import { MidaQuotationPrice } from "#quotations/MidaQuotationPrice";
-import { MidaTick } from "#ticks/MidaTick";
-import { IMidaEquatable } from "#utilities/equatable/IMidaEquatable";
-import { GenericObject } from "#utilities/GenericObject";
+import { MidaDate, } from "#dates/MidaDate";
+import { MidaPeriodParameters, } from "#periods/MidaPeriodParameters";
+import { MidaQuotationPrice, } from "#quotations/MidaQuotationPrice";
+import { MidaTick, } from "#ticks/MidaTick";
+import { IMidaEquatable, } from "#utilities/equatable/IMidaEquatable";
+import { GenericObject, } from "#utilities/GenericObject";
 
 /** Represents a period (commonly named bar or candlestick) */
 export class MidaPeriod implements IMidaEquatable {

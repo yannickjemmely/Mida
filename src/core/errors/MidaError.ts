@@ -20,8 +20,8 @@
  * THE SOFTWARE.
 */
 
-import { MidaErrorParameters } from "#errors/MidaErrorParameters";
-import { GenericObject } from "#utilities/GenericObject";
+import { MidaErrorParameters, } from "#errors/MidaErrorParameters";
+import { GenericObject, } from "#utilities/GenericObject";
 
 export class MidaError extends Error {
     readonly #type: string;

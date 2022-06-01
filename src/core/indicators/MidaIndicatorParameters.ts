@@ -20,7 +20,7 @@
  * THE SOFTWARE.
 */
 
-import { MidaIndicator } from "#indicators/MidaIndicator";
+import { MidaIndicator, } from "#indicators/MidaIndicator";
 
 /**
  * The indicator constructor parameters

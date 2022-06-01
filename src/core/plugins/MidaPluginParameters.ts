@@ -20,7 +20,7 @@
  * THE SOFTWARE.
 */
 
-import { MidaPlugin } from "#plugins/MidaPlugin";
+import { MidaPlugin, } from "#plugins/MidaPlugin";
 
 /**
  * The plugin constructor parameters

@@ -20,8 +20,8 @@
  * THE SOFTWARE.
 */
 
-import { MidaLog } from "#loggers/MidaLog";
-import { MidaLogNamespace } from "#loggers/MidaLogNamespace";
+import { MidaLog, } from "#loggers/MidaLog";
+import { MidaLogNamespace, } from "#loggers/MidaLogNamespace";
 
 export class MidaLogger {
     readonly #logs: MidaLog[];

@@ -20,7 +20,7 @@
  * THE SOFTWARE.
 */
 
-import { GenericObject } from "#utilities/GenericObject";
+import { GenericObject, } from "#utilities/GenericObject";
 
 /** Represents the indicator input/output */
 export type MidaIndicatorIo = GenericObject[] | number[] | GenericObject | number;

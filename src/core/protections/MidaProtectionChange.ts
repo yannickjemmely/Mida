@@ -20,9 +20,9 @@
  * THE SOFTWARE.
 */
 
-import { MidaProtection } from "#protections/MidaProtection";
-import { MidaProtectionChangeRejection } from "#protections/MidaProtectionChangeRejection";
-import { MidaProtectionChangeStatus } from "#protections/MidaProtectionChangeStatus";
+import { MidaProtection, } from "#protections/MidaProtection";
+import { MidaProtectionChangeRejection, } from "#protections/MidaProtectionChangeRejection";
+import { MidaProtectionChangeStatus, } from "#protections/MidaProtectionChangeStatus";
 
 export type MidaProtectionChange = {
     status: MidaProtectionChangeStatus;

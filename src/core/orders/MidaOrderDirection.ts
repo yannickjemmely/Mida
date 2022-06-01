@@ -20,7 +20,7 @@
  * THE SOFTWARE.
 */
 
-import { MidaPositionDirection } from "#positions/MidaPositionDirection";
+import { MidaPositionDirection, } from "#positions/MidaPositionDirection";
 
 export enum MidaOrderDirection {
     BUY = "buy",

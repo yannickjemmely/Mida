@@ -20,8 +20,8 @@
  * THE SOFTWARE.
 */
 
-import { MidaTradingAccount } from "#accounts/MidaTradingAccount";
-import { MidaDate } from "#dates/MidaDate";
+import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
+import { MidaDate, } from "#dates/MidaDate";
 
 export type MidaAssetStatement = {
     tradingAccount: MidaTradingAccount;

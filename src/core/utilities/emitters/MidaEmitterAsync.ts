@@ -20,11 +20,11 @@
  * THE SOFTWARE.
 */
 
-import { MidaDate } from "#dates/MidaDate";
-import { MidaEvent } from "#events/MidaEvent";
-import { MidaEventListenerAsync } from "#events/MidaEventListenerAsync";
-import { GenericObject } from "#utilities/GenericObject";
-import { MidaUtilities } from "#utilities/MidaUtilities";
+import { MidaDate, } from "#dates/MidaDate";
+import { MidaEvent, } from "#events/MidaEvent";
+import { MidaEventListenerAsync, } from "#events/MidaEventListenerAsync";
+import { GenericObject, } from "#utilities/GenericObject";
+import { MidaUtilities, } from "#utilities/MidaUtilities";
 
 export class MidaEmitterAsync {
     static readonly #ANY_TYPE_KEY: string = "*";

@@ -20,18 +20,18 @@
  * THE SOFTWARE.
 */
 
-import { MidaTradingAccount } from "#accounts/MidaTradingAccount";
-import { MidaDateUtilities } from "#dates/MidaDateUtilities";
-import { MidaEvent } from "#events/MidaEvent";
-import { MidaEventListener } from "#events/MidaEventListener";
-import { MidaPeriod } from "#periods/MidaPeriod";
-import { MidaTick } from "#ticks/MidaTick";
-import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
-import { GenericObject } from "#utilities/GenericObject";
-import { MidaUtilities } from "#utilities/MidaUtilities";
-import { MidaMarketWatcherDirectives } from "#watchers/MidaMarketWatcherDirectives";
-import { MidaMarketWatcherParameters } from "#watchers/MidaMarketWatcherParameters";
-import { isA } from "@jest/expect-utils";
+import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
+import { MidaDateUtilities, } from "#dates/MidaDateUtilities";
+import { MidaEvent, } from "#events/MidaEvent";
+import { MidaEventListener, } from "#events/MidaEventListener";
+import { MidaPeriod, } from "#periods/MidaPeriod";
+import { MidaTick, } from "#ticks/MidaTick";
+import { MidaEmitter, } from "#utilities/emitters/MidaEmitter";
+import { GenericObject, } from "#utilities/GenericObject";
+import { MidaUtilities, } from "#utilities/MidaUtilities";
+import { MidaMarketWatcherDirectives, } from "#watchers/MidaMarketWatcherDirectives";
+import { MidaMarketWatcherParameters, } from "#watchers/MidaMarketWatcherParameters";
+import { isA, } from "@jest/expect-utils";
 
 const { utcTimestamp, } = MidaDateUtilities;
 const { mergeOptions, } = MidaUtilities;

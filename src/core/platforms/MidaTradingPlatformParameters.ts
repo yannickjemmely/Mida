@@ -20,7 +20,7 @@
  * THE SOFTWARE.
 */
 
-import { MidaTradingPlatform } from "#platforms/MidaTradingPlatform";
+import { MidaTradingPlatform, } from "#platforms/MidaTradingPlatform";
 
 /**
  * The platform constructor parameters

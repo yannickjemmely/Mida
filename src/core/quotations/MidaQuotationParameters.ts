@@ -20,8 +20,8 @@
  * THE SOFTWARE.
 */
 
-import { MidaDate } from "#dates/MidaDate";
-import { MidaQuotation } from "#quotations/MidaQuotation";
+import { MidaDate, } from "#dates/MidaDate";
+import { MidaQuotation, } from "#quotations/MidaQuotation";
 
 /**
  * The symbol quotation constructor parameters

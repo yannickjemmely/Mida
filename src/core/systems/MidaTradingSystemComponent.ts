@@ -20,16 +20,16 @@
  * THE SOFTWARE.
 */
 
-import { MidaExpertAdvisor } from "#advisors/MidaExpertAdvisor";
-import { MidaExpertAdvisorComponentParameters } from "#advisors/MidaExpertAdvisorComponentParameters";
-import { MidaTick } from "#ticks/MidaTick";
-import { GenericObject } from "#utilities/GenericObject";
+import { MidaTradingSystem, } from "#systems/MidaTradingSystem";
+import { MidaTradingSystemComponentParameters, } from "#systems/MidaTradingSystemComponentParameters";
+import { MidaTick, } from "#ticks/MidaTick";
+import { GenericObject, } from "#utilities/GenericObject";
 
-export abstract class MidaExpertAdvisorComponent {
+export abstract class MidaTradingSystemComponent {
     readonly #name: string;
     readonly #description: string;
     readonly #version: string;
-    readonly #expertAdvisor: MidaExpertAdvisor;
+    readonly #tradingSystem: MidaTradingSystem;
     #isEnabled: boolean;
     #isConfigured: boolean;
 
@@ -37,12 +37,12 @@ export abstract class MidaExpertAdvisorComponent {
         name,
         description,
         version,
-        expertAdvisor,
-    }: MidaExpertAdvisorComponentParameters) {
+        tradingSystem,
+    }: MidaTradingSystemComponentParameters) {
         this.#name = name;
         this.#description = description ?? "";
         this.#version = version;
-        this.#expertAdvisor = expertAdvisor;
+        this.#tradingSystem = tradingSystem;
         this.#isEnabled = false;
         this.#isConfigured = false;
     }
@@ -59,8 +59,8 @@ export abstract class MidaExpertAdvisorComponent {
         return this.#version;
     }
 
-    public get expertAdvisor (): MidaExpertAdvisor | undefined {
-        return this.#expertAdvisor;
+    public get tradingSystem (): MidaTradingSystem {
+        return this.#tradingSystem;
     }
 
     public get isEnabled (): boolean {
@@ -71,7 +71,7 @@ export abstract class MidaExpertAdvisorComponent {
         this.#isEnabled = enabled;
     }
 
-    async activate (): Promise<void> {
+    public async activate (): Promise<void> {
         if (this.#isConfigured) {
             return;
         }
@@ -93,22 +93,22 @@ export abstract class MidaExpertAdvisorComponent {
 
     /* *** *** *** Reiryoku Technologies *** *** *** */
 
-    static readonly #installedComponents: Map<string, typeof MidaExpertAdvisorComponent> = new Map();
+    static readonly #installedComponents: Map<string, typeof MidaTradingSystemComponent> = new Map();
 
     public static get installedComponents (): string[] {
-        return [ ...MidaExpertAdvisorComponent.#installedComponents.keys(), ];
+        return [ ...MidaTradingSystemComponent.#installedComponents.keys(), ];
     }
 
-    public static add (name: string, componentConstructor: typeof MidaExpertAdvisorComponent): void {
-        if (MidaExpertAdvisorComponent.#installedComponents.has(name)) {
+    public static add (name: string, componentConstructor: typeof MidaTradingSystemComponent): void {
+        if (MidaTradingSystemComponent.#installedComponents.has(name)) {
             return;
         }
 
-        MidaExpertAdvisorComponent.#installedComponents.set(name, componentConstructor);
+        MidaTradingSystemComponent.#installedComponents.set(name, componentConstructor);
     }
 
-    public static async create (name: string, parameters: GenericObject = {}): Promise<MidaExpertAdvisorComponent | undefined> {
-        const componentConstructor: any | undefined = MidaExpertAdvisorComponent.#installedComponents.get(name);
+    public static async create (name: string, parameters: GenericObject = {}): Promise<MidaTradingSystemComponent | undefined> {
+        const componentConstructor: any | undefined = MidaTradingSystemComponent.#installedComponents.get(name);
 
         if (!componentConstructor) {
             return undefined;
@@ -118,8 +118,8 @@ export abstract class MidaExpertAdvisorComponent {
     }
 }
 
-export function filterEnabledComponents (components: MidaExpertAdvisorComponent[]): MidaExpertAdvisorComponent[] {
-    const enabledComponents: MidaExpertAdvisorComponent[] = [];
+export function filterEnabledComponents (components: MidaTradingSystemComponent[]): MidaTradingSystemComponent[] {
+    const enabledComponents: MidaTradingSystemComponent[] = [];
 
     for (const component of components) {
         if (component.isEnabled) {

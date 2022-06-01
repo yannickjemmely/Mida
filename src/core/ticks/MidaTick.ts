@@ -20,13 +20,13 @@
  * THE SOFTWARE.
 */
 
-import { MidaDate } from "#dates/MidaDate";
-import { MidaQuotation } from "#quotations/MidaQuotation";
-import { MidaTickMovement } from "#ticks/MidaTickMovement";
-import { MidaTickParameters } from "#ticks/MidaTickParameters";
-import { IMidaCloneable } from "#utilities/cloneable/IMidaCloneable";
-import { IMidaEquatable } from "#utilities/equatable/IMidaEquatable";
-import { GenericObject } from "#utilities/GenericObject";
+import { MidaDate, } from "#dates/MidaDate";
+import { MidaQuotation, } from "#quotations/MidaQuotation";
+import { MidaTickMovement, } from "#ticks/MidaTickMovement";
+import { MidaTickParameters, } from "#ticks/MidaTickParameters";
+import { IMidaCloneable, } from "#utilities/cloneable/IMidaCloneable";
+import { IMidaEquatable, } from "#utilities/equatable/IMidaEquatable";
+import { GenericObject, } from "#utilities/GenericObject";
 
 /** Represents a symbol tick */
 export class MidaTick implements IMidaCloneable, IMidaEquatable {

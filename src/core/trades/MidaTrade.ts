@@ -20,14 +20,14 @@
  * THE SOFTWARE.
 */
 
-import { MidaTradingAccount } from "#accounts/MidaTradingAccount";
-import { MidaDate } from "#dates/MidaDate";
-import { MidaOrder } from "#orders/MidaOrder";
-import { MidaTradeDirection } from "#trades/MidaTradeDirection";
-import { MidaTradeParameters } from "#trades/MidaTradeParameters";
-import { MidaTradePurpose } from "#trades/MidaTradePurpose";
-import { MidaTradeRejection } from "#trades/MidaTradeRejection";
-import { MidaTradeStatus } from "#trades/MidaTradeStatus";
+import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
+import { MidaDate, } from "#dates/MidaDate";
+import { MidaOrder, } from "#orders/MidaOrder";
+import { MidaTradeDirection, } from "#trades/MidaTradeDirection";
+import { MidaTradeParameters, } from "#trades/MidaTradeParameters";
+import { MidaTradePurpose, } from "#trades/MidaTradePurpose";
+import { MidaTradeRejection, } from "#trades/MidaTradeRejection";
+import { MidaTradeStatus, } from "#trades/MidaTradeStatus";
 
 /** Represents a trade (or deal) */
 export abstract class MidaTrade {

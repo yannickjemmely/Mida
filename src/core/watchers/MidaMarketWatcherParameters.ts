@@ -20,8 +20,8 @@
  * THE SOFTWARE.
 */
 
-import { MidaTradingAccount } from "#accounts/MidaTradingAccount";
-import { MidaMarketWatcher } from "#watchers/MidaMarketWatcher";
+import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
+import { MidaMarketWatcher, } from "#watchers/MidaMarketWatcher";
 
 /**
  * The market watcher constructor parameters

@@ -20,9 +20,9 @@
  * THE SOFTWARE.
 */
 
-import { MidaIndicatorIo } from "#indicators/MidaIndicatorIo";
-import { MidaIndicatorParameters } from "#indicators/MidaIndicatorParameters";
-import { GenericObject } from "#utilities/GenericObject";
+import { MidaIndicatorIo, } from "#indicators/MidaIndicatorIo";
+import { MidaIndicatorParameters, } from "#indicators/MidaIndicatorParameters";
+import { GenericObject, } from "#utilities/GenericObject";
 
 export abstract class MidaIndicator {
     readonly #name: string;

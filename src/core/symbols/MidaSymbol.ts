@@ -20,9 +20,9 @@
  * THE SOFTWARE.
 */
 
-import { MidaTradingAccount } from "#accounts/MidaTradingAccount";
-import { MidaSymbolParameters } from "#symbols/MidaSymbolParameters";
-import { MidaEmitter } from "#utilities/emitters/MidaEmitter";
+import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
+import { MidaSymbolParameters, } from "#symbols/MidaSymbolParameters";
+import { MidaEmitter, } from "#utilities/emitters/MidaEmitter";
 
 /** Represents a symbol */
 export class MidaSymbol {

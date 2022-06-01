@@ -20,8 +20,8 @@
  * THE SOFTWARE.
 */
 
-import { GenericObject } from "#utilities/GenericObject";
-import { MidaError } from "#errors/MidaError";
+import { GenericObject, } from "#utilities/GenericObject";
+import { MidaError, } from "#errors/MidaError";
 
 /**
  * The error constructor parameters

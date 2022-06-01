@@ -20,15 +20,15 @@
  * THE SOFTWARE.
 */
 
-import { MidaTradingAccount } from "#accounts/MidaTradingAccount";
-import { MidaDate } from "#dates/MidaDate";
-import { MidaOrder } from "#orders/MidaOrder";
-import { MidaOrderDirection } from "#orders/MidaOrderDirection";
-import { MidaOrderPurpose } from "#orders/MidaOrderPurpose";
-import { MidaOrderRejection } from "#orders/MidaOrderRejection";
-import { MidaOrderStatus } from "#orders/MidaOrderStatus";
-import { MidaOrderTimeInForce } from "#orders/MidaOrderTimeInForce";
-import { MidaTrade } from "#trades/MidaTrade";
+import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
+import { MidaDate, } from "#dates/MidaDate";
+import { MidaOrder, } from "#orders/MidaOrder";
+import { MidaOrderDirection, } from "#orders/MidaOrderDirection";
+import { MidaOrderPurpose, } from "#orders/MidaOrderPurpose";
+import { MidaOrderRejection, } from "#orders/MidaOrderRejection";
+import { MidaOrderStatus, } from "#orders/MidaOrderStatus";
+import { MidaOrderTimeInForce, } from "#orders/MidaOrderTimeInForce";
+import { MidaTrade, } from "#trades/MidaTrade";
 
 /**
  * The order constructor parameters

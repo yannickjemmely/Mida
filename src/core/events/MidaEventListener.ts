@@ -20,6 +20,6 @@
  * THE SOFTWARE.
 */
 
-import { MidaEvent } from "#events/MidaEvent";
+import { MidaEvent, } from "#events/MidaEvent";
 
 export type MidaEventListener = ((event: MidaEvent) => unknown) | (() => unknown);
