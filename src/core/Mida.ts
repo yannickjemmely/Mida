@@ -21,9 +21,9 @@
 */
 
 import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
-import { MidaTradingPlatform, } from "#platforms/MidaTradingPlatform";
 import { MidaIndicator, } from "#indicators/MidaIndicator";
 import { MidaLogger, } from "#loggers/MidaLogger";
+import { MidaTradingPlatform, } from "#platforms/MidaTradingPlatform";
 import { MidaPlugin, } from "#plugins/MidaPlugin";
 import { baseActions, } from "#plugins/MidaPluginActions";
 import { GenericObject, } from "#utilities/GenericObject";
@@ -46,7 +46,7 @@ class Mida {
         return [ ...Mida.#installedPlugins.values(), ];
     }
 
-    public static use (plugin: MidaPlugin | any /* Avoids a warning on non-TS projects using Mida */, options?: GenericObject): void {
+    public static use (plugin: MidaPlugin, options?: GenericObject): void {
         const pluginId: string | undefined = plugin?.id;
 
         if (!pluginId || Mida.pluginIsInstalled(pluginId)) {
@@ -70,36 +70,24 @@ class Mida {
     }
 }
 
+const { login, createIndicator, } = Mida;
+
 // <public-api>
 export { Mida, };
-
-export { MidaExpertAdvisor, } from "#advisors/MidaExpertAdvisor";
-export { MidaExpertAdvisorComponent, } from "#advisors/MidaExpertAdvisorComponent";
-export { MidaExpertAdvisorComponentParameters, } from "#advisors/MidaExpertAdvisorComponentParameters";
-export { MidaExpertAdvisorParameters, } from "#advisors/MidaExpertAdvisorParameters";
-
-export { MidaAsset, } from "#assets/MidaAsset";
-export { MidaAssetParameters, } from "#assets/MidaAssetParameters";
-export { MidaAssetStatement, } from "#assets/MidaAssetStatement";
-
-export { MidaTradingPlatform, } from "#platforms/MidaTradingPlatform";
-export { MidaTradingPlatformParameters, } from "#platforms/MidaTradingPlatformParameters";
+export { login, createIndicator, };
 
 export { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
 export { MidaTradingAccountOperativity, } from "#accounts/MidaTradingAccountOperativity";
 export { MidaTradingAccountParameters, } from "#accounts/MidaTradingAccountParameters";
 export { MidaTradingAccountPositionAccounting, } from "#accounts/MidaTradingAccountPositionAccounting";
 
+export { MidaAsset, } from "#assets/MidaAsset";
+export { MidaAssetParameters, } from "#assets/MidaAssetParameters";
+export { MidaAssetStatement, } from "#assets/MidaAssetStatement";
+
 export { MidaDate, } from "#dates/MidaDate";
 export { MidaDateParameters, } from "#dates/MidaDateParameters";
 export { MidaDateUtilities, } from "#dates/MidaDateUtilities";
-
-export { MidaTrade, } from "#trades/MidaTrade";
-export { MidaTradeDirection, } from "#trades/MidaTradeDirection";
-export { MidaTradeParameters, } from "#trades/MidaTradeParameters";
-export { MidaTradePurpose, } from "#trades/MidaTradePurpose";
-export { MidaTradeRejection, } from "#trades/MidaTradeRejection";
-export { MidaTradeStatus, } from "#trades/MidaTradeStatus";
 
 export { MidaError, } from "#errors/MidaError";
 export { MidaErrorParameters, } from "#errors/MidaErrorParameters";
@@ -133,6 +121,9 @@ export { MidaOrderTimeInForce, } from "#orders/MidaOrderTimeInForce";
 export { MidaPeriod, composePeriods, } from "#periods/MidaPeriod";
 export { MidaPeriodParameters, } from "#periods/MidaPeriodParameters";
 
+export { MidaTradingPlatform, } from "#platforms/MidaTradingPlatform";
+export { MidaTradingPlatformParameters, } from "#platforms/MidaTradingPlatformParameters";
+
 export { MidaPlugin, } from "#plugins/MidaPlugin";
 export { MidaPluginActions, } from "#plugins/MidaPluginActions";
 export { MidaPluginParameters, } from "#plugins/MidaPluginParameters";
@@ -144,22 +135,42 @@ export { MidaPositionStatus, } from "#positions/MidaPositionStatus";
 
 export { MidaProtection, } from "#protections/MidaProtection";
 export { MidaProtectionChange, } from "#protections/MidaProtectionChange";
-export { MidaProtectionChangeStatus, } from "#protections/MidaProtectionChangeStatus";
 export { MidaProtectionChangeRejection, } from "#protections/MidaProtectionChangeRejection";
+export { MidaProtectionChangeStatus, } from "#protections/MidaProtectionChangeStatus";
 
 export { MidaQuotation, } from "#quotations/MidaQuotation";
 export { MidaQuotationParameters, } from "#quotations/MidaQuotationParameters";
+export { MidaQuotationPrice, } from "#quotations/MidaQuotationPrice";
 
 export { MidaSymbol, } from "#symbols/MidaSymbol";
 export { MidaSymbolParameters, } from "#symbols/MidaSymbolParameters";
-export { MidaQuotationPrice, } from "#quotations/MidaQuotationPrice";
 export { MidaSymbolTradeStatus, } from "#symbols/MidaSymbolTradeStatus";
+
+/** @deprecated */
+export { MidaTradingSystem as MidaExpertAdvisor, } from "#systems/MidaTradingSystem";
+/** @deprecated */
+export { MidaTradingSystemComponent as MidaExpertAdvisorComponent, } from "#systems/MidaTradingSystemComponent";
+/** @deprecated */
+export { MidaTradingSystemComponentParameters as MidaExpertAdvisorComponentParameters, } from "#systems/MidaTradingSystemComponentParameters";
+/** @deprecated */
+export { MidaTradingSystemParameters as MidaExpertAdvisorParameters, } from "#systems/MidaTradingSystemParameters";
+export { MidaTradingSystem, } from "#systems/MidaTradingSystem";
+export { MidaTradingSystemComponent, } from "#systems/MidaTradingSystemComponent";
+export { MidaTradingSystemComponentParameters, } from "#systems/MidaTradingSystemComponentParameters";
+export { MidaTradingSystemParameters, } from "#systems/MidaTradingSystemParameters";
 
 export { MidaTick, } from "#ticks/MidaTick";
 export { MidaTickMovement, } from "#ticks/MidaTickMovement";
 export { MidaTickParameters, } from "#ticks/MidaTickParameters";
 
 export { MidaTimeframe, } from "#timeframes/MidaTimeframe";
+
+export { MidaTrade, } from "#trades/MidaTrade";
+export { MidaTradeDirection, } from "#trades/MidaTradeDirection";
+export { MidaTradeParameters, } from "#trades/MidaTradeParameters";
+export { MidaTradePurpose, } from "#trades/MidaTradePurpose";
+export { MidaTradeRejection, } from "#trades/MidaTradeRejection";
+export { MidaTradeStatus, } from "#trades/MidaTradeStatus";
 
 export { MidaEmitter, } from "#utilities/emitters/MidaEmitter";
 export { GenericObject, } from "#utilities/GenericObject";

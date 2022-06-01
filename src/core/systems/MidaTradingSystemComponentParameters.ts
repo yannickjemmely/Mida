@@ -20,16 +20,16 @@
  * THE SOFTWARE.
 */
 
-import { MidaExpertAdvisor, } from "#advisors/MidaExpertAdvisor";
-import { MidaExpertAdvisorComponent, } from "#advisors/MidaExpertAdvisorComponent";
+import { MidaTradingSystem, } from "#systems/MidaTradingSystem";
+import { MidaTradingSystemComponent, } from "#systems/MidaTradingSystemComponent";
 
 /**
- * The expert advisor component constructor parameters
- * @see MidaExpertAdvisorComponent
+ * The trading system component constructor parameters
+ * @see MidaTradingSystemComponent
  */
-export type MidaExpertAdvisorComponentParameters = {
+export type MidaTradingSystemComponentParameters = {
     name: string;
     description?: string;
     version: string;
-    expertAdvisor: MidaExpertAdvisor;
+    tradingSystem: MidaTradingSystem;
 };

@@ -21,24 +21,24 @@
 */
 
 import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
-import { MidaExpertAdvisorComponent, filterEnabledComponents, } from "#advisors/MidaExpertAdvisorComponent";
-import { MidaExpertAdvisorParameters, } from "#advisors/MidaExpertAdvisorParameters";
 import { MidaEvent, } from "#events/MidaEvent";
 import { MidaEventListener, } from "#events/MidaEventListener";
-import { MidaOrder, filterExecutedOrders, } from "#orders/MidaOrder";
+import { filterExecutedOrders, MidaOrder, } from "#orders/MidaOrder";
 import { MidaOrderDirectives, } from "#orders/MidaOrderDirectives";
 import { MidaPeriod, } from "#periods/MidaPeriod";
+import { filterEnabledComponents, MidaTradingSystemComponent, } from "#systems/MidaTradingSystemComponent";
+import { MidaTradingSystemParameters, } from "#systems/MidaTradingSystemParameters";
 import { MidaTick, } from "#ticks/MidaTick";
 import {
-    MidaTrade,
     filterExecutedTrades,
     getTradesFromOrders,
+    MidaTrade,
 } from "#trades/MidaTrade";
 import { MidaEmitter, } from "#utilities/emitters/MidaEmitter";
 import { GenericObject, } from "#utilities/GenericObject";
 import { MidaMarketWatcher, } from "#watchers/MidaMarketWatcher";
 
-export abstract class MidaExpertAdvisor {
+export abstract class MidaTradingSystem {
     readonly #name: string;
     readonly #description: string;
     readonly #version: string;
@@ -50,7 +50,7 @@ export abstract class MidaExpertAdvisor {
     #tickEventIsLocked: boolean;
     #isConfigured: boolean;
     readonly #marketWatcher: MidaMarketWatcher;
-    readonly #components: MidaExpertAdvisorComponent[];
+    readonly #components: MidaTradingSystemComponent[];
     readonly #emitter: MidaEmitter;
 
     protected constructor ({
@@ -58,7 +58,7 @@ export abstract class MidaExpertAdvisor {
         description,
         version,
         tradingAccount,
-    }: MidaExpertAdvisorParameters) {
+    }: MidaTradingSystemParameters) {
         this.#name = name;
         this.#description = description ?? "";
         this.#version = version;
@@ -102,7 +102,7 @@ export abstract class MidaExpertAdvisor {
         return getTradesFromOrders(this.#orders);
     }
 
-    public get components (): MidaExpertAdvisorComponent[] {
+    public get components (): MidaTradingSystemComponent[] {
         return [ ...this.#components, ];
     }
 
@@ -114,7 +114,7 @@ export abstract class MidaExpertAdvisor {
         return this.#marketWatcher;
     }
 
-    public get enabledComponents (): MidaExpertAdvisorComponent[] {
+    public get enabledComponents (): MidaTradingSystemComponent[] {
         return filterEnabledComponents(this.#components);
     }
 
