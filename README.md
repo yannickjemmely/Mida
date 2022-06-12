@@ -9,6 +9,7 @@
     <br><br>
     <a href="https://www.mida.org">Home</a> &mdash;
     <a href="https://www.mida.org/documentation">Documentation</a> &mdash;
+    <a href="https://www.mida.org/handbook">Handbook</a> &mdash;
     <a href="https://www.mida.org/ecosystem">Ecosystem</a>
 </p>
 <br>
@@ -105,7 +106,7 @@ const myAccount = await login("cTrader", {
     cTraderBrokerAccountId: "...",
 });
 ```
-To get a `clientId`, `clientSecret`, `accessToken` and `cTraderBrokerAccountId` you need to [create a cTrader Open API account](https://www.mida.org/open-api/).<br>
+To get a `clientId`, `clientSecret`, `accessToken` and `cTraderBrokerAccountId` you need to [create a cTrader Open API account](https://www.mida.org/posts/how-to-use-ctrader/).<br>
 
 ### Balance, equity and margin
 How to get the account balance, equity and margin.
