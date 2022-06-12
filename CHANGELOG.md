@@ -1,3 +1,5 @@
+7.1.0 - 12-06-2022
+===================
 ## Features
 * Update eslint dependency and cleanup codebase [#31](https://github.com/Reiryoku-Technologies/Mida/pull/31)
 
