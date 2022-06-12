@@ -85,9 +85,9 @@ npm init mida
 ### Account login
 How to login into a Binance Spot account.
 ```javascript
-import { Mida, } from "@reiryoku/mida";
+import { login, } from "@reiryoku/mida";
 
-const myAccount = await Mida.login("Binance/Spot", {
+const myAccount = await login("Binance/Spot", {
     apiKey: "...",
     apiSecret: "...",
 });
@@ -96,9 +96,9 @@ To get an `apiKey` and `apiSecret` you need to [create a Binance account](https:
 
 How to login into a cTrader account.
 ```javascript
-import { Mida, } from "@reiryoku/mida";
+import { login, } from "@reiryoku/mida";
 
-const myAccount = await Mida.login("cTrader", {
+const myAccount = await login("cTrader", {
     clientId: "...",
     clientSecret: "...",
     accessToken: "...",
@@ -339,24 +339,24 @@ marketWatcher.on("period-close", (event) => {
 ```
 
 ### Trading systems
-How to create a trading system (or trading bot).
+How to create a trading system (expert advisor or trading bot).
 ```javascript
 import {
-    MidaExpertAdvisor,
+    MidaTradingSystem,
     MidaTimeframe,
 } from "@reiryoku/mida";
 
-class MyTradingStrategy extends MidaExpertAdvisor {
+class MyTradingSystem extends MidaTradingSystem {
     constructor ({ tradingAccount, }) {
         super({
-            name: "MyTradingStrategy",
+            name: "MyTradingSystem",
             version: "1.0.0",
             tradingAccount,
         });
     }
 
     async configure () {
-        // Every expert advisor has an integrated market watcher
+        // Every trading system has an integrated market watcher
         await this.watchTicks("BTCUSDT");
         await this.watchPeriods("BTCUSDT", MidaTimeframe.H1);
     }
@@ -379,15 +379,15 @@ class MyTradingStrategy extends MidaExpertAdvisor {
 }
 ```
 
-How to execute a trading bot.
+How to execute a trading system.
 ```javascript
-import { Mida, } from "@reiryoku/mida";
-import { MyExpertAdvisor, } from "./MyExpertAdvisor";
+import { login, } from "@reiryoku/mida";
+import { MyTradingSystem, } from "./MyTradingSystem";
 
-const myAccount = await Mida.login(/* ... */);
-const myAdvisor = new MyExpertAdvisor({ tradingAccount: myAccount, });
+const myAccount = await login(/* ... */);
+const mySystem = new MyTradingSystem({ tradingAccount: myAccount, });
 
-await myAdvisor.start();
+await mySystem.start();
 ```
 
 ### Technical indicators
