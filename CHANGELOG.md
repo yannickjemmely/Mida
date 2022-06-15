@@ -1,3 +1,5 @@
+7.2.0 - 15-06-2022
+===================
 ### Features
 * Create interface for getting the order impacted position [#35](https://github.com/Reiryoku-Technologies/Mida/pull/35)
 
