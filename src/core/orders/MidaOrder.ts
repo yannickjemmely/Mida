@@ -35,7 +35,7 @@ import { MidaOrderTimeInForce, } from "#orders/MidaOrderTimeInForce";
 import { MidaPosition, } from "#positions/MidaPosition";
 import { filterExecutedTrades, MidaTrade, } from "#trades/MidaTrade";
 import { MidaEmitter, } from "#utilities/emitters/MidaEmitter";
-import { MidaUtilities, } from "#utilities/MidaUtilities";
+import { createClosedPosition, } from "#utilities/MidaUtilities";
 
 /** Represents an order */
 export abstract class MidaOrder {
@@ -265,7 +265,7 @@ export abstract class MidaOrder {
             }
         }
 
-        return MidaUtilities.createClosedPosition(impactedPositionId, this.#tradingAccount, this.#symbol);
+        return createClosedPosition(impactedPositionId, this.#tradingAccount, this.#symbol);
     }
 
     public on (type: string): Promise<MidaEvent>;
