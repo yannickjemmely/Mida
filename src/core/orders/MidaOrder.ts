@@ -32,8 +32,10 @@ import { MidaOrderPurpose, } from "#orders/MidaOrderPurpose";
 import { MidaOrderRejection, } from "#orders/MidaOrderRejection";
 import { MidaOrderStatus, } from "#orders/MidaOrderStatus";
 import { MidaOrderTimeInForce, } from "#orders/MidaOrderTimeInForce";
+import { MidaPosition, } from "#positions/MidaPosition";
 import { filterExecutedTrades, MidaTrade, } from "#trades/MidaTrade";
 import { MidaEmitter, } from "#utilities/emitters/MidaEmitter";
+import { MidaUtilities, } from "#utilities/MidaUtilities";
 
 /** Represents an order */
 export abstract class MidaOrder {
@@ -247,6 +249,24 @@ export abstract class MidaOrder {
     }
 
     public abstract cancel (): Promise<void>;
+
+    public async getPosition (): Promise<MidaPosition | undefined> {
+        const impactedPositionId: string = this.#positionId;
+
+        if (!impactedPositionId) {
+            return undefined;
+        }
+
+        const openPositions: MidaPosition[] = await this.#tradingAccount.getOpenPositions();
+
+        for (const openPosition of openPositions) {
+            if (openPosition.id === impactedPositionId) {
+                return openPosition;
+            }
+        }
+
+        return MidaUtilities.createClosedPosition(impactedPositionId, this.#tradingAccount, this.#symbol);
+    }
 
     public on (type: string): Promise<MidaEvent>;
     public on (type: string, listener: MidaEventListener): string;

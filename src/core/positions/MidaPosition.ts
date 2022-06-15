@@ -37,7 +37,7 @@ export abstract class MidaPosition {
     readonly #tradingAccount: MidaTradingAccount;
     readonly #symbol: string;
     #volume: number;
-    #direction: MidaPositionDirection;
+    #direction?: MidaPositionDirection;
     readonly #protection: MidaProtection;
     readonly #emitter: MidaEmitter;
 
@@ -74,7 +74,7 @@ export abstract class MidaPosition {
         return this.#volume;
     }
 
-    public get direction (): MidaPositionDirection {
+    public get direction (): MidaPositionDirection | undefined {
         return this.#direction;
     }
 
@@ -114,7 +114,7 @@ export abstract class MidaPosition {
 
     public abstract addVolume (volume: number): Promise<MidaOrder>;
 
-    public abstract subtractVolume (quantity: number): Promise<MidaOrder>;
+    public abstract subtractVolume (volume: number): Promise<MidaOrder>;
 
     public async reverse (): Promise<MidaOrder> {
         return this.subtractVolume(this.volume * 2);
@@ -160,7 +160,7 @@ export abstract class MidaPosition {
             this.#volume = Math.abs(volumeDifference);
 
             if (volumeDifference > 0) {
-                this.#direction = MidaPositionDirection.oppositeOf(this.#direction);
+                this.#direction = MidaPositionDirection.oppositeOf(this.#direction as MidaPositionDirection);
 
                 this.#emitter.notifyListeners("reverse");
             }

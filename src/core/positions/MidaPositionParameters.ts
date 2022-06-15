@@ -34,6 +34,6 @@ export type MidaPositionParameters = {
     tradingAccount: MidaTradingAccount;
     symbol: string;
     volume: number;
-    direction: MidaPositionDirection;
+    direction?: MidaPositionDirection;
     protection?: MidaProtection;
 };
