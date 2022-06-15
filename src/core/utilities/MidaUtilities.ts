@@ -20,6 +20,12 @@
  * THE SOFTWARE.
 */
 
+import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
+import { MidaUnsupportedOperationError, } from "#errors/MidaUnsupportedOperationError";
+import { MidaOrder, } from "#orders/MidaOrder";
+import { MidaPosition, } from "#positions/MidaPosition";
+import { MidaProtection, } from "#protections/MidaProtection";
+import { MidaProtectionChange, } from "#protections/MidaProtectionChange";
 import * as crypto from "crypto";
 import { GenericObject, } from "#utilities/GenericObject";
 
@@ -96,3 +102,45 @@ export namespace MidaUtilities {
         return Number(`${parts[0]}.${newDecimal}`);
     }
 }
+
+// eslint-disable-next-line arrow-body-style
+export const createClosedPosition = (id: string, tradingAccount: MidaTradingAccount, symbol: string): MidaPosition => {
+    return new class extends MidaPosition {
+        public constructor () {
+            super({
+                id,
+                tradingAccount,
+                symbol,
+                volume: 0,
+            });
+        }
+
+        public override async addVolume (volume: number): Promise<MidaOrder> {
+            throw new MidaUnsupportedOperationError();
+        }
+
+        public override async subtractVolume (volume: number): Promise<MidaOrder> {
+            throw new MidaUnsupportedOperationError();
+        }
+
+        public override async changeProtection (protection: MidaProtection): Promise<MidaProtectionChange> {
+            throw new MidaUnsupportedOperationError();
+        }
+
+        public override async getUnrealizedCommission (): Promise<number> {
+            return 0;
+        }
+
+        public override async getUnrealizedGrossProfit (): Promise<number> {
+            return 0;
+        }
+
+        public override async getUnrealizedSwap (): Promise<number> {
+            return 0;
+        }
+
+        public override async getUsedMargin (): Promise<number> {
+            return 0;
+        }
+    }();
+};
