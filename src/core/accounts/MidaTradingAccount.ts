@@ -245,6 +245,11 @@ export abstract class MidaTradingAccount {
         return equity / usedMargin * 100;
     }
 
+    /** Used to get the trading platform date */
+    public async getDate (): Promise<MidaDate> {
+        return new MidaDate();
+    }
+
     public on (type: string): Promise<MidaEvent>;
     public on (type: string, listener: MidaEventListener): string;
     public on (type: string, listener?: MidaEventListener): Promise<MidaEvent> | string {
