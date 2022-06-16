@@ -127,11 +127,13 @@ const myOrder = await myAccount.placeOrder({
     direction: MidaOrderDirection.BUY,
     volume: 1,
 });
+const myPosition = await order.getPosition();
 
 console.log(myOrder.id);
 console.log(myOrder.executionPrice);
 console.log(myOrder.positionId);
 console.log(myOrder.trades);
+console.log(myPosition);
 ```
 
 How to open a short position for EUR against USD.
@@ -143,11 +145,13 @@ const myOrder = await myAccount.placeOrder({
     direction: MidaOrderDirection.SELL,
     volume: 0.1,
 });
+const myPosition = await order.getPosition();
 
 console.log(myOrder.id);
 console.log(myOrder.executionPrice);
 console.log(myOrder.positionId);
 console.log(myOrder.trades);
+console.log(myPosition);
 ```
 
 How to open a long position for Apple stocks with error handler.
@@ -210,8 +214,6 @@ import {
     MidaOrderDirection,
     MidaPositionDirection,
 } from "@reiryoku/mida";
-
-const myPosition = await myAccount.getPositionById("...");
 
 await myPosition.close();
 // or
