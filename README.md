@@ -93,7 +93,7 @@ const myAccount = await login("Binance/Spot", {
     apiSecret: "...",
 });
 ```
-To get an `apiKey` and `apiSecret` you need to [create a Binance account](https://accounts.binance.com/en/register?ref=172142672).<br>
+Read [how to use Binance](https://www.mida.org/posts/how-to-use-binance/) to get the `apiKey` and `apiSecret` credentials.
 
 How to login into a cTrader account.
 ```javascript
@@ -106,7 +106,7 @@ const myAccount = await login("cTrader", {
     cTraderBrokerAccountId: "...",
 });
 ```
-To get a `clientId`, `clientSecret`, `accessToken` and `cTraderBrokerAccountId` you need to [create a cTrader Open API account](https://www.mida.org/posts/how-to-use-ctrader/).<br>
+Read [how to use cTrader](https://www.mida.org/posts/how-to-use-ctrader/) to get the `clientId`, `clientSecret`, `accessToken` and `cTraderBrokerAccountId` credentials.
 
 ### Balance, equity and margin
 How to get the account balance, equity and margin.
