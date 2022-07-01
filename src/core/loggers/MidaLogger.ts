@@ -112,3 +112,13 @@ export class MidaLogger {
         this.log(message, MidaLogNamespace.FATAL);
     }
 }
+
+export const defaultLogger: MidaLogger = new MidaLogger();
+export const {
+    log,
+    debug,
+    info,
+    warn,
+    error,
+    fatal,
+} = defaultLogger;

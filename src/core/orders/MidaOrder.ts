@@ -24,6 +24,7 @@ import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
 import { MidaDate, } from "#dates/MidaDate";
 import { MidaEvent, } from "#events/MidaEvent";
 import { MidaEventListener, } from "#events/MidaEventListener";
+import { info } from "#loggers/MidaLogger";
 import { MidaOrderDirection, } from "#orders/MidaOrderDirection";
 import { MidaOrderExecution, } from "#orders/MidaOrderExecution";
 import { MidaOrderFill, } from "#orders/MidaOrderFill";
@@ -285,11 +286,12 @@ export abstract class MidaOrder {
     /* *** *** *** Reiryoku Technologies *** *** *** */
 
     protected onStatusChange (status: MidaOrderStatus): void {
-        if (this.#status === status) {
+        const previousStatus: MidaOrderStatus = this.#status;
+
+        if (previousStatus === status) {
             return;
         }
 
-        const previousStatus: MidaOrderStatus = this.#status;
         this.#status = status;
 
         switch (status) {
@@ -326,9 +328,16 @@ export abstract class MidaOrder {
         }
 
         this.#emitter.notifyListeners("status-change", { status, previousStatus, });
+        info(`Order ${this.id} | status changed from ${previousStatus} to ${status}`);
     }
 
     protected onPendingPriceChange (price: number): void {
+        const previousPrice: number = (this.#stopPrice ?? this.#limitPrice) as number;
+
+        if (previousPrice === price) {
+            return;
+        }
+
         if (Number.isFinite(this.#limitPrice)) {
             this.#limitPrice = price;
         }
@@ -336,22 +345,27 @@ export abstract class MidaOrder {
             this.#stopPrice = price;
         }
 
-        this.#emitter.notifyListeners("pending-price-change", { price, });
+        this.#emitter.notifyListeners("pending-price-change", { price, previousPrice, });
+        info(`Order ${this.id} | pending price changed from ${previousPrice} to ${price}`);
     }
 
     protected onPendingVolumeChange (volume: number): void {
-        if (this.#requestedVolume === volume) {
+        const previousVolume: number = this.#requestedVolume;
+
+        if (previousVolume === volume) {
             return;
         }
 
         this.#requestedVolume = volume;
 
-        this.#emitter.notifyListeners("pending-volume-change", { volume, });
+        this.#emitter.notifyListeners("pending-volume-change", { volume, previousVolume, });
+        info(`Order ${this.id} | pending volume changed from ${previousVolume} to ${volume}`);
     }
 
     protected onTrade (trade: MidaTrade): void {
         this.#trades.push(trade);
         this.#emitter.notifyListeners("trade", { trade, });
+        info(`Order ${this.id} | trade ${trade.id} executed`);
     }
 }
 

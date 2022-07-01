@@ -22,7 +22,12 @@
 
 import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
 import { MidaIndicator, } from "#indicators/MidaIndicator";
-import { MidaLogger, } from "#loggers/MidaLogger";
+import {
+    defaultLogger,
+    info,
+    warn,
+    MidaLogger,
+} from "#loggers/MidaLogger";
 import { MidaTradingPlatform, } from "#platforms/MidaTradingPlatform";
 import { MidaPlugin, } from "#plugins/MidaPlugin";
 import { baseActions, } from "#plugins/MidaPluginActions";
@@ -35,11 +40,10 @@ class Mida {
 
     /* *** *** *** Reiryoku Technologies *** *** *** */
 
-    static readonly #logger: MidaLogger = new MidaLogger();
     static readonly #installedPlugins: Map<string, MidaPlugin> = new Map();
 
     public static get logger (): MidaLogger {
-        return this.#logger;
+        return defaultLogger;
     }
 
     public static get installedPlugins (): MidaPlugin[] {
@@ -49,12 +53,22 @@ class Mida {
     public static use (plugin: MidaPlugin, options?: GenericObject): void {
         const pluginId: string | undefined = plugin?.id;
 
-        if (!pluginId || Mida.pluginIsInstalled(pluginId)) {
+        if (!pluginId) {
+            warn(`Plugin "${pluginId}" not installed, the plugin is not valid`);
+
             return;
         }
 
+        if (Mida.pluginIsInstalled(pluginId)) {
+            warn(`Plugin "${pluginId}" is already installed`);
+
+            return;
+        }
+
+        info(`Installing plugin "${pluginId}"...`);
         plugin.install(baseActions, options);
         Mida.#installedPlugins.set(pluginId, plugin);
+        info(`Plugin "${pluginId}" installed`);
     }
 
     public static pluginIsInstalled (id: string): boolean {
