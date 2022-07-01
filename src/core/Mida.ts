@@ -117,7 +117,15 @@ export { MidaIndicatorIo, } from "#indicators/MidaIndicatorIo";
 export { MidaIndicatorParameters, } from "#indicators/MidaIndicatorParameters";
 
 export { MidaLog, } from "#loggers/MidaLog";
-export { MidaLogger, } from "#loggers/MidaLogger";
+export {
+    defaultLogger,
+    debug,
+    info,
+    warn,
+    error,
+    fatal,
+    MidaLogger,
+} from "#loggers/MidaLogger";
 export { MidaLogNamespace, } from "#loggers/MidaLogNamespace";
 export { MidaLogParameters, } from "#loggers/MidaLogParameters";
 
@@ -132,7 +140,7 @@ export { MidaOrderRejection, } from "#orders/MidaOrderRejection";
 export { MidaOrderStatus, } from "#orders/MidaOrderStatus";
 export { MidaOrderTimeInForce, } from "#orders/MidaOrderTimeInForce";
 
-export { MidaPeriod, composePeriods, } from "#periods/MidaPeriod";
+export { composePeriods, MidaPeriod, } from "#periods/MidaPeriod";
 export { MidaPeriodParameters, } from "#periods/MidaPeriodParameters";
 
 export { MidaTradingPlatform, } from "#platforms/MidaTradingPlatform";
