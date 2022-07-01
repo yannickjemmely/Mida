@@ -24,7 +24,7 @@ import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
 import { MidaDate, } from "#dates/MidaDate";
 import { MidaEvent, } from "#events/MidaEvent";
 import { MidaEventListener, } from "#events/MidaEventListener";
-import { info } from "#loggers/MidaLogger";
+import { info, } from "#loggers/MidaLogger";
 import { MidaOrderDirection, } from "#orders/MidaOrderDirection";
 import { MidaOrderExecution, } from "#orders/MidaOrderExecution";
 import { MidaOrderFill, } from "#orders/MidaOrderFill";

@@ -19,8 +19,8 @@
     "scripts": {
         "mida:lint": "eslint . --ext .ts,.js",
         "mida:build": "ttsc",
-        "mida:test": "npm run build && jest --verbose",
-        "mida:safe-build": "rm -rf ./build && npm run lint && npm run build && jest",
+        "mida:test": "npm run mida:build && jest --verbose",
+        "mida:safe-build": "rm -rf ./build && npm run mida:lint && npm run mida:build && jest",
         "prepublishOnly": "npm run safe-build"
     },
     "main": "./build/entry/node/main.js",
