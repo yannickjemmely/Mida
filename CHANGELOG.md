@@ -1,3 +1,6 @@
+### Bug fixes
+* Wait for the `onTick` hook call to resolve before calling the next one [#44](https://github.com/Reiryoku-Technologies/Mida/pull/44)
+
 7.2.0 - 15-06-2022
 ===================
 ### Features
