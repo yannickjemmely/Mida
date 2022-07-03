@@ -51,25 +51,25 @@ class Mida {
     }
 
     public static use (plugin: MidaPlugin, options?: GenericObject): void {
-        const pluginId: string | undefined = plugin?.id;
-        const pluginName: string | undefined = plugin?.name;
+        const pluginId: string = plugin.id;
+        const pluginName: string = plugin.name;
 
         if (!pluginId) {
-            warn(`Plugin "${pluginId}" not installed, the plugin is not valid`);
+            warn("The plugin is not valid");
 
             return;
         }
 
         if (Mida.pluginIsInstalled(pluginId)) {
-            warn(`Plugin "${pluginId}" is already installed`);
+            warn(`Plugin "${pluginName}:${pluginId}" is already installed`);
 
             return;
         }
 
-        info(`Installing plugin "${pluginName}"`);
+        info(`Installing plugin "${pluginName}:${pluginId}"`);
         plugin.install(baseActions, options);
         Mida.#installedPlugins.set(pluginId, plugin);
-        info(`Plugin "${pluginName}" installed`);
+        info(`Plugin "${pluginName}:${pluginId}" installed`);
     }
 
     public static pluginIsInstalled (id: string): boolean {
