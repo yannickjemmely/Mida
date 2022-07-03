@@ -1,3 +1,6 @@
+### Features
+* Add logs [#45](https://github.com/Reiryoku-Technologies/Mida/pull/45)
+
 ### Bug fixes
 * Wait for the `onTick` hook call to resolve before calling the next one [#44](https://github.com/Reiryoku-Technologies/Mida/pull/44)
 
