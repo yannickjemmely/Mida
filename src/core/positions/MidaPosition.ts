@@ -23,6 +23,7 @@
 import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
 import { MidaEvent, } from "#events/MidaEvent";
 import { MidaEventListener, } from "#events/MidaEventListener";
+import { info, } from "#loggers/MidaLogger";
 import { MidaOrder, } from "#orders/MidaOrder";
 import { MidaPositionDirection, } from "#positions/MidaPositionDirection";
 import { MidaPositionParameters, } from "#positions/MidaPositionParameters";
@@ -177,6 +178,7 @@ export abstract class MidaPosition {
         }
 
         this.#emitter.notifyListeners("trade", { trade, });
+        info(`Position ${this.id} | trade ${trade.id} executed`);
     }
 
     /** @deprecated */
@@ -215,6 +217,7 @@ export abstract class MidaPosition {
         }
 
         this.#emitter.notifyListeners("protection-change", { protection, });
+        info(`Position ${this.id} | protection changed`);
     }
 
     protected onSwap (swap: number): void {
