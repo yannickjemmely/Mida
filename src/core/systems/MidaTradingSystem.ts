@@ -246,9 +246,11 @@ export abstract class MidaTradingSystem {
         this.#onTickAsync(tick);
     }
 
-    async #onTickAsync (tick: MidaTick): Promise<void> {
-        if (this.#tickEventIsLocked) {
+    async #onTickAsync (tick: MidaTick, bypassLock: boolean = false): Promise<void> {
+        if (this.#tickEventIsLocked && !bypassLock) {
             this.#tickEventQueue.push(tick);
+
+            return;
         }
 
         this.#tickEventIsLocked = true;
@@ -281,10 +283,12 @@ export abstract class MidaTradingSystem {
         }
 
         const nextTick: MidaTick | undefined = this.#tickEventQueue.shift();
-        this.#tickEventIsLocked = false;
 
         if (nextTick) {
-            this.#onTickAsync(nextTick);
+            this.#onTickAsync(nextTick, true);
+        }
+        else {
+            this.#tickEventIsLocked = false;
         }
     }
 
