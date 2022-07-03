@@ -114,11 +114,9 @@ export class MidaLogger {
 }
 
 export const defaultLogger: MidaLogger = new MidaLogger();
-export const {
-    log,
-    debug,
-    info,
-    warn,
-    error,
-    fatal,
-} = defaultLogger;
+export const log = (message: string): void => defaultLogger.log(message);
+export const debug = (message: string): void => defaultLogger.debug(message);
+export const info = (message: string): void => defaultLogger.info(message);
+export const warn = (message: string): void => defaultLogger.warn(message);
+export const error = (message: string): void => defaultLogger.error(message);
+export const fatal = (message: string): void => defaultLogger.fatal(message);
