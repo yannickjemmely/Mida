@@ -1,5 +1,5 @@
 ### Features
-* Add logs [#45](https://github.com/Reiryoku-Technologies/Mida/pull/45)
+* Add logs and update dependencies [#43](https://github.com/Reiryoku-Technologies/Mida/pull/43)
 
 ### Bug fixes
 * Wait for the `onTick` hook call to resolve before calling the next one [#44](https://github.com/Reiryoku-Technologies/Mida/pull/44)
