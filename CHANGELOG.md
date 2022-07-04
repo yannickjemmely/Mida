@@ -1,4 +1,5 @@
 ### Features
+* Create `getDate()` interface for trading platforms [#44](https://github.com/Reiryoku-Technologies/Mida/pull/44)
 * Add logs and update dependencies [#43](https://github.com/Reiryoku-Technologies/Mida/pull/43)
 
 ### Bug fixes
