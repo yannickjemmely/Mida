@@ -31,10 +31,9 @@ Mida is the framework for trading financial assets such as stocks,
 crypto, forex or commodities. It is designed from the ground up to provide a solid,
 versatile and platform-neutral environment for creating trading systems, indicators,
 market analysis tools or just trading applications depending on use cases.
-
-The Mida ecosystem is built from the ground up in TypeScript and C++ for
-performance-critical parts. The framework can be used with JavaScript/TypeScript
-on Node.js.
+The Mida ecosystem is built from the ground up in TypeScript and C++.
+The framework can be used with TypeScript/JavaScript on [Node.js](https://nodejs.org)
+and is distributed on [NPM](https://www.npmjs.com).
 
 Join the community on [Discord](https://discord.gg/cKyWTUsr3q) and [Telegram](https://t.me/joinmida)
 to get help you with your first steps.
@@ -66,7 +65,8 @@ to get help you with your first steps.
 
 ## Supported platforms
 Mida is platform-neutral, this means that any trading platform could
-be easily integrated in the ecosystem. Here are some of the most
+be easily integrated in the ecosystem. Trading systems/applications built with Mida can be
+easily executed on different trading platforms without code changes. Here are some of the most
 popular trading platforms supported by Mida.
 
 <br><br>
@@ -93,7 +93,7 @@ const myAccount = await login("Binance/Spot", {
     apiSecret: "...",
 });
 ```
-To get an `apiKey` and `apiSecret` you need to [create a Binance account](https://accounts.binance.com/en/register?ref=172142672).<br>
+Read [how to use Binance](https://www.mida.org/posts/how-to-use-binance/) to get the `apiKey` and `apiSecret` credentials.
 
 How to login into a cTrader account.
 ```javascript
@@ -106,7 +106,7 @@ const myAccount = await login("cTrader", {
     cTraderBrokerAccountId: "...",
 });
 ```
-To get a `clientId`, `clientSecret`, `accessToken` and `cTraderBrokerAccountId` you need to [create a cTrader Open API account](https://www.mida.org/posts/how-to-use-ctrader/).<br>
+Read [how to use cTrader](https://www.mida.org/posts/how-to-use-ctrader/) to get the `clientId`, `clientSecret`, `accessToken` and `cTraderBrokerAccountId` credentials.
 
 ### Balance, equity and margin
 How to get the account balance, equity and margin.
@@ -127,11 +127,13 @@ const myOrder = await myAccount.placeOrder({
     direction: MidaOrderDirection.BUY,
     volume: 1,
 });
+const myPosition = await order.getPosition();
 
 console.log(myOrder.id);
 console.log(myOrder.executionPrice);
 console.log(myOrder.positionId);
 console.log(myOrder.trades);
+console.log(myPosition);
 ```
 
 How to open a short position for EUR against USD.
@@ -143,11 +145,13 @@ const myOrder = await myAccount.placeOrder({
     direction: MidaOrderDirection.SELL,
     volume: 0.1,
 });
+const myPosition = await order.getPosition();
 
 console.log(myOrder.id);
 console.log(myOrder.executionPrice);
 console.log(myOrder.positionId);
 console.log(myOrder.trades);
+console.log(myPosition);
 ```
 
 How to open a long position for Apple stocks with error handler.
@@ -210,8 +214,6 @@ import {
     MidaOrderDirection,
     MidaPositionDirection,
 } from "@reiryoku/mida";
-
-const myPosition = await myAccount.getPositionById("...");
 
 await myPosition.close();
 // or

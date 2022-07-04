@@ -22,7 +22,12 @@
 
 import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
 import { MidaIndicator, } from "#indicators/MidaIndicator";
-import { MidaLogger, } from "#loggers/MidaLogger";
+import {
+    defaultLogger,
+    info,
+    warn,
+    MidaLogger,
+} from "#loggers/MidaLogger";
 import { MidaTradingPlatform, } from "#platforms/MidaTradingPlatform";
 import { MidaPlugin, } from "#plugins/MidaPlugin";
 import { baseActions, } from "#plugins/MidaPluginActions";
@@ -35,11 +40,10 @@ class Mida {
 
     /* *** *** *** Reiryoku Technologies *** *** *** */
 
-    static readonly #logger: MidaLogger = new MidaLogger();
     static readonly #installedPlugins: Map<string, MidaPlugin> = new Map();
 
     public static get logger (): MidaLogger {
-        return this.#logger;
+        return defaultLogger;
     }
 
     public static get installedPlugins (): MidaPlugin[] {
@@ -47,14 +51,25 @@ class Mida {
     }
 
     public static use (plugin: MidaPlugin, options?: GenericObject): void {
-        const pluginId: string | undefined = plugin?.id;
+        const pluginId: string = plugin.id;
+        const pluginName: string = plugin.name;
 
-        if (!pluginId || Mida.pluginIsInstalled(pluginId)) {
+        if (!pluginId) {
+            warn("The plugin is not valid");
+
             return;
         }
 
+        if (Mida.pluginIsInstalled(pluginId)) {
+            warn(`Plugin "${pluginName}:${pluginId}" is already installed`);
+
+            return;
+        }
+
+        info(`Installing plugin "${pluginName}:${pluginId}"`);
         plugin.install(baseActions, options);
         Mida.#installedPlugins.set(pluginId, plugin);
+        info(`Plugin "${pluginName}:${pluginId}" installed`);
     }
 
     public static pluginIsInstalled (id: string): boolean {
@@ -103,7 +118,15 @@ export { MidaIndicatorIo, } from "#indicators/MidaIndicatorIo";
 export { MidaIndicatorParameters, } from "#indicators/MidaIndicatorParameters";
 
 export { MidaLog, } from "#loggers/MidaLog";
-export { MidaLogger, } from "#loggers/MidaLogger";
+export {
+    defaultLogger,
+    debug,
+    info,
+    warn,
+    error,
+    fatal,
+    MidaLogger,
+} from "#loggers/MidaLogger";
 export { MidaLogNamespace, } from "#loggers/MidaLogNamespace";
 export { MidaLogParameters, } from "#loggers/MidaLogParameters";
 
@@ -118,7 +141,7 @@ export { MidaOrderRejection, } from "#orders/MidaOrderRejection";
 export { MidaOrderStatus, } from "#orders/MidaOrderStatus";
 export { MidaOrderTimeInForce, } from "#orders/MidaOrderTimeInForce";
 
-export { MidaPeriod, composePeriods, } from "#periods/MidaPeriod";
+export { composePeriods, MidaPeriod, } from "#periods/MidaPeriod";
 export { MidaPeriodParameters, } from "#periods/MidaPeriodParameters";
 
 export { MidaTradingPlatform, } from "#platforms/MidaTradingPlatform";

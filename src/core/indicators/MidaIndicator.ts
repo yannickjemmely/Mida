@@ -22,6 +22,7 @@
 
 import { MidaIndicatorIo, } from "#indicators/MidaIndicatorIo";
 import { MidaIndicatorParameters, } from "#indicators/MidaIndicatorParameters";
+import { fatal, } from "#loggers/MidaLogger";
 import { GenericObject, } from "#utilities/GenericObject";
 
 export abstract class MidaIndicator {
@@ -85,7 +86,9 @@ export abstract class MidaIndicator {
 
     public static add (id: string, indicatorConstructor: (parameters: GenericObject) => MidaIndicator): void {
         if (MidaIndicator.#installedIndicators.has(id)) {
-            return;
+            fatal(`Indicator "${id}" already exists`);
+
+            throw new Error();
         }
 
         MidaIndicator.#installedIndicators.set(id, indicatorConstructor);
@@ -95,6 +98,8 @@ export abstract class MidaIndicator {
         const indicatorConstructor: ((parameters: GenericObject) => MidaIndicator) | undefined = MidaIndicator.#installedIndicators.get(id);
 
         if (!indicatorConstructor) {
+            fatal(`Indicator "${id}" not found, have you installed its plugin?`);
+
             throw new Error();
         }
 
