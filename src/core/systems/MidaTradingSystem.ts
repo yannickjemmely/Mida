@@ -23,6 +23,7 @@
 import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
 import { MidaEvent, } from "#events/MidaEvent";
 import { MidaEventListener, } from "#events/MidaEventListener";
+import { info, } from "#loggers/MidaLogger";
 import { filterExecutedOrders, MidaOrder, } from "#orders/MidaOrder";
 import { MidaOrderDirectives, } from "#orders/MidaOrderDirectives";
 import { MidaPeriod, } from "#periods/MidaPeriod";
@@ -226,6 +227,8 @@ export abstract class MidaTradingSystem {
     }
 
     protected async placeOrder (directives: MidaOrderDirectives): Promise<MidaOrder> {
+        info(`Trading system "${this.name}" | Placing ${directives.direction} order`);
+
         const order: MidaOrder = await this.#tradingAccount.placeOrder(directives);
 
         this.#orders.push(order);
