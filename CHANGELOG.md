@@ -1,3 +1,5 @@
+7.3.0 - 05-07-2022
+===================
 ### Features
 * Create `getDate()` interface for trading platforms [#47](https://github.com/Reiryoku-Technologies/Mida/pull/47)
 * Add logs and update dependencies [#43](https://github.com/Reiryoku-Technologies/Mida/pull/43)
