@@ -21,6 +21,7 @@
 */
 
 import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
+import { MidaDecimal, } from "#decimals/MidaDecimal";
 import { MidaEvent, } from "#events/MidaEvent";
 import { MidaEventListener, } from "#events/MidaEventListener";
 import { info, } from "#loggers/MidaLogger";
@@ -37,7 +38,7 @@ export abstract class MidaPosition {
     readonly #id: string;
     readonly #tradingAccount: MidaTradingAccount;
     readonly #symbol: string;
-    #volume: number;
+    #volume: MidaDecimal;
     #direction?: MidaPositionDirection;
     readonly #protection: MidaProtection;
     readonly #emitter: MidaEmitter;
@@ -71,7 +72,7 @@ export abstract class MidaPosition {
         return this.#symbol;
     }
 
-    public get volume (): number {
+    public get volume (): MidaDecimal {
         return this.#volume;
     }
 
@@ -96,7 +97,7 @@ export abstract class MidaPosition {
     }
 
     public get status (): MidaPositionStatus {
-        if (this.volume === 0) {
+        if (this.volume.equals(0)) {
             return MidaPositionStatus.CLOSED;
         }
 
@@ -113,12 +114,12 @@ export abstract class MidaPosition {
 
     public abstract changeProtection (protection: MidaProtection): Promise<MidaProtectionChange>;
 
-    public abstract addVolume (volume: number): Promise<MidaOrder>;
+    public abstract addVolume (volume: MidaDecimal): Promise<MidaOrder>;
 
-    public abstract subtractVolume (volume: number): Promise<MidaOrder>;
+    public abstract subtractVolume (volume: MidaDecimal): Promise<MidaOrder>;
 
     public async reverse (): Promise<MidaOrder> {
-        return this.subtractVolume(this.volume * 2);
+        return this.subtractVolume(this.volume.multiply(2));
     }
 
     public async close (): Promise<MidaOrder> {
@@ -154,36 +155,31 @@ export abstract class MidaPosition {
     /* *** *** *** Reiryoku Technologies *** *** *** */
 
     protected onTrade (trade: MidaTrade): void {
-        const volume = trade.volume;
+        const volume: MidaDecimal = trade.volume;
 
         if (trade.isClosing) {
-            const volumeDifference: number = volume - this.volume;
-            this.#volume = Math.abs(volumeDifference);
+            const volumeDifference: MidaDecimal = volume.subtract(this.volume);
+            this.#volume = MidaDecimal.abs(volumeDifference);
 
-            if (volumeDifference > 0) {
+            if (volumeDifference.greaterThan(0)) {
                 this.#direction = MidaPositionDirection.oppositeOf(this.#direction as MidaPositionDirection);
 
                 this.#emitter.notifyListeners("reverse");
             }
-            else if (volumeDifference === 0) {
+            else if (volumeDifference.equals(0)) {
                 this.#emitter.notifyListeners("close");
             }
 
             this.#emitter.notifyListeners("volume-close", { volume, });
         }
         else {
-            this.#volume += volume;
+            this.#volume = this.#volume.add(volume);
 
             this.#emitter.notifyListeners("volume-open", { volume, });
         }
 
         this.#emitter.notifyListeners("trade", { trade, });
         info(`Position ${this.id} | trade ${trade.id} executed`);
-    }
-
-    /** @deprecated */
-    protected onTradeExecute (trade: MidaTrade): void {
-        this.onTrade(trade);
     }
 
     protected onProtectionChange (protection: MidaProtection): void {
@@ -220,7 +216,7 @@ export abstract class MidaPosition {
         info(`Position ${this.id} | protection changed`);
     }
 
-    protected onSwap (swap: number): void {
+    protected onSwap (swap: MidaDecimal): void {
         this.#emitter.notifyListeners("swap", { swap, });
     }
 }

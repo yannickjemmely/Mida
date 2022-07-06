@@ -31,7 +31,6 @@ import { GenericObject, } from "#utilities/GenericObject";
 import { MidaUtilities, } from "#utilities/MidaUtilities";
 import { MidaMarketWatcherDirectives, } from "#watchers/MidaMarketWatcherDirectives";
 import { MidaMarketWatcherParameters, } from "#watchers/MidaMarketWatcherParameters";
-import { isA, } from "@jest/expect-utils";
 
 const { utcTimestamp, } = MidaDateUtilities;
 const { mergeOptions, } = MidaUtilities;

@@ -21,6 +21,7 @@
 */
 
 import { MidaDate, } from "#dates/MidaDate";
+import { MidaDecimal, } from "#decimals/MidaDecimal";
 import { MidaQuotation, } from "#quotations/MidaQuotation";
 
 /**
@@ -30,6 +31,6 @@ import { MidaQuotation, } from "#quotations/MidaQuotation";
 export type MidaQuotationParameters = {
     symbol: string;
     date: MidaDate;
-    bid: number;
-    ask: number;
+    bid: MidaDecimal;
+    ask: MidaDecimal;
 };

@@ -81,27 +81,27 @@ export class MidaPeriod implements IMidaEquatable {
     }
 
     /** The period open price */
-    public get open (): number {
+    public get open (): MidaDecimal {
         return this.#open;
     }
 
     /** The period highest price */
-    public get high (): number {
+    public get high (): MidaDecimal {
         return this.#high;
     }
 
     /** The period lowest price */
-    public get low (): number {
+    public get low (): MidaDecimal {
         return this.#low;
     }
 
     /** The period close price */
-    public get close (): number {
+    public get close (): MidaDecimal {
         return this.#close;
     }
 
     /** The period volume */
-    public get volume (): number {
+    public get volume (): MidaDecimal {
         return this.#volume;
     }
 
@@ -121,32 +121,32 @@ export class MidaPeriod implements IMidaEquatable {
     }
 
     /** The period momentum */
-    public get momentum (): number {
-        return this.#close / this.#open;
+    public get momentum (): MidaDecimal {
+        return this.#close.divide(this.#open);
     }
 
     /** The period body */
-    public get body (): number {
-        return this.#close - this.#open;
+    public get body (): MidaDecimal {
+        return this.#close.subtract(this.#open);
     }
 
     /** The period absolute body */
-    public get absBody (): number {
-        return Math.abs(this.body);
+    public get absBody (): MidaDecimal {
+        return MidaDecimal.abs(this.body);
     }
 
     /** The period lower shadow */
-    public get lowerShadow (): number {
-        return Math.min(this.#open, this.#close) - this.#low;
+    public get lowerShadow (): MidaDecimal {
+        return MidaDecimal.min(this.#open, this.#close).subtract(this.#low);
     }
 
     /** The period upper shadow */
-    public get upperShadow (): number {
-        return this.#high - Math.max(this.#open, this.#close);
+    public get upperShadow (): MidaDecimal {
+        return this.#high.subtract(MidaDecimal.max(this.#open, this.#close));
     }
 
     /** The period OHLC (open, high, low, close) */
-    public get ohlc (): number[] {
+    public get ohlc (): MidaDecimal[] {
         return [
             this.#open,
             this.#high,
@@ -156,23 +156,23 @@ export class MidaPeriod implements IMidaEquatable {
     }
 
     /** The period OHLCV (open, high, low, close, volume) */
-    public get ohlcv (): number[] {
+    public get ohlcv (): MidaDecimal[] {
         return [ ...this.ohlc, this.#volume, ];
     }
 
     /** Indicates if the period is bearish (negative body) */
     public get isBearish (): boolean {
-        return this.body < 0;
+        return this.body.lessThan(0);
     }
 
     /** Indicates if the period is neutral (zero body) */
     public get isNeutral (): boolean {
-        return this.body === 0;
+        return this.body.equals(0);
     }
 
     /** Indicates if the period is bullish (positive body) */
     public get isBullish (): boolean {
-        return this.body > 0;
+        return this.body.greaterThan(0);
     }
 
     /**
@@ -221,10 +221,10 @@ export function composePeriods (
             startDate: periodStartTime,
             quotationPrice,
             open: periodTicks[0][quotationPrice],
-            high: Math.max(...periodTicks.map((tick: MidaTick): number => tick[quotationPrice])),
-            low: Math.min(...periodTicks.map((tick: MidaTick): number => tick[quotationPrice])),
+            high: MidaDecimal.max(...periodTicks.map((tick: MidaTick): MidaDecimal => tick[quotationPrice])),
+            low: MidaDecimal.min(...periodTicks.map((tick: MidaTick): MidaDecimal => tick[quotationPrice])),
             close: periodTicks[periodTicks.length - 1][quotationPrice],
-            volume: periodTicks.length,
+            volume: new MidaDecimal(0),
             timeframe,
             ticks: [ ...periodTicks, ],
         }));

@@ -52,6 +52,14 @@ export class MidaDecimal {
         return this.#bigInt === new MidaDecimal(operand).#bigInt;
     }
 
+    public greaterThan (operand: MidaDecimal | number | string): boolean {
+        return this.#bigInt > new MidaDecimal(operand).#bigInt;
+    }
+
+    public lessThan (operand: MidaDecimal | number | string): boolean {
+        return this.#bigInt < new MidaDecimal(operand).#bigInt;
+    }
+
     public toString (): string {
         return MidaDecimal.#toString(this.#bigInt);
     }
@@ -63,6 +71,42 @@ export class MidaDecimal {
     static readonly #decimals = 28;
     static readonly #rounded = true;
     static readonly #shift = BigInt(`1${"0".repeat(MidaDecimal.#decimals)}`);
+
+    public static abs (operand: MidaDecimal): MidaDecimal {
+        if (operand.lessThan(0)) {
+            return operand.multiply(-1);
+        }
+
+        return operand;
+    }
+
+    public static min (...operands: MidaDecimal[]): MidaDecimal {
+        let min: MidaDecimal = operands[0];
+
+        for (let i: number = 1; i < operands.length; ++i) {
+            const operand: MidaDecimal = operands[0];
+
+            if (operand.lessThan(min)) {
+                min = operand;
+            }
+        }
+
+        return min;
+    }
+
+    public static max (...operands: MidaDecimal[]): MidaDecimal {
+        let max: MidaDecimal = operands[0];
+
+        for (let i: number = 1; i < operands.length; ++i) {
+            const operand: MidaDecimal = operands[0];
+
+            if (operand.greaterThan(max)) {
+                max = operand;
+            }
+        }
+
+        return max;
+    }
 
     static #divideRound (dividend: bigint, divisor: bigint): MidaDecimal {
         return new MidaDecimal(MidaDecimal.#toString(dividend / divisor + (MidaDecimal.#rounded ? dividend * 2n / divisor % 2n : 0n)));

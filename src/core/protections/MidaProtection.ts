@@ -20,8 +20,10 @@
  * THE SOFTWARE.
 */
 
+import { MidaDecimal, } from "#decimals/MidaDecimal";
+
 export type MidaProtection = {
-    stopLoss?: number;
+    stopLoss?: MidaDecimal;
     trailingStopLoss?: boolean;
-    takeProfit?: number;
+    takeProfit?: MidaDecimal;
 };

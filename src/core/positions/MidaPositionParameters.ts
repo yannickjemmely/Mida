@@ -21,6 +21,7 @@
 */
 
 import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
+import { MidaDecimal, } from "#decimals/MidaDecimal";
 import { MidaPosition, } from "#positions/MidaPosition";
 import { MidaPositionDirection, } from "#positions/MidaPositionDirection";
 import { MidaProtection, } from "#protections/MidaProtection";
@@ -33,7 +34,7 @@ export type MidaPositionParameters = {
     id: string;
     tradingAccount: MidaTradingAccount;
     symbol: string;
-    volume: number;
+    volume: MidaDecimal;
     direction?: MidaPositionDirection;
     protection?: MidaProtection;
 };
