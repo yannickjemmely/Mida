@@ -25,27 +25,31 @@ import * as util from "util";
 export class MidaDecimal {
     readonly #bigInt: bigint;
 
-    public constructor (descriptor: MidaDecimal | string = "0") {
+    public constructor (descriptor: MidaDecimal | number | string) {
         const [ integers, decimals, ] = String(descriptor).split(".").concat("");
 
         this.#bigInt = BigInt(integers + decimals.padEnd(MidaDecimal.#decimals, "0").slice(0, MidaDecimal.#decimals)) +
             BigInt(MidaDecimal.#rounded && decimals[MidaDecimal.#decimals] >= "5");
     }
 
-    public add (operand: MidaDecimal | string): MidaDecimal {
+    public add (operand: MidaDecimal | number | string): MidaDecimal {
         return new MidaDecimal(MidaDecimal.#toString(this.#bigInt + new MidaDecimal(operand).#bigInt));
     }
 
-    public subtract (operand: MidaDecimal | string): MidaDecimal {
+    public subtract (operand: MidaDecimal | number | string): MidaDecimal {
         return new MidaDecimal(MidaDecimal.#toString(this.#bigInt - new MidaDecimal(operand).#bigInt));
     }
 
-    public multiply (operand: MidaDecimal | string): MidaDecimal {
+    public multiply (operand: MidaDecimal | number | string): MidaDecimal {
         return MidaDecimal.#divideRound(this.#bigInt * new MidaDecimal(operand).#bigInt, MidaDecimal.#shift);
     }
 
-    public divide (operand: MidaDecimal | string): MidaDecimal {
+    public divide (operand: MidaDecimal | number | string): MidaDecimal {
         return MidaDecimal.#divideRound(this.#bigInt * MidaDecimal.#shift, new MidaDecimal(operand).#bigInt);
+    }
+
+    public equals (operand: MidaDecimal | number | string): boolean {
+        return this.#bigInt === new MidaDecimal(operand).#bigInt;
     }
 
     public toString (): string {

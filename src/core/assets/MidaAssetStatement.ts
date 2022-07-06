@@ -22,12 +22,13 @@
 
 import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
 import { MidaDate, } from "#dates/MidaDate";
+import { MidaDecimal, } from "#decimals/MidaDecimal";
 
 export type MidaAssetStatement = {
     tradingAccount: MidaTradingAccount;
     date: MidaDate;
     asset: string;
-    freeVolume: number;
-    lockedVolume: number;
-    borrowedVolume: number;
+    freeVolume: MidaDecimal;
+    lockedVolume: MidaDecimal;
+    borrowedVolume: MidaDecimal;
 };

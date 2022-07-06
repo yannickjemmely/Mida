@@ -22,6 +22,7 @@
 
 import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
 import { MidaDate, } from "#dates/MidaDate";
+import { MidaDecimal, } from "#decimals/MidaDecimal";
 import { MidaOrder, } from "#orders/MidaOrder";
 import { MidaOrderDirection, } from "#orders/MidaOrderDirection";
 import { MidaOrderPurpose, } from "#orders/MidaOrderPurpose";
@@ -38,11 +39,11 @@ export type MidaOrderParameters = {
     id: string;
     tradingAccount: MidaTradingAccount;
     symbol: string;
-    requestedVolume: number;
+    requestedVolume: MidaDecimal;
     direction: MidaOrderDirection;
     purpose: MidaOrderPurpose;
-    limitPrice?: number;
-    stopPrice?: number;
+    limitPrice?: MidaDecimal;
+    stopPrice?: MidaDecimal;
     status: MidaOrderStatus;
     creationDate?: MidaDate;
     lastUpdateDate?: MidaDate;

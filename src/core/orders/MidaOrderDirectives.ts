@@ -20,6 +20,7 @@
  * THE SOFTWARE.
 */
 
+import { MidaDecimal, } from "#decimals/MidaDecimal";
 import { MidaEventListener, } from "#events/MidaEventListener";
 import { MidaOrderDirection, } from "#orders/MidaOrderDirection";
 import { MidaOrderTimeInForce, } from "#orders/MidaOrderTimeInForce";
@@ -29,9 +30,9 @@ import { GenericObject, } from "#utilities/GenericObject";
 export type MidaOrderDirectives = {
     symbol?: string;
     direction: MidaOrderDirection;
-    volume: number;
-    limit?: number;
-    stop?: number;
+    volume: MidaDecimal | number;
+    limit?: MidaDecimal | number;
+    stop?: MidaDecimal | number;
     protection?: MidaProtection;
     positionId?: string;
     resolverEvents?: string[];

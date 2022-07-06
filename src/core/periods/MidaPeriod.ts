@@ -21,6 +21,7 @@
 */
 
 import { MidaDate, } from "#dates/MidaDate";
+import { MidaDecimal, } from "#decimals/MidaDecimal";
 import { MidaPeriodParameters, } from "#periods/MidaPeriodParameters";
 import { MidaQuotationPrice, } from "#quotations/MidaQuotationPrice";
 import { MidaTick, } from "#ticks/MidaTick";
@@ -32,11 +33,11 @@ export class MidaPeriod implements IMidaEquatable {
     readonly #symbol: string;
     readonly #startDate: MidaDate;
     readonly #quotationPrice: MidaQuotationPrice;
-    readonly #open: number;
-    readonly #high: number;
-    readonly #low: number;
-    readonly #close: number;
-    readonly #volume: number;
+    readonly #open: MidaDecimal;
+    readonly #high: MidaDecimal;
+    readonly #low: MidaDecimal;
+    readonly #close: MidaDecimal;
+    readonly #volume: MidaDecimal;
     readonly #timeframe: number;
     readonly #ticks?: MidaTick[];
 

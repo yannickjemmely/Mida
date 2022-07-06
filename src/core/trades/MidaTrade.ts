@@ -22,6 +22,7 @@
 
 import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
 import { MidaDate, } from "#dates/MidaDate";
+import { MidaDecimal, } from "#decimals/MidaDecimal";
 import { MidaOrder, } from "#orders/MidaOrder";
 import { MidaTradeDirection, } from "#trades/MidaTradeDirection";
 import { MidaTradeParameters, } from "#trades/MidaTradeParameters";
@@ -36,18 +37,18 @@ export abstract class MidaTrade {
     readonly #positionId: string;
     readonly #tradingAccount: MidaTradingAccount;
     readonly #symbol: string;
-    readonly #volume: number;
+    readonly #volume: MidaDecimal;
     readonly #direction: MidaTradeDirection;
     readonly #status: MidaTradeStatus;
     readonly #purpose: MidaTradePurpose;
     readonly #executionDate?: MidaDate;
     readonly #rejectionDate?: MidaDate;
-    readonly #executionPrice?: number;
-    readonly #grossProfit: number;
+    readonly #executionPrice?: MidaDecimal;
+    readonly #grossProfit: MidaDecimal;
     readonly #grossProfitAsset: string;
-    readonly #commission: number;
+    readonly #commission: MidaDecimal;
     readonly #commissionAsset: string;
-    readonly #swap: number;
+    readonly #swap: MidaDecimal;
     readonly #swapAsset: string;
     readonly #rejection?: MidaTradeRejection;
 
@@ -84,11 +85,11 @@ export abstract class MidaTrade {
         this.#executionDate = executionDate;
         this.#rejectionDate = rejectionDate;
         this.#executionPrice = executionPrice;
-        this.#grossProfit = grossProfit ?? 0;
+        this.#grossProfit = grossProfit ?? new MidaDecimal(0);
         this.#grossProfitAsset = grossProfitAsset ?? "";
-        this.#commission = commission ?? 0;
+        this.#commission = commission ?? new MidaDecimal(0);
         this.#commissionAsset = commissionAsset ?? "";
-        this.#swap = swap ?? 0;
+        this.#swap = swap ?? new MidaDecimal(0);
         this.#swapAsset = swapAsset ?? "";
         this.#rejection = rejection;
     }
@@ -113,7 +114,7 @@ export abstract class MidaTrade {
         return this.#symbol;
     }
 
-    public get volume (): number {
+    public get volume (): MidaDecimal {
         return this.#volume;
     }
 
@@ -137,11 +138,11 @@ export abstract class MidaTrade {
         return this.#rejectionDate;
     }
 
-    public get executionPrice (): number | undefined {
+    public get executionPrice (): MidaDecimal | undefined {
         return this.#executionPrice;
     }
 
-    public get grossProfit (): number {
+    public get grossProfit (): MidaDecimal {
         return this.#grossProfit;
     }
 
@@ -149,7 +150,7 @@ export abstract class MidaTrade {
         return this.#grossProfitAsset;
     }
 
-    public get commission (): number {
+    public get commission (): MidaDecimal {
         return this.#commission;
     }
 
@@ -157,7 +158,7 @@ export abstract class MidaTrade {
         return this.#commissionAsset;
     }
 
-    public get swap (): number {
+    public get swap (): MidaDecimal {
         return this.#swap;
     }
 
