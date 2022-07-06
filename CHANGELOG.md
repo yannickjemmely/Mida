@@ -1,3 +1,6 @@
+### Features
+* Add platform related and label order directives [#49](https://github.com/Reiryoku-Technologies/Mida/pull/49)
+
 7.3.0 - 05-07-2022
 ===================
 ### Features
