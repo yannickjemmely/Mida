@@ -20,12 +20,12 @@
  * THE SOFTWARE.
 */
 
-import { MidaProtection, } from "#protections/MidaProtection";
 import { MidaProtectionChangeRejection, } from "#protections/MidaProtectionChangeRejection";
 import { MidaProtectionChangeStatus, } from "#protections/MidaProtectionChangeStatus";
+import { MidaProtectionDirectives, } from "#protections/MidaProtectionDirectives";
 
 export type MidaProtectionChange = {
     status: MidaProtectionChangeStatus;
-    requestedProtection: MidaProtection;
+    requestedProtection: MidaProtectionDirectives;
     rejection?: MidaProtectionChangeRejection;
 };

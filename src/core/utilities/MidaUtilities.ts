@@ -20,14 +20,14 @@
  * THE SOFTWARE.
 */
 
+import { randomUUID, } from "crypto";
 import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
-import { MidaDecimal, } from "#decimals/MidaDecimal";
+import { decimal, MidaDecimal, } from "#decimals/MidaDecimal";
 import { MidaUnsupportedOperationError, } from "#errors/MidaUnsupportedOperationError";
 import { MidaOrder, } from "#orders/MidaOrder";
 import { MidaPosition, } from "#positions/MidaPosition";
-import { MidaProtection, } from "#protections/MidaProtection";
 import { MidaProtectionChange, } from "#protections/MidaProtectionChange";
-import * as crypto from "crypto";
+import { MidaProtectionDirectives, } from "#protections/MidaProtectionDirectives";
 import { GenericObject, } from "#utilities/GenericObject";
 
 export namespace MidaUtilities {
@@ -84,7 +84,7 @@ export namespace MidaUtilities {
     }
 
     export function uuid (): string {
-        return crypto.randomUUID();
+        return randomUUID();
     }
 
     export function truncate (subject: number, precision: number): number {
@@ -112,7 +112,7 @@ export const createClosedPosition = (id: string, tradingAccount: MidaTradingAcco
                 id,
                 tradingAccount,
                 symbol,
-                volume: new MidaDecimal(0),
+                volume: decimal(0),
             });
         }
 
@@ -124,24 +124,24 @@ export const createClosedPosition = (id: string, tradingAccount: MidaTradingAcco
             throw new MidaUnsupportedOperationError();
         }
 
-        public override async changeProtection (protection: MidaProtection): Promise<MidaProtectionChange> {
+        public override async changeProtection (protection: MidaProtectionDirectives): Promise<MidaProtectionChange> {
             throw new MidaUnsupportedOperationError();
         }
 
         public override async getUnrealizedCommission (): Promise<MidaDecimal> {
-            return new MidaDecimal(0);
+            return decimal(0);
         }
 
         public override async getUnrealizedGrossProfit (): Promise<MidaDecimal> {
-            return new MidaDecimal(0);
+            return decimal(0);
         }
 
         public override async getUnrealizedSwap (): Promise<MidaDecimal> {
-            return new MidaDecimal(0);
+            return decimal(0);
         }
 
         public override async getUsedMargin (): Promise<MidaDecimal> {
-            return new MidaDecimal(0);
+            return decimal(0);
         }
     }();
 };

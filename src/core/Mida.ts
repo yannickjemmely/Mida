@@ -158,7 +158,7 @@ export { MidaPositionDirection, } from "#positions/MidaPositionDirection";
 export { MidaPositionParameters, } from "#positions/MidaPositionParameters";
 export { MidaPositionStatus, } from "#positions/MidaPositionStatus";
 
-export { MidaProtection, } from "#protections/MidaProtection";
+export { MidaProtectionDirectives, } from "#protections/MidaProtectionDirectives";
 export { MidaProtectionChange, } from "#protections/MidaProtectionChange";
 export { MidaProtectionChangeRejection, } from "#protections/MidaProtectionChangeRejection";
 export { MidaProtectionChangeStatus, } from "#protections/MidaProtectionChangeStatus";

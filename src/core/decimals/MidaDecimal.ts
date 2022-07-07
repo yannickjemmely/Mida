@@ -21,43 +21,44 @@
 */
 
 import { inspect, } from "util";
+import { MidaDecimalConvertible, } from "#decimals/MidaDecimalConvertible";
 
 export class MidaDecimal {
-    readonly #bigInt: bigint;
+    readonly #value: bigint;
 
-    public constructor (operand: MidaDecimal | string | number) {
+    public constructor (operand: MidaDecimalConvertible = 0) {
         const [ integers, decimals, ] = String(operand).split(".").concat("");
 
-        this.#bigInt = BigInt(integers + decimals.padEnd(MidaDecimal.#decimals, "0").slice(0, MidaDecimal.#decimals)) +
+        this.#value = BigInt(integers + decimals.padEnd(MidaDecimal.#decimals, "0").slice(0, MidaDecimal.#decimals)) +
             BigInt(MidaDecimal.#rounded && decimals[MidaDecimal.#decimals] >= "5");
     }
 
-    public add (operand: MidaDecimal | number | string): MidaDecimal {
-        return new MidaDecimal(MidaDecimal.#toString(this.#bigInt + new MidaDecimal(operand).#bigInt));
+    public add (operand: MidaDecimalConvertible): MidaDecimal {
+        return decimal(MidaDecimal.#toString(this.#value + decimal(operand).#value));
     }
 
-    public subtract (operand: MidaDecimal | number | string): MidaDecimal {
-        return new MidaDecimal(MidaDecimal.#toString(this.#bigInt - new MidaDecimal(operand).#bigInt));
+    public subtract (operand: MidaDecimalConvertible): MidaDecimal {
+        return decimal(MidaDecimal.#toString(this.#value - decimal(operand).#value));
     }
 
-    public multiply (operand: MidaDecimal | number | string): MidaDecimal {
-        return MidaDecimal.#divideRound(this.#bigInt * new MidaDecimal(operand).#bigInt, MidaDecimal.#shift);
+    public multiply (operand: MidaDecimalConvertible): MidaDecimal {
+        return MidaDecimal.#divideRound(this.#value * decimal(operand).#value, MidaDecimal.#shift);
     }
 
-    public divide (operand: MidaDecimal | number | string): MidaDecimal {
-        return MidaDecimal.#divideRound(this.#bigInt * MidaDecimal.#shift, new MidaDecimal(operand).#bigInt);
+    public divide (operand: MidaDecimalConvertible): MidaDecimal {
+        return MidaDecimal.#divideRound(this.#value * MidaDecimal.#shift, decimal(operand).#value);
     }
 
-    public equals (operand: MidaDecimal | number | string): boolean {
-        return this.#bigInt === new MidaDecimal(operand).#bigInt;
+    public equals (operand: MidaDecimalConvertible): boolean {
+        return this.#value === decimal(operand).#value;
     }
 
-    public greaterThan (operand: MidaDecimal | number | string): boolean {
-        return this.#bigInt > new MidaDecimal(operand).#bigInt;
+    public greaterThan (operand: MidaDecimalConvertible): boolean {
+        return this.#value > decimal(operand).#value;
     }
 
-    public lessThan (operand: MidaDecimal | number | string): boolean {
-        return this.#bigInt < new MidaDecimal(operand).#bigInt;
+    public lessThan (operand: MidaDecimalConvertible): boolean {
+        return this.#value < decimal(operand).#value;
     }
 
     public round (): MidaDecimal {
@@ -65,12 +66,14 @@ export class MidaDecimal {
     }
 
     public toString (): string {
-        return MidaDecimal.#toString(this.#bigInt);
+        return MidaDecimal.#toString(this.#value);
     }
 
     public [inspect.custom] (): string {
         return `${this.toString()}d`;
     }
+
+    /* *** *** *** Reiryoku Technologies *** *** *** */
 
     static readonly #decimals = 28;
     static readonly #rounded = true;
@@ -113,14 +116,15 @@ export class MidaDecimal {
     }
 
     static #divideRound (dividend: bigint, divisor: bigint): MidaDecimal {
-        return new MidaDecimal(MidaDecimal.#toString(dividend / divisor + (MidaDecimal.#rounded ? dividend * 2n / divisor % 2n : 0n)));
+        return decimal(MidaDecimal.#toString(dividend / divisor + (MidaDecimal.#rounded ? dividend * 2n / divisor % 2n : 0n)));
     }
 
-    static #toString (bigInt: bigint): string {
-        const descriptor: string = bigInt.toString().padStart(MidaDecimal.#decimals + 1, "0");
+    static #toString (value: bigint): string {
+        const descriptor: string = value.toString().padStart(MidaDecimal.#decimals + 1, "0");
 
-        return `${descriptor.slice(0, -MidaDecimal.#decimals)}.${descriptor.slice(-MidaDecimal.#decimals).replace(/\.?0+$/, "")}`;
+        return `${descriptor.slice(0, -MidaDecimal.#decimals)}.${descriptor.slice(-MidaDecimal.#decimals).replace(/\.?0+$/, "")}`
+            .replace(/\.$/, "");
     }
 }
 
-export const decimal = (operand: MidaDecimal | string | number): MidaDecimal => new MidaDecimal(operand);
+export const decimal = (operand: MidaDecimalConvertible = 0): MidaDecimal => new MidaDecimal(operand);

@@ -21,7 +21,8 @@
 */
 
 import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
-import { MidaDecimal, } from "#decimals/MidaDecimal";
+import { decimal, MidaDecimal, } from "#decimals/MidaDecimal";
+import { MidaDecimalConvertible, } from "#decimals/MidaDecimalConvertible";
 import { MidaEvent, } from "#events/MidaEvent";
 import { MidaEventListener, } from "#events/MidaEventListener";
 import { info, } from "#loggers/MidaLogger";
@@ -31,6 +32,7 @@ import { MidaPositionParameters, } from "#positions/MidaPositionParameters";
 import { MidaPositionStatus, } from "#positions/MidaPositionStatus";
 import { MidaProtection, } from "#protections/MidaProtection";
 import { MidaProtectionChange, } from "#protections/MidaProtectionChange";
+import { MidaProtectionDirectives, } from "#protections/MidaProtectionDirectives";
 import { MidaTrade, } from "#trades/MidaTrade";
 import { MidaEmitter, } from "#utilities/emitters/MidaEmitter";
 
@@ -112,11 +114,11 @@ export abstract class MidaPosition {
 
     public abstract getUnrealizedCommission (): Promise<MidaDecimal>;
 
-    public abstract changeProtection (protection: MidaProtection): Promise<MidaProtectionChange>;
+    public abstract changeProtection (protection: MidaProtectionDirectives): Promise<MidaProtectionChange>;
 
-    public abstract addVolume (volume: MidaDecimal): Promise<MidaOrder>;
+    public abstract addVolume (volume: MidaDecimalConvertible): Promise<MidaOrder>;
 
-    public abstract subtractVolume (volume: MidaDecimal): Promise<MidaOrder>;
+    public abstract subtractVolume (volume: MidaDecimalConvertible): Promise<MidaOrder>;
 
     public async reverse (): Promise<MidaOrder> {
         return this.subtractVolume(this.volume.multiply(2));
@@ -126,12 +128,12 @@ export abstract class MidaPosition {
         return this.subtractVolume(this.volume);
     }
 
-    public async setTakeProfit (takeProfit: MidaDecimal | undefined): Promise<MidaProtectionChange> {
-        return this.changeProtection({ takeProfit, });
+    public async setTakeProfit (takeProfit: MidaDecimalConvertible | undefined): Promise<MidaProtectionChange> {
+        return this.changeProtection({ takeProfit: decimal(takeProfit), });
     }
 
-    public async setStopLoss (stopLoss: MidaDecimal | undefined): Promise<MidaProtectionChange> {
-        return this.changeProtection({ stopLoss, });
+    public async setStopLoss (stopLoss: MidaDecimalConvertible | undefined): Promise<MidaProtectionChange> {
+        return this.changeProtection({ stopLoss: decimal(stopLoss), });
     }
 
     public async setTrailingStopLoss (trailingStopLoss: boolean): Promise<MidaProtectionChange> {
