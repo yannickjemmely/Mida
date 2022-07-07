@@ -20,13 +20,13 @@
  * THE SOFTWARE.
 */
 
-import * as util from "util";
+import { inspect, } from "util";
 
 export class MidaDecimal {
     readonly #bigInt: bigint;
 
-    public constructor (descriptor: MidaDecimal | number | string) {
-        const [ integers, decimals, ] = String(descriptor).split(".").concat("");
+    public constructor (operand: MidaDecimal | string | number) {
+        const [ integers, decimals, ] = String(operand).split(".").concat("");
 
         this.#bigInt = BigInt(integers + decimals.padEnd(MidaDecimal.#decimals, "0").slice(0, MidaDecimal.#decimals)) +
             BigInt(MidaDecimal.#rounded && decimals[MidaDecimal.#decimals] >= "5");
@@ -60,12 +60,16 @@ export class MidaDecimal {
         return this.#bigInt < new MidaDecimal(operand).#bigInt;
     }
 
+    public round (): MidaDecimal {
+        return this;
+    }
+
     public toString (): string {
         return MidaDecimal.#toString(this.#bigInt);
     }
 
-    public [util.inspect.custom] (): string {
-        return this.toString();
+    public [inspect.custom] (): string {
+        return `${this.toString()}d`;
     }
 
     static readonly #decimals = 28;
@@ -118,3 +122,5 @@ export class MidaDecimal {
         return `${descriptor.slice(0, -MidaDecimal.#decimals)}.${descriptor.slice(-MidaDecimal.#decimals).replace(/\.?0+$/, "")}`;
     }
 }
+
+export const decimal = (operand: MidaDecimal | string | number): MidaDecimal => new MidaDecimal(operand);

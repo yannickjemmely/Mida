@@ -21,6 +21,7 @@
 */
 
 import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
+import { MidaDecimal, } from "#decimals/MidaDecimal";
 import { MidaUnsupportedOperationError, } from "#errors/MidaUnsupportedOperationError";
 import { MidaOrder, } from "#orders/MidaOrder";
 import { MidaPosition, } from "#positions/MidaPosition";
@@ -111,15 +112,15 @@ export const createClosedPosition = (id: string, tradingAccount: MidaTradingAcco
                 id,
                 tradingAccount,
                 symbol,
-                volume: 0,
+                volume: new MidaDecimal(0),
             });
         }
 
-        public override async addVolume (volume: number): Promise<MidaOrder> {
+        public override async addVolume (volume: MidaDecimal): Promise<MidaOrder> {
             throw new MidaUnsupportedOperationError();
         }
 
-        public override async subtractVolume (volume: number): Promise<MidaOrder> {
+        public override async subtractVolume (volume: MidaDecimal): Promise<MidaOrder> {
             throw new MidaUnsupportedOperationError();
         }
 
@@ -127,20 +128,20 @@ export const createClosedPosition = (id: string, tradingAccount: MidaTradingAcco
             throw new MidaUnsupportedOperationError();
         }
 
-        public override async getUnrealizedCommission (): Promise<number> {
-            return 0;
+        public override async getUnrealizedCommission (): Promise<MidaDecimal> {
+            return new MidaDecimal(0);
         }
 
-        public override async getUnrealizedGrossProfit (): Promise<number> {
-            return 0;
+        public override async getUnrealizedGrossProfit (): Promise<MidaDecimal> {
+            return new MidaDecimal(0);
         }
 
-        public override async getUnrealizedSwap (): Promise<number> {
-            return 0;
+        public override async getUnrealizedSwap (): Promise<MidaDecimal> {
+            return new MidaDecimal(0);
         }
 
-        public override async getUsedMargin (): Promise<number> {
-            return 0;
+        public override async getUsedMargin (): Promise<MidaDecimal> {
+            return new MidaDecimal(0);
         }
     }();
 };

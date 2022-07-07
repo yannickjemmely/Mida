@@ -84,11 +84,11 @@ export abstract class MidaPosition {
         return { ...this.#protection, };
     }
 
-    public get takeProfit (): number | undefined {
+    public get takeProfit (): MidaDecimal | undefined {
         return this.#protection.takeProfit;
     }
 
-    public get stopLoss (): number | undefined {
+    public get stopLoss (): MidaDecimal | undefined {
         return this.#protection.stopLoss;
     }
 
@@ -104,13 +104,13 @@ export abstract class MidaPosition {
         return MidaPositionStatus.OPEN;
     }
 
-    public abstract getUsedMargin (): Promise<number>;
+    public abstract getUsedMargin (): Promise<MidaDecimal>;
 
-    public abstract getUnrealizedGrossProfit (): Promise<number>;
+    public abstract getUnrealizedGrossProfit (): Promise<MidaDecimal>;
 
-    public abstract getUnrealizedSwap (): Promise<number>;
+    public abstract getUnrealizedSwap (): Promise<MidaDecimal>;
 
-    public abstract getUnrealizedCommission (): Promise<number>;
+    public abstract getUnrealizedCommission (): Promise<MidaDecimal>;
 
     public abstract changeProtection (protection: MidaProtection): Promise<MidaProtectionChange>;
 
@@ -126,11 +126,11 @@ export abstract class MidaPosition {
         return this.subtractVolume(this.volume);
     }
 
-    public async setTakeProfit (takeProfit: number | undefined): Promise<MidaProtectionChange> {
+    public async setTakeProfit (takeProfit: MidaDecimal | undefined): Promise<MidaProtectionChange> {
         return this.changeProtection({ takeProfit, });
     }
 
-    public async setStopLoss (stopLoss: number | undefined): Promise<MidaProtectionChange> {
+    public async setStopLoss (stopLoss: MidaDecimal | undefined): Promise<MidaProtectionChange> {
         return this.changeProtection({ stopLoss, });
     }
 
