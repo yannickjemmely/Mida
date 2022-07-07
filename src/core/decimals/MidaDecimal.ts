@@ -30,7 +30,7 @@ export class MidaDecimal {
         const [ integers, decimals, ] = String(operand).split(".").concat("");
 
         this.#value = BigInt(integers + decimals.padEnd(MidaDecimal.#decimals, "0").slice(0, MidaDecimal.#decimals)) +
-            BigInt(MidaDecimal.#rounded && decimals[MidaDecimal.#decimals] >= "5");
+            BigInt(MidaDecimal.#rounded && Number(decimals[MidaDecimal.#decimals]) >= 5);
     }
 
     public add (operand: MidaDecimalConvertible): MidaDecimal {
