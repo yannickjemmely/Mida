@@ -104,6 +104,8 @@ export { MidaDate, } from "#dates/MidaDate";
 export { MidaDateParameters, } from "#dates/MidaDateParameters";
 export { MidaDateUtilities, } from "#dates/MidaDateUtilities";
 
+export { decimal, MidaDecimal, } from "#decimals/MidaDecimal";
+
 export { MidaError, } from "#errors/MidaError";
 export { MidaErrorParameters, } from "#errors/MidaErrorParameters";
 export { MidaUnsupportedOperationError, } from "#errors/MidaUnsupportedOperationError";
