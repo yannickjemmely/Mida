@@ -31,7 +31,7 @@ export class MidaDate implements IMidaCloneable, IMidaEquatable {
     readonly #date: Date;
     readonly #iso: string;
 
-    public constructor (descriptor?: MidaDateParameters | string | number) {
+    public constructor (descriptor?: MidaDateParameters) {
         switch (typeof descriptor) {
             case "number":
             case "string": {

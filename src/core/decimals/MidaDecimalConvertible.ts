@@ -22,5 +22,8 @@
 
 import { MidaDecimal, } from "#decimals/MidaDecimal";
 
-/** Represents a value that can be converted to decimal */
+/**
+ * Represents a value convertible to decimal
+ * @see MidaDecimal
+ */
 export type MidaDecimalConvertible = MidaDecimal | string | number;

@@ -87,20 +87,20 @@ export namespace MidaUtilities {
         return randomUUID();
     }
 
-    export function truncate (subject: number, precision: number): number {
-        const parts: string[] = subject.toString().split(".");
+    export function truncate (value: number, precision: number): number {
+        const parts: string[] = value.toString().split(".");
 
         if (parts.length === 1) {
-            return subject;
+            return value;
         }
 
-        const newDecimal: string = parts[1].substring(0, precision);
+        const newDecimalPart: string = parts[1].substring(0, precision);
 
-        if (newDecimal.length === 0) {
-            return subject;
+        if (newDecimalPart.length === 0) {
+            return value;
         }
 
-        return Number(`${parts[0]}.${newDecimal}`);
+        return Number(`${parts[0]}.${newDecimalPart}`);
     }
 }
 
