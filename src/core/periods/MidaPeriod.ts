@@ -21,7 +21,7 @@
 */
 
 import { MidaDate, } from "#dates/MidaDate";
-import { MidaDecimal, } from "#decimals/MidaDecimal";
+import { decimal, MidaDecimal, } from "#decimals/MidaDecimal";
 import { MidaPeriodParameters, } from "#periods/MidaPeriodParameters";
 import { MidaQuotationPrice, } from "#quotations/MidaQuotationPrice";
 import { MidaTick, } from "#ticks/MidaTick";
@@ -224,7 +224,7 @@ export function composePeriods (
             high: MidaDecimal.max(...periodTicks.map((tick: MidaTick): MidaDecimal => tick[quotationPrice])),
             low: MidaDecimal.min(...periodTicks.map((tick: MidaTick): MidaDecimal => tick[quotationPrice])),
             close: periodTicks[periodTicks.length - 1][quotationPrice],
-            volume: new MidaDecimal(0),
+            volume: decimal(0),
             timeframe,
             ticks: [ ...periodTicks, ],
         }));

@@ -22,7 +22,7 @@
 
 import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
 import { MidaDate, } from "#dates/MidaDate";
-import { MidaDecimal, } from "#decimals/MidaDecimal";
+import { decimal, MidaDecimal, } from "#decimals/MidaDecimal";
 import { MidaOrder, } from "#orders/MidaOrder";
 import { MidaTradeDirection, } from "#trades/MidaTradeDirection";
 import { MidaTradeParameters, } from "#trades/MidaTradeParameters";
@@ -85,11 +85,11 @@ export abstract class MidaTrade {
         this.#executionDate = executionDate;
         this.#rejectionDate = rejectionDate;
         this.#executionPrice = executionPrice;
-        this.#grossProfit = grossProfit ?? new MidaDecimal(0);
+        this.#grossProfit = grossProfit ?? decimal(0);
         this.#grossProfitAsset = grossProfitAsset ?? "";
-        this.#commission = commission ?? new MidaDecimal(0);
+        this.#commission = commission ?? decimal(0);
         this.#commissionAsset = commissionAsset ?? "";
-        this.#swap = swap ?? new MidaDecimal(0);
+        this.#swap = swap ?? decimal(0);
         this.#swapAsset = swapAsset ?? "";
         this.#rejection = rejection;
     }

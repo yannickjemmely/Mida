@@ -22,7 +22,7 @@
 
 import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
 import { MidaDate, } from "#dates/MidaDate";
-import { MidaDecimal, } from "#decimals/MidaDecimal";
+import { decimal, MidaDecimal, } from "#decimals/MidaDecimal";
 import { MidaEvent, } from "#events/MidaEvent";
 import { MidaEventListener, } from "#events/MidaEventListener";
 import { info, } from "#loggers/MidaLogger";
@@ -189,7 +189,7 @@ export abstract class MidaOrder {
     }
 
     public get filledVolume (): MidaDecimal {
-        let filledVolume: MidaDecimal = new MidaDecimal(0);
+        let filledVolume: MidaDecimal = decimal(0);
 
         for (const trade of this.executedTrades) {
             filledVolume = filledVolume.add(trade.volume);
@@ -215,7 +215,7 @@ export abstract class MidaOrder {
             return undefined;
         }
 
-        let priceVolumeProduct: MidaDecimal = new MidaDecimal(0);
+        let priceVolumeProduct: MidaDecimal = decimal(0);
 
         for (const trade of this.executedTrades) {
             const executionPrice: MidaDecimal = trade.executionPrice as MidaDecimal;
