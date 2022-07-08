@@ -235,6 +235,14 @@ export abstract class MidaTradingAccount {
      */
     public abstract watchSymbolTicks (symbol: string): Promise<void>;
 
+    /**
+     * Used to watch the periods of a symbol
+     * @see MidaMarketWatcher
+     * @param symbol The string representation of the symbol
+     * @param timeframe The timeframe to watch
+     */
+    public abstract watchSymbolPeriods (symbol: string, timeframe: number): Promise<void>;
+
     /** Used to get account the free margin */
     public async getFreeMargin (): Promise<MidaDecimal> {
         const [ equity, usedMargin, ]: MidaDecimal[] = await Promise.all([ this.getEquity(), this.getUsedMargin(), ]);
