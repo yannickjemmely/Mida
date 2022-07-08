@@ -187,7 +187,7 @@ export abstract class MidaTrade {
     }
 }
 
-export function filterExecutedTrades (trades: MidaTrade[]): MidaTrade[] {
+export const filterExecutedTrades = (trades: MidaTrade[]): MidaTrade[] => {
     const executedTrades: MidaTrade[] = [];
 
     for (const trade of trades) {
@@ -197,9 +197,9 @@ export function filterExecutedTrades (trades: MidaTrade[]): MidaTrade[] {
     }
 
     return executedTrades;
-}
+};
 
-export function filterRejectedTrades (trades: MidaTrade[]): MidaTrade[] {
+export const filterRejectedTrades = (trades: MidaTrade[]): MidaTrade[] => {
     const rejectedTrades: MidaTrade[] = [];
 
     for (const trade of trades) {
@@ -209,9 +209,9 @@ export function filterRejectedTrades (trades: MidaTrade[]): MidaTrade[] {
     }
 
     return rejectedTrades;
-}
+};
 
-export function getTradesFromOrders (orders: MidaOrder[]): MidaTrade[] {
+export const getTradesFromOrders = (orders: MidaOrder[]): MidaTrade[] => {
     const trades: MidaTrade[] = [];
 
     for (const order of orders) {
@@ -219,4 +219,4 @@ export function getTradesFromOrders (orders: MidaOrder[]): MidaTrade[] {
     }
 
     return trades;
-}
+};

@@ -20,7 +20,7 @@
  * THE SOFTWARE.
 */
 
-import { MidaDate, } from "#dates/MidaDate";
+import { date, MidaDate, } from "#dates/MidaDate";
 import { decimal, MidaDecimal, } from "#decimals/MidaDecimal";
 import { MidaPeriodParameters, } from "#periods/MidaPeriodParameters";
 import { MidaQuotationPrice, } from "#quotations/MidaQuotationPrice";
@@ -190,28 +190,26 @@ export class MidaPeriod implements IMidaEquatable {
 }
 
 // eslint-disable-next-line max-lines-per-function
-export function composePeriods (
+export const composePeriods = (
     ticks: MidaTick[],
     startTime: MidaDate,
     timeframe: number,
     quotationPrice: MidaQuotationPrice = MidaQuotationPrice.BID,
     limit: number = -1
-): MidaPeriod[] {
+): MidaPeriod[] => {
     if (ticks.length < 1 || timeframe <= 0) {
         return [];
     }
 
     let periodStartTime: MidaDate = startTime;
 
-    function getNextPeriodEndTime (): MidaDate {
-        return new MidaDate(periodStartTime.timestamp + timeframe * 1000);
-    }
-
+    const getNextPeriodEndDate = (): MidaDate => date(periodStartTime.timestamp + timeframe * 1000);
     const periods: MidaPeriod[] = [];
-    let periodTicks: MidaTick[] = [];
-    let periodEndTime: MidaDate = getNextPeriodEndTime();
 
-    function tryComposePeriod (): void {
+    let periodTicks: MidaTick[] = [];
+    let periodEndDate: MidaDate = getNextPeriodEndDate();
+
+    const tryComposePeriod = (): void => {
         if (periodTicks.length < 1) {
             return;
         }
@@ -230,7 +228,7 @@ export function composePeriods (
         }));
 
         periodTicks = [];
-    }
+    };
 
     for (const tick of ticks) {
         if (limit > -1 && periods.length === limit) {
@@ -243,9 +241,9 @@ export function composePeriods (
 
         let periodHasEnded: boolean = false;
 
-        while (tick.date > periodEndTime) {
-            periodStartTime = new MidaDate(periodEndTime.timestamp);
-            periodEndTime = getNextPeriodEndTime();
+        while (tick.date > periodEndDate) {
+            periodStartTime = date(periodEndDate.timestamp);
+            periodEndDate = getNextPeriodEndDate();
 
             if (!periodHasEnded) {
                 periodHasEnded = true;
@@ -262,4 +260,4 @@ export function composePeriods (
     tryComposePeriod();
 
     return periods;
-}
+};

@@ -25,7 +25,7 @@ import { MidaTradingAccountParameters, } from "#accounts/MidaTradingAccountParam
 import { MidaTradingAccountPositionAccounting, } from "#accounts/MidaTradingAccountPositionAccounting";
 import { MidaAsset, } from "#assets/MidaAsset";
 import { MidaAssetStatement, } from "#assets/MidaAssetStatement";
-import { MidaDate, } from "#dates/MidaDate";
+import { date, MidaDate, } from "#dates/MidaDate";
 import { MidaDecimal, } from "#decimals/MidaDecimal";
 import { MidaEvent, } from "#events/MidaEvent";
 import { MidaEventListener, } from "#events/MidaEventListener";
@@ -248,7 +248,7 @@ export abstract class MidaTradingAccount {
 
     /** Used to get the trading platform date */
     public async getDate (): Promise<MidaDate> {
-        return new MidaDate();
+        return date();
     }
 
     public on (type: string): Promise<MidaEvent>;

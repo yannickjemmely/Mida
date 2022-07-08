@@ -21,7 +21,7 @@
 */
 
 import { MidaDateParameters, } from "#dates/MidaDateParameters";
-import { MidaDateUtilities, } from "#dates/MidaDateUtilities";
+import { utcTimestamp, } from "#dates/MidaDateUtilities";
 import { IMidaCloneable, } from "#utilities/cloneable/IMidaCloneable";
 import { IMidaEquatable, } from "#utilities/equatable/IMidaEquatable";
 import { GenericObject, } from "#utilities/GenericObject";
@@ -59,13 +59,13 @@ export class MidaDate implements IMidaCloneable, IMidaEquatable {
                     this.#date = new Date(date);
                 }
                 else {
-                    this.#date = new Date(MidaDateUtilities.utcTimestamp());
+                    this.#date = new Date(utcTimestamp());
                 }
 
                 break;
             }
             default: {
-                this.#date = new Date(MidaDateUtilities.utcTimestamp());
+                this.#date = new Date(utcTimestamp());
             }
         }
 
@@ -109,11 +109,11 @@ export class MidaDate implements IMidaCloneable, IMidaEquatable {
     }
 
     public add (milliseconds: number): MidaDate {
-        return new MidaDate(this.timestamp + milliseconds);
+        return date(this.timestamp + milliseconds);
     }
 
     public subtract (milliseconds: number): MidaDate {
-        return new MidaDate(this.timestamp - milliseconds);
+        return date(this.timestamp - milliseconds);
     }
 
     public differenceInMinutes (date: MidaDate): number {
@@ -133,7 +133,7 @@ export class MidaDate implements IMidaCloneable, IMidaEquatable {
     }
 
     public clone (): MidaDate {
-        return new MidaDate(this);
+        return date(this);
     }
 
     public equals (object: GenericObject): boolean {
@@ -143,3 +143,5 @@ export class MidaDate implements IMidaCloneable, IMidaEquatable {
         );
     }
 }
+
+export const date = (descriptor?: MidaDateParameters): MidaDate => new MidaDate(descriptor);

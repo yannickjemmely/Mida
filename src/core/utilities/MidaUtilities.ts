@@ -20,7 +20,7 @@
  * THE SOFTWARE.
 */
 
-import { randomUUID, } from "crypto";
+import { randomUUID as uuid4, } from "crypto";
 import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
 import { decimal, MidaDecimal, } from "#decimals/MidaDecimal";
 import { MidaUnsupportedOperationError, } from "#errors/MidaUnsupportedOperationError";
@@ -84,7 +84,7 @@ export namespace MidaUtilities {
     }
 
     export function uuid (): string {
-        return randomUUID();
+        return uuid4();
     }
 
     export function truncate (value: number, precision: number): number {
