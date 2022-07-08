@@ -20,13 +20,14 @@
  * THE SOFTWARE.
 */
 
+import { randomUUID as uuid4, } from "crypto";
 import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
+import { decimal, MidaDecimal, } from "#decimals/MidaDecimal";
 import { MidaUnsupportedOperationError, } from "#errors/MidaUnsupportedOperationError";
 import { MidaOrder, } from "#orders/MidaOrder";
 import { MidaPosition, } from "#positions/MidaPosition";
-import { MidaProtection, } from "#protections/MidaProtection";
 import { MidaProtectionChange, } from "#protections/MidaProtectionChange";
-import * as crypto from "crypto";
+import { MidaProtectionDirectives, } from "#protections/MidaProtectionDirectives";
 import { GenericObject, } from "#utilities/GenericObject";
 
 export namespace MidaUtilities {
@@ -83,23 +84,23 @@ export namespace MidaUtilities {
     }
 
     export function uuid (): string {
-        return crypto.randomUUID();
+        return uuid4();
     }
 
-    export function truncate (subject: number, precision: number): number {
-        const parts: string[] = subject.toString().split(".");
+    export function truncate (value: number, precision: number): number {
+        const parts: string[] = value.toString().split(".");
 
         if (parts.length === 1) {
-            return subject;
+            return value;
         }
 
-        const newDecimal: string = parts[1].substring(0, precision);
+        const newDecimalPart: string = parts[1].substring(0, precision);
 
-        if (newDecimal.length === 0) {
-            return subject;
+        if (newDecimalPart.length === 0) {
+            return value;
         }
 
-        return Number(`${parts[0]}.${newDecimal}`);
+        return Number(`${parts[0]}.${newDecimalPart}`);
     }
 }
 
@@ -111,36 +112,36 @@ export const createClosedPosition = (id: string, tradingAccount: MidaTradingAcco
                 id,
                 tradingAccount,
                 symbol,
-                volume: 0,
+                volume: decimal(0),
             });
         }
 
-        public override async addVolume (volume: number): Promise<MidaOrder> {
+        public override async addVolume (volume: MidaDecimal): Promise<MidaOrder> {
             throw new MidaUnsupportedOperationError();
         }
 
-        public override async subtractVolume (volume: number): Promise<MidaOrder> {
+        public override async subtractVolume (volume: MidaDecimal): Promise<MidaOrder> {
             throw new MidaUnsupportedOperationError();
         }
 
-        public override async changeProtection (protection: MidaProtection): Promise<MidaProtectionChange> {
+        public override async changeProtection (protection: MidaProtectionDirectives): Promise<MidaProtectionChange> {
             throw new MidaUnsupportedOperationError();
         }
 
-        public override async getUnrealizedCommission (): Promise<number> {
-            return 0;
+        public override async getUnrealizedCommission (): Promise<MidaDecimal> {
+            return decimal(0);
         }
 
-        public override async getUnrealizedGrossProfit (): Promise<number> {
-            return 0;
+        public override async getUnrealizedGrossProfit (): Promise<MidaDecimal> {
+            return decimal(0);
         }
 
-        public override async getUnrealizedSwap (): Promise<number> {
-            return 0;
+        public override async getUnrealizedSwap (): Promise<MidaDecimal> {
+            return decimal(0);
         }
 
-        public override async getUsedMargin (): Promise<number> {
-            return 0;
+        public override async getUsedMargin (): Promise<MidaDecimal> {
+            return decimal(0);
         }
     }();
 };

@@ -21,6 +21,7 @@
 */
 
 import { MidaDate, } from "#dates/MidaDate";
+import { MidaDecimal, } from "#decimals/MidaDecimal";
 import { MidaQuotation, } from "#quotations/MidaQuotation";
 import { MidaTickMovement, } from "#ticks/MidaTickMovement";
 import { MidaTickParameters, } from "#ticks/MidaTickParameters";
@@ -52,8 +53,8 @@ export class MidaTick implements IMidaCloneable, IMidaEquatable {
         else {
             this.#quotation = new MidaQuotation({
                 symbol: symbol as string,
-                bid: bid as number,
-                ask: ask as number,
+                bid: bid as MidaDecimal,
+                ask: ask as MidaDecimal,
                 date: date as MidaDate,
             });
         }
@@ -95,22 +96,22 @@ export class MidaTick implements IMidaCloneable, IMidaEquatable {
     }
 
     /** The tick bid price */
-    public get bid (): number {
+    public get bid (): MidaDecimal {
         return this.#quotation.bid;
     }
 
     /** The tick ask price */
-    public get ask (): number {
+    public get ask (): MidaDecimal {
         return this.#quotation.ask;
     }
 
     /** The tick average price */
-    public get averagePrice (): number {
+    public get averagePrice (): MidaDecimal {
         return this.#quotation.averagePrice;
     }
 
     /** The tick spread */
-    public get spread (): number {
+    public get spread (): MidaDecimal {
         return this.#quotation.spread;
     }
 

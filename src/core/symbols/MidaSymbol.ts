@@ -21,6 +21,7 @@
 */
 
 import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
+import { MidaDecimal, } from "#decimals/MidaDecimal";
 import { MidaSymbolParameters, } from "#symbols/MidaSymbolParameters";
 import { MidaEmitter, } from "#utilities/emitters/MidaEmitter";
 
@@ -31,10 +32,10 @@ export class MidaSymbol {
     readonly #description: string;
     readonly #baseAsset: string;
     readonly #quoteAsset: string;
-    readonly #leverage: number;
-    readonly #minLots: number;
-    readonly #maxLots: number;
-    readonly #lotUnits: number;
+    readonly #leverage: MidaDecimal;
+    readonly #minLots: MidaDecimal;
+    readonly #maxLots: MidaDecimal;
+    readonly #lotUnits: MidaDecimal;
     readonly #emitter: MidaEmitter;
 
     public constructor ({
@@ -81,37 +82,37 @@ export class MidaSymbol {
     }
 
     /** The symbol leverage */
-    public get leverage (): number {
+    public get leverage (): MidaDecimal {
         return this.#leverage;
     }
 
     /** The symbol minimum order lots */
-    public get minLots (): number {
+    public get minLots (): MidaDecimal {
         return this.#minLots;
     }
 
     /** The symbol maximum order lots */
-    public get maxLots (): number {
+    public get maxLots (): MidaDecimal {
         return this.#maxLots;
     }
 
     /** The symbol units for one lot */
-    public get lotUnits (): number {
+    public get lotUnits (): MidaDecimal {
         return this.#lotUnits;
     }
 
     /** Used to get the symbol current best bid price */
-    public async getBid (): Promise<number> {
+    public async getBid (): Promise<MidaDecimal> {
         return this.#tradingAccount.getSymbolBid(this.#symbol);
     }
 
     /** Used to get the symbol current best ask price */
-    public async getAsk (): Promise<number> {
+    public async getAsk (): Promise<MidaDecimal> {
         return this.#tradingAccount.getSymbolAsk(this.#symbol);
     }
 
     /** Used to get the symbol current average price */
-    public async getAveragePrice (): Promise<number> {
+    public async getAveragePrice (): Promise<MidaDecimal> {
         return this.#tradingAccount.getSymbolAveragePrice(this.#symbol);
     }
 
