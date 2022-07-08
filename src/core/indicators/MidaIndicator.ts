@@ -90,25 +90,25 @@ export abstract class MidaIndicator {
         return [ ...MidaIndicator.#installedIndicators.keys(), ];
     }
 
-    public static add (id: string, indicatorConstructor: (parameters: GenericObject) => MidaIndicator): void {
+    public static add (id: string, indicator: (parameters: GenericObject) => MidaIndicator): void {
         if (MidaIndicator.#installedIndicators.has(id)) {
             fatal(`Indicator "${id}" already exists`);
 
             throw new Error();
         }
 
-        MidaIndicator.#installedIndicators.set(id, indicatorConstructor);
+        MidaIndicator.#installedIndicators.set(id, indicator);
     }
 
     public static create (id: string, parameters: GenericObject = {}): MidaIndicator {
-        const indicatorConstructor: ((parameters: GenericObject) => MidaIndicator) | undefined = MidaIndicator.#installedIndicators.get(id);
+        const indicator: ((parameters: GenericObject) => MidaIndicator) | undefined = MidaIndicator.#installedIndicators.get(id);
 
-        if (!indicatorConstructor) {
+        if (!indicator) {
             fatal(`Indicator "${id}" not found, have you installed its plugin?`);
 
             throw new Error();
         }
 
-        return indicatorConstructor(parameters);
+        return indicator(parameters);
     }
 }

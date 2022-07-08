@@ -24,7 +24,7 @@ import { MidaDate, } from "#dates/MidaDate";
 import { MidaEvent, } from "#events/MidaEvent";
 import { MidaEventListener, } from "#events/MidaEventListener";
 import { GenericObject, } from "#utilities/GenericObject";
-import { MidaUtilities, } from "#utilities/MidaUtilities";
+import { uuid, } from "#utilities/MidaUtilities";
 
 export class MidaEmitter {
     static readonly #ANY_TYPE_KEY: string = "*";
@@ -35,19 +35,19 @@ export class MidaEmitter {
     }
 
     public addEventListener (type: string, listener: MidaEventListener): string {
-        let uuid: string;
+        let id: string;
 
         do {
-            uuid = MidaUtilities.uuid();
+            id = uuid();
         }
-        while (this.#uuidExists(uuid)); // This software deals with money, better to avoid even the most improbable events
+        while (this.#uuidExists(id)); // This software deals with money, better to avoid even the most improbable events
 
         const listenersOfType: Map<string, MidaEventListener> = this.#listeners.get(type) ?? new Map();
 
-        listenersOfType.set(uuid, listener);
+        listenersOfType.set(id, listener);
         this.#listeners.set(type, listenersOfType);
 
-        return uuid;
+        return id;
     }
 
     public removeEventListener (uuid: string): void {

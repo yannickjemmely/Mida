@@ -30,80 +30,60 @@ import { MidaProtectionChange, } from "#protections/MidaProtectionChange";
 import { MidaProtectionDirectives, } from "#protections/MidaProtectionDirectives";
 import { GenericObject, } from "#utilities/GenericObject";
 
-export namespace MidaUtilities {
-    // Used to create a Promise resolved after a given number of milliseconds
-    export async function wait (milliseconds: number): Promise<void> {
-        await new Promise((resolve: any): any => setTimeout(resolve, milliseconds));
+/** Used to create a Promise resolved after a given number of milliseconds */
+export const wait = async (milliseconds: number): Promise<void> => {
+    await new Promise((resolve: any): any => setTimeout(resolve, milliseconds));
+};
+
+/** Used to shuffle an array */
+export const shuffleArray = (array: any[]): any[] => {
+    let length: number = array.length;
+
+    while (length > 0) {
+        const randomIndex: number = generateInRandomInteger(0, length - 1);
+        const element: any = array[--length];
+
+        array[length] = array[randomIndex];
+        array[randomIndex] = element;
     }
 
-    // Used to shuffle an array
-    export function shuffleArray (array: any[]): any[] {
-        let length: number = array.length;
+    return array;
+};
 
-        while (length > 0) {
-            const randomIndex: number = generateInRandomInteger(0, length - 1);
-            const element: any = array[--length];
+/** Used to generate a random integer in an inclusive range */
+export const generateInRandomInteger = (min: number, max: number): number => Math.floor(Math.random() * (max - min + 1)) + min;
 
-            array[length] = array[randomIndex];
-            array[randomIndex] = element;
+/** Used to merge two options objects */
+export const mergeOptions = (initial: GenericObject, primary: GenericObject): GenericObject => {
+    const options: GenericObject = {
+        ...initial,
+        ...primary,
+    };
+
+    for (const key in initial) {
+        if (!initial.hasOwnProperty(key) || !primary.hasOwnProperty(key)) {
+            continue;
         }
 
-        return array;
-    }
+        const initialValue: any = initial[key];
+        const userValue: any = primary[key];
 
-    // Used to get a random integer in an inclusive range
-    export function generateInRandomInteger (min: number, max: number): number {
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-
-    // Used to merge two options objects
-    export function mergeOptions (initial: GenericObject, primary: GenericObject): GenericObject {
-        const options: any = {
-            ...initial,
-            ...primary,
-        };
-
-        for (const key in initial) {
-            if (!initial.hasOwnProperty(key) || !primary.hasOwnProperty(key)) {
-                continue;
-            }
-
-            const initialValue: any = initial[key];
-            const userValue: any = primary[key];
-
-            if (!initialValue || !userValue) {
-                continue;
-            }
-
-            if (initialValue.constructor === Object && userValue.constructor === Object) {
-                options[key] = mergeOptions(initialValue, userValue);
-            }
+        if (!initialValue || !userValue) {
+            continue;
         }
 
-        return options;
-    }
-
-    export function uuid (): string {
-        return uuid4();
-    }
-
-    export function truncate (value: number, precision: number): number {
-        const parts: string[] = value.toString().split(".");
-
-        if (parts.length === 1) {
-            return value;
+        if (initialValue.constructor === Object && userValue.constructor === Object) {
+            options[key] = mergeOptions(initialValue, userValue);
         }
-
-        const newDecimalPart: string = parts[1].substring(0, precision);
-
-        if (newDecimalPart.length === 0) {
-            return value;
-        }
-
-        return Number(`${parts[0]}.${newDecimalPart}`);
     }
-}
 
+    return options;
+};
+
+/** Used to generate a random UUID */
+export const uuid = (): string => uuid4();
+
+/** Used to create a closed position */
 // eslint-disable-next-line arrow-body-style
 export const createClosedPosition = (id: string, tradingAccount: MidaTradingAccount, symbol: string): MidaPosition => {
     return new class extends MidaPosition {

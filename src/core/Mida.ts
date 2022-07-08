@@ -201,7 +201,14 @@ export { MidaTradeStatus, } from "#trades/MidaTradeStatus";
 
 export { MidaEmitter, } from "#utilities/emitters/MidaEmitter";
 export { GenericObject, } from "#utilities/GenericObject";
-export { MidaUtilities, } from "#utilities/MidaUtilities";
+export {
+    wait,
+    shuffleArray,
+    generateInRandomInteger,
+    mergeOptions,
+    uuid,
+    createClosedPosition,
+} from "#utilities/MidaUtilities";
 
 export { MidaMarketWatcher, } from "#watchers/MidaMarketWatcher";
 export { MidaMarketWatcherDirectives, } from "#watchers/MidaMarketWatcherDirectives";

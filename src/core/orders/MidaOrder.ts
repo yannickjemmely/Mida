@@ -370,7 +370,7 @@ export abstract class MidaOrder {
     }
 }
 
-export function filterPendingOrders (orders: MidaOrder[]): MidaOrder[] {
+export const filterPendingOrders = (orders: MidaOrder[]): MidaOrder[] => {
     const pendingOrders: MidaOrder[] = [];
 
     for (const order of orders) {
@@ -380,9 +380,9 @@ export function filterPendingOrders (orders: MidaOrder[]): MidaOrder[] {
     }
 
     return pendingOrders;
-}
+};
 
-export function filterExecutedOrders (orders: MidaOrder[]): MidaOrder[] {
+export const filterExecutedOrders = (orders: MidaOrder[]): MidaOrder[] => {
     const executedOrders: MidaOrder[] = [];
 
     for (const order of orders) {
@@ -392,4 +392,4 @@ export function filterExecutedOrders (orders: MidaOrder[]): MidaOrder[] {
     }
 
     return executedOrders;
-}
+};
