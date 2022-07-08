@@ -22,6 +22,7 @@
 
 import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
 import { MidaDate, } from "#dates/MidaDate";
+import { decimal, MidaDecimal, } from "#decimals/MidaDecimal";
 import { MidaEvent, } from "#events/MidaEvent";
 import { MidaEventListener, } from "#events/MidaEventListener";
 import { info, } from "#loggers/MidaLogger";
@@ -43,11 +44,11 @@ export abstract class MidaOrder {
     #id: string;
     readonly #tradingAccount: MidaTradingAccount;
     readonly #symbol: string;
-    #requestedVolume: number;
+    #requestedVolume: MidaDecimal;
     readonly #direction: MidaOrderDirection;
     readonly #purpose: MidaOrderPurpose;
-    #limitPrice?: number;
-    #stopPrice?: number;
+    #limitPrice?: MidaDecimal;
+    #stopPrice?: MidaDecimal;
     #status: MidaOrderStatus;
     #creationDate?: MidaDate;
     #lastUpdateDate?: MidaDate;
@@ -111,7 +112,7 @@ export abstract class MidaOrder {
         return this.#symbol;
     }
 
-    public get requestedVolume (): number {
+    public get requestedVolume (): MidaDecimal {
         return this.#requestedVolume;
     }
 
@@ -123,11 +124,11 @@ export abstract class MidaOrder {
         return this.#purpose;
     }
 
-    public get limitPrice (): number | undefined {
+    public get limitPrice (): MidaDecimal | undefined {
         return this.#limitPrice;
     }
 
-    public get stopPrice (): number | undefined {
+    public get stopPrice (): MidaDecimal | undefined {
         return this.#stopPrice;
     }
 
@@ -187,11 +188,11 @@ export abstract class MidaOrder {
         return filterExecutedTrades(this.#trades);
     }
 
-    public get filledVolume (): number {
-        let filledVolume: number = 0;
+    public get filledVolume (): MidaDecimal {
+        let filledVolume: MidaDecimal = decimal(0);
 
         for (const trade of this.executedTrades) {
-            filledVolume += trade.volume;
+            filledVolume = filledVolume.add(trade.volume);
         }
 
         return filledVolume;
@@ -202,27 +203,27 @@ export abstract class MidaOrder {
             return undefined;
         }
 
-        if (this.filledVolume === this.#requestedVolume) {
+        if (this.filledVolume.equals(this.#requestedVolume)) {
             return MidaOrderFill.FULL;
         }
 
         return MidaOrderFill.PARTIAL;
     }
 
-    public get executionPrice (): number | undefined {
+    public get executionPrice (): MidaDecimal | undefined {
         if (this.executedTrades.length === 0) {
             return undefined;
         }
 
-        let priceVolumeProduct: number = 0;
+        let priceVolumeProduct: MidaDecimal = decimal(0);
 
         for (const trade of this.executedTrades) {
-            const executionPrice: number = trade.executionPrice as number;
+            const executionPrice: MidaDecimal = trade.executionPrice as MidaDecimal;
 
-            priceVolumeProduct += executionPrice * trade.volume;
+            priceVolumeProduct = priceVolumeProduct.add(executionPrice.multiply(trade.volume));
         }
 
-        return priceVolumeProduct / this.filledVolume;
+        return priceVolumeProduct.divide(this.filledVolume);
     }
 
     public get isOpening (): boolean {
@@ -234,11 +235,11 @@ export abstract class MidaOrder {
     }
 
     public get execution (): MidaOrderExecution {
-        if (Number.isFinite(this.#limitPrice)) {
+        if (this.#limitPrice) {
             return MidaOrderExecution.LIMIT;
         }
 
-        if (Number.isFinite(this.#stopPrice)) {
+        if (this.#stopPrice) {
             return MidaOrderExecution.STOP;
         }
 
@@ -331,17 +332,17 @@ export abstract class MidaOrder {
         info(`Order ${this.id} | status changed from ${previousStatus} to ${status}`);
     }
 
-    protected onPendingPriceChange (price: number): void {
-        const previousPrice: number = (this.#stopPrice ?? this.#limitPrice) as number;
+    protected onPendingPriceChange (price: MidaDecimal): void {
+        const previousPrice: MidaDecimal = (this.#stopPrice ?? this.#limitPrice) as MidaDecimal;
 
-        if (previousPrice === price) {
+        if (previousPrice.equals(price)) {
             return;
         }
 
-        if (Number.isFinite(this.#limitPrice)) {
+        if (this.#limitPrice) {
             this.#limitPrice = price;
         }
-        else if (Number.isFinite(this.#stopPrice)) {
+        else if (this.#stopPrice) {
             this.#stopPrice = price;
         }
 
@@ -349,10 +350,10 @@ export abstract class MidaOrder {
         info(`Order ${this.id} | pending price changed from ${previousPrice} to ${price}`);
     }
 
-    protected onPendingVolumeChange (volume: number): void {
-        const previousVolume: number = this.#requestedVolume;
+    protected onPendingVolumeChange (volume: MidaDecimal): void {
+        const previousVolume: MidaDecimal = this.#requestedVolume;
 
-        if (previousVolume === volume) {
+        if (previousVolume.equals(volume)) {
             return;
         }
 

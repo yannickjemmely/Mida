@@ -102,7 +102,10 @@ export { MidaAssetStatement, } from "#assets/MidaAssetStatement";
 
 export { MidaDate, } from "#dates/MidaDate";
 export { MidaDateParameters, } from "#dates/MidaDateParameters";
-export { MidaDateUtilities, } from "#dates/MidaDateUtilities";
+export { utcTimestamp, } from "#dates/MidaDateUtilities";
+
+export { decimal, MidaDecimal, } from "#decimals/MidaDecimal";
+export { MidaDecimalConvertible, } from "#decimals/MidaDecimalConvertible";
 
 export { MidaError, } from "#errors/MidaError";
 export { MidaErrorParameters, } from "#errors/MidaErrorParameters";
@@ -160,6 +163,7 @@ export { MidaProtection, } from "#protections/MidaProtection";
 export { MidaProtectionChange, } from "#protections/MidaProtectionChange";
 export { MidaProtectionChangeRejection, } from "#protections/MidaProtectionChangeRejection";
 export { MidaProtectionChangeStatus, } from "#protections/MidaProtectionChangeStatus";
+export { MidaProtectionDirectives, } from "#protections/MidaProtectionDirectives";
 
 export { MidaQuotation, } from "#quotations/MidaQuotation";
 export { MidaQuotationParameters, } from "#quotations/MidaQuotationParameters";

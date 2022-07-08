@@ -20,7 +20,8 @@
  * THE SOFTWARE.
 */
 
+import { MidaDecimal, } from "#decimals/MidaDecimal";
 import { GenericObject, } from "#utilities/GenericObject";
 
 /** Represents the indicator input/output */
-export type MidaIndicatorIo = GenericObject[] | number[] | GenericObject | number;
+export type MidaIndicatorIo = GenericObject[] | MidaDecimal[] | GenericObject | MidaDecimal;

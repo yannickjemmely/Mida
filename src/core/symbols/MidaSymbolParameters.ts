@@ -21,6 +21,7 @@
 */
 
 import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
+import { MidaDecimal, } from "#decimals/MidaDecimal";
 import { MidaSymbol, } from "#symbols/MidaSymbol";
 
 /**
@@ -33,8 +34,8 @@ export type MidaSymbolParameters = {
     description: string;
     baseAsset: string;
     quoteAsset: string;
-    leverage: number;
-    minLots: number;
-    maxLots: number;
-    lotUnits: number;
+    leverage: MidaDecimal;
+    minLots: MidaDecimal;
+    maxLots: MidaDecimal;
+    lotUnits: MidaDecimal;
 };

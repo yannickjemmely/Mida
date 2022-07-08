@@ -20,14 +20,12 @@
  * THE SOFTWARE.
 */
 
-export namespace MidaDateUtilities {
-    export function utcTimestamp (): number {
-        const actualDate: Date = new Date();
+export const utcTimestamp = (): number => {
+    const currentDate: Date = new Date();
 
-        return Date.UTC(
-            actualDate.getUTCFullYear(), actualDate.getUTCMonth(), actualDate.getUTCDate(),
-            actualDate.getUTCHours(), actualDate.getUTCMinutes(), actualDate.getUTCSeconds(),
-            actualDate.getUTCMilliseconds()
-        );
-    }
-}
+    return Date.UTC(
+        currentDate.getUTCFullYear(), currentDate.getUTCMonth(), currentDate.getUTCDate(),
+        currentDate.getUTCHours(), currentDate.getUTCMinutes(), currentDate.getUTCSeconds(),
+        currentDate.getUTCMilliseconds()
+    );
+};

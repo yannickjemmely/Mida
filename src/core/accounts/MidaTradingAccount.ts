@@ -25,7 +25,8 @@ import { MidaTradingAccountParameters, } from "#accounts/MidaTradingAccountParam
 import { MidaTradingAccountPositionAccounting, } from "#accounts/MidaTradingAccountPositionAccounting";
 import { MidaAsset, } from "#assets/MidaAsset";
 import { MidaAssetStatement, } from "#assets/MidaAssetStatement";
-import { MidaDate, } from "#dates/MidaDate";
+import { date, MidaDate, } from "#dates/MidaDate";
+import { MidaDecimal, } from "#decimals/MidaDecimal";
 import { MidaEvent, } from "#events/MidaEvent";
 import { MidaEventListener, } from "#events/MidaEventListener";
 import { MidaOrder, } from "#orders/MidaOrder";
@@ -48,7 +49,7 @@ export abstract class MidaTradingAccount {
     readonly #primaryAsset: string;
     readonly #operativity: MidaTradingAccountOperativity;
     readonly #positionAccounting: MidaTradingAccountPositionAccounting;
-    readonly #indicativeLeverage: number;
+    readonly #indicativeLeverage: MidaDecimal;
     readonly #emitter: MidaEmitter;
 
     protected constructor ({
@@ -108,7 +109,7 @@ export abstract class MidaTradingAccount {
     }
 
     /** The account indicative leverage */
-    public get indicativeLeverage (): number {
+    public get indicativeLeverage (): MidaDecimal {
         return this.#indicativeLeverage;
     }
 
@@ -123,16 +124,16 @@ export abstract class MidaTradingAccount {
     }
 
     /** Used to get the account primary asset balance */
-    public abstract getBalance (): Promise<number>;
+    public abstract getBalance (): Promise<MidaDecimal>;
 
     /** Used to get the account assets balance (all the owned assets) */
     public abstract getBalanceSheet (): Promise<MidaAssetStatement[]>;
 
     /** Used to get the account primary asset balance if all the owned assets were liquidated for it */
-    public abstract getEquity (): Promise<number>;
+    public abstract getEquity (): Promise<MidaDecimal>;
 
     /** Used to get the account used margin */
-    public abstract getUsedMargin (): Promise<number>;
+    public abstract getUsedMargin (): Promise<MidaDecimal>;
 
     /**
      * Used to get the account most recent orders for a symbol
@@ -206,19 +207,19 @@ export abstract class MidaTradingAccount {
      * Used to get the current bid price of a symbol
      * @param symbol The string representation of the symbol
      */
-    public abstract getSymbolBid (symbol: string): Promise<number>;
+    public abstract getSymbolBid (symbol: string): Promise<MidaDecimal>;
 
     /**
      * Used to get the current ask price of a symbol
      * @param symbol The string representation of the symbol
      */
-    public abstract getSymbolAsk (symbol: string): Promise<number>;
+    public abstract getSymbolAsk (symbol: string): Promise<MidaDecimal>;
 
     /**
      * Used to get the current average price of a symbol
      @param symbol The string representation of the symbol
      */
-    public abstract getSymbolAveragePrice (symbol: string): Promise<number>;
+    public abstract getSymbolAveragePrice (symbol: string): Promise<MidaDecimal>;
 
     /**
      * Used to watch the ticks of a symbol
@@ -228,26 +229,26 @@ export abstract class MidaTradingAccount {
     public abstract watchSymbolTicks (symbol: string): Promise<void>;
 
     /** Used to get account the free margin */
-    public async getFreeMargin (): Promise<number> {
-        const [ equity, usedMargin, ]: number[] = await Promise.all([ this.getEquity(), this.getUsedMargin(), ]);
+    public async getFreeMargin (): Promise<MidaDecimal> {
+        const [ equity, usedMargin, ]: MidaDecimal[] = await Promise.all([ this.getEquity(), this.getUsedMargin(), ]);
 
-        return equity - usedMargin;
+        return equity.subtract(usedMargin);
     }
 
     /** Used to get the account margin level, returns NaN if no margin is used */
-    public async getMarginLevel (): Promise<number> {
-        const [ equity, usedMargin, ]: number[] = await Promise.all([ this.getEquity(), this.getUsedMargin(), ]);
+    public async getMarginLevel (): Promise<MidaDecimal | undefined> {
+        const [ equity, usedMargin, ]: MidaDecimal[] = await Promise.all([ this.getEquity(), this.getUsedMargin(), ]);
 
-        if (usedMargin === 0) {
-            return NaN;
+        if (usedMargin.equals(0)) {
+            return undefined;
         }
 
-        return equity / usedMargin * 100;
+        return equity.divide(usedMargin).multiply(100);
     }
 
     /** Used to get the trading platform date */
     public async getDate (): Promise<MidaDate> {
-        return new MidaDate();
+        return date();
     }
 
     public on (type: string): Promise<MidaEvent>;

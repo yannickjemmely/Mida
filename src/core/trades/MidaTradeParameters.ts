@@ -22,6 +22,7 @@
 
 import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
 import { MidaDate, } from "#dates/MidaDate";
+import { MidaDecimal, } from "#decimals/MidaDecimal";
 import { MidaTrade, } from "#trades/MidaTrade";
 import { MidaTradeDirection, } from "#trades/MidaTradeDirection";
 import { MidaTradePurpose, } from "#trades/MidaTradePurpose";
@@ -38,18 +39,18 @@ export type MidaTradeParameters = {
     positionId: string;
     tradingAccount: MidaTradingAccount;
     symbol: string;
-    volume: number;
+    volume: MidaDecimal;
     direction: MidaTradeDirection;
     status: MidaTradeStatus;
     purpose: MidaTradePurpose;
     executionDate?: MidaDate;
     rejectionDate?: MidaDate;
-    executionPrice?: number;
-    grossProfit?: number;
+    executionPrice?: MidaDecimal;
+    grossProfit?: MidaDecimal;
     grossProfitAsset?: string;
-    commission?: number;
+    commission?: MidaDecimal;
     commissionAsset?: string;
-    swap?: number;
+    swap?: MidaDecimal;
     swapAsset?: string;
     rejection?: MidaTradeRejection;
 };

@@ -21,6 +21,7 @@
 */
 
 import { MidaDate, } from "#dates/MidaDate";
+import { MidaDecimal, } from "#decimals/MidaDecimal";
 import { MidaPeriod, } from "#periods/MidaPeriod";
 import { MidaQuotationPrice, } from "#quotations/MidaQuotationPrice";
 import { MidaTick, } from "#ticks/MidaTick";
@@ -33,11 +34,11 @@ export type MidaPeriodParameters = {
     symbol: string;
     startDate: MidaDate;
     quotationPrice: MidaQuotationPrice;
-    open: number;
-    close: number;
-    low: number;
-    high: number;
-    volume: number;
+    open: MidaDecimal;
+    close: MidaDecimal;
+    low: MidaDecimal;
+    high: MidaDecimal;
+    volume: MidaDecimal;
     timeframe: number;
     ticks?: MidaTick[];
 };

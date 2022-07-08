@@ -21,6 +21,8 @@
 */
 
 import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
+import { decimal, MidaDecimal, } from "#decimals/MidaDecimal";
+import { MidaDecimalConvertible, } from "#decimals/MidaDecimalConvertible";
 import { MidaEvent, } from "#events/MidaEvent";
 import { MidaEventListener, } from "#events/MidaEventListener";
 import { info, } from "#loggers/MidaLogger";
@@ -30,6 +32,7 @@ import { MidaPositionParameters, } from "#positions/MidaPositionParameters";
 import { MidaPositionStatus, } from "#positions/MidaPositionStatus";
 import { MidaProtection, } from "#protections/MidaProtection";
 import { MidaProtectionChange, } from "#protections/MidaProtectionChange";
+import { MidaProtectionDirectives, } from "#protections/MidaProtectionDirectives";
 import { MidaTrade, } from "#trades/MidaTrade";
 import { MidaEmitter, } from "#utilities/emitters/MidaEmitter";
 
@@ -37,7 +40,7 @@ export abstract class MidaPosition {
     readonly #id: string;
     readonly #tradingAccount: MidaTradingAccount;
     readonly #symbol: string;
-    #volume: number;
+    #volume: MidaDecimal;
     #direction?: MidaPositionDirection;
     readonly #protection: MidaProtection;
     readonly #emitter: MidaEmitter;
@@ -71,7 +74,7 @@ export abstract class MidaPosition {
         return this.#symbol;
     }
 
-    public get volume (): number {
+    public get volume (): MidaDecimal {
         return this.#volume;
     }
 
@@ -83,11 +86,11 @@ export abstract class MidaPosition {
         return { ...this.#protection, };
     }
 
-    public get takeProfit (): number | undefined {
+    public get takeProfit (): MidaDecimal | undefined {
         return this.#protection.takeProfit;
     }
 
-    public get stopLoss (): number | undefined {
+    public get stopLoss (): MidaDecimal | undefined {
         return this.#protection.stopLoss;
     }
 
@@ -96,41 +99,41 @@ export abstract class MidaPosition {
     }
 
     public get status (): MidaPositionStatus {
-        if (this.volume === 0) {
+        if (this.volume.equals(0)) {
             return MidaPositionStatus.CLOSED;
         }
 
         return MidaPositionStatus.OPEN;
     }
 
-    public abstract getUsedMargin (): Promise<number>;
+    public abstract getUsedMargin (): Promise<MidaDecimal>;
 
-    public abstract getUnrealizedGrossProfit (): Promise<number>;
+    public abstract getUnrealizedGrossProfit (): Promise<MidaDecimal>;
 
-    public abstract getUnrealizedSwap (): Promise<number>;
+    public abstract getUnrealizedSwap (): Promise<MidaDecimal>;
 
-    public abstract getUnrealizedCommission (): Promise<number>;
+    public abstract getUnrealizedCommission (): Promise<MidaDecimal>;
 
-    public abstract changeProtection (protection: MidaProtection): Promise<MidaProtectionChange>;
+    public abstract changeProtection (protection: MidaProtectionDirectives): Promise<MidaProtectionChange>;
 
-    public abstract addVolume (volume: number): Promise<MidaOrder>;
+    public abstract addVolume (volume: MidaDecimalConvertible): Promise<MidaOrder>;
 
-    public abstract subtractVolume (volume: number): Promise<MidaOrder>;
+    public abstract subtractVolume (volume: MidaDecimalConvertible): Promise<MidaOrder>;
 
     public async reverse (): Promise<MidaOrder> {
-        return this.subtractVolume(this.volume * 2);
+        return this.subtractVolume(this.volume.multiply(2));
     }
 
     public async close (): Promise<MidaOrder> {
         return this.subtractVolume(this.volume);
     }
 
-    public async setTakeProfit (takeProfit: number | undefined): Promise<MidaProtectionChange> {
-        return this.changeProtection({ takeProfit, });
+    public async setTakeProfit (takeProfit: MidaDecimalConvertible | undefined): Promise<MidaProtectionChange> {
+        return this.changeProtection({ takeProfit: decimal(takeProfit), });
     }
 
-    public async setStopLoss (stopLoss: number | undefined): Promise<MidaProtectionChange> {
-        return this.changeProtection({ stopLoss, });
+    public async setStopLoss (stopLoss: MidaDecimalConvertible | undefined): Promise<MidaProtectionChange> {
+        return this.changeProtection({ stopLoss: decimal(stopLoss), });
     }
 
     public async setTrailingStopLoss (trailingStopLoss: boolean): Promise<MidaProtectionChange> {
@@ -154,36 +157,31 @@ export abstract class MidaPosition {
     /* *** *** *** Reiryoku Technologies *** *** *** */
 
     protected onTrade (trade: MidaTrade): void {
-        const volume = trade.volume;
+        const volume: MidaDecimal = trade.volume;
 
         if (trade.isClosing) {
-            const volumeDifference: number = volume - this.volume;
-            this.#volume = Math.abs(volumeDifference);
+            const volumeDifference: MidaDecimal = volume.subtract(this.volume);
+            this.#volume = MidaDecimal.abs(volumeDifference);
 
-            if (volumeDifference > 0) {
+            if (volumeDifference.greaterThan(0)) {
                 this.#direction = MidaPositionDirection.oppositeOf(this.#direction as MidaPositionDirection);
 
                 this.#emitter.notifyListeners("reverse");
             }
-            else if (volumeDifference === 0) {
+            else if (volumeDifference.equals(0)) {
                 this.#emitter.notifyListeners("close");
             }
 
             this.#emitter.notifyListeners("volume-close", { volume, });
         }
         else {
-            this.#volume += volume;
+            this.#volume = this.#volume.add(volume);
 
             this.#emitter.notifyListeners("volume-open", { volume, });
         }
 
         this.#emitter.notifyListeners("trade", { trade, });
         info(`Position ${this.id} | trade ${trade.id} executed`);
-    }
-
-    /** @deprecated */
-    protected onTradeExecute (trade: MidaTrade): void {
-        this.onTrade(trade);
     }
 
     protected onProtectionChange (protection: MidaProtection): void {
@@ -220,7 +218,7 @@ export abstract class MidaPosition {
         info(`Position ${this.id} | protection changed`);
     }
 
-    protected onSwap (swap: number): void {
+    protected onSwap (swap: MidaDecimal): void {
         this.#emitter.notifyListeners("swap", { swap, });
     }
 }

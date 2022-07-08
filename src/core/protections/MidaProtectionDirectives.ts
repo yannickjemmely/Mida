@@ -21,26 +21,9 @@
 */
 
 import { MidaDecimalConvertible, } from "#decimals/MidaDecimalConvertible";
-import { MidaEventListener, } from "#events/MidaEventListener";
-import { MidaOrderDirection, } from "#orders/MidaOrderDirection";
-import { MidaOrderTimeInForce, } from "#orders/MidaOrderTimeInForce";
-import { MidaProtectionDirectives, } from "#protections/MidaProtectionDirectives";
-import { GenericObject, } from "#utilities/GenericObject";
 
-export type MidaOrderDirectives = {
-    symbol?: string;
-    direction: MidaOrderDirection;
-    volume: MidaDecimalConvertible;
-    limit?: MidaDecimalConvertible;
-    stop?: MidaDecimalConvertible;
-    protection?: MidaProtectionDirectives;
-    positionId?: string;
-    resolverEvents?: string[];
-    timeInForce?: MidaOrderTimeInForce;
-    expirationTimestamp?: number;
-    label?: string;
-    platforms?: GenericObject;
-    listeners?: {
-        [eventType: string]: MidaEventListener;
-    };
+export type MidaProtectionDirectives = {
+    stopLoss?: MidaDecimalConvertible;
+    trailingStopLoss?: boolean;
+    takeProfit?: MidaDecimalConvertible;
 };

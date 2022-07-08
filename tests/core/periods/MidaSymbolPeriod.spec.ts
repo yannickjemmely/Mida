@@ -21,6 +21,7 @@
 */
 
 import { MidaDate, } from "#dates/MidaDate";
+import { MidaDecimal, } from "#decimals/MidaDecimal";
 import { MidaPeriod, } from "#periods/MidaPeriod";
 import { MidaQuotationPrice, } from "#quotations/MidaQuotationPrice";
 import { MidaTimeframe, } from "#timeframes/MidaTimeframe";
@@ -30,11 +31,11 @@ describe("MidaSymbolPeriod", () => {
         symbol: "TEST",
         startDate: new MidaDate(),
         quotationPrice: MidaQuotationPrice.BID,
-        open: 10,
-        high: 50,
-        low: 3,
-        close: 25,
-        volume: 3232,
+        open: new MidaDecimal(10),
+        high: new MidaDecimal(50),
+        low: new MidaDecimal(3),
+        close: new MidaDecimal(25),
+        volume: new MidaDecimal(3232),
         timeframe: MidaTimeframe.H4,
     });
 
@@ -65,7 +66,7 @@ describe("MidaSymbolPeriod", () => {
 
     describe(".body", () => {
         it("is set correctly", () => {
-            expect(bidPeriod.body).toBe(15);
+            expect(bidPeriod.body.equals(15)).toBe(true);
         });
     });
 });

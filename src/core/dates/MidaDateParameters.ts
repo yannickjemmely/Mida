@@ -30,4 +30,4 @@ export type MidaDateParameters = {
     timestamp?: number;
     iso?: string;
     date?: MidaDate | Date;
-};
+} | string | number;

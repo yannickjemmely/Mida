@@ -21,6 +21,7 @@
 */
 
 import { MidaDate, } from "#dates/MidaDate";
+import { MidaDecimal, } from "#decimals/MidaDecimal";
 import { MidaQuotation, } from "#quotations/MidaQuotation";
 import { MidaTick, } from "#ticks/MidaTick";
 import { MidaTickMovement, } from "#ticks/MidaTickMovement";
@@ -31,8 +32,8 @@ import { MidaTickMovement, } from "#ticks/MidaTickMovement";
  */
 export type MidaTickParameters = {
     symbol?: string;
-    bid?: number;
-    ask?: number;
+    bid?: MidaDecimal;
+    ask?: MidaDecimal;
     date?: MidaDate;
     movement: MidaTickMovement;
     quotation?: MidaQuotation;
