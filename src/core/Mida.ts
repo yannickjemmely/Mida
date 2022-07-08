@@ -102,7 +102,7 @@ export { MidaAssetStatement, } from "#assets/MidaAssetStatement";
 
 export { MidaDate, } from "#dates/MidaDate";
 export { MidaDateParameters, } from "#dates/MidaDateParameters";
-export { MidaDateUtilities, } from "#dates/MidaDateUtilities";
+export { utcTimestamp, } from "#dates/MidaDateUtilities";
 
 export { decimal, MidaDecimal, } from "#decimals/MidaDecimal";
 export { MidaDecimalConvertible, } from "#decimals/MidaDecimalConvertible";
