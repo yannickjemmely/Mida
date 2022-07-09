@@ -243,6 +243,9 @@ export abstract class MidaTradingAccount {
      */
     public abstract watchSymbolPeriods (symbol: string, timeframe: number): Promise<void>;
 
+    /** Used to get the trading platform date */
+    public abstract getDate (): Promise<MidaDate>;
+
     /** Used to get account the free margin */
     public async getFreeMargin (): Promise<MidaDecimal> {
         const [ equity, usedMargin, ]: MidaDecimal[] = await Promise.all([ this.getEquity(), this.getUsedMargin(), ]);
@@ -259,11 +262,6 @@ export abstract class MidaTradingAccount {
         }
 
         return equity.divide(usedMargin).multiply(100);
-    }
-
-    /** Used to get the trading platform date */
-    public async getDate (): Promise<MidaDate> {
-        return date();
     }
 
     public on (type: string): Promise<MidaEvent>;
