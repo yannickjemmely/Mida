@@ -110,6 +110,7 @@ export class MidaMarketWatcher {
         }
 
         this.#lastClosedPeriods.get(symbol)?.set(timeframe, lastPeriod);
+        await this.#tradingAccount.watchSymbolPeriods(symbol, timeframe);
     }
 
     public on (type: string): Promise<MidaEvent>;

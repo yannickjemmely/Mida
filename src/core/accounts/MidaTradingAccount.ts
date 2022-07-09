@@ -25,7 +25,7 @@ import { MidaTradingAccountParameters, } from "#accounts/MidaTradingAccountParam
 import { MidaTradingAccountPositionAccounting, } from "#accounts/MidaTradingAccountPositionAccounting";
 import { MidaAsset, } from "#assets/MidaAsset";
 import { MidaAssetStatement, } from "#assets/MidaAssetStatement";
-import { date, MidaDate, } from "#dates/MidaDate";
+import { MidaDate, } from "#dates/MidaDate";
 import { MidaDecimal, } from "#decimals/MidaDecimal";
 import { MidaEvent, } from "#events/MidaEvent";
 import { MidaEventListener, } from "#events/MidaEventListener";
@@ -146,7 +146,7 @@ export abstract class MidaTradingAccount {
     public abstract getPendingOrders (): Promise<MidaOrder[]>;
 
     /**
-     * Used to get the account most recent trades (or deals) for a symbol
+     * Used to get the account most recent trades for a symbol
      * @param symbol The string representation of the symbol
      */
     public abstract getTrades (symbol: string): Promise<MidaTrade[]>;

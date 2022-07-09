@@ -20,6 +20,7 @@
  * THE SOFTWARE.
 */
 
+import { inspect, } from "util";
 import { MidaDateConvertible, } from "#dates/MidaDateConvertible";
 import { utcTimestamp, } from "#dates/MidaDateUtilities";
 import { fatal, } from "#loggers/MidaLogger";
@@ -140,6 +141,10 @@ export class MidaDate implements IMidaCloneable, IMidaEquatable {
             object instanceof MidaDate && object.timestamp === this.timestamp
             || object instanceof Date && object.getTime() === this.timestamp
         );
+    }
+
+    public [inspect.custom] (): string {
+        return this.iso;
     }
 }
 
