@@ -53,6 +53,7 @@ export abstract class MidaOrder {
     #creationDate?: MidaDate;
     #lastUpdateDate?: MidaDate;
     readonly #timeInForce: MidaOrderTimeInForce;
+    #expirationDate?: MidaDate;
     readonly #trades: MidaTrade[];
     #positionId: string;
     #rejection?: MidaOrderRejection;
@@ -72,6 +73,7 @@ export abstract class MidaOrder {
         creationDate,
         lastUpdateDate,
         timeInForce,
+        expirationDate,
         trades,
         positionId,
         rejection,
@@ -89,6 +91,7 @@ export abstract class MidaOrder {
         this.#creationDate = creationDate;
         this.#lastUpdateDate = lastUpdateDate;
         this.#timeInForce = timeInForce;
+        this.#expirationDate = expirationDate;
         this.#trades = trades;
         this.#positionId = positionId ?? "";
         this.#rejection = rejection;
@@ -154,6 +157,10 @@ export abstract class MidaOrder {
 
     public get timeInForce (): MidaOrderTimeInForce {
         return this.#timeInForce;
+    }
+
+    public get expirationDate (): MidaDate | undefined {
+        return this.#expirationDate;
     }
 
     public get trades (): MidaTrade[] {
@@ -224,6 +231,20 @@ export abstract class MidaOrder {
         }
 
         return priceVolumeProduct.divide(this.filledVolume);
+    }
+
+    public get executedVolume (): MidaDecimal | undefined {
+        if (this.executedTrades.length === 0) {
+            return undefined;
+        }
+
+        let executedVolume: MidaDecimal = decimal(0);
+
+        for (const trade of this.executedTrades) {
+            executedVolume = executedVolume.add(trade.volume);
+        }
+
+        return executedVolume;
     }
 
     public get isOpening (): boolean {
@@ -361,6 +382,19 @@ export abstract class MidaOrder {
 
         this.#emitter.notifyListeners("pending-volume-change", { volume, previousVolume, });
         info(`Order ${this.id} | pending volume changed from ${previousVolume} to ${volume}`);
+    }
+
+    protected onExpirationDateChange (date: MidaDate | undefined): void {
+        const previousDate: MidaDate | undefined = this.#expirationDate;
+
+        if (previousDate === date || date && previousDate?.equals(date)) {
+            return;
+        }
+
+        this.#expirationDate = date;
+
+        this.#emitter.notifyListeners("expiration-date-change", { date, previousDate, });
+        info(`Order ${this.id} | expiration date changed from ${previousDate} to ${date}`);
     }
 
     protected onTrade (trade: MidaTrade): void {

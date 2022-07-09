@@ -184,6 +184,10 @@ export class MidaMarketWatcher {
         }
     }
 
+    #onPeriodUpdate (period: MidaPeriod): void {
+        this.notifyListeners("period-update", { period, });
+    }
+
     #onPeriodClose (period: MidaPeriod): void {
         this.notifyListeners("period-close", { period, });
     }
@@ -194,6 +198,8 @@ export class MidaMarketWatcher {
         // </ticks>
 
         // <periods>
+        this.#tradingAccount.on("period-update", (event: MidaEvent): void => this.#onPeriodUpdate(event.descriptor.period));
+
         const actualDate: Date = new Date();
         const roundMinute: Date = new Date(actualDate);
 

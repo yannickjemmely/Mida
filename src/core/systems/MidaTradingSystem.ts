@@ -201,6 +201,10 @@ export abstract class MidaTradingSystem {
         // Silence is golden
     }
 
+    protected async onPeriodUpdate (period: MidaPeriod): Promise<void> {
+        // Silence is golden
+    }
+
     protected async onPeriodClose (period: MidaPeriod): Promise<void> {
         // Silence is golden
     }
@@ -241,10 +245,6 @@ export abstract class MidaTradingSystem {
     }
 
     #onTick (tick: MidaTick): void {
-        if (!this.#isOperative) {
-            return;
-        }
-
         this.#capturedTicks.push(tick);
         this.#onTickAsync(tick);
     }
@@ -295,6 +295,15 @@ export abstract class MidaTradingSystem {
         }
     }
 
+    #onPeriodUpdate (period: MidaPeriod): void {
+        try {
+            this.onPeriodUpdate(period);
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
     #onPeriodClose (period: MidaPeriod): void {
         try {
             this.onPeriodClose(period);
@@ -317,6 +326,7 @@ export abstract class MidaTradingSystem {
 
     #configureListeners (): void {
         this.#marketWatcher.on("tick", (event: MidaEvent): void => this.#onTick(event.descriptor.tick));
+        this.#marketWatcher.on("period-update", (event: MidaEvent): void => this.#onPeriodUpdate(event.descriptor.period));
         this.#marketWatcher.on("period-close", (event: MidaEvent): void => this.#onPeriodClose(event.descriptor.period));
     }
 }
