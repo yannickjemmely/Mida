@@ -111,8 +111,8 @@ export class MidaPeriod implements IMidaEquatable {
     }
 
     /** The period ticks, usually ticks are not registered */
-    public get ticks (): readonly MidaTick[] | undefined {
-        return this.#ticks;
+    public get ticks (): MidaTick[] | undefined {
+        return [ ...this.#ticks ?? [], ];
     }
 
     /** The period end date */
