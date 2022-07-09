@@ -100,7 +100,7 @@ export { MidaAsset, } from "#assets/MidaAsset";
 export { MidaAssetParameters, } from "#assets/MidaAssetParameters";
 export { MidaAssetStatement, } from "#assets/MidaAssetStatement";
 
-export { MidaDate, } from "#dates/MidaDate";
+export { date, MidaDate, } from "#dates/MidaDate";
 export { MidaDateParameters, } from "#dates/MidaDateParameters";
 export { utcTimestamp, } from "#dates/MidaDateUtilities";
 
