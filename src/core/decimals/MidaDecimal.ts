@@ -22,12 +22,21 @@
 
 import { inspect, } from "util";
 import { MidaDecimalConvertible, } from "#decimals/MidaDecimalConvertible";
+import { fatal, } from "#loggers/MidaLogger";
 
 export class MidaDecimal {
     readonly #value: bigint;
 
-    public constructor (operand: MidaDecimalConvertible = 0) {
-        const [ integers, decimals, ] = String(operand).split(".").concat("");
+    public constructor (value: MidaDecimalConvertible = 0) {
+        const [ integers, decimals, ] = String(value).split(".").concat("");
+
+        console.log(integers, decimals);
+
+        if (!Number.isFinite(Number(integers)) || !Number.isFinite(Number(decimals))) {
+            fatal("Invalid decimal");
+
+            throw new Error();
+        }
 
         this.#value = BigInt(integers + decimals.padEnd(MidaDecimal.#decimals, "0").slice(0, MidaDecimal.#decimals)) +
             BigInt(MidaDecimal.#rounded && Number(decimals[MidaDecimal.#decimals]) >= 5);
@@ -57,12 +66,16 @@ export class MidaDecimal {
         return this.#value > decimal(operand).#value;
     }
 
+    public greaterThanOrEqual (operand: MidaDecimalConvertible): boolean {
+        return this.greaterThan(operand) || this.equals(operand);
+    }
+
     public lessThan (operand: MidaDecimalConvertible): boolean {
         return this.#value < decimal(operand).#value;
     }
 
-    public round (): MidaDecimal {
-        return this;
+    public lessThanOrEqual (operand: MidaDecimalConvertible): boolean {
+        return this.lessThan(operand) || this.equals(operand);
     }
 
     public toString (): string {
@@ -75,7 +88,7 @@ export class MidaDecimal {
 
     /* *** *** *** Reiryoku Technologies *** *** *** */
 
-    static readonly #decimals = 28;
+    static readonly #decimals = 32;
     static readonly #rounded = true;
     static readonly #shift = BigInt(`1${"0".repeat(MidaDecimal.#decimals)}`);
 
@@ -127,4 +140,4 @@ export class MidaDecimal {
     }
 }
 
-export const decimal = (operand: MidaDecimalConvertible = 0): MidaDecimal => new MidaDecimal(operand);
+export const decimal = (value: MidaDecimalConvertible = 0): MidaDecimal => new MidaDecimal(value);

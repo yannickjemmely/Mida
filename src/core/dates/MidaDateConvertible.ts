@@ -23,11 +23,7 @@
 import { MidaDate, } from "#dates/MidaDate";
 
 /**
- * The date constructor parameters
+ * Represents a value convertible to date
  * @see MidaDate
  */
-export type MidaDateParameters = {
-    timestamp?: number;
-    iso?: string;
-    date?: MidaDate | Date;
-} | string | number;
+export type MidaDateConvertible = MidaDate | Date | string | number;

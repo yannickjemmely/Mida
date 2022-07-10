@@ -25,7 +25,7 @@ import { MidaTradingAccountParameters, } from "#accounts/MidaTradingAccountParam
 import { MidaTradingAccountPositionAccounting, } from "#accounts/MidaTradingAccountPositionAccounting";
 import { MidaAsset, } from "#assets/MidaAsset";
 import { MidaAssetStatement, } from "#assets/MidaAssetStatement";
-import { date, MidaDate, } from "#dates/MidaDate";
+import { MidaDate, } from "#dates/MidaDate";
 import { MidaDecimal, } from "#decimals/MidaDecimal";
 import { MidaEvent, } from "#events/MidaEvent";
 import { MidaEventListener, } from "#events/MidaEventListener";
@@ -35,6 +35,7 @@ import { MidaPeriod, } from "#periods/MidaPeriod";
 import { MidaTradingPlatform, } from "#platforms/MidaTradingPlatform";
 import { MidaPosition, } from "#positions/MidaPosition";
 import { MidaSymbol, } from "#symbols/MidaSymbol";
+import { MidaSymbolTradeStatus, } from "#symbols/MidaSymbolTradeStatus";
 import { MidaTrade, } from "#trades/MidaTrade";
 import { MidaEmitter, } from "#utilities/emitters/MidaEmitter";
 import { GenericObject, } from "#utilities/GenericObject";
@@ -145,7 +146,7 @@ export abstract class MidaTradingAccount {
     public abstract getPendingOrders (): Promise<MidaOrder[]>;
 
     /**
-     * Used to get the account most recent trades (or deals) for a symbol
+     * Used to get the account most recent trades for a symbol
      * @param symbol The string representation of the symbol
      */
     public abstract getTrades (symbol: string): Promise<MidaTrade[]>;
@@ -204,22 +205,28 @@ export abstract class MidaTradingAccount {
     public abstract getSymbolPeriods (symbol: string, timeframe: number): Promise<MidaPeriod[]>;
 
     /**
-     * Used to get the current bid price of a symbol
+     * Used to get the current best bid price of a symbol
      * @param symbol The string representation of the symbol
      */
     public abstract getSymbolBid (symbol: string): Promise<MidaDecimal>;
 
     /**
-     * Used to get the current ask price of a symbol
+     * Used to get the current best ask price of a symbol
      * @param symbol The string representation of the symbol
      */
     public abstract getSymbolAsk (symbol: string): Promise<MidaDecimal>;
 
     /**
      * Used to get the current average price of a symbol
-     @param symbol The string representation of the symbol
+     * @param symbol The string representation of the symbol
      */
     public abstract getSymbolAveragePrice (symbol: string): Promise<MidaDecimal>;
+
+    /**
+     * Used to get the current trade status of a symbol
+     * @param symbol The string representation of the symbol
+     */
+    public abstract getSymbolTradeStatus (symbol: string): Promise<MidaSymbolTradeStatus>;
 
     /**
      * Used to watch the ticks of a symbol
@@ -227,6 +234,17 @@ export abstract class MidaTradingAccount {
      * @param symbol The string representation of the symbol
      */
     public abstract watchSymbolTicks (symbol: string): Promise<void>;
+
+    /**
+     * Used to watch the periods of a symbol
+     * @see MidaMarketWatcher
+     * @param symbol The string representation of the symbol
+     * @param timeframe The timeframe to watch
+     */
+    public abstract watchSymbolPeriods (symbol: string, timeframe: number): Promise<void>;
+
+    /** Used to get the trading platform date */
+    public abstract getDate (): Promise<MidaDate>;
 
     /** Used to get account the free margin */
     public async getFreeMargin (): Promise<MidaDecimal> {
@@ -244,11 +262,6 @@ export abstract class MidaTradingAccount {
         }
 
         return equity.divide(usedMargin).multiply(100);
-    }
-
-    /** Used to get the trading platform date */
-    public async getDate (): Promise<MidaDate> {
-        return date();
     }
 
     public on (type: string): Promise<MidaEvent>;

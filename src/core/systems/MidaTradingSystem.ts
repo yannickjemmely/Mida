@@ -23,6 +23,7 @@
 import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
 import { MidaEvent, } from "#events/MidaEvent";
 import { MidaEventListener, } from "#events/MidaEventListener";
+import { info, } from "#loggers/MidaLogger";
 import { filterExecutedOrders, MidaOrder, } from "#orders/MidaOrder";
 import { MidaOrderDirectives, } from "#orders/MidaOrderDirectives";
 import { MidaPeriod, } from "#periods/MidaPeriod";
@@ -200,6 +201,10 @@ export abstract class MidaTradingSystem {
         // Silence is golden
     }
 
+    protected async onPeriodUpdate (period: MidaPeriod): Promise<void> {
+        // Silence is golden
+    }
+
     protected async onPeriodClose (period: MidaPeriod): Promise<void> {
         // Silence is golden
     }
@@ -226,6 +231,8 @@ export abstract class MidaTradingSystem {
     }
 
     protected async placeOrder (directives: MidaOrderDirectives): Promise<MidaOrder> {
+        info(`Trading system "${this.name}" | Placing ${directives.direction} order`);
+
         const order: MidaOrder = await this.#tradingAccount.placeOrder(directives);
 
         this.#orders.push(order);
@@ -238,10 +245,6 @@ export abstract class MidaTradingSystem {
     }
 
     #onTick (tick: MidaTick): void {
-        if (!this.#isOperative) {
-            return;
-        }
-
         this.#capturedTicks.push(tick);
         this.#onTickAsync(tick);
     }
@@ -292,6 +295,15 @@ export abstract class MidaTradingSystem {
         }
     }
 
+    #onPeriodUpdate (period: MidaPeriod): void {
+        try {
+            this.onPeriodUpdate(period);
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
     #onPeriodClose (period: MidaPeriod): void {
         try {
             this.onPeriodClose(period);
@@ -314,6 +326,7 @@ export abstract class MidaTradingSystem {
 
     #configureListeners (): void {
         this.#marketWatcher.on("tick", (event: MidaEvent): void => this.#onTick(event.descriptor.tick));
+        this.#marketWatcher.on("period-update", (event: MidaEvent): void => this.#onPeriodUpdate(event.descriptor.period));
         this.#marketWatcher.on("period-close", (event: MidaEvent): void => this.#onPeriodClose(event.descriptor.period));
     }
 }

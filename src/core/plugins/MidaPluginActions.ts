@@ -26,7 +26,7 @@ import { GenericObject, } from "#utilities/GenericObject";
 
 export type MidaPluginBaseActions = {
     addPlatform (id: string, platform: MidaTradingPlatform): void;
-    addIndicator (id: string, indicatorConstructor: (parameters: GenericObject) => MidaIndicator): void;
+    addIndicator (id: string, indicator: (parameters: GenericObject) => MidaIndicator): void;
 };
 
 export type MidaPluginActions = MidaPluginBaseActions;
@@ -38,7 +38,7 @@ export const baseActions: MidaPluginActions = {
         MidaTradingPlatform.add(id, platform);
     },
 
-    addIndicator (id: string, indicatorConstructor: (parameters: GenericObject) => MidaIndicator): void {
-        MidaIndicator.add(id, indicatorConstructor);
+    addIndicator (id: string, indicator: (parameters: GenericObject) => MidaIndicator): void {
+        MidaIndicator.add(id, indicator);
     },
 };

@@ -118,7 +118,7 @@ export abstract class MidaTradingSystemComponent {
     }
 }
 
-export function filterEnabledComponents (components: MidaTradingSystemComponent[]): MidaTradingSystemComponent[] {
+export const filterEnabledComponents = (components: MidaTradingSystemComponent[]): MidaTradingSystemComponent[] => {
     const enabledComponents: MidaTradingSystemComponent[] = [];
 
     for (const component of components) {
@@ -128,4 +128,4 @@ export function filterEnabledComponents (components: MidaTradingSystemComponent[
     }
 
     return enabledComponents;
-}
+};

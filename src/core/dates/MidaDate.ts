@@ -20,8 +20,10 @@
  * THE SOFTWARE.
 */
 
-import { MidaDateParameters, } from "#dates/MidaDateParameters";
+import { inspect, } from "util";
+import { MidaDateConvertible, } from "#dates/MidaDateConvertible";
 import { utcTimestamp, } from "#dates/MidaDateUtilities";
+import { fatal, } from "#loggers/MidaLogger";
 import { IMidaCloneable, } from "#utilities/cloneable/IMidaCloneable";
 import { IMidaEquatable, } from "#utilities/equatable/IMidaEquatable";
 import { GenericObject, } from "#utilities/GenericObject";
@@ -31,45 +33,43 @@ export class MidaDate implements IMidaCloneable, IMidaEquatable {
     readonly #date: Date;
     readonly #iso: string;
 
-    public constructor (descriptor?: MidaDateParameters) {
-        switch (typeof descriptor) {
-            case "number":
-            case "string": {
-                this.#date = new Date(descriptor);
+    public constructor (value?: MidaDateConvertible) {
+        let date: Date;
 
-                break;
-            }
-            case "object": {
-                const {
-                    timestamp,
-                    iso,
-                    date,
-                } = descriptor;
+        if (value instanceof MidaDate) {
+            date = value.#date;
+        }
+        else if (value instanceof Date) {
+            date = new Date(value.getTime());
+        }
+        else {
+            switch (typeof value) {
+                case "number": {
+                    date = new Date(value);
 
-                if (typeof timestamp === "number") {
-                    this.#date = new Date(timestamp);
+                    break;
                 }
-                else if (typeof iso === "string") {
-                    this.#date = new Date(iso);
-                }
-                else if (date instanceof MidaDate) {
-                    this.#date = new Date(date.timestamp);
-                }
-                else if (date instanceof Date) {
-                    this.#date = new Date(date);
-                }
-                else {
-                    this.#date = new Date(utcTimestamp());
-                }
+                case "string": {
+                    const possiblyIso: boolean = !Number.isFinite(Number(value));
 
-                break;
-            }
-            default: {
-                this.#date = new Date(utcTimestamp());
+                    date = new Date(possiblyIso ? value : Number(value));
+
+                    break;
+                }
+                default: {
+                    date = new Date(utcTimestamp());
+                }
             }
         }
 
-        this.#iso = this.#date.toISOString();
+        if (!Number.isFinite(date.getTime())) {
+            fatal("Invalid date");
+
+            throw new Error();
+        }
+
+        this.#date = date;
+        this.#iso = date.toISOString();
     }
 
     public get timestamp (): number {
@@ -142,6 +142,10 @@ export class MidaDate implements IMidaCloneable, IMidaEquatable {
             || object instanceof Date && object.getTime() === this.timestamp
         );
     }
+
+    public [inspect.custom] (): string {
+        return this.iso;
+    }
 }
 
-export const date = (descriptor?: MidaDateParameters): MidaDate => new MidaDate(descriptor);
+export const date = (value?: MidaDateConvertible): MidaDate => new MidaDate(value);

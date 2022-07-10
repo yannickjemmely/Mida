@@ -28,7 +28,7 @@ export enum MidaOrderDirection {
 }
 
 export namespace MidaOrderDirectionType {
-    export function oppositeOf (direction: MidaOrderDirection): MidaOrderDirection {
+    export const oppositeOf = (direction: MidaOrderDirection): MidaOrderDirection => {
         switch (direction) {
             case MidaOrderDirection.BUY: {
                 return MidaOrderDirection.SELL;
@@ -37,9 +37,9 @@ export namespace MidaOrderDirectionType {
                 return MidaOrderDirection.BUY;
             }
         }
-    }
+    };
 
-    export function toPositionDirection (direction: MidaOrderDirection): MidaPositionDirection {
+    export const toPositionDirection = (direction: MidaOrderDirection): MidaPositionDirection => {
         switch (direction) {
             case MidaOrderDirection.BUY: {
                 return MidaPositionDirection.LONG;
@@ -48,5 +48,5 @@ export namespace MidaOrderDirectionType {
                 return MidaPositionDirection.SHORT;
             }
         }
-    }
+    };
 }

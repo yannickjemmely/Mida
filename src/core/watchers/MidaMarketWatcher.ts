@@ -21,19 +21,16 @@
 */
 
 import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
-import { MidaDateUtilities, } from "#dates/MidaDateUtilities";
+import { utcTimestamp, } from "#dates/MidaDateUtilities";
 import { MidaEvent, } from "#events/MidaEvent";
 import { MidaEventListener, } from "#events/MidaEventListener";
 import { MidaPeriod, } from "#periods/MidaPeriod";
 import { MidaTick, } from "#ticks/MidaTick";
 import { MidaEmitter, } from "#utilities/emitters/MidaEmitter";
 import { GenericObject, } from "#utilities/GenericObject";
-import { MidaUtilities, } from "#utilities/MidaUtilities";
+import { mergeOptions, } from "#utilities/MidaUtilities";
 import { MidaMarketWatcherDirectives, } from "#watchers/MidaMarketWatcherDirectives";
 import { MidaMarketWatcherParameters, } from "#watchers/MidaMarketWatcherParameters";
-
-const { utcTimestamp, } = MidaDateUtilities;
-const { mergeOptions, } = MidaUtilities;
 
 export class MidaMarketWatcher {
     readonly #tradingAccount: MidaTradingAccount;
@@ -113,6 +110,7 @@ export class MidaMarketWatcher {
         }
 
         this.#lastClosedPeriods.get(symbol)?.set(timeframe, lastPeriod);
+        await this.#tradingAccount.watchSymbolPeriods(symbol, timeframe);
     }
 
     public on (type: string): Promise<MidaEvent>;
@@ -187,6 +185,10 @@ export class MidaMarketWatcher {
         }
     }
 
+    #onPeriodUpdate (period: MidaPeriod): void {
+        this.notifyListeners("period-update", { period, });
+    }
+
     #onPeriodClose (period: MidaPeriod): void {
         this.notifyListeners("period-close", { period, });
     }
@@ -197,6 +199,8 @@ export class MidaMarketWatcher {
         // </ticks>
 
         // <periods>
+        this.#tradingAccount.on("period-update", (event: MidaEvent): void => this.#onPeriodUpdate(event.descriptor.period));
+
         const actualDate: Date = new Date();
         const roundMinute: Date = new Date(actualDate);
 

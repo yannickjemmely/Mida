@@ -36,6 +36,7 @@ export class MidaSymbol {
     readonly #minLots: MidaDecimal;
     readonly #maxLots: MidaDecimal;
     readonly #lotUnits: MidaDecimal;
+    readonly #pipPosition: number;
     readonly #emitter: MidaEmitter;
 
     public constructor ({
@@ -48,6 +49,7 @@ export class MidaSymbol {
         minLots,
         maxLots,
         lotUnits,
+        pipPosition,
     }: MidaSymbolParameters) {
         this.#symbol = symbol;
         this.#tradingAccount = tradingAccount;
@@ -58,6 +60,7 @@ export class MidaSymbol {
         this.#minLots = minLots;
         this.#maxLots = maxLots;
         this.#lotUnits = lotUnits;
+        this.#pipPosition = pipPosition;
         this.#emitter = new MidaEmitter();
     }
 
@@ -99,6 +102,11 @@ export class MidaSymbol {
     /** The symbol units for one lot */
     public get lotUnits (): MidaDecimal {
         return this.#lotUnits;
+    }
+
+    /** The symbol pip position */
+    public get pipPosition (): number {
+        return this.#pipPosition;
     }
 
     /** Used to get the symbol current best bid price */

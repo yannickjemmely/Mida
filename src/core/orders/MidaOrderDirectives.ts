@@ -20,6 +20,7 @@
  * THE SOFTWARE.
 */
 
+import { MidaDateConvertible, } from "#dates/MidaDateConvertible";
 import { MidaDecimalConvertible, } from "#decimals/MidaDecimalConvertible";
 import { MidaEventListener, } from "#events/MidaEventListener";
 import { MidaOrderDirection, } from "#orders/MidaOrderDirection";
@@ -37,7 +38,7 @@ export type MidaOrderDirectives = {
     positionId?: string;
     resolverEvents?: string[];
     timeInForce?: MidaOrderTimeInForce;
-    expirationTimestamp?: number;
+    expirationDate?: MidaDateConvertible;
     label?: string;
     platforms?: GenericObject;
     listeners?: {
