@@ -1,5 +1,5 @@
 ### Features
-* **_BREAKING_** Create period update event, update various interfaces
+* **_BREAKING_** Create period update event, update various interfaces [#51](https://github.com/Reiryoku-Technologies/Mida/pull/51)
 * **_BREAKING_** Create the `MidaDecimal` type for representing and handling operations with decimals, use decimals instead of numbers [#50](https://github.com/Reiryoku-Technologies/Mida/pull/50)
 * Add platform related and label order directives [#49](https://github.com/Reiryoku-Technologies/Mida/pull/49)
 
