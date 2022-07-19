@@ -23,7 +23,7 @@
 import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
 import { MidaEvent, } from "#events/MidaEvent";
 import { MidaEventListener, } from "#events/MidaEventListener";
-import { info, } from "#loggers/MidaLogger";
+import { info, fatal, } from "#loggers/MidaLogger";
 import { filterExecutedOrders, MidaOrder, } from "#orders/MidaOrder";
 import { MidaOrderDirectives, } from "#orders/MidaOrderDirectives";
 import { MidaPeriod, } from "#periods/MidaPeriod";
@@ -181,6 +181,43 @@ export abstract class MidaTradingSystem {
 
         // Deactivate market watcher
         this.#marketWatcher.isActive = false;
+    }
+
+    public async useComponent (component: MidaTradingSystemComponent): Promise<MidaTradingSystemComponent> {
+        if (component.tradingSystem !== this) {
+            fatal("The component is binded to a different trading system");
+
+            throw new Error();
+        }
+
+        if (this.#components.indexOf(component) !== -1) {
+            return component;
+        }
+
+        this.#components.push(component);
+        await component.activate();
+
+        return component;
+    }
+
+    public getComponentByName (name: string): MidaTradingSystemComponent | undefined {
+        for (const component of this.#components) {
+            if (component.name === name) {
+                return component;
+            }
+        }
+
+        return undefined;
+    }
+
+    public getComponentByType (type: typeof MidaTradingSystemComponent): MidaTradingSystemComponent | undefined {
+        for (const component of this.#components) {
+            if (component instanceof type) {
+                return component;
+            }
+        }
+
+        return undefined;
     }
 
     public on (type: string): Promise<MidaEvent>;

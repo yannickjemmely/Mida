@@ -43,7 +43,7 @@ export abstract class MidaTradingSystemComponent {
         this.#description = description ?? "";
         this.#version = version;
         this.#tradingSystem = tradingSystem;
-        this.#isEnabled = false;
+        this.#isEnabled = true;
         this.#isConfigured = false;
     }
 
