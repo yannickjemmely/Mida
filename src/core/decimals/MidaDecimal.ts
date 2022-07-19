@@ -28,17 +28,26 @@ export class MidaDecimal {
     readonly #value: bigint;
 
     public constructor (value: MidaDecimalConvertible = 0) {
-        const [ integers, decimals, ] = String(value).split(".").concat("");
+        let [ integers, decimals, ] = String(value).split(".").concat("");
+        let isNegative: boolean = false;
 
-        console.log(integers, decimals);
+        if (decimals.indexOf("-") !== -1) {
+            isNegative = true;
+            decimals = decimals.replace("-", "0");
+        }
+
+        if (integers.indexOf("-") !== -1) {
+            isNegative = true;
+            integers = integers.replace("-", "");
+        }
 
         if (!Number.isFinite(Number(integers)) || !Number.isFinite(Number(decimals))) {
-            fatal("Invalid decimal");
+            fatal(`Invalid decimal "${value}"`);
 
             throw new Error();
         }
 
-        this.#value = BigInt(integers + decimals.padEnd(MidaDecimal.#decimals, "0").slice(0, MidaDecimal.#decimals)) +
+        this.#value = BigInt((isNegative ? "-" : "") + integers + decimals.padEnd(MidaDecimal.#decimals, "0").slice(0, MidaDecimal.#decimals)) +
             BigInt(MidaDecimal.#rounded && Number(decimals[MidaDecimal.#decimals]) >= 5);
     }
 
@@ -134,9 +143,21 @@ export class MidaDecimal {
 
     static #toString (value: bigint): string {
         const descriptor: string = value.toString().padStart(MidaDecimal.#decimals + 1, "0");
+        let integers: string = descriptor.slice(0, -MidaDecimal.#decimals);
+        let decimals: string = descriptor.slice(-MidaDecimal.#decimals).replace(/\.?0+$/, "");
+        let isNegative: boolean = false;
 
-        return `${descriptor.slice(0, -MidaDecimal.#decimals)}.${descriptor.slice(-MidaDecimal.#decimals).replace(/\.?0+$/, "")}`
-            .replace(/\.$/, "");
+        if (decimals.indexOf("-") !== -1) {
+            isNegative = true;
+            decimals = decimals.replace("-", "0");
+        }
+
+        if (integers.indexOf("-") !== -1) {
+            isNegative = true;
+            integers = integers.replace("-", "");
+        }
+
+        return (isNegative ? "-" : "") + `${integers}.${decimals}`.replace(/\.$/, "");
     }
 }
 

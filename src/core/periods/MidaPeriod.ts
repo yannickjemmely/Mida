@@ -39,6 +39,7 @@ export class MidaPeriod implements IMidaEquatable {
     readonly #close: MidaDecimal;
     readonly #volume: MidaDecimal;
     readonly #timeframe: number;
+    readonly #isClosed: boolean;
     readonly #ticks?: MidaTick[];
 
     public constructor ({
@@ -51,6 +52,7 @@ export class MidaPeriod implements IMidaEquatable {
         close,
         volume,
         timeframe,
+        isClosed,
         ticks,
     }: MidaPeriodParameters) {
         this.#symbol = symbol;
@@ -62,6 +64,7 @@ export class MidaPeriod implements IMidaEquatable {
         this.#close = close;
         this.#volume = volume;
         this.#timeframe = timeframe;
+        this.#isClosed = isClosed ?? true;
         this.#ticks = ticks;
     }
 
@@ -108,6 +111,11 @@ export class MidaPeriod implements IMidaEquatable {
     /** The period timeframe (expressed in seconds) */
     public get timeframe (): number {
         return this.#timeframe;
+    }
+
+    /** Indicates if the period is closed */
+    public get isClosed (): boolean {
+        return this.#isClosed;
     }
 
     /** The period ticks, usually ticks are not registered */

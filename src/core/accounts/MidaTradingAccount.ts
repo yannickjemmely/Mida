@@ -220,7 +220,7 @@ export abstract class MidaTradingAccount {
      * Used to get the current average price of a symbol
      * @param symbol The string representation of the symbol
      */
-    public abstract getSymbolAveragePrice (symbol: string): Promise<MidaDecimal>;
+    public abstract getSymbolAverage (symbol: string): Promise<MidaDecimal>;
 
     /**
      * Used to get the current trade status of a symbol

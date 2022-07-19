@@ -20,26 +20,8 @@
  * THE SOFTWARE.
 */
 
-import { MidaDate, } from "#dates/MidaDate";
-import { MidaDecimal, } from "#decimals/MidaDecimal";
-import { MidaPeriod, } from "#periods/MidaPeriod";
-import { MidaQuotationPrice, } from "#quotations/MidaQuotationPrice";
-import { MidaTick, } from "#ticks/MidaTick";
+import { MidaMarketWatcherDirectives, } from "#watchers/MidaMarketWatcherDirectives";
 
-/**
- * The symbol period constructor parameters
- * @see MidaPeriod
- */
-export type MidaPeriodParameters = {
-    symbol: string;
-    startDate: MidaDate;
-    quotationPrice: MidaQuotationPrice;
-    open: MidaDecimal;
-    close: MidaDecimal;
-    low: MidaDecimal;
-    high: MidaDecimal;
-    volume: MidaDecimal;
-    timeframe: number;
-    isClosed?: boolean;
-    ticks?: MidaTick[];
+export type MidaMarketWatcherTarget = {
+    [symbol: string]: MidaMarketWatcherDirectives;
 };

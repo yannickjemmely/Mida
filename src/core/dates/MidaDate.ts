@@ -112,8 +112,24 @@ export class MidaDate implements IMidaCloneable, IMidaEquatable {
         return date(this.timestamp + milliseconds);
     }
 
+    public addMinutes (minutes: number): MidaDate {
+        return date(this.timestamp + minutes * 1000 * 60);
+    }
+
+    public addHours (hours: number): MidaDate {
+        return date(this.timestamp + hours * 1000 * 60 * 60);
+    }
+
     public subtract (milliseconds: number): MidaDate {
         return date(this.timestamp - milliseconds);
+    }
+
+    public subtractMinutes (minutes: number): MidaDate {
+        return date(this.timestamp - minutes * 1000 * 60);
+    }
+
+    public subtractHours (hours: number): MidaDate {
+        return date(this.timestamp - hours * 1000 * 60 * 60);
     }
 
     public differenceInMinutes (date: MidaDate): number {

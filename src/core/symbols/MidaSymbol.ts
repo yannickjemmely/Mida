@@ -120,8 +120,8 @@ export class MidaSymbol {
     }
 
     /** Used to get the symbol current average price */
-    public async getAveragePrice (): Promise<MidaDecimal> {
-        return this.#tradingAccount.getSymbolAveragePrice(this.#symbol);
+    public async getAverage (): Promise<MidaDecimal> {
+        return this.#tradingAccount.getSymbolAverage(this.#symbol);
     }
 
     /** Indicates if the symbol market is open */
