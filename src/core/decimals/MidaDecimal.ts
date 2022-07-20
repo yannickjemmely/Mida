@@ -48,7 +48,7 @@ export class MidaDecimal {
         }
 
         this.#value = BigInt((isNegative ? "-" : "") + integers + decimals.padEnd(MidaDecimal.#decimals, "0").slice(0, MidaDecimal.#decimals)) +
-            BigInt(MidaDecimal.#rounded && Number(decimals[MidaDecimal.#decimals]) >= 5);
+            BigInt((isNegative ? "-" : "") + (MidaDecimal.#rounded && Number(decimals[MidaDecimal.#decimals]) >= 5 ? "1" : "0"));
     }
 
     public add (operand: MidaDecimalConvertible): MidaDecimal {
@@ -157,7 +157,7 @@ export class MidaDecimal {
             integers = integers.replace("-", "");
         }
 
-        return (isNegative ? "-" : "") + `${integers}.${decimals}`.replace(/\.$/, "");
+        return `${isNegative ? "-" : ""}${integers}.${decimals}`.replace(/\.$/, "");
     }
 }
 
