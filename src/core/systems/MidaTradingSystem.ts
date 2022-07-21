@@ -23,7 +23,7 @@
 import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
 import { MidaEvent, } from "#events/MidaEvent";
 import { MidaEventListener, } from "#events/MidaEventListener";
-import { info, fatal, } from "#loggers/MidaLogger";
+import { fatal, info, } from "#loggers/MidaLogger";
 import { filterExecutedOrders, MidaOrder, } from "#orders/MidaOrder";
 import { MidaOrderDirectives, } from "#orders/MidaOrderDirectives";
 import { MidaPeriod, } from "#periods/MidaPeriod";
@@ -40,6 +40,7 @@ import { GenericObject, } from "#utilities/GenericObject";
 import { MidaMarketWatcher, } from "#watchers/MidaMarketWatcher";
 import { MidaMarketWatcherTarget, } from "#watchers/MidaMarketWatcherTarget";
 import { MidaPosition, } from "#positions/MidaPosition";
+import { MidaQueue, } from "#queues/MidaQueue";
 
 export abstract class MidaTradingSystem {
     readonly #name: string;
@@ -49,10 +50,9 @@ export abstract class MidaTradingSystem {
     #isOperative: boolean;
     readonly #orders: MidaOrder[];
     readonly #capturedTicks: MidaTick[];
-    readonly #tickEventQueue: MidaTick[];
-    #tickEventIsLocked: boolean;
-    readonly #periodUpdateEventQueue: MidaPeriod[];
-    #periodUpdateEventIsLocked: boolean;
+    readonly #capturedPeriods: MidaPeriod[];
+    readonly #tickEventQueue: MidaQueue<MidaTick>;
+    readonly #periodUpdateEventQueue: MidaQueue<MidaPeriod>;
     #isConfigured: boolean;
     readonly #marketWatcher: MidaMarketWatcher;
     readonly #components: MidaTradingSystemComponent[];
@@ -71,10 +71,9 @@ export abstract class MidaTradingSystem {
         this.#isOperative = false;
         this.#orders = [];
         this.#capturedTicks = [];
-        this.#tickEventQueue = [];
-        this.#tickEventIsLocked = false;
-        this.#periodUpdateEventQueue = [];
-        this.#periodUpdateEventIsLocked = false;
+        this.#capturedPeriods = [];
+        this.#tickEventQueue = new MidaQueue({ worker: (tick: MidaTick): Promise<void> => this.onTick(tick), });
+        this.#periodUpdateEventQueue = new MidaQueue({ worker: (period: MidaPeriod): Promise<void> => this.onPeriodUpdate(period), });
         this.#isConfigured = false;
         this.#marketWatcher = new MidaMarketWatcher({ tradingAccount, });
         this.#components = [];
@@ -117,6 +116,10 @@ export abstract class MidaTradingSystem {
         return [ ...this.#capturedTicks, ];
     }
 
+    protected get capturedPeriods (): MidaPeriod[] {
+        return [ ...this.#capturedPeriods, ];
+    }
+
     protected get marketWatcher (): MidaMarketWatcher {
         return this.#marketWatcher;
     }
@@ -144,8 +147,6 @@ export abstract class MidaTradingSystem {
             this.#isConfigured = true;
         }
 
-        this.#isOperative = true;
-
         try {
             await this.onStart();
         }
@@ -155,10 +156,10 @@ export abstract class MidaTradingSystem {
             return;
         }
 
-        this.notifyListeners("start");
-
-        // Activate market watcher
+        this.#isOperative = true;
         this.#marketWatcher.isActive = true;
+
+        this.notifyListeners("start");
     }
 
     public async stop (): Promise<void> {
@@ -167,20 +168,16 @@ export abstract class MidaTradingSystem {
         }
 
         this.#isOperative = false;
+        this.#marketWatcher.isActive = false;
 
         try {
             await this.onStop();
-
-            return;
         }
         catch (error: unknown) {
             console.log(error);
         }
 
         this.notifyListeners("stop");
-
-        // Deactivate market watcher
-        this.#marketWatcher.isActive = false;
     }
 
     public async useComponent (component: MidaTradingSystemComponent): Promise<MidaTradingSystemComponent> {
@@ -315,8 +312,11 @@ export abstract class MidaTradingSystem {
         return order;
     }
 
-    protected notifyListeners (type: string, descriptor?: GenericObject): void {
-        this.#emitter.notifyListeners(type, descriptor);
+    protected notifyListeners (type: string, descriptor: GenericObject = {}): void {
+        this.#emitter.notifyListeners(type, {
+            tradingSystem: this,
+            ...descriptor,
+        });
     }
 
     #onTick (tick: MidaTick): void {
@@ -325,94 +325,16 @@ export abstract class MidaTradingSystem {
         }
 
         this.#capturedTicks.push(tick);
-        this.#onTickAsync(tick);
-    }
-
-    async #onTickAsync (tick: MidaTick, bypassLock: boolean = false): Promise<void> {
-        if (this.#tickEventIsLocked && !bypassLock) {
-            this.#tickEventQueue.push(tick);
-
-            return;
-        }
-
-        this.#tickEventIsLocked = true;
-
-        // <components>
-        for (const component of this.enabledComponents) {
-            // <tick-hook>
-            try {
-                await component.onTick(tick);
-            }
-            catch (error: unknown) {
-                console.error(error);
-            }
-            // </tick-hook>
-        }
-
-        for (const component of this.enabledComponents) {
-            // <late-tick-hook>
-            try {
-                await component.onLateTick(tick);
-            }
-            catch (error: unknown) {
-                console.error(error);
-            }
-            // </late-tick-hook>
-        }
-        // </components>
-
-        try {
-            // <tick-hook>
-            await this.onTick(tick);
-            // </tick-hook>
-        }
-        catch (error: unknown) {
-            console.error(error);
-        }
-
-        const nextTick: MidaTick | undefined = this.#tickEventQueue.shift();
-
-        if (nextTick) {
-            this.#onTickAsync(nextTick, true);
-        }
-        else {
-            this.#tickEventIsLocked = false;
-        }
+        this.#tickEventQueue.add(tick);
     }
 
     #onPeriodUpdate (period: MidaPeriod): void {
-        this.#onPeriodUpdateAsync(period);
-    }
-
-    async #onPeriodUpdateAsync (period: MidaPeriod, bypassLock: boolean = false): Promise<void> {
-        if (this.#periodUpdateEventIsLocked && !bypassLock) {
-            this.#periodUpdateEventQueue.push(period);
-
-            return;
-        }
-
-        this.#periodUpdateEventIsLocked = true;
-
-        try {
-            // <period-update-hook>
-            await this.onPeriodUpdate(period);
-            // </period-update-hook>
-        }
-        catch (error: unknown) {
-            console.error(error);
-        }
-
-        const nextPeriod: MidaPeriod | undefined = this.#periodUpdateEventQueue.shift();
-
-        if (nextPeriod) {
-            this.#onPeriodUpdateAsync(nextPeriod, true);
-        }
-        else {
-            this.#periodUpdateEventIsLocked = false;
-        }
+        this.#periodUpdateEventQueue.add(period);
     }
 
     #onPeriodClose (period: MidaPeriod): void {
+        this.#capturedPeriods.push(period);
+
         // <period-close-hook>
         try {
             this.onPeriodClose(period);
