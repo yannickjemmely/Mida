@@ -244,8 +244,8 @@ await myPosition.changeProtection({
 </details>
 
 ### Decimals
-Decimal numbers and calculations are accurately represented by the `MidaDecimal` API.
-Computers can only natively store integers, so they need some way of representing
+Decimal numbers and calculations are accurately represented by the `MidaDecimal` API,
+computers can only natively store integers, so they need some way of representing
 decimal numbers. This representation is not perfectly accurate. This is why, in
 most programming languages `0.1 + 0.2 != 0.3`, for financial and monetary calculations
 this can lead to unrecoverable mistakes.
@@ -253,16 +253,16 @@ this can lead to unrecoverable mistakes.
 ```javascript
 import { decimal, } from "@reiryoku/mida";
 
-0.1 + 0.2; // >= 0.30000000000000004
-decimal(0.1).add(0.2); // <= 0.3
-decimal("0.1").add("0.2"); // <= 0.3
+0.1 + 0.2; // 0.30000000000000004
+decimal(0.1).add(0.2); // 0.3
+decimal("0.1").add("0.2"); // 0.3
 ```
 
 Every calculation under the hood is made using decimals and every native number
 passed to Mida is internally converted to decimal, input values in the Mida APIs
 such as a limit price can be expressed as a `MidaDecimalConvertible` which is an alias
-for `MidaDecimal | string | number`, the input values are internally converted to `MidaDecimal`.
-And all Mida interfaces exposes decimal numbers unless otherwise stated.
+for `MidaDecimal | string | number`, the input values are internally converted to `MidaDecimal`
+and all Mida interfaces exposes decimal numbers unless otherwise stated.
 
 Read the [Mida decimals documentation](https://www.mida.org/documentation/essentials/decimals.html).
 
