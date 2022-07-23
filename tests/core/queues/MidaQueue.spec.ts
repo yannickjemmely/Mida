@@ -20,36 +20,30 @@
  * THE SOFTWARE.
 */
 
-import { MidaDate, } from "#dates/MidaDate";
+import { MidaQueue, } from "#queues/MidaQueue";
+import { wait, } from "#utilities/MidaUtilities";
 
-describe("MidaDate", () => {
-    describe(".timestamp", () => {
-        it("is equal to native date timestamp", () => {
-            const date: Date = new Date();
+describe("MidaQueue", () => {
+    describe(".add", () => {
+        it("processes one item at time", async () => {
+            let counter: number = 0;
+            const queue: MidaQueue<number> = new MidaQueue({
+                worker: async (item: number): Promise<void> => {
+                    await wait(500);
+                    counter = item;
+                },
+            });
 
-            expect(new MidaDate(date).timestamp).toBe(date.getTime());
-        });
-    });
+            queue.add(1);
+            queue.add(2);
+            queue.add(3);
 
-    describe(".iso", () => {
-        it("is equal to native date iso string", () => {
-            const date: Date = new Date();
-
-            expect(new MidaDate(date).iso).toBe(date.toISOString());
-        });
-    });
-
-    describe(".equals", () => {
-        it("returns true when compared to instance of native date", () => {
-            const date: Date = new Date();
-
-            expect(new MidaDate(date).equals(date)).toBe(true);
-        });
-
-        it("returns true when compared to cloned value", () => {
-            const date: MidaDate = new MidaDate();
-
-            expect(date.equals(new MidaDate(date))).toBe(true);
+            await wait(550);
+            expect(counter).toBe(1);
+            await wait(550);
+            expect(counter).toBe(2);
+            await wait(550);
+            expect(counter).toBe(3);
         });
     });
 });

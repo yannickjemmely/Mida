@@ -21,7 +21,7 @@
 */
 
 import { MidaDate, } from "#dates/MidaDate";
-import { MidaDecimal, } from "#decimals/MidaDecimal";
+import { decimal, } from "#decimals/MidaDecimal";
 import { MidaPeriod, } from "#periods/MidaPeriod";
 import { MidaQuotationPrice, } from "#quotations/MidaQuotationPrice";
 import { MidaTimeframe, } from "#timeframes/MidaTimeframe";
@@ -31,11 +31,11 @@ describe("MidaSymbolPeriod", () => {
         symbol: "TEST",
         startDate: new MidaDate(),
         quotationPrice: MidaQuotationPrice.BID,
-        open: new MidaDecimal(10),
-        high: new MidaDecimal(50),
-        low: new MidaDecimal(3),
-        close: new MidaDecimal(25),
-        volume: new MidaDecimal(3232),
+        open: decimal(10),
+        high: decimal(50),
+        low: decimal(3),
+        close: decimal(25),
+        volume: decimal(3232),
         timeframe: MidaTimeframe.H4,
     });
 
