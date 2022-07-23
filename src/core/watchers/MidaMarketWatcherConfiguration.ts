@@ -22,6 +22,6 @@
 
 import { MidaMarketWatcherDirectives, } from "#watchers/MidaMarketWatcherDirectives";
 
-export type MidaMarketWatcherTarget = {
+export type MidaMarketWatcherConfiguration = {
     [symbol: string]: MidaMarketWatcherDirectives;
 };

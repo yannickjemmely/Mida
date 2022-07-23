@@ -31,6 +31,7 @@ import { GenericObject, } from "#utilities/GenericObject";
 import { mergeOptions, } from "#utilities/MidaUtilities";
 import { MidaMarketWatcherDirectives, } from "#watchers/MidaMarketWatcherDirectives";
 import { MidaMarketWatcherParameters, } from "#watchers/MidaMarketWatcherParameters";
+import { MidaMarketWatcherConfiguration, } from "#watchers/MidaMarketWatcherConfiguration";
 
 export class MidaMarketWatcher {
     readonly #tradingAccount: MidaTradingAccount;
@@ -66,6 +67,16 @@ export class MidaMarketWatcher {
 
     public get watchedSymbols (): string[] {
         return [ ...this.#watchedSymbols.keys(), ];
+    }
+
+    public get configuration (): MidaMarketWatcherConfiguration {
+        const configuration: MidaMarketWatcherConfiguration = {};
+
+        for (const symbol of this.watchedSymbols) {
+            configuration[symbol] = this.getSymbolDirectives(symbol) as MidaMarketWatcherDirectives;
+        }
+
+        return configuration;
     }
 
     public getSymbolDirectives (symbol: string): MidaMarketWatcherDirectives | undefined {

@@ -38,7 +38,7 @@ import {
 import { MidaEmitter, } from "#utilities/emitters/MidaEmitter";
 import { GenericObject, } from "#utilities/GenericObject";
 import { MidaMarketWatcher, } from "#watchers/MidaMarketWatcher";
-import { MidaMarketWatcherTarget, } from "#watchers/MidaMarketWatcherTarget";
+import { MidaMarketWatcherConfiguration, } from "#watchers/MidaMarketWatcherConfiguration";
 import { MidaPosition, } from "#positions/MidaPosition";
 import { MidaQueue, } from "#queues/MidaQueue";
 
@@ -233,7 +233,7 @@ export abstract class MidaTradingSystem {
 
     protected abstract configure (): Promise<void>;
 
-    protected watched (): MidaMarketWatcherTarget {
+    protected watched (): MidaMarketWatcherConfiguration {
         return {};
     }
 
@@ -347,7 +347,7 @@ export abstract class MidaTradingSystem {
 
     async #configure (): Promise<void> {
         // <market-watcher>
-        const watched: MidaMarketWatcherTarget = this.watched();
+        const watched: MidaMarketWatcherConfiguration = this.watched();
 
         for (const symbol in watched) {
             if (watched.hasOwnProperty(symbol)) {
