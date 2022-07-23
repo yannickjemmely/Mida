@@ -28,27 +28,25 @@ export class MidaDecimal {
     readonly #value: bigint;
 
     public constructor (value: MidaDecimalConvertible = 0) {
-        let [ integers, decimals, ] = String(value).split(".").concat("");
-        let isNegative: boolean = false;
+        const parts: string[] = String(value).split(".").concat("");
+        const [
+            integerPart,
+            decimalPart,
+            isNegative,
+        ]: [
+            string,
+            string,
+            boolean,
+        ] = MidaDecimal.#normalizeParts(parts[0], parts[1]);
 
-        if (decimals.indexOf("-") !== -1) {
-            isNegative = true;
-            decimals = decimals.replace("-", "0");
-        }
-
-        if (integers.indexOf("-") !== -1) {
-            isNegative = true;
-            integers = integers.replace("-", "");
-        }
-
-        if (!Number.isFinite(Number(integers)) || !Number.isFinite(Number(decimals))) {
+        if (!Number.isFinite(Number(integerPart)) || !Number.isFinite(Number(decimalPart))) {
             fatal(`Invalid decimal "${value}"`);
 
             throw new Error();
         }
 
-        this.#value = BigInt((isNegative ? "-" : "") + integers + decimals.padEnd(MidaDecimal.#decimals, "0").slice(0, MidaDecimal.#decimals)) +
-            BigInt((isNegative ? "-" : "") + (MidaDecimal.#rounded && Number(decimals[MidaDecimal.#decimals]) >= 5 ? "1" : "0"));
+        this.#value = BigInt((isNegative ? "-" : "") + integerPart + decimalPart.padEnd(MidaDecimal.#decimals, "0").slice(0, MidaDecimal.#decimals)) +
+            BigInt((isNegative ? "-" : "") + (MidaDecimal.#rounded && Number(decimalPart[MidaDecimal.#decimals]) >= 5 ? "1" : "0"));
     }
 
     public add (operand: MidaDecimalConvertible): MidaDecimal {
@@ -143,21 +141,39 @@ export class MidaDecimal {
 
     static #toString (value: bigint): string {
         const descriptor: string = value.toString().padStart(MidaDecimal.#decimals + 1, "0");
-        let integers: string = descriptor.slice(0, -MidaDecimal.#decimals);
-        let decimals: string = descriptor.slice(-MidaDecimal.#decimals).replace(/\.?0+$/, "");
+        const [
+            integerPart,
+            decimalPart,
+            isNegative,
+        ]: [
+            string,
+            string,
+            boolean,
+        ] = MidaDecimal.#normalizeParts(descriptor.slice(0, -MidaDecimal.#decimals), descriptor.slice(-MidaDecimal.#decimals).replace(/\.?0+$/, ""));
+
+        return `${isNegative ? "-" : ""}${integerPart}.${decimalPart}`.replace(/\.$/, "");
+    }
+
+    static #normalizeParts (integerPart: string, decimalPart: string): [ string, string, boolean, ] {
         let isNegative: boolean = false;
+        let normalizedIntegerPart: string = integerPart;
+        let normalizedDecimalPart: string = decimalPart;
 
-        if (decimals.indexOf("-") !== -1) {
+        if (integerPart.indexOf("-") !== -1) {
             isNegative = true;
-            decimals = decimals.replace("-", "0");
+            normalizedIntegerPart = integerPart.replace("-", "");
         }
 
-        if (integers.indexOf("-") !== -1) {
+        if (decimalPart.indexOf("-") !== -1) {
             isNegative = true;
-            integers = integers.replace("-", "");
+            normalizedDecimalPart = decimalPart.replace("-", "0");
         }
 
-        return `${isNegative ? "-" : ""}${integers}.${decimals}`.replace(/\.$/, "");
+        return [
+            normalizedIntegerPart,
+            normalizedDecimalPart,
+            isNegative,
+        ];
     }
 }
 
