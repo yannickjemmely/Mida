@@ -47,6 +47,7 @@ to get help you with your first steps.
     * [Account login](#account-login)
     * [Balance, equity and margin](#balance-equity-and-margin)
     * [Orders, deals and positions](#orders-deals-and-positions)
+    * [Decimals](#decimals)
     * [Symbols and assets](#symbols-and-assets)
     * [Ticks and candlesticks](#ticks-and-candlesticks)
     * [Trading systems](#trading-systems)
@@ -89,8 +90,8 @@ How to login into a Binance Spot account.
 import { login, } from "@reiryoku/mida";
 
 const myAccount = await login("Binance/Spot", {
-    apiKey: "...",
-    apiSecret: "...",
+    apiKey: "***",
+    apiSecret: "***",
 });
 ```
 Read [how to use Binance](https://www.mida.org/posts/how-to-use-binance/) to get the `apiKey` and `apiSecret` credentials.
@@ -100,10 +101,10 @@ How to login into a cTrader account.
 import { login, } from "@reiryoku/mida";
 
 const myAccount = await login("cTrader", {
-    clientId: "...",
-    clientSecret: "...",
-    accessToken: "...",
-    cTraderBrokerAccountId: "...",
+    clientId: "***",
+    clientSecret: "***",
+    accessToken: "***",
+    cTraderBrokerAccountId: "***",
 });
 ```
 Read [how to use cTrader](https://www.mida.org/posts/how-to-use-ctrader/) to get the `clientId`, `clientSecret`, `accessToken` and `cTraderBrokerAccountId` credentials.
@@ -202,8 +203,8 @@ const myOrder = await myAccount.placeOrder({
     direction: MidaOrderDirection.BUY,
     volume: 0.1,
     protection: {
-        stopLoss: lastBid - 0.0010, // <= SL 10 pips
-        takeProfit: lastBid + 0.0030, // <= TP 30 pips
+        stopLoss: lastBid.subtract(0.0010), // <= SL 10 pips
+        takeProfit: lastBid.add(0.0030), // <= TP 30 pips
     },
 });
 ```
@@ -241,6 +242,29 @@ await myPosition.changeProtection({
 ```
 
 </details>
+
+### Decimals
+Decimal numbers and calculations are accurately represented by the `MidaDecimal` API.
+Computers can only natively store integers, so they need some way of representing
+decimal numbers. This representation is not perfectly accurate. This is why, in
+most programming languages `0.1 + 0.2 != 0.3`, for financial and monetary calculations
+this can lead to unrecoverable mistakes.
+
+```javascript
+import { decimal, } from "@reiryoku/mida";
+
+0.1 + 0.2; // >= 0.30000000000000004
+decimal(0.1).add(0.2); // <= 0.3
+decimal("0.1").add("0.2"); // <= 0.3
+```
+
+Every calculation under the hood is made using decimals and every native number
+passed to Mida is internally converted to decimal, input values in the Mida APIs
+such as a limit price can be expressed as a `MidaDecimalConvertible` which is an alias
+for `MidaDecimal | string | number`, the input values are internally converted to `MidaDecimal`.
+And all Mida interfaces exposes decimal numbers unless otherwise stated.
+
+Read the [Mida decimals documentation](https://www.mida.org/documentation/essentials/decimals.html).
 
 ### Symbols and assets
 How to retrieve all symbols available for your trading account.
@@ -358,10 +382,19 @@ class MyTradingSystem extends MidaTradingSystem {
         });
     }
 
+    watched () {
+        return {
+            "BTCUSDT": {
+                watchTicks: true,
+                watchPeriods: true,
+                timeframes: [ MidaTimeframe.H1, ],
+            },
+        };
+    }
+
     async configure () {
-        // Every trading system has an integrated market watcher
-        await this.watchTicks("BTCUSDT");
-        await this.watchPeriods("BTCUSDT", MidaTimeframe.H1);
+        // Called once per instance before the first startup
+        // can be used as async constructor
     }
 
     async onStart () {
@@ -427,7 +460,7 @@ const candlesticks = await myAccount.getSymbolPeriods("BTCUSDT", MidaTimeframe.H
 const closePrices = candlesticks.map((candlestick) => candlestick.close);
 
 // Calculate RSI on close prices, pass values from oldest to newest
-const rsi = await Mida.createIndicator("RSI").calculate(closePrices);
+const rsi = await Mida.createIndicator("RSI", { period: 14, }).calculate(closePrices);
 
 // Values are from oldest to newest
 console.log(rsi);
