@@ -85,6 +85,10 @@ export class MidaDecimal {
         return this.lessThan(operand) || this.equals(operand);
     }
 
+    public toNumber (): number {
+        return Number(this.toString());
+    }
+
     public toString (): string {
         return MidaDecimal.#toString(this.#value);
     }
