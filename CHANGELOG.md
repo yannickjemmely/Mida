@@ -1,4 +1,5 @@
 ### Features
+* Update documentation [#56](https://github.com/Reiryoku-Technologies/Mida/pull/56)
 * Create `toNumber()` method for decimals [#55](https://github.com/Reiryoku-Technologies/Mida/pull/55) | https://github.com/Reiryoku-Technologies/Mida/issues/54
 
 2022.1.0 - 23-07-2022
