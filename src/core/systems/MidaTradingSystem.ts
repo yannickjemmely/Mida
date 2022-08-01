@@ -293,19 +293,45 @@ export abstract class MidaTradingSystem {
     protected async placeOrder (directives: MidaOrderDirectives): Promise<MidaOrder | undefined> {
         info(`Trading system "${this.name}" | Placing ${directives.direction} order`);
 
-        const finalDirectives: MidaOrderDirectives | undefined = await this.onBeforePlaceOrder(directives);
+        let finalDirectives: MidaOrderDirectives | undefined;
+
+        try {
+            finalDirectives = await this.onBeforePlaceOrder(directives);
+        }
+        catch (error) {
+            console.log(error);
+        }
 
         if (!finalDirectives) {
             return undefined;
         }
 
         finalDirectives.listeners = finalDirectives.listeners ?? {};
+
         const onExecute: MidaEventListener | undefined = finalDirectives.listeners.execute;
+        let impactPositionPromise: Promise<void> | undefined = undefined;
+
         finalDirectives.listeners.execute = async (event: MidaEvent): Promise<void> => {
-            this.onImpactPosition(await order.getPosition() as MidaPosition);
+            const position: MidaPosition | undefined = await event.descriptor.order.getPosition();
+
+            if (position) {
+                // <position-impact-hook>
+                impactPositionPromise = this.onImpactPosition(position);
+
+                impactPositionPromise.catch((error) => console.log(error));
+                // </position-impact-hook>
+            }
+
             onExecute?.(event);
         };
+
         const order: MidaOrder = await this.#tradingAccount.placeOrder(finalDirectives);
+
+        if (impactPositionPromise) {
+            // Used to wait for the position impact hook to resolve if the order has been resolved as executed
+            // this depends also on the "resolverEvents" order directive
+            await impactPositionPromise;
+        }
 
         this.#orders.push(order);
 
@@ -314,8 +340,8 @@ export abstract class MidaTradingSystem {
 
     protected notifyListeners (type: string, descriptor: GenericObject = {}): void {
         this.#emitter.notifyListeners(type, {
-            tradingSystem: this,
             ...descriptor,
+            tradingSystem: this,
         });
     }
 

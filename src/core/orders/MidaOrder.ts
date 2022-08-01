@@ -38,6 +38,7 @@ import { MidaPosition, } from "#positions/MidaPosition";
 import { filterExecutedTrades, MidaTrade, } from "#trades/MidaTrade";
 import { MidaEmitter, } from "#utilities/emitters/MidaEmitter";
 import { createClosedPosition, } from "#utilities/MidaUtilities";
+import { GenericObject, } from "#utilities/GenericObject";
 
 /** Represents an order */
 export abstract class MidaOrder {
@@ -305,6 +306,13 @@ export abstract class MidaOrder {
         this.#emitter.removeEventListener(uuid);
     }
 
+    protected notifyListeners (type: string, descriptor: GenericObject = {}): void {
+        this.#emitter.notifyListeners(type, {
+            ...descriptor,
+            order: this,
+        });
+    }
+
     /* *** *** *** Reiryoku Technologies *** *** *** */
 
     protected onStatusChange (status: MidaOrderStatus): void {
@@ -318,38 +326,38 @@ export abstract class MidaOrder {
 
         switch (status) {
             case MidaOrderStatus.REJECTED: {
-                this.#emitter.notifyListeners("reject");
+                this.notifyListeners("reject");
 
                 break;
             }
             case MidaOrderStatus.ACCEPTED: {
-                this.#emitter.notifyListeners("accept");
+                this.notifyListeners("accept");
 
                 break;
             }
             case MidaOrderStatus.PENDING: {
-                this.#emitter.notifyListeners("pending");
+                this.notifyListeners("pending");
 
                 break;
             }
             case MidaOrderStatus.CANCELLED: {
-                this.#emitter.notifyListeners("cancel");
+                this.notifyListeners("cancel");
 
                 break;
             }
             case MidaOrderStatus.EXECUTED: {
-                this.#emitter.notifyListeners("execute");
+                this.notifyListeners("execute");
 
                 break;
             }
             case MidaOrderStatus.EXPIRED: {
-                this.#emitter.notifyListeners("expire");
+                this.notifyListeners("expire");
 
                 break;
             }
         }
 
-        this.#emitter.notifyListeners("status-change", { status, previousStatus, });
+        this.notifyListeners("status-change", { status, previousStatus, });
         info(`Order ${this.id} | status changed from ${previousStatus} to ${status}`);
     }
 
@@ -367,7 +375,7 @@ export abstract class MidaOrder {
             this.#stopPrice = price;
         }
 
-        this.#emitter.notifyListeners("pending-price-change", { price, previousPrice, });
+        this.notifyListeners("pending-price-change", { price, previousPrice, });
         info(`Order ${this.id} | pending price changed from ${previousPrice} to ${price}`);
     }
 
@@ -380,7 +388,7 @@ export abstract class MidaOrder {
 
         this.#requestedVolume = volume;
 
-        this.#emitter.notifyListeners("pending-volume-change", { volume, previousVolume, });
+        this.notifyListeners("pending-volume-change", { volume, previousVolume, });
         info(`Order ${this.id} | pending volume changed from ${previousVolume} to ${volume}`);
     }
 
@@ -393,13 +401,13 @@ export abstract class MidaOrder {
 
         this.#expirationDate = date;
 
-        this.#emitter.notifyListeners("expiration-date-change", { date, previousDate, });
+        this.notifyListeners("expiration-date-change", { date, previousDate, });
         info(`Order ${this.id} | expiration date changed from ${previousDate} to ${date}`);
     }
 
     protected onTrade (trade: MidaTrade): void {
         this.#trades.push(trade);
-        this.#emitter.notifyListeners("trade", { trade, });
+        this.notifyListeners("trade", { trade, });
         info(`Order ${this.id} | trade ${trade.id} executed`);
     }
 }

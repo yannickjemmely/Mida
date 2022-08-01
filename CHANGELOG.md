@@ -3,6 +3,9 @@
 * Update documentation [#56](https://github.com/Reiryoku-Technologies/Mida/pull/56)
 * Create `toNumber()` method for decimals [#55](https://github.com/Reiryoku-Technologies/Mida/pull/55) | https://github.com/Reiryoku-Technologies/Mida/issues/54
 
+### Bug fixes
+* Fix error thrown by the `onImpactPosition()` trading system hook [#60](https://github.com/Reiryoku-Technologies/Mida/pull/60)
+
 2022.1.0 - 23-07-2022
 ===================
 ### Features
