@@ -70,6 +70,8 @@ export abstract class MidaIndicator {
         return values[values.length - 1];
     }
 
+    public abstract calculate (input: MidaIndicatorIo[]): Promise<MidaIndicatorIo[]>;
+
     public async next (input: MidaIndicatorIo[]): Promise<MidaIndicatorIo[]> {
         const inputs: MidaIndicatorIo[] = [ ...this.inputs, ...input, ];
         const value: MidaIndicatorIo[] = await this.calculate(inputs);
@@ -80,7 +82,10 @@ export abstract class MidaIndicator {
         return value;
     }
 
-    public abstract calculate (input: MidaIndicatorIo[]): Promise<MidaIndicatorIo[]>;
+    public clear (): void {
+        this.#inputs = [];
+        this.#values = [];
+    }
 
     /* *** *** *** Reiryoku Technologies *** *** *** */
 
