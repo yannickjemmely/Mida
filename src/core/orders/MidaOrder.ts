@@ -59,6 +59,7 @@ export abstract class MidaOrder {
     #positionId: string;
     #rejection?: MidaOrderRejection;
     readonly #isStopOut: boolean;
+    readonly #label?: string;
     readonly #emitter: MidaEmitter;
 
     protected constructor ({
@@ -79,6 +80,7 @@ export abstract class MidaOrder {
         positionId,
         rejection,
         isStopOut,
+        label,
     }: MidaOrderParameters) {
         this.#id = id;
         this.#tradingAccount = tradingAccount;
@@ -97,6 +99,7 @@ export abstract class MidaOrder {
         this.#positionId = positionId ?? "";
         this.#rejection = rejection;
         this.#isStopOut = isStopOut ?? false;
+        this.#label = label;
         this.#emitter = new MidaEmitter();
     }
 
@@ -186,6 +189,10 @@ export abstract class MidaOrder {
 
     public get isStopOut (): boolean {
         return this.#isStopOut;
+    }
+
+    public get label (): string | undefined {
+        return this.#label;
     }
 
     public get isExecuted (): boolean {
@@ -358,7 +365,7 @@ export abstract class MidaOrder {
         }
 
         this.notifyListeners("status-change", { status, previousStatus, });
-        info(`Order ${this.id} | status changed from ${previousStatus} to ${status}`);
+        info(`Order ${this.id} | Status changed from ${previousStatus} to ${status}`);
     }
 
     protected onPendingPriceChange (price: MidaDecimal): void {
@@ -376,7 +383,7 @@ export abstract class MidaOrder {
         }
 
         this.notifyListeners("pending-price-change", { price, previousPrice, });
-        info(`Order ${this.id} | pending price changed from ${previousPrice} to ${price}`);
+        info(`Order ${this.id} | Pending price changed from ${previousPrice} to ${price}`);
     }
 
     protected onPendingVolumeChange (volume: MidaDecimal): void {
@@ -389,7 +396,7 @@ export abstract class MidaOrder {
         this.#requestedVolume = volume;
 
         this.notifyListeners("pending-volume-change", { volume, previousVolume, });
-        info(`Order ${this.id} | pending volume changed from ${previousVolume} to ${volume}`);
+        info(`Order ${this.id} | Pending volume changed from ${previousVolume} to ${volume}`);
     }
 
     protected onExpirationDateChange (date: MidaDate | undefined): void {
@@ -402,13 +409,13 @@ export abstract class MidaOrder {
         this.#expirationDate = date;
 
         this.notifyListeners("expiration-date-change", { date, previousDate, });
-        info(`Order ${this.id} | expiration date changed from ${previousDate} to ${date}`);
+        info(`Order ${this.id} | Expiration date changed from ${previousDate} to ${date}`);
     }
 
     protected onTrade (trade: MidaTrade): void {
         this.#trades.push(trade);
         this.notifyListeners("trade", { trade, });
-        info(`Order ${this.id} | trade ${trade.id} executed`);
+        info(`Order ${this.id} | Trade ${trade.id} executed`);
     }
 }
 

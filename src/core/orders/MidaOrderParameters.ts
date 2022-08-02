@@ -53,4 +53,5 @@ export type MidaOrderParameters = {
     positionId?: string;
     rejection?: MidaOrderRejection;
     isStopOut?: boolean;
+    label?: string;
 };

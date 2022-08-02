@@ -1,4 +1,5 @@
 ### Features
+* Add `label` field to `MidaOrder` to represent the label indicated in the order directives [#63](https://github.com/Reiryoku-Technologies/Mida/pull/63)
 * Create a `clear()` method for clearing the internal state of a `MidaIndicator` [#62](https://github.com/Reiryoku-Technologies/Mida/pull/62)
 * Update documentation [#56](https://github.com/Reiryoku-Technologies/Mida/pull/56)
 * Create `toNumber()` method for decimals [#55](https://github.com/Reiryoku-Technologies/Mida/pull/55) | https://github.com/Reiryoku-Technologies/Mida/issues/54
