@@ -40,4 +40,24 @@ describe("MidaDecimal", () => {
             expect(decimal(0.02).multiply(-0.02).toString()).toBe("-0.0004");
         });
     });
+
+    describe(".low", () => {
+        it("returns the lowest value", async () => {
+            expect(MidaDecimal.min(
+                0.9, 0.8, 0.7,
+                0.6, 0.5, 0.4,
+                0.3, 0.2, 0.1
+            ).toString()).toBe("0.1");
+        });
+    });
+
+    describe(".max", () => {
+        it("returns the highest value", async () => {
+            expect(MidaDecimal.max(
+                0.1, 0.2, 0.3,
+                0.4, 0.5, 0.6,
+                0.7, 0.8, 0.9
+            ).toString()).toBe("0.9");
+        });
+    });
 });

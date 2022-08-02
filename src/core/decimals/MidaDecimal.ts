@@ -111,11 +111,11 @@ export class MidaDecimal {
         return operand;
     }
 
-    public static min (...operands: MidaDecimal[]): MidaDecimal {
-        let min: MidaDecimal = operands[0];
+    public static min (...operands: MidaDecimalConvertible[]): MidaDecimal {
+        let min: MidaDecimal = decimal(operands[0]);
 
         for (let i: number = 1; i < operands.length; ++i) {
-            const operand: MidaDecimal = operands[0];
+            const operand: MidaDecimal = decimal(operands[i]);
 
             if (operand.lessThan(min)) {
                 min = operand;
@@ -125,11 +125,11 @@ export class MidaDecimal {
         return min;
     }
 
-    public static max (...operands: MidaDecimal[]): MidaDecimal {
-        let max: MidaDecimal = operands[0];
+    public static max (...operands: MidaDecimalConvertible[]): MidaDecimal {
+        let max: MidaDecimal = decimal(operands[0]);
 
         for (let i: number = 1; i < operands.length; ++i) {
-            const operand: MidaDecimal = operands[0];
+            const operand: MidaDecimal = decimal(operands[i]);
 
             if (operand.greaterThan(max)) {
                 max = operand;

@@ -5,6 +5,7 @@
 * Create `toNumber()` method for decimals [#55](https://github.com/Reiryoku-Technologies/Mida/pull/55) | https://github.com/Reiryoku-Technologies/Mida/issues/54
 
 ### Bug fixes
+* Correctly calculate minimum and maximum values on `MidaDecimal.min()` and `MidaDecimal.max()` [#64](https://github.com/Reiryoku-Technologies/Mida/pull/64)
 * Fix error thrown by the `onImpactPosition()` trading system hook [#60](https://github.com/Reiryoku-Technologies/Mida/pull/60)
 
 2022.1.0 - 23-07-2022
