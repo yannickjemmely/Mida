@@ -50,7 +50,7 @@ export const shuffleArray = (array: any[]): any[] => {
     return array;
 };
 
-/** Used to generate a random integer in an inclusive range */
+/** Used to generate a random integer (inclusive range) */
 export const generateInRandomInteger = (min: number, max: number): number => Math.floor(Math.random() * (max - min + 1)) + min;
 
 /** Used to merge two options objects */
@@ -124,4 +124,19 @@ export const createClosedPosition = (id: string, tradingAccount: MidaTradingAcco
             return decimal(0);
         }
     }();
+};
+
+/** Used to get all the property names of an object */
+export const getObjectPropertyNames = (object: GenericObject): string[] => {
+    const names: string[] = [];
+    let prototype: any = object;
+
+    do {
+        names.push(...Object.getOwnPropertyNames(prototype));
+
+        prototype = Object.getPrototypeOf(prototype);
+    }
+    while (prototype !== Object.prototype);
+
+    return names;
 };

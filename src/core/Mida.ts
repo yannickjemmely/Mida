@@ -189,6 +189,7 @@ export { MidaTradingSystem, } from "#systems/MidaTradingSystem";
 export { MidaTradingSystemComponent, } from "#systems/MidaTradingSystemComponent";
 export { MidaTradingSystemComponentParameters, } from "#systems/MidaTradingSystemComponentParameters";
 export { MidaTradingSystemParameters, } from "#systems/MidaTradingSystemParameters";
+export { MidaTradingSystemSymbolState, } from "#systems/MidaTradingSystemSymbolState";
 
 export { MidaTick, } from "#ticks/MidaTick";
 export { MidaTickMovement, } from "#ticks/MidaTickMovement";
@@ -212,9 +213,11 @@ export {
     mergeOptions,
     uuid,
     createClosedPosition,
+    getObjectPropertyNames,
 } from "#utilities/MidaUtilities";
 
 export { MidaMarketWatcher, } from "#watchers/MidaMarketWatcher";
+export { MidaMarketWatcherConfiguration, } from "#watchers/MidaMarketWatcherConfiguration";
 export { MidaMarketWatcherDirectives, } from "#watchers/MidaMarketWatcherDirectives";
 export { MidaMarketWatcherParameters, } from "#watchers/MidaMarketWatcherParameters";
 // </public-api>

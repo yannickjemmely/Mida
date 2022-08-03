@@ -23,7 +23,11 @@
 import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
 import { MidaEvent, } from "#events/MidaEvent";
 import { MidaEventListener, } from "#events/MidaEventListener";
-import { fatal, info, } from "#loggers/MidaLogger";
+import {
+    info,
+    warn,
+    fatal,
+} from "#loggers/MidaLogger";
 import { filterExecutedOrders, MidaOrder, } from "#orders/MidaOrder";
 import { MidaOrderDirectives, } from "#orders/MidaOrderDirectives";
 import { MidaPeriod, } from "#periods/MidaPeriod";
@@ -41,6 +45,10 @@ import { MidaMarketWatcher, } from "#watchers/MidaMarketWatcher";
 import { MidaMarketWatcherConfiguration, } from "#watchers/MidaMarketWatcherConfiguration";
 import { MidaPosition, } from "#positions/MidaPosition";
 import { MidaQueue, } from "#queues/MidaQueue";
+import { MidaTradingSystemSymbolState, } from "#systems/MidaTradingSystemSymbolState";
+import { getObjectPropertyNames, } from "#utilities/MidaUtilities";
+import { MidaOrderStatus, } from "#orders/MidaOrderStatus";
+import { MidaDecimal, } from "#decimals/MidaDecimal";
 
 export abstract class MidaTradingSystem {
     readonly #name: string;
@@ -53,9 +61,11 @@ export abstract class MidaTradingSystem {
     readonly #capturedPeriods: MidaPeriod[];
     readonly #tickEventQueue: MidaQueue<MidaTick>;
     readonly #periodUpdateEventQueue: MidaQueue<MidaPeriod>;
+    readonly #periodCloseEventQueue: MidaQueue<MidaPeriod>;
     #isConfigured: boolean;
     readonly #marketWatcher: MidaMarketWatcher;
     readonly #components: MidaTradingSystemComponent[];
+    readonly #symbolStates: Map<string, MidaTradingSystemSymbolState>;
     readonly #emitter: MidaEmitter;
 
     protected constructor ({
@@ -64,19 +74,21 @@ export abstract class MidaTradingSystem {
         version,
         tradingAccount,
     }: MidaTradingSystemParameters) {
-        this.#name = name;
+        this.#name = name ?? "";
         this.#description = description ?? "";
-        this.#version = version;
+        this.#version = version ?? "";
         this.#tradingAccount = tradingAccount;
         this.#isOperative = false;
         this.#orders = [];
         this.#capturedTicks = [];
         this.#capturedPeriods = [];
-        this.#tickEventQueue = new MidaQueue({ worker: (tick: MidaTick): Promise<void> => this.onTick(tick), });
-        this.#periodUpdateEventQueue = new MidaQueue({ worker: (period: MidaPeriod): Promise<void> => this.onPeriodUpdate(period), });
+        this.#tickEventQueue = new MidaQueue({ worker: (tick: MidaTick): Promise<void> => this.#onTickWorker(tick), });
+        this.#periodUpdateEventQueue = new MidaQueue({ worker: (period: MidaPeriod): Promise<void> => this.#onPeriodUpdateWorker(period), });
+        this.#periodCloseEventQueue = new MidaQueue({ worker: (period: MidaPeriod): Promise<void> => this.#onPeriodCloseWorker(period), });
         this.#isConfigured = false;
         this.#marketWatcher = new MidaMarketWatcher({ tradingAccount, });
         this.#components = [];
+        this.#symbolStates = new Map();
         this.#emitter = new MidaEmitter();
     }
 
@@ -104,12 +116,16 @@ export abstract class MidaTradingSystem {
         return [ ...this.#orders, ];
     }
 
+    public get executedOrders (): MidaOrder[] {
+        return filterExecutedOrders(this.#orders);
+    }
+
     public get trades (): MidaTrade[] {
         return getTradesFromOrders(this.#orders);
     }
 
-    public get components (): MidaTradingSystemComponent[] {
-        return [ ...this.#components, ];
+    public get executedTrades (): MidaTrade[] {
+        return filterExecutedTrades(this.trades);
     }
 
     protected get capturedTicks (): MidaTick[] {
@@ -124,29 +140,44 @@ export abstract class MidaTradingSystem {
         return this.#marketWatcher;
     }
 
+    public get components (): MidaTradingSystemComponent[] {
+        return [ ...this.#components, ];
+    }
+
     public get enabledComponents (): MidaTradingSystemComponent[] {
         return filterEnabledComponents(this.#components);
     }
 
-    public get executedOrders (): MidaOrder[] {
-        return filterExecutedOrders(this.#orders);
-    }
+    protected get shared (): GenericObject {
+        const sharedSymbolStates: GenericObject = {};
 
-    public get executedTrades (): MidaTrade[] {
-        return filterExecutedTrades(this.trades);
+        for (const [ symbol, state, ] of this.#symbolStates.entries()) {
+            sharedSymbolStates[`$${symbol}`] = state.shared ?? {};
+        }
+
+        return sharedSymbolStates;
     }
 
     public async start (): Promise<void> {
         if (this.#isOperative) {
+            warn(`Trading system "${this.name}" | Already started`);
+
             return;
         }
 
+        info(`Trading system "${this.name}" | Starting...`);
+
         if (!this.#isConfigured) {
-            await this.#configure();
+            const isSuccessfullyConfigured: boolean = await this.#configure();
+
+            if (!isSuccessfullyConfigured) {
+                return;
+            }
 
             this.#isConfigured = true;
         }
 
+        // <start-hooks>
         try {
             await this.onStart();
         }
@@ -156,20 +187,38 @@ export abstract class MidaTradingSystem {
             return;
         }
 
+        for (const symbolState of [ ...this.#symbolStates.values(), ]) {
+            try {
+                await symbolState.onStart?.();
+            }
+            catch (error: unknown) {
+                console.log(error);
+
+                return;
+            }
+        }
+        // </start-hooks>
+
         this.#isOperative = true;
         this.#marketWatcher.isActive = true;
 
         this.notifyListeners("start");
+        info(`Trading system "${this.name}" | Started`);
     }
 
     public async stop (): Promise<void> {
         if (!this.#isOperative) {
+            warn(`Trading system "${this.name}" | Already stopped`);
+
             return;
         }
+
+        info(`Trading system "${this.name}" | Stopping...`);
 
         this.#isOperative = false;
         this.#marketWatcher.isActive = false;
 
+        // <stop-hooks>
         try {
             await this.onStop();
         }
@@ -177,7 +226,18 @@ export abstract class MidaTradingSystem {
             console.log(error);
         }
 
+        for (const symbolState of [ ...this.#symbolStates.values(), ]) {
+            try {
+                await symbolState.onStop?.();
+            }
+            catch (error: unknown) {
+                console.log(error);
+            }
+        }
+        // </stop-hooks>
+
         this.notifyListeners("stop");
+        info(`Trading system "${this.name}" | Stopped`);
     }
 
     public async useComponent (component: MidaTradingSystemComponent): Promise<MidaTradingSystemComponent> {
@@ -231,13 +291,19 @@ export abstract class MidaTradingSystem {
         this.#emitter.removeEventListener(uuid);
     }
 
-    protected abstract configure (): Promise<void>;
-
     protected watched (): MidaMarketWatcherConfiguration {
         return {};
     }
 
+    protected async configure (): Promise<void> {
+        // Silence is golden
+    }
+
     protected async onStart (): Promise<void> {
+        // Silence is golden
+    }
+
+    protected async onPreTick (tick: MidaTick): Promise<void> {
         // Silence is golden
     }
 
@@ -245,11 +311,31 @@ export abstract class MidaTradingSystem {
         // Silence is golden
     }
 
+    protected async onLateTick (tick: MidaTick): Promise<void> {
+        // Silence is golden
+    }
+
+    protected async onPrePeriodUpdate (period: MidaPeriod): Promise<void> {
+        // Silence is golden
+    }
+
     protected async onPeriodUpdate (period: MidaPeriod): Promise<void> {
         // Silence is golden
     }
 
+    protected async onLatePeriodUpdate (period: MidaPeriod): Promise<void> {
+        // Silence is golden
+    }
+
+    protected async onPrePeriodClose (period: MidaPeriod): Promise<void> {
+        // Silence is golden
+    }
+
     protected async onPeriodClose (period: MidaPeriod): Promise<void> {
+        // Silence is golden
+    }
+
+    protected async onLatePeriodClose (period: MidaPeriod): Promise<void> {
         // Silence is golden
     }
 
@@ -269,7 +355,12 @@ export abstract class MidaTradingSystem {
         return directives;
     }
 
+    /** @deprecated */
     protected async onImpactPosition (position: MidaPosition): Promise<void> {
+        // Silence is golden
+    }
+
+    protected async onPositionImpact (position: MidaPosition): Promise<void> {
         // Silence is golden
     }
 
@@ -293,7 +384,7 @@ export abstract class MidaTradingSystem {
     protected async placeOrder (directives: MidaOrderDirectives): Promise<MidaOrder | undefined> {
         info(`Trading system "${this.name}" | Placing ${directives.direction} order`);
 
-        let finalDirectives: MidaOrderDirectives | undefined;
+        let finalDirectives: MidaOrderDirectives | undefined = undefined;
 
         try {
             finalDirectives = await this.onBeforePlaceOrder(directives);
@@ -306,36 +397,45 @@ export abstract class MidaTradingSystem {
             return undefined;
         }
 
-        finalDirectives.listeners = finalDirectives.listeners ?? {};
-
-        const onExecute: MidaEventListener | undefined = finalDirectives.listeners.execute;
-        let impactPositionPromise: Promise<void> | undefined = undefined;
-
-        finalDirectives.listeners.execute = async (event: MidaEvent): Promise<void> => {
-            const position: MidaPosition | undefined = await event.descriptor.order.getPosition();
-
-            if (position) {
-                // <position-impact-hook>
-                impactPositionPromise = this.onImpactPosition(position);
-
-                impactPositionPromise.catch((error) => console.log(error));
-                // </position-impact-hook>
-            }
-
-            onExecute?.(event);
-        };
-
         const order: MidaOrder = await this.#tradingAccount.placeOrder(finalDirectives);
 
-        if (impactPositionPromise) {
-            // Used to wait for the position impact hook to resolve if the order has been resolved as executed
-            // this depends also on the "resolverEvents" order directive
-            await impactPositionPromise;
+        // <position-impact-hooks>
+        // Used to wait for the position impact hooks to resolve if the order has been resolved as executed
+        if (order.status === MidaOrderStatus.EXECUTED) {
+            const position: MidaPosition | undefined = await order.getPosition();
+            if (position) {
+                try {
+                    await this.onImpactPosition(position);
+                }
+                catch (error) {
+                    console.log(error);
+                }
+
+                try {
+                    await this.onPositionImpact(position);
+                }
+                catch (error) {
+                    console.log(error);
+                }
+            }
         }
+        // </position-impact-hooks>
 
         this.#orders.push(order);
 
         return order;
+    }
+
+    protected async getSymbolBid (symbol: string): Promise<MidaDecimal> {
+        return this.tradingAccount.getSymbolBid(symbol);
+    }
+
+    protected async getSymbolAsk (symbol: string): Promise<MidaDecimal> {
+        return this.tradingAccount.getSymbolAsk(symbol);
+    }
+
+    protected async getSymbolPeriods (symbol: string, timeframe: number): Promise<MidaPeriod[]> {
+        return this.tradingAccount.getSymbolPeriods(symbol, timeframe);
     }
 
     protected notifyListeners (type: string, descriptor: GenericObject = {}): void {
@@ -351,47 +451,140 @@ export abstract class MidaTradingSystem {
         }
 
         this.#capturedTicks.push(tick);
+        // Add the tick to the worker queue
         this.#tickEventQueue.add(tick);
     }
 
+    async #onTickWorker (tick: MidaTick): Promise<void> {
+        const symbolState: MidaTradingSystemSymbolState | undefined = this.#symbolStates.get(tick.symbol);
+
+        // <pre-tick-hooks>
+        await this.onPreTick(tick);
+        await symbolState?.onPreTick?.(tick);
+        // </pre-tick-hooks>
+
+        // <tick-hooks>
+        await this.onTick(tick);
+        await symbolState?.onTick?.(tick);
+        // </tick-hooks>
+
+        // <late-tick-hooks>
+        await this.onLateTick(tick);
+        await symbolState?.onLateTick?.(tick);
+        // </late-tick-hooks>
+    }
+
     #onPeriodUpdate (period: MidaPeriod): void {
+        // Add the period to the worker queue
         this.#periodUpdateEventQueue.add(period);
+    }
+
+    async #onPeriodUpdateWorker (period: MidaPeriod): Promise<void> {
+        const symbolState: MidaTradingSystemSymbolState | undefined = this.#symbolStates.get(period.symbol);
+
+        // <pre-period-update-hooks>
+        await this.onPrePeriodUpdate(period);
+        await symbolState?.onPrePeriodUpdate?.(period);
+        // </pre-period-update-hooks>
+
+        // <period-update-hooks>
+        await this.onPeriodUpdate(period);
+        await symbolState?.onPeriodUpdate?.(period);
+        // </period-update-hooks>
+
+        // <late-period-update-hooks>
+        await this.onLatePeriodUpdate(period);
+        await symbolState?.onLatePeriodUpdate?.(period);
+        // </late-period-update-hooks>
     }
 
     #onPeriodClose (period: MidaPeriod): void {
         this.#capturedPeriods.push(period);
-
-        // <period-close-hook>
-        try {
-            this.onPeriodClose(period);
-        }
-        catch (error: unknown) {
-            console.log(error);
-        }
-        // </period-close-hook>
+        // Add the period to the worker queue
+        this.#periodCloseEventQueue.add(period);
     }
 
-    async #configure (): Promise<void> {
-        // <market-watcher>
+    async #onPeriodCloseWorker (period: MidaPeriod): Promise<void> {
+        const symbolState: MidaTradingSystemSymbolState | undefined = this.#symbolStates.get(period.symbol);
+
+        // <pre-period-close-hooks>
+        await this.onPrePeriodClose(period);
+        await symbolState?.onPrePeriodClose?.(period);
+        // </pre-period-close-hooks>
+
+        // <period-close-hooks>
+        await this.onPeriodClose(period);
+        await symbolState?.onPeriodClose?.(period);
+        // </period-close-hooks>
+
+        // <late-period-close-hooks>
+        await this.onLatePeriodClose(period);
+        await symbolState?.onLatePeriodClose?.(period);
+        // </late-period-close-hooks>
+    }
+
+    async #configure (): Promise<boolean> {
+        this.#configureSymbolStates();
+
+        // <market-watcher-configuration>
         const watched: MidaMarketWatcherConfiguration = this.watched();
 
         for (const symbol in watched) {
             if (watched.hasOwnProperty(symbol)) {
-                await this.#marketWatcher.watch(symbol, watched[symbol]);
+                try {
+                    await this.#marketWatcher.watch(symbol, watched[symbol]);
+                }
+                catch (error: unknown) {
+                    console.log(error);
+
+                    return false;
+                }
             }
         }
-        // </market-watcher>
+        // </market-watcher-configuration>
 
-        // <configure-hook>
+        // <configure-hooks>
         try {
             await this.configure();
         }
         catch (error: unknown) {
             console.log(error);
+
+            return false;
         }
-        // </configure-hook>
+
+        for (const symbolState of [ ...this.#symbolStates.values(), ]) {
+            try {
+                await symbolState.configure?.();
+            }
+            catch (error: unknown) {
+                console.log(error);
+
+                return false;
+            }
+        }
+        // </configure-hooks>
 
         this.#configureListeners();
+
+        return true;
+    }
+
+    #configureSymbolStates (): void {
+        const symbolStateGenerators: string[] = getObjectPropertyNames(this).filter((name: string) => name[0] === "$" && name.length > 1);
+
+        for (const symbolStateGenerator of symbolStateGenerators) {
+            const symbol: string = symbolStateGenerator.substring(1);
+            const state: MidaTradingSystemSymbolState = this[symbolStateGenerator as `$${string}`](symbol);
+
+            if (!state || Object.getPrototypeOf(state) !== Object.prototype) {
+                warn(`Trading system "${this.name}" | Symbol state generator ${symbolStateGenerator} must return a plain object`);
+
+                continue;
+            }
+
+            this.#symbolStates.set(symbol, state);
+        }
     }
 
     #configureListeners (): void {
@@ -399,4 +592,9 @@ export abstract class MidaTradingSystem {
         this.#marketWatcher.on("period-update", (event: MidaEvent): void => this.#onPeriodUpdate(event.descriptor.period));
         this.#marketWatcher.on("period-close", (event: MidaEvent): void => this.#onPeriodClose(event.descriptor.period));
     }
+}
+
+/* Definition for symbol state generators */
+export interface MidaTradingSystem {
+    [symbolStateGenerator: `$${string}`]: (symbol: string) => MidaTradingSystemSymbolState;
 }

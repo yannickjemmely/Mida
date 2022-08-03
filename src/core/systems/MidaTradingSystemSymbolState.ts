@@ -20,16 +20,25 @@
  * THE SOFTWARE.
 */
 
-import { MidaTradingSystem, } from "#systems/MidaTradingSystem";
-import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
+import { MidaTick, } from "#ticks/MidaTick";
+import { MidaPeriod, } from "#periods/MidaPeriod";
+import { GenericObject, } from "#utilities/GenericObject";
 
-/**
- * The trading system constructor parameters
- * @see MidaTradingSystem
- */
-export type MidaTradingSystemParameters = {
-    name?: string;
-    description?: string;
-    version?: string;
-    tradingAccount: MidaTradingAccount;
+export type MidaTradingSystemSymbolState = {
+    shared?: GenericObject;
+
+    /* - - - */
+
+    configure? (): Promise<void>;
+    onStart? (): Promise<void>;
+    onPreTick? (tick: MidaTick): Promise<void>;
+    onTick? (tick: MidaTick): Promise<void>;
+    onLateTick? (tick: MidaTick): Promise<void>;
+    onPrePeriodUpdate? (period: MidaPeriod): Promise<void>;
+    onPeriodUpdate? (period: MidaPeriod): Promise<void>;
+    onLatePeriodUpdate? (period: MidaPeriod): Promise<void>;
+    onPrePeriodClose? (period: MidaPeriod): Promise<void>;
+    onPeriodClose? (period: MidaPeriod): Promise<void>;
+    onLatePeriodClose? (period: MidaPeriod): Promise<void>;
+    onStop? (): Promise<void>;
 };
