@@ -389,15 +389,7 @@ import {
     MidaTimeframe,
 } from "@reiryoku/mida";
 
-class MyTradingSystem extends MidaTradingSystem {
-    constructor ({ tradingAccount, }) {
-        super({
-            name: "MyTradingSystem",
-            version: "1.0.0",
-            tradingAccount,
-        });
-    }
-
+class SuperTradingSystem extends MidaTradingSystem {
     watched () {
         return {
             "BTCUSDT": {
@@ -414,7 +406,7 @@ class MyTradingSystem extends MidaTradingSystem {
     }
 
     async onStart () {
-        info("The trading bot has started...");
+        info("The trading system has started...");
     }
 
     async onTick (tick) {
@@ -426,7 +418,7 @@ class MyTradingSystem extends MidaTradingSystem {
     }
 
     async onStop () {
-        info("The trading bot has been interrupted...");
+        info("The trading system has been interrupted...");
     }
 }
 ```
@@ -434,10 +426,10 @@ class MyTradingSystem extends MidaTradingSystem {
 How to execute a trading system.
 ```javascript
 import { login, } from "@reiryoku/mida";
-import { MyTradingSystem, } from "./MyTradingSystem";
+import { SuperTradingSystem, } from "./SuperTradingSystem";
 
 const myAccount = await login(/* ... */);
-const mySystem = new MyTradingSystem({ tradingAccount: myAccount, });
+const mySystem = new SuperTradingSystem({ tradingAccount: myAccount, });
 
 await mySystem.start();
 ```
