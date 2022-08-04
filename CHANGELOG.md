@@ -1,20 +1,20 @@
 ### Features
 * Create symbol states for trading systems [#61](https://github.com/Reiryoku-Technologies/Mida/pull/61)
 * Add `label` field to `MidaOrder` to represent the label indicated in the order directives [#63](https://github.com/Reiryoku-Technologies/Mida/pull/63)
-* Create a `clear()` method for clearing the internal state of a `MidaIndicator` [#62](https://github.com/Reiryoku-Technologies/Mida/pull/62)
+* Add `clear()` method to `MidaIndicator` to clear the internal state of the indicator [#62](https://github.com/Reiryoku-Technologies/Mida/pull/62)
 * Update documentation [#56](https://github.com/Reiryoku-Technologies/Mida/pull/56)
-* Add `toNumber()` method to `MidaDecimal` to convert the decimal into `number` [#55](https://github.com/Reiryoku-Technologies/Mida/pull/55) | [#54](https://github.com/Reiryoku-Technologies/Mida/issues/54)
+* Add `toNumber()` method to `MidaDecimal` to get the decimal as `number` [#55](https://github.com/Reiryoku-Technologies/Mida/pull/55) | [#54](https://github.com/Reiryoku-Technologies/Mida/issues/54)
 
 ### Bug fixes
-* Correctly calculate minimum and maximum values on `MidaDecimal.min()` and `MidaDecimal.max()` [#64](https://github.com/Reiryoku-Technologies/Mida/pull/64)
+* Correctly calculate minimum and maximum values on `MidaDecimal.min()` and `MidaDecimal.max()` [#64](https://github.com/Reiryoku-Technologies/Mida/pull/64) | [#57](https://github.com/Reiryoku-Technologies/Mida/issues/57)
 * Fix error thrown by the `onImpactPosition()` trading system hook [#60](https://github.com/Reiryoku-Technologies/Mida/pull/60)
 
 2022.1.0 - 23-07-2022
 ===================
 ### Features
 * **_BREAKING_** General refactor and improvements
-* **_BREAKING_** Create period update event, update various interfaces [#51](https://github.com/Reiryoku-Technologies/Mida/pull/51)
-* **_BREAKING_** Create the `MidaDecimal` type for representing and handling operations with decimals, use decimals instead of numbers [#50](https://github.com/Reiryoku-Technologies/Mida/pull/50)
+* **_BREAKING_** Add period update event and update various interfaces [#51](https://github.com/Reiryoku-Technologies/Mida/pull/51)
+* **_BREAKING_** Add `MidaDecimal` API for representing and handling operations with decimals, use decimals instead of numbers [#50](https://github.com/Reiryoku-Technologies/Mida/pull/50)
 * Add platform related and label order directives [#49](https://github.com/Reiryoku-Technologies/Mida/pull/49)
 
 7.3.0 - 05-07-2022
