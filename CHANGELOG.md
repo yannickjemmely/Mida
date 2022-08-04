@@ -1,6 +1,6 @@
 ### Features
 * Create symbol states for trading systems [#61](https://github.com/Reiryoku-Technologies/Mida/pull/61)
-* Add `label` field to `MidaOrder` to represent the label indicated in the order directives [#63](https://github.com/Reiryoku-Technologies/Mida/pull/63)
+* Add `label` field to `MidaOrder` to represent the label indicated in the order directives [#63](https://github.com/Reiryoku-Technologies/Mida/pull/63) | [#36](https://github.com/Reiryoku-Technologies/Mida/issues/36)
 * Add `clear()` method to `MidaIndicator` to clear the internal state of the indicator [#62](https://github.com/Reiryoku-Technologies/Mida/pull/62)
 * Update documentation [#56](https://github.com/Reiryoku-Technologies/Mida/pull/56)
 * Add `toNumber()` method to `MidaDecimal` to get the decimal as `number` [#55](https://github.com/Reiryoku-Technologies/Mida/pull/55) | [#54](https://github.com/Reiryoku-Technologies/Mida/issues/54)
