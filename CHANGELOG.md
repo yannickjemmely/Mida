@@ -1,3 +1,5 @@
+2022.2.0 - 04-08-2022
+===================
 ### Features
 * Create symbol states for trading systems [#61](https://github.com/Reiryoku-Technologies/Mida/pull/61)
 * Add `label` field to `MidaOrder` to represent the label indicated in the order directives [#63](https://github.com/Reiryoku-Technologies/Mida/pull/63) | [#36](https://github.com/Reiryoku-Technologies/Mida/issues/36)
