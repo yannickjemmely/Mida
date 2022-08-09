@@ -1,5 +1,5 @@
 <br><br>
-<p align="center"> 
+<p align="center">
     <img src="images/logo-light.svg#gh-light-mode-only" alt="Mida" width="352px">
     <img src="images/logo-dark.svg#gh-dark-mode-only" alt="Mida" width="352px">
 </p>
@@ -74,7 +74,7 @@ easily executed on different trading platforms without code changes. Here are so
 popular trading platforms supported by Mida.
 
 <br><br>
-<p align="center"> 
+<p align="center">
     <img src="images/featured-platforms.svg" alt="" width="594px">
 </p>
 <br><br>
@@ -97,7 +97,7 @@ const myAccount = await login("Binance/Spot", {
     apiSecret: "***",
 });
 ```
-Read [how to use Binance](https://www.mida.org/posts/how-to-use-binance/) to get the `apiKey` and `apiSecret` credentials.
+Read [how to use Mida with Binance](https://www.mida.org/posts/how-to-use-mida-with-binance/) to get the `apiKey` and `apiSecret` credentials.
 
 How to login into a cTrader account.
 ```javascript
@@ -110,7 +110,7 @@ const myAccount = await login("cTrader", {
     cTraderBrokerAccountId: "***",
 });
 ```
-Read [how to use cTrader](https://www.mida.org/posts/how-to-use-ctrader/) to get the `clientId`, `clientSecret`, `accessToken` and `cTraderBrokerAccountId` credentials.
+Read [how to use Mida with cTrader](https://www.mida.org/posts/how-to-use-mida-with-ctrader/) to get the `clientId`, `clientSecret`, `accessToken` and `cTraderBrokerAccountId` credentials.
 
 ### Balance, equity and margin
 How to get the account balance, equity and margin.
