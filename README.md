@@ -28,8 +28,7 @@
 
 ## Introduction
 Mida is an open-source and cross-platform trading engine developed by Reiryoku Technologies and its contributors.
-The engine can be used for trading financial assets such as crypto, forex, stocks or commodities
-in global financial markets. The engine is designed from the ground up to provide a solid, versatile
+The engine is designed from the ground up to provide a solid, versatile
 and platform-neutral environment for creating algorithmic trading systems, indicators, market analysis tools
 or just trading applications depending on use cases.
 
@@ -44,7 +43,7 @@ to get help you with your first steps.
 
 ## Table of contents
 * [Ecosystem](#ecosystem)
-* [Supported platforms](#supported-platforms)
+* [Trading platforms](#trading-platforms)
 * [Installation](#installation)
 * [Usage](#usage)
     * [Account login](#account-login)
@@ -67,11 +66,11 @@ to get help you with your first steps.
 | [Mida Tulipan](https://github.com/Reiryoku-Technologies/Mida-Tulipan) | [![Image](https://img.shields.io/npm/v/@reiryoku/mida-tulipan)](https://www.npmjs.com/package/@reiryoku/mida-tulipan) | A Mida plugin providing technical analysis indicators    |
 | [Apollo](https://github.com/Reiryoku-Technologies/Apollo)             | [![Image](https://img.shields.io/npm/v/@reiryoku/apollo)](https://www.npmjs.com/package/@reiryoku/apollo)             | A JavaScript library for getting real-time economic data |
 
-## Supported platforms
+## Trading platforms
 Mida is platform-neutral, this means that any trading platform could
-be easily integrated in the ecosystem. Trading systems/applications built with Mida can be
-easily executed on different trading platforms without code changes. Here are some of the most
-popular trading platforms supported by Mida.
+be easily integrated in the ecosystem. Trading applications built with Mida can be
+easily executed on different trading platforms without changes in the implementation. Here are some of the most
+popular supported trading platforms.
 
 <br><br>
 <p align="center">
@@ -80,9 +79,11 @@ popular trading platforms supported by Mida.
 <br><br>
 
 ## Installation
-To get started use the command below in your terminal,
-the installer will pop up and create an empty Mida project.
-```console
+To get started with Mida you need [Node.js](https://nodejs.org) (at least version 16) and
+[npm](https://www.npmjs.com) installed.<br>
+At this point use the command below in your terminal. The installer will pop up and guide you through
+the creation of a new Mida project.
+```bash
 npm init mida
 ```
 
