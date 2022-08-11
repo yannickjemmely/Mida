@@ -169,6 +169,10 @@ export { MidaProtectionChangeRejection, } from "#protections/MidaProtectionChang
 export { MidaProtectionChangeStatus, } from "#protections/MidaProtectionChangeStatus";
 export { MidaProtectionDirectives, } from "#protections/MidaProtectionDirectives";
 
+export { MidaQueue, } from "#queues/MidaQueue";
+export { MidaQueueParameters, } from "#queues/MidaQueueParameters";
+export { MidaQueueWorker, } from "#queues/MidaQueueWorker";
+
 export { MidaQuotation, } from "#quotations/MidaQuotation";
 export { MidaQuotationParameters, } from "#quotations/MidaQuotationParameters";
 export { MidaQuotationPrice, } from "#quotations/MidaQuotationPrice";
