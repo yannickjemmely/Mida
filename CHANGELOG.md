@@ -1,4 +1,5 @@
 ### Features
+* Add native `period-close` event usage to market watcher, allow to optionally use the builtin period close detector [#67](https://github.com/Reiryoku-Technologies/Mida/pull/67)
 * Expose the queue API [#66](https://github.com/Reiryoku-Technologies/Mida/pull/66)
 
 2022.2.0 - 04-08-2022
