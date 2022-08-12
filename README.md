@@ -380,6 +380,10 @@ marketWatcher.on("period-close", (event) => {
     }
 });
 ```
+The `on` method returns a unique ID that can be used to unsubscribing from the event listener.
+```const uuid = marketWatcher.on("period-close", (event) => { ... });
+marketWatcher.removeEventListener(uuid);
+```
 
 ### Trading systems
 How to create a trading system (expert advisor or trading bot).
