@@ -32,7 +32,7 @@ The engine is designed from the ground up to provide a solid, versatile
 and platform-neutral environment for creating algorithmic trading systems, indicators, market analysis tools
 or just trading applications depending on use cases.
 
-### Languages
+### Programming Languages
 Mida can be used with TypeScript/JavaScript on [Node.js](https://nodejs.org) and
 is distributed on [npm](https://www.npmjs.com).
 The Mida ecosystem is built from the ground up in TypeScript and C++.
