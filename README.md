@@ -113,35 +113,14 @@ const myAccount = await login("cTrader", {
 ```
 Read [how to use Mida with cTrader](https://www.mida.org/posts/how-to-use-mida-with-ctrader/) to get the `clientId`, `clientSecret`, `accessToken` and `cTraderBrokerAccountId` credentials.
 
-You can have multiple instances of accounts.
+How to login into multiple accounts.
 ```javascript
 import { login, } from "@reiryoku/mida";
 
-const myCTraderAccount1 = await login("cTrader", {
-    clientId: "...",
-    clientSecret: "...",
-    accessToken: "...",
-    cTraderBrokerAccountId: "...",
-});
-
-const myCTraderAccount2 = await login("cTrader", {
-    clientId: "...",
-    clientSecret: "...",
-    accessToken: "...",
-    cTraderBrokerAccountId: "...",
-});
-
-const myBinanceAccount = await login("Binance/Spot", {
-    apiKey: "...",
-    apiSecret: "...",
-});
-
-//Example of usage:
-console.log(await myCTraderAccount1.getBalance());
-console.log(await myCTraderAccount2.getBalance());
-console.log(await myBinanceAccount.getBalance());
+const myAccount1 = await login("cTrader", { /* ... */ });
+const myAccount2 = await login("cTrader", { /* ... */ });
+const myAccount3 = await login("FTX/Futures", { /* ... */ });
 ```
-
 
 ### Balance, equity and margin
 How to get the account balance, equity and margin.
@@ -410,9 +389,12 @@ marketWatcher.on("period-close", (event) => {
     }
 });
 ```
-The `on` method returns a unique ID that can be used to unsubscribing from the event listener.
-```const uuid = marketWatcher.on("period-close", (event) => { ... });
-marketWatcher.removeEventListener(uuid);
+
+The `on()` method returns an id that can be used to unsubscribe from the event listener.
+```javascript
+const id = marketWatcher.on("period-close", (event) => { /* ... */ });
+
+marketWatcher.removeEventListener(id);
 ```
 
 ### Trading systems
