@@ -29,9 +29,10 @@ import { MidaMarketWatcher, } from "#watchers/MidaMarketWatcher";
  */
 export type MidaMarketWatcherParameters = {
     tradingAccount: MidaTradingAccount;
+    isActive?: boolean;
     /**
      * Indicates if the market watcher should check manually for candlesticks being closed
-     * This is useful when a trading platform doesn't provide events for candlesticks being closed
+     * This is useful when a trading platform doesn't provide events for candlesticks being updated/closed
      * This leverages the getSymbolPeriods() API
      */
     useBuiltinPeriodCloseDetector?: boolean;
