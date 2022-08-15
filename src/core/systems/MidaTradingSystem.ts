@@ -407,12 +407,14 @@ export abstract class MidaTradingSystem {
 
         let finalDirectives: MidaOrderDirectives | undefined = undefined;
 
+        // <before-place-order-hook>
         try {
             finalDirectives = await this.onBeforePlaceOrder(directives);
         }
         catch (error) {
             console.log(error);
         }
+        // </before-place-order-hook>
 
         if (!finalDirectives) {
             return undefined;
