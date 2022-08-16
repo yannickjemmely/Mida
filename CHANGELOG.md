@@ -2,6 +2,7 @@
 * Emit `period-close` by checking if the candlestick emitted by `period-update` is closed [#68](https://github.com/Reiryoku-Technologies/Mida/pull/68)
 
 ### Bug fixes
+* Read the trading system market watcher configuration from the correct object, emit the `period-update` event when using the builtin period detector in `MidaMarketWatcher` [#69](https://github.com/Reiryoku-Technologies/Mida/pull/69)
 * Activate the trading system market watcher after the `onStart()` hook is executed [#68](https://github.com/Reiryoku-Technologies/Mida/pull/68)
 
 2022.3.0 - 12-08-2022

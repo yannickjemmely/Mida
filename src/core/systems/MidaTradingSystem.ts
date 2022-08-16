@@ -548,8 +548,8 @@ export abstract class MidaTradingSystem {
         ] | MidaMarketWatcherConfiguration = this.watched();
         const marketWatcherConfiguration: MidaMarketWatcherConfiguration = Array.isArray(watched) ? watched[1] : watched;
 
-        for (const symbol in watched) {
-            if (watched.hasOwnProperty(symbol)) {
+        for (const symbol in marketWatcherConfiguration) {
+            if (marketWatcherConfiguration.hasOwnProperty(symbol)) {
                 try {
                     await this.#marketWatcher.watch(symbol, marketWatcherConfiguration[symbol]);
                 }

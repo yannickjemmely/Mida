@@ -124,14 +124,17 @@ export class MidaMarketWatcher {
     }
 
     async #configureSymbolTimeframe (symbol: string, timeframe: number): Promise<void> {
-        const periods: MidaPeriod[] = await this.#tradingAccount.getSymbolPeriods(symbol, timeframe);
-        const lastPeriod: MidaPeriod = periods[periods.length - 1];
+        if (this.#useBuiltinPeriodCloseDetector) {
+            const periods: MidaPeriod[] = await this.#tradingAccount.getSymbolPeriods(symbol, timeframe);
+            const lastPeriod: MidaPeriod = periods[periods.length - 1];
 
-        if (!this.#lastClosedPeriods.get(symbol)) {
-            this.#lastClosedPeriods.set(symbol, new Map());
+            if (!this.#lastClosedPeriods.get(symbol)) {
+                this.#lastClosedPeriods.set(symbol, new Map());
+            }
+
+            this.#lastClosedPeriods.get(symbol)?.set(timeframe, lastPeriod);
         }
 
-        this.#lastClosedPeriods.get(symbol)?.set(timeframe, lastPeriod);
         await this.#tradingAccount.watchSymbolPeriods(symbol, timeframe);
     }
 
@@ -178,7 +181,7 @@ export class MidaMarketWatcher {
     }
 
     async #checkNewClosedPeriods (): Promise<void> {
-        if (!this.isActive) {
+        if (!this.isActive || !this.#useBuiltinPeriodCloseDetector) {
             return;
         }
 
@@ -204,7 +207,7 @@ export class MidaMarketWatcher {
     // Used to check if the last known symbol candlestick has been closed
     // Must be called approximately with a 1 minute interval
     async #checkClosedPeriod (symbol: string, timeframe: number): Promise<void> {
-        if (!this.isActive) {
+        if (!this.isActive || !this.#useBuiltinPeriodCloseDetector) {
             return;
         }
 
@@ -221,7 +224,7 @@ export class MidaMarketWatcher {
 
         if (lastPeriod.endDate.timestamp > lastLocalPeriodCloseTimestamp) {
             this.#lastClosedPeriods.get(symbol)?.set(timeframe, lastPeriod);
-            this.#onPeriodClose(lastPeriod);
+            this.#onPeriodUpdate(lastPeriod);
         }
     }
 
@@ -240,16 +243,8 @@ export class MidaMarketWatcher {
             this.notifyListeners("period-update", { period, });
 
             if (period.isClosed) {
-                this.#onPeriodClose(period);
+                this.notifyListeners("period-close", { period, });
             }
-        }
-    }
-
-    #onPeriodClose (period: MidaPeriod): void {
-        const directives: MidaMarketWatcherDirectives | undefined = this.#watchedSymbols.get(period.symbol);
-
-        if (directives?.watchPeriods && directives?.timeframes?.includes(period.timeframe)) {
-            this.notifyListeners("period-close", { period, });
         }
     }
 
@@ -266,7 +261,7 @@ export class MidaMarketWatcher {
             roundMinute.setSeconds(0);
 
             this.#closedPeriodDetectorTimeoutId = setTimeout((): void => {
-                this.#checkNewClosedPeriods();
+                this.#checkNewClosedPeriods().then();
 
                 this.#closedPeriodDetectorIntervalId = setInterval(() => this.#checkNewClosedPeriods(), 60000);
             }, roundMinute.valueOf() + 60000 - actualDate.valueOf() + 3000); // Invoke the function the next round minute plus 3s of margin
