@@ -1,3 +1,5 @@
+2022.4.0 - 16-08-2022
+===================
 ### Features
 * Emit `period-close` by checking if the candlestick emitted by `period-update` is closed [#68](https://github.com/Reiryoku-Technologies/Mida/pull/68)
 
