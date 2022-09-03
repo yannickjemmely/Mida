@@ -402,7 +402,7 @@ const id = marketWatcher.on("period-close", (event) => { /* ... */ });
 marketWatcher.removeEventListener(id);
 ```
 
-## Paper trading
+### Paper trading
 Mida comes with an out of the box engine simulating exchanges and spot trading accounts,
 for paper trading and backtesting read [Paper Trading with Mida](https://www.mida.org/posts/paper-trading-with-mida/).
 
