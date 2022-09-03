@@ -28,12 +28,12 @@
 
 ## Introduction
 Mida is an open-source and cross-platform trading engine developed by Reiryoku Technologies and its contributors.
-The engine is designed from the ground up to provide a solid, versatile
-and platform-neutral environment for creating algorithmic trading systems, indicators, market analysis tools
-or just trading applications depending on use cases.
+The engine is designed from the ground up to provide a solid, versatile and platform-neutral
+environment for creating algorithmic trading systems, indicators, market analysis tools or just trading
+applications depending on use cases.
 
-### Programming Languages
-Mida can be used with TypeScript/JavaScript on [Node.js](https://nodejs.org) and
+### Programming languages
+Mida can be used with TypeScript, JavaScript and C++ on [Node.js](https://nodejs.org) and
 is distributed on [npm](https://www.npmjs.com).
 The Mida ecosystem is built from the ground up in TypeScript and C++.
 
@@ -48,12 +48,13 @@ to get help you with your first steps.
 * [Usage](#usage)
     * [Account login](#account-login)
     * [Balance, equity and margin](#balance-equity-and-margin)
-    * [Orders, deals and positions](#orders-deals-and-positions)
+    * [Orders, trades and positions](#orders-trades-and-positions)
     * [Decimals](#decimals)
     * [Symbols and assets](#symbols-and-assets)
     * [Ticks and candlesticks](#ticks-and-candlesticks)
     * [Trading systems](#trading-systems)
     * [Technical indicators](#technical-indicators)
+    * [Paper trading](#paper-trading)
 * [License and disclaimer](#license-and-disclaimer)
 * [Contributors](#contributors)
 
@@ -118,7 +119,7 @@ How to login into multiple accounts.
 import { login, } from "@reiryoku/mida";
 
 const myAccount1 = await login("cTrader", { /* ... */ });
-const myAccount2 = await login("cTrader", { /* ... */ });
+const myAccount2 = await login("Binance/Spot", { /* ... */ });
 const myAccount3 = await login("FTX/Futures", { /* ... */ });
 ```
 
@@ -133,7 +134,7 @@ info(await myAccount.getFreeMargin());
 info(await myAccount.getUsedMargin());
 ```
 
-### Orders, deals and positions
+### Orders, trades and positions
 How top open a long position for Bitcoin against USDT.
 ```javascript
 import { info, MidaOrderDirection, } from "@reiryoku/mida";
@@ -143,12 +144,14 @@ const myOrder = await myAccount.placeOrder({
     direction: MidaOrderDirection.BUY,
     volume: 1,
 });
-const myPosition = await order.getPosition();
 
 info(myOrder.id);
 info(myOrder.executionPrice);
 info(myOrder.positionId);
 info(myOrder.trades);
+
+const myPosition = await order.getPosition();
+
 info(myPosition);
 ```
 
@@ -161,12 +164,14 @@ const myOrder = await myAccount.placeOrder({
     direction: MidaOrderDirection.SELL,
     volume: 0.1,
 });
-const myPosition = await order.getPosition();
 
 info(myOrder.id);
 info(myOrder.executionPrice);
 info(myOrder.positionId);
 info(myOrder.trades);
+
+const myPosition = await order.getPosition();
+
 info(myPosition);
 ```
 
@@ -243,15 +248,15 @@ await myAccount.placeOrder({
 });
 ```
 
-How to retrieve all open positions and pending orders.
+How to retrieve all pending orders and open positions.
 ```javascript
 import { info, } from "@reiryoku/mida";
 
-info(await myAccount.getOpenPositions());
 info(await myAccount.getPendingOrders());
+info(await myAccount.getOpenPositions());
 ```
 
-How to set take profit and stop loss for a position.
+How to set take profit and stop loss for an open position.
 ```javascript
 await myPosition.changeProtection({
     takeProfit: 200,
@@ -262,11 +267,11 @@ await myPosition.changeProtection({
 </details>
 
 ### Decimals
-Decimal numbers and calculations are accurately represented by the `MidaDecimal` API,
+Decimal numbers and calculations are accurately represented by the `MidaDecimal` class,
 computers can only natively store integers, so they need some way of representing
 decimal numbers. This representation is not perfectly accurate. This is why, in
 most programming languages `0.1 + 0.2 != 0.3`, for financial and monetary calculations
-this can lead to unrecoverable mistakes.
+this can lead to unreversible losses.
 
 ```javascript
 import { decimal, } from "@reiryoku/mida";
@@ -278,9 +283,9 @@ decimal("0.1").add("0.2"); // 0.3
 
 In Mida, every calculation under the hood is made using decimals and every native number
 passed to Mida is internally converted to decimal, input values in the Mida APIs
-such as a limit price can be expressed as a `MidaDecimalConvertible` which is an alias
+such as a limit price are usually expressed as a `MidaDecimalConvertible` which is an alias
 for `MidaDecimal | string | number`, the input values are internally converted to `MidaDecimal`
-and all Mida interfaces exposes decimal numbers unless otherwise stated.
+and most Mida interfaces exposes decimal numbers unless otherwise stated.
 
 Read more about the [Decimals API](https://www.mida.org/documentation/essentials/decimals.html).
 
@@ -491,14 +496,19 @@ const rsi = await Mida.createIndicator("RSI", { period: 14, }).calculate(closePr
 info(rsi);
 ```
 
+## Paper trading
+Mida comes with an out of the box engine simulating exchanges and spot trading accounts,
+for paper trading and backtesting read [Paper Trading with Mida](https://www.mida.org/posts/paper-trading-with-mida/).
+
 ## License and disclaimer
 [LICENSE](./LICENSE)<br><br>
 Trading in financial markets is highly speculative and carries a high level of risk.
 It's possible to lose all your capital. This project may not be suitable for everyone,
-you should ensure that you understand the risks involved. Mida and its contributors
-are not responsible for any technical inconvenience that may lead to money loss, for example a stop loss not being set.
+you should ensure that you understand the risks involved. Reiryoku Technologies,
+Mida and its contributors are not responsible for any technical inconvenience that
+may lead to money loss, for example a stop loss not being set.
 
 ## Contributors
-| Name         | Contribution          | GitHub                                          | Contact                   |
-|--------------|-----------------------|-------------------------------------------------|---------------------------|
-| Vasile Pește | Author and maintainer | [Vasile-Peste](https://github.com/Vasile-Peste) | vasile.peste@reiryoku.com |
+| Name         | Contribution           | GitHub                                          | Contact                   |
+|--------------|------------------------|-------------------------------------------------|---------------------------|
+| Vasile Pește | Founder and maintainer | [Vasile-Peste](https://github.com/Vasile-Peste) | vasile.peste@reiryoku.com |
