@@ -52,9 +52,9 @@ to get help you with your first steps.
     * [Decimals](#decimals)
     * [Symbols and assets](#symbols-and-assets)
     * [Ticks and candlesticks](#ticks-and-candlesticks)
+    * [Paper trading](#paper-trading)
     * [Trading systems](#trading-systems)
     * [Technical indicators](#technical-indicators)
-    * [Paper trading](#paper-trading)
 * [License and disclaimer](#license-and-disclaimer)
 * [Contributors](#contributors)
 
@@ -402,6 +402,10 @@ const id = marketWatcher.on("period-close", (event) => { /* ... */ });
 marketWatcher.removeEventListener(id);
 ```
 
+## Paper trading
+Mida comes with an out of the box engine simulating exchanges and spot trading accounts,
+for paper trading and backtesting read [Paper Trading with Mida](https://www.mida.org/posts/paper-trading-with-mida/).
+
 ### Trading systems
 How to create a trading system (expert advisor or trading bot).
 ```javascript
@@ -495,10 +499,6 @@ const rsi = await Mida.createIndicator("RSI", { period: 14, }).calculate(closePr
 // Values are from oldest to newest
 info(rsi);
 ```
-
-## Paper trading
-Mida comes with an out of the box engine simulating exchanges and spot trading accounts,
-for paper trading and backtesting read [Paper Trading with Mida](https://www.mida.org/posts/paper-trading-with-mida/).
 
 ## License and disclaimer
 [LICENSE](./LICENSE)<br><br>
