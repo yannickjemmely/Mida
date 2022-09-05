@@ -27,6 +27,7 @@ import { MidaAsset, } from "#assets/MidaAsset";
 import { MidaAssetStatement, } from "#assets/MidaAssetStatement";
 import { MidaDate, } from "#dates/MidaDate";
 import { MidaDecimal, } from "#decimals/MidaDecimal";
+import { MidaUnsupportedOperationError, } from "#errors/MidaUnsupportedOperationError";
 import { MidaEvent, } from "#events/MidaEvent";
 import { MidaEventListener, } from "#events/MidaEventListener";
 import { MidaOrder, } from "#orders/MidaOrder";
@@ -40,6 +41,7 @@ import { MidaTrade, } from "#trades/MidaTrade";
 import { MidaEmitter, } from "#utilities/emitters/MidaEmitter";
 import { GenericObject, } from "#utilities/GenericObject";
 import { MidaMarketWatcher, } from "#watchers/MidaMarketWatcher";
+import { MidaCryptoWithdrawalDirectives, } from "#withdrawals/MidaCryptoWithdrawalDirectives";
 
 /** Represents a trading account */
 export abstract class MidaTradingAccount {
@@ -182,6 +184,14 @@ export abstract class MidaTradingAccount {
      */
     public abstract getCryptoAssetDepositAddress (asset: string, net: string): Promise<string>;
 
+    /**
+     * Used to withdraw crypto to an address
+     * @param directives The withdrawal directives
+     */
+    public withdrawCrypto (directives: MidaCryptoWithdrawalDirectives): Promise<string> {
+        throw new MidaUnsupportedOperationError();
+    }
+
     /** Used to get the account available symbols */
     public abstract getSymbols (): Promise<string[]>;
 
@@ -262,6 +272,10 @@ export abstract class MidaTradingAccount {
         }
 
         return equity.divide(usedMargin).multiply(100);
+    }
+
+    public async getCryptoDepositAddress (asset: string, net: string): Promise<string> {
+        return this.getCryptoAssetDepositAddress(asset, net);
     }
 
     public on (type: string): Promise<MidaEvent>;

@@ -1,3 +1,6 @@
+### Features
+* Expose `withdrawCrypto()` interface [#73](https://github.com/Reiryoku-Technologies/Mida/pull/73)
+
 2022.4.0 - 16-08-2022
 ===================
 ### Features
