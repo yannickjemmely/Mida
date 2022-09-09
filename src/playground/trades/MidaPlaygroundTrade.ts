@@ -20,5 +20,11 @@
  * THE SOFTWARE.
 */
 
-export * from "!/src/core/Mida";
-export * from "!/src/playground/MidaPlayground";
+import { MidaTrade, } from "#trades/MidaTrade";
+import { MidaPlaygroundTradeParameters, } from "!/src/playground/trades/MidaPlaygroundTradeParameters";
+
+export class MidaPlaygroundTrade extends MidaTrade {
+    public constructor (parameters: MidaPlaygroundTradeParameters) {
+        super(parameters);
+    }
+}

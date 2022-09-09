@@ -20,5 +20,15 @@
  * THE SOFTWARE.
 */
 
-export * from "!/src/core/Mida";
-export * from "!/src/playground/MidaPlayground";
+import { MidaTradingPlatform, } from "#platforms/MidaTradingPlatform";
+import { MidaPlaygroundLatencyCustomizer, } from "!/src/playground/customizers/MidaPlaygroundLatencyCustomizer";
+import { MidaPlaygroundEngine, } from "!/src/playground/MidaPlaygroundEngine";
+
+export type MidaPlaygroundAccountParameters = {
+    id: string;
+    ownerName: string;
+    platform: MidaTradingPlatform;
+    primaryAsset: string;
+    engine: MidaPlaygroundEngine;
+    latencyCustomizer?: MidaPlaygroundLatencyCustomizer;
+};

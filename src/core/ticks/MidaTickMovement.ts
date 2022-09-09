@@ -24,4 +24,5 @@ export enum MidaTickMovement {
     BID = "bid",
     ASK = "ask",
     BID_ASK = "bid-ask",
+    UNKNOWN = "unknown",
 }

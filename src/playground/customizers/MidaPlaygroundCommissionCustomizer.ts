@@ -20,5 +20,11 @@
  * THE SOFTWARE.
 */
 
-export * from "!/src/core/Mida";
-export * from "!/src/playground/MidaPlayground";
+import { MidaDecimal, } from "#decimals/MidaDecimal";
+import { MidaPlaygroundOrder, } from "!/src/playground/orders/MidaPlaygroundOrder";
+import { MidaPlaygroundTrade, } from "!/src/playground/trades/MidaPlaygroundTrade";
+
+export type MidaPlaygroundCommissionCustomizer =
+        (order: MidaPlaygroundOrder, upcomingTrade: Partial<MidaPlaygroundTrade>) => Promise<[ string, MidaDecimal, ]>;
+//                                                                                             ^       ^
+//                                                                                   COMMISSION ASSET, COMMISSION VOLUME

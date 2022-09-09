@@ -20,5 +20,9 @@
  * THE SOFTWARE.
 */
 
-export * from "!/src/core/Mida";
-export * from "!/src/playground/MidaPlayground";
+import { MidaOrderParameters, } from "#orders/MidaOrderParameters";
+import { MidaEmitter, } from "#utilities/emitters/MidaEmitter";
+
+export type MidaPlaygroundOrderParameters = MidaOrderParameters & {
+    engineEmitter: MidaEmitter;
+};

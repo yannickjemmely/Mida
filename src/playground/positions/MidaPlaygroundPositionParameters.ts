@@ -20,5 +20,9 @@
  * THE SOFTWARE.
 */
 
-export * from "!/src/core/Mida";
-export * from "!/src/playground/MidaPlayground";
+import { MidaPositionParameters, } from "#positions/MidaPositionParameters";
+import { MidaEmitter, } from "#utilities/emitters/MidaEmitter";
+
+export type MidaPlaygroundPositionParameters = MidaPositionParameters & {
+    engineEmitter: MidaEmitter;
+};

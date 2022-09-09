@@ -39,4 +39,5 @@ export type MidaSymbolParameters = {
     maxLots: MidaDecimal;
     lotUnits: MidaDecimal;
     pipPosition: number;
+    decimalDigits?: number; // TODO: Mandatory on the next breaking change
 };

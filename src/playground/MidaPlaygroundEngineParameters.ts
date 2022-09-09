@@ -20,5 +20,10 @@
  * THE SOFTWARE.
 */
 
-export * from "!/src/core/Mida";
-export * from "!/src/playground/MidaPlayground";
+import { MidaDateConvertible, } from "#dates/MidaDateConvertible";
+import { MidaPlaygroundCommissionCustomizer, } from "!/src/playground/customizers/MidaPlaygroundCommissionCustomizer";
+
+export type MidaPlaygroundEngineParameters = {
+    localDate?: MidaDateConvertible;
+    commissionCustomizer?: MidaPlaygroundCommissionCustomizer;
+};

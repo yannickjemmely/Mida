@@ -112,6 +112,10 @@ export class MidaDate implements IMidaCloneable, IMidaEquatable {
         return date(this.timestamp + milliseconds);
     }
 
+    public addSeconds (seconds: number): MidaDate {
+        return date(this.timestamp + seconds * 1000);
+    }
+
     public addMinutes (minutes: number): MidaDate {
         return date(this.timestamp + minutes * 1000 * 60);
     }
@@ -122,6 +126,10 @@ export class MidaDate implements IMidaCloneable, IMidaEquatable {
 
     public subtract (milliseconds: number): MidaDate {
         return date(this.timestamp - milliseconds);
+    }
+
+    public subtractSeconds (seconds: number): MidaDate {
+        return date(this.timestamp - seconds * 1000);
     }
 
     public subtractMinutes (minutes: number): MidaDate {
@@ -138,6 +146,22 @@ export class MidaDate implements IMidaCloneable, IMidaEquatable {
 
     public differenceInDays (date: MidaDate): number {
         return Math.abs(this.timestamp - date.timestamp) / 86400000;
+    }
+
+    public setMilliseconds (milliseconds: number): MidaDate {
+        return date(new Date(this.timestamp).setUTCMilliseconds(milliseconds));
+    }
+
+    public setSeconds (seconds: number): MidaDate {
+        return date(new Date(this.timestamp).setUTCSeconds(seconds));
+    }
+
+    public setMinutes (minutes: number): MidaDate {
+        return date(new Date(this.timestamp).setUTCMinutes(minutes));
+    }
+
+    public setHours (hours: number): MidaDate {
+        return date(new Date(this.timestamp).setUTCHours(hours));
     }
 
     public toString (): string {

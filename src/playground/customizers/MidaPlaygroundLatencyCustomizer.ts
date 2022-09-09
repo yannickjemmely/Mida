@@ -20,5 +20,9 @@
  * THE SOFTWARE.
 */
 
-export * from "!/src/core/Mida";
-export * from "!/src/playground/MidaPlayground";
+import { MidaPlaygroundAccount, } from "!/src/playground/accounts/MidaPlaygroundAccount";
+
+export type MidaPlaygroundLatencyCustomizer =
+        (tradingAccount: MidaPlaygroundAccount) => Promise<number>;
+//                                                         ^
+//                                                 LATENCY IN SECONDS

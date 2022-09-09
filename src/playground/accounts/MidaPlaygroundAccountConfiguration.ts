@@ -20,5 +20,11 @@
  * THE SOFTWARE.
 */
 
-export * from "!/src/core/Mida";
-export * from "!/src/playground/MidaPlayground";
+import { MidaDecimalConvertible, } from "#decimals/MidaDecimalConvertible";
+
+export type MidaPlaygroundAccountConfiguration = {
+    id?: string;
+    ownerName?: string;
+    primaryAsset?: string;
+    balanceSheet?: Record<string, MidaDecimalConvertible>;
+};

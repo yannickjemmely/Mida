@@ -211,6 +211,10 @@ export { MidaTradeStatus, } from "#trades/MidaTradeStatus";
 export { MidaEmitter, } from "#utilities/emitters/MidaEmitter";
 export { GenericObject, } from "#utilities/GenericObject";
 export {
+    readTicksFromFile,
+    closeFileReader,
+} from "#utilities/MidaFileSystem";
+export {
     wait,
     shuffleArray,
     generateInRandomInteger,
@@ -218,10 +222,13 @@ export {
     uuid,
     createClosedPosition,
     getObjectPropertyNames,
+    createOrderResolver,
 } from "#utilities/MidaUtilities";
 
 export { MidaMarketWatcher, } from "#watchers/MidaMarketWatcher";
 export { MidaMarketWatcherConfiguration, } from "#watchers/MidaMarketWatcherConfiguration";
 export { MidaMarketWatcherDirectives, } from "#watchers/MidaMarketWatcherDirectives";
 export { MidaMarketWatcherParameters, } from "#watchers/MidaMarketWatcherParameters";
+
+export { MidaCryptoWithdrawalDirectives, } from "#withdrawals/MidaCryptoWithdrawalDirectives";
 // </public-api>

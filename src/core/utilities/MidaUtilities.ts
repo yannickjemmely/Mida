@@ -20,7 +20,6 @@
  * THE SOFTWARE.
 */
 
-import { randomUUID as uuid4, } from "crypto";
 import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
 import { decimal, MidaDecimal, } from "#decimals/MidaDecimal";
 import { MidaUnsupportedOperationError, } from "#errors/MidaUnsupportedOperationError";
@@ -29,6 +28,7 @@ import { MidaPosition, } from "#positions/MidaPosition";
 import { MidaProtectionChange, } from "#protections/MidaProtectionChange";
 import { MidaProtectionDirectives, } from "#protections/MidaProtectionDirectives";
 import { GenericObject, } from "#utilities/GenericObject";
+import { randomUUID as uuid4, } from "crypto";
 
 /** Used to create a Promise resolved after a given number of milliseconds */
 export const wait = async (milliseconds: number): Promise<void> => {
@@ -139,4 +139,34 @@ export const getObjectPropertyNames = (object: GenericObject): string[] => {
     while (prototype !== Object.prototype);
 
     return names;
+};
+
+/** Used to create a Promise resolved when a given order enters in a given state */
+export const createOrderResolver = (order: MidaOrder, resolvers?: string[]): Promise<MidaOrder> => {
+    const resolverEvents: string[] = resolvers ?? [
+        "reject",
+        "pending",
+        "cancel",
+        "expire",
+        "execute",
+    ];
+
+    return new Promise((resolve: (order: MidaOrder) => void) => {
+        if (resolverEvents.length === 0) {
+            resolve(order);
+        }
+        else {
+            const resolverEventsUuids: Map<string, string> = new Map();
+
+            for (const eventType of resolverEvents) {
+                resolverEventsUuids.set(eventType, order.on(eventType, (): void => {
+                    for (const uuid of [ ...resolverEventsUuids.values(), ]) {
+                        order.removeEventListener(uuid);
+                    }
+
+                    resolve(order);
+                }));
+            }
+        }
+    });
 };

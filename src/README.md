@@ -1,1 +1,1 @@
-The Mida core source code
+The Mida source code
