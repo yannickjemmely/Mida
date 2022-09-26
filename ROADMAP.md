@@ -1,6 +1,6 @@
 # Roadmap
 
-## Q4 2022
+## Q3 2022
 - Add "toFixed()" interface to `MidaDecimal`.
 - Integrate the FTX exchange as a plugin.
 - Integrate the Bybit exchange as a plugin.
