@@ -2,6 +2,9 @@
 * Create and expose the Playground API, used for paper trading and backtesting [#71](https://github.com/Reiryoku-Technologies/Mida/pull/71)
 * Expose `withdrawCrypto()` interface [#73](https://github.com/Reiryoku-Technologies/Mida/pull/73)
 
+### Bug fixes
+* Don't convert undefined protection values to decimal [#77](https://github.com/Reiryoku-Technologies/Mida/pull/77)
+
 2022.4.0 - 16-08-2022
 ===================
 ### Features

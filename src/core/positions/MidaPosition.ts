@@ -129,11 +129,15 @@ export abstract class MidaPosition {
     }
 
     public async setTakeProfit (takeProfit: MidaDecimalConvertible | undefined): Promise<MidaProtectionChange> {
-        return this.changeProtection({ takeProfit: decimal(takeProfit), });
+        return this.changeProtection({
+            takeProfit: takeProfit === undefined ? undefined : decimal(takeProfit),
+        });
     }
 
     public async setStopLoss (stopLoss: MidaDecimalConvertible | undefined): Promise<MidaProtectionChange> {
-        return this.changeProtection({ stopLoss: decimal(stopLoss), });
+        return this.changeProtection({
+            stopLoss: stopLoss === undefined ? undefined : decimal(stopLoss),
+        });
     }
 
     public async setTrailingStopLoss (trailingStopLoss: boolean): Promise<MidaProtectionChange> {
