@@ -1,3 +1,5 @@
+2022.5.0 - 06-12-2022
+===================
 ### Features
 * Create and expose the Playground API, used for paper trading and backtesting [#71](https://github.com/Reiryoku-Technologies/Mida/pull/71)
 * Expose `withdrawCrypto()` interface [#73](https://github.com/Reiryoku-Technologies/Mida/pull/73)
