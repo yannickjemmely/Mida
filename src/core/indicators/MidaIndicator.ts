@@ -105,6 +105,10 @@ export abstract class MidaIndicator {
         MidaIndicator.#installedIndicators.set(id, indicator);
     }
 
+    public static has (id: string): boolean {
+        return MidaIndicator.#installedIndicators.has(id);
+    }
+
     public static create (id: string, parameters: GenericObject = {}): MidaIndicator {
         const indicator: ((parameters: GenericObject) => MidaIndicator) | undefined = MidaIndicator.#installedIndicators.get(id);
 

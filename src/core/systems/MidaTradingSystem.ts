@@ -63,7 +63,7 @@ export abstract class MidaTradingSystem {
     readonly #tickEventQueue: MidaQueue<MidaTick>;
     readonly #periodUpdateEventQueue: MidaQueue<MidaPeriod>;
     #isConfigured: boolean;
-    readonly #marketWatcher: MidaMarketWatcher;
+    #marketWatcher?: MidaMarketWatcher;
     readonly #components: MidaTradingSystemComponent[];
     readonly #symbolStates: Map<string, MidaTradingSystemSymbolState>;
     readonly #emitter: MidaEmitter;
@@ -85,29 +85,10 @@ export abstract class MidaTradingSystem {
         this.#tickEventQueue = new MidaQueue({ worker: (tick: MidaTick): Promise<void> => this.#onTickWorker(tick), });
         this.#periodUpdateEventQueue = new MidaQueue({ worker: (period: MidaPeriod): Promise<void> => this.#onPeriodUpdateWorker(period), });
         this.#isConfigured = false;
+        this.#marketWatcher = undefined;
         this.#components = [];
         this.#symbolStates = new Map();
         this.#emitter = new MidaEmitter();
-
-        // <market-watcher>
-        const watched: [
-            Omit<MidaMarketWatcherParameters, "tradingAccount" | "isActive">,
-            MidaMarketWatcherConfiguration,
-        ] | MidaMarketWatcherConfiguration = this.watched();
-        let marketWatcherParameters: MidaMarketWatcherParameters = {
-            tradingAccount,
-            isActive: false,
-        };
-
-        if (Array.isArray(watched)) {
-            marketWatcherParameters = {
-                ...watched[0],
-                ...marketWatcherParameters,
-            };
-        }
-
-        this.#marketWatcher = new MidaMarketWatcher(marketWatcherParameters);
-        // </market-watcher>
     }
 
     public get name (): string {
@@ -154,7 +135,7 @@ export abstract class MidaTradingSystem {
         return [ ...this.#capturedPeriods, ];
     }
 
-    protected get marketWatcher (): MidaMarketWatcher {
+    protected get marketWatcher (): MidaMarketWatcher | undefined {
         return this.#marketWatcher;
     }
 
@@ -218,7 +199,10 @@ export abstract class MidaTradingSystem {
         // </start-hooks>
 
         this.#isOperative = true;
-        this.#marketWatcher.isActive = true;
+
+        if (this.#marketWatcher) {
+            this.#marketWatcher.isActive = true;
+        }
 
         this.notifyListeners("start");
         info(`Trading system "${this.name}" | Started`);
@@ -234,7 +218,10 @@ export abstract class MidaTradingSystem {
         info(`Trading system "${this.name}" | Stopping...`);
 
         this.#isOperative = false;
-        this.#marketWatcher.isActive = false;
+
+        if (this.#marketWatcher) {
+            this.#marketWatcher.isActive = false;
+        }
 
         // <stop-hooks>
         try {
@@ -386,20 +373,20 @@ export abstract class MidaTradingSystem {
     }
 
     protected async watchTicks (symbol: string): Promise<void> {
-        await this.marketWatcher.watch(symbol, { watchTicks: true, });
+        await this.marketWatcher?.watch(symbol, { watchTicks: true, });
     }
 
     protected async watchPeriods (symbol: string, timeframes: number[] | number): Promise<void> {
-        const actualTimeframes: number[] = this.marketWatcher.getSymbolDirectives(symbol)?.timeframes ?? [];
+        const actualTimeframes: number[] = this.marketWatcher?.getSymbolDirectives(symbol)?.timeframes ?? [];
 
-        await this.marketWatcher.watch(symbol, {
+        await this.marketWatcher?.watch(symbol, {
             watchPeriods: true,
             timeframes: [ ...actualTimeframes, ...Array.isArray(timeframes) ? timeframes : [ timeframes, ], ],
         });
     }
 
     protected async unwatch (symbol: string): Promise<void> {
-        await this.marketWatcher.unwatch(symbol);
+        await this.marketWatcher?.unwatch(symbol);
     }
 
     protected async placeOrder (directives: MidaOrderDirectives): Promise<MidaOrder | undefined> {
@@ -538,6 +525,7 @@ export abstract class MidaTradingSystem {
         }
     }
 
+    // eslint-disable-next-line max-lines-per-function
     async #configure (): Promise<boolean> {
         this.#configureSymbolStates();
 
@@ -546,7 +534,24 @@ export abstract class MidaTradingSystem {
             Omit<MidaMarketWatcherParameters, "tradingAccount" | "isActive">,
             MidaMarketWatcherConfiguration,
         ] | MidaMarketWatcherConfiguration = this.watched();
-        const marketWatcherConfiguration: MidaMarketWatcherConfiguration = Array.isArray(watched) ? watched[1] : watched;
+        let marketWatcherParameters: MidaMarketWatcherParameters = {
+            tradingAccount: this.#tradingAccount,
+            isActive: false,
+        };
+        let marketWatcherConfiguration: MidaMarketWatcherConfiguration;
+
+        if (Array.isArray(watched)) {
+            marketWatcherParameters = {
+                ...watched[0],
+                ...marketWatcherParameters,
+            };
+            marketWatcherConfiguration = watched[1];
+        }
+        else {
+            marketWatcherConfiguration = watched;
+        }
+
+        this.#marketWatcher = new MidaMarketWatcher(marketWatcherParameters);
 
         for (const symbol in marketWatcherConfiguration) {
             if (marketWatcherConfiguration.hasOwnProperty(symbol)) {
@@ -607,8 +612,8 @@ export abstract class MidaTradingSystem {
     }
 
     #configureListeners (): void {
-        this.#marketWatcher.on("tick", (event: MidaEvent): void => this.#onTick(event.descriptor.tick));
-        this.#marketWatcher.on("period-update", (event: MidaEvent): void => this.#onPeriodUpdate(event.descriptor.period));
+        this.#marketWatcher?.on("tick", (event: MidaEvent): void => this.#onTick(event.descriptor.tick));
+        this.#marketWatcher?.on("period-update", (event: MidaEvent): void => this.#onPeriodUpdate(event.descriptor.period));
     }
 }
 

@@ -104,6 +104,15 @@ export { MidaAsset, } from "#assets/MidaAsset";
 export { MidaAssetParameters, } from "#assets/MidaAssetParameters";
 export { MidaAssetStatement, } from "#assets/MidaAssetStatement";
 
+export { marketComponent, MidaMarketComponent, } from "#components/MidaMarketComponent";
+export {
+    makeComponent,
+    makeComponentState,
+    MidaMarketComponentMakerParameters,
+} from "#components/MidaMarketComponentMaker";
+export { MidaMarketComponentOracle, } from "#components/MidaMarketComponentOracle";
+export { MidaMarketComponentState, } from "#components/MidaMarketComponentState";
+
 export { date, MidaDate, } from "#dates/MidaDate";
 export { MidaDateConvertible, } from "#dates/MidaDateConvertible";
 export { utcTimestamp, } from "#dates/MidaDateUtilities";

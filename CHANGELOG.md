@@ -1,3 +1,6 @@
+### Features
+* Market Components API [#79](https://github.com/Reiryoku-Technologies/Mida/pull/79)
+
 2022.5.0 - 06-12-2022
 ===================
 ### Features
