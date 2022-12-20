@@ -22,7 +22,6 @@
 
 import { MidaPluginActions, } from "#plugins/MidaPluginActions";
 import { MidaPluginParameters, } from "#plugins/MidaPluginParameters";
-import { GenericObject, } from "#utilities/GenericObject";
 
 export abstract class MidaPlugin {
     readonly #id: string;
@@ -58,7 +57,7 @@ export abstract class MidaPlugin {
         return this.#version;
     }
 
-    public install (actions: MidaPluginActions, options?: GenericObject): void {
+    public install (actions: MidaPluginActions, options?: Record<string, any>): void {
         // Silence is golden
     }
 }

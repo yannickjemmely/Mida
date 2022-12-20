@@ -24,6 +24,13 @@ import { MidaDate, } from "#dates/MidaDate";
 import { MidaLogNamespace, } from "#loggers/MidaLogNamespace";
 import { MidaLogParameters, } from "#loggers/MidaLogParameters";
 
+const dim = (text: string): string => `\x1b[2m${text}\x1b[0m`;
+const blue = (text: string): string => `\x1b[34m${text}\x1b[0m`;
+const red = (text: string): string => `\x1b[31m${text}\x1b[0m`;
+const green = (text: string): string => `\x1b[32m${text}\x1b[0m`;
+const magenta = (text: string): string => `\x1b[35m${text}\x1b[0m`;
+const yellow = (text: string): string => `\x1b[33m${text}\x1b[0m`;
+
 export class MidaLog {
     readonly #message: string;
     readonly #namespace: MidaLogNamespace;
@@ -51,6 +58,29 @@ export class MidaLog {
     }
 
     public toString (): string {
-        return `${this.#date.iso} | ${MidaLogNamespace[this.#namespace].toUpperCase()} | ${this.#message}`;
+        let namespace: string = MidaLogNamespace[this.#namespace].toUpperCase();
+
+        switch (this.namespace) {
+            case MidaLogNamespace.WARN: {
+                namespace = yellow(namespace);
+
+                break;
+            }
+            case MidaLogNamespace.ERROR:
+            case MidaLogNamespace.FATAL: {
+                namespace = red(namespace);
+
+                break;
+            }
+            default: {
+                namespace = blue(namespace);
+            }
+        }
+
+        const localDate: Date = new Date(this.#date.timestamp);
+        const time: string =
+                dim(`${localDate.getHours()}:${localDate.getMinutes()}:${localDate.getSeconds()}.${localDate.getMilliseconds()}`);
+
+        return `${time} | ${namespace} | ${this.#message}`;
     }
 }

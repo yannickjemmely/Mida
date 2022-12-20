@@ -20,8 +20,8 @@
  * THE SOFTWARE.
 */
 
-import { MidaTrade, } from "#trades/MidaTrade";
 import { MidaPlaygroundTradeParameters, } from "!/src/playground/trades/MidaPlaygroundTradeParameters";
+import { MidaTrade, } from "#trades/MidaTrade";
 
 export class MidaPlaygroundTrade extends MidaTrade {
     public constructor (parameters: MidaPlaygroundTradeParameters) {

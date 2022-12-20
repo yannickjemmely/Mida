@@ -25,7 +25,7 @@ import { MidaMarketComponentConstructor, } from "#components/MidaMarketComponent
 import { MidaMarketComponentDependencyDeclaration, } from "#components/MidaMarketComponentDependencyDeclaration";
 import { MidaMarketComponentIndicatorDeclaration, } from "#components/MidaMarketComponentIndicatorDeclaration";
 import { makeComponent, } from "#components/MidaMarketComponentMaker";
-import { MidaMarketComponentParameterDeclaration, } from "#components/MidaMarketComponentParameterDeclaration";
+import { MidaMarketComponentOptionDeclaration, } from "#components/MidaMarketComponentOptionDeclaration";
 import { MidaMarketComponentState, } from "#components/MidaMarketComponentState";
 import { MidaPeriod, } from "#periods/MidaPeriod";
 import { MidaTick, } from "#ticks/MidaTick";
@@ -33,11 +33,12 @@ import { MidaMarketWatcherDirectives, } from "#watchers/MidaMarketWatcherDirecti
 
 export const marketComponent = (component: MidaMarketComponent): MidaMarketComponentConstructor => {
     // eslint-disable-next-line arrow-body-style
-    const constructor: MidaMarketComponentConstructor = (tradingAccount: MidaTradingAccount, symbol: string) => {
+    const constructor: MidaMarketComponentConstructor = (tradingAccount: MidaTradingAccount, symbol: string, options?: Record<string, unknown>) => {
         return makeComponent({
             component,
             tradingAccount,
             symbol,
+            options,
         });
     };
 
@@ -49,7 +50,7 @@ export const marketComponent = (component: MidaMarketComponent): MidaMarketCompo
 export type MidaMarketComponent = {
     name?: string;
 
-    parameters?: Record<string, MidaMarketComponentParameterDeclaration>;
+    options?: Record<string, MidaMarketComponentOptionDeclaration>;
 
     dependencies?: Record<string, MidaMarketComponentDependencyDeclaration>
         | ((this: MidaMarketComponentState) => Record<string, MidaMarketComponentDependencyDeclaration>);

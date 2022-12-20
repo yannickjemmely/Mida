@@ -20,6 +20,7 @@
  * THE SOFTWARE.
 */
 
+import { MidaPlaygroundPositionParameters, } from "!/src/playground/positions/MidaPlaygroundPositionParameters";
 import { decimal, MidaDecimal, } from "#decimals/MidaDecimal";
 import { MidaUnsupportedOperationError, } from "#errors/MidaUnsupportedOperationError";
 import { MidaOrder, } from "#orders/MidaOrder";
@@ -30,7 +31,6 @@ import { MidaPositionStatus, } from "#positions/MidaPositionStatus";
 import { MidaProtection, } from "#protections/MidaProtection";
 import { MidaProtectionChange, } from "#protections/MidaProtectionChange";
 import { MidaEmitter, } from "#utilities/emitters/MidaEmitter";
-import { MidaPlaygroundPositionParameters, } from "!/src/playground/positions/MidaPlaygroundPositionParameters";
 
 export class MidaPlaygroundPosition extends MidaPosition {
     readonly #engineEmitter: MidaEmitter;

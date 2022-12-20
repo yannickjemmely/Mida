@@ -1,4 +1,5 @@
 ### Features
+* **_BREAKING_** Use internal logger, remove API for default user logger, add options to market components
 * Market Components API [#79](https://github.com/Reiryoku-Technologies/Mida/pull/79)
 
 2022.5.0 - 06-12-2022

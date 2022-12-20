@@ -23,11 +23,7 @@
 import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
 import { MidaEvent, } from "#events/MidaEvent";
 import { MidaEventListener, } from "#events/MidaEventListener";
-import {
-    info,
-    warn,
-    fatal,
-} from "#loggers/MidaLogger";
+import { internalLogger, } from "#loggers/MidaLogger";
 import { filterExecutedOrders, MidaOrder, } from "#orders/MidaOrder";
 import { MidaOrderDirectives, } from "#orders/MidaOrderDirectives";
 import { MidaPeriod, } from "#periods/MidaPeriod";
@@ -159,12 +155,12 @@ export abstract class MidaTradingSystem {
 
     public async start (): Promise<void> {
         if (this.#isOperative) {
-            warn(`Trading system "${this.name}" | Already started`);
+            internalLogger.warn(`Trading system "${this.name}" | Already started`);
 
             return;
         }
 
-        info(`Trading system "${this.name}" | Starting...`);
+        internalLogger.info(`Trading system "${this.name}" | Starting...`);
 
         if (!this.#isConfigured) {
             const isSuccessfullyConfigured: boolean = await this.#configure();
@@ -205,17 +201,17 @@ export abstract class MidaTradingSystem {
         }
 
         this.notifyListeners("start");
-        info(`Trading system "${this.name}" | Started`);
+        internalLogger.info(`Trading system "${this.name}" | Started`);
     }
 
     public async stop (): Promise<void> {
         if (!this.#isOperative) {
-            warn(`Trading system "${this.name}" | Already stopped`);
+            internalLogger.warn(`Trading system "${this.name}" | Already stopped`);
 
             return;
         }
 
-        info(`Trading system "${this.name}" | Stopping...`);
+        internalLogger.info(`Trading system "${this.name}" | Stopping...`);
 
         this.#isOperative = false;
 
@@ -242,12 +238,12 @@ export abstract class MidaTradingSystem {
         // </stop-hooks>
 
         this.notifyListeners("stop");
-        info(`Trading system "${this.name}" | Stopped`);
+        internalLogger.info(`Trading system "${this.name}" | Stopped`);
     }
 
     public async useComponent (component: MidaTradingSystemComponent): Promise<MidaTradingSystemComponent> {
         if (component.tradingSystem !== this) {
-            fatal("The component is binded to a different trading system");
+            internalLogger.fatal("The component is binded to a different trading system");
 
             throw new Error();
         }
@@ -390,7 +386,7 @@ export abstract class MidaTradingSystem {
     }
 
     protected async placeOrder (directives: MidaOrderDirectives): Promise<MidaOrder | undefined> {
-        info(`Trading system "${this.name}" | Placing ${directives.direction} order`);
+        internalLogger.info(`Trading system "${this.name}" | Placing ${directives.direction} order`);
 
         let finalDirectives: MidaOrderDirectives | undefined = undefined;
 
@@ -602,7 +598,8 @@ export abstract class MidaTradingSystem {
             const state: MidaTradingSystemSymbolState = this[symbolStateGenerator as `$${string}`](symbol);
 
             if (!state || Object.getPrototypeOf(state) !== Object.prototype) {
-                warn(`Trading system "${this.name}" | Symbol state generator ${symbolStateGenerator} must return a plain object`);
+                internalLogger
+                    .warn(`Trading system "${this.name}" | Symbol state generator ${symbolStateGenerator} must return a plain object`);
 
                 continue;
             }

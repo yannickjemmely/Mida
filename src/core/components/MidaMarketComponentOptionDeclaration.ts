@@ -20,7 +20,7 @@
  * THE SOFTWARE.
 */
 
-export type MidaMarketComponentParameterDeclaration = {
+export type MidaMarketComponentOptionDeclaration = {
     type: unknown;
     required?: boolean;
     default?: () => unknown;

@@ -27,3 +27,7 @@ import { MidaDate, } from "#dates/MidaDate";
  * @see MidaDate
  */
 export type MidaDateConvertible = MidaDate | Date | string | number;
+//                                                  ^
+//                                                  |
+//                                                  |
+//                                                 ISO

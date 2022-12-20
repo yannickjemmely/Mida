@@ -25,4 +25,6 @@ import { MidaPlaygroundAccount, } from "!/src/playground/accounts/MidaPlayground
 export type MidaPlaygroundLatencyCustomizer =
         (tradingAccount: MidaPlaygroundAccount) => Promise<number>;
 //                                                         ^
+//                                                         |
+//                                                         |
 //                                                 LATENCY IN SECONDS

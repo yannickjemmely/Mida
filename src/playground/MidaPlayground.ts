@@ -21,7 +21,7 @@
 */
 
 import { MidaPlaygroundAccount, } from "!/src/playground/accounts/MidaPlaygroundAccount";
-import { fatal, } from "#loggers/MidaLogger";
+import { internalLogger, } from "#loggers/MidaLogger";
 import { MidaTradingPlatform, } from "#platforms/MidaTradingPlatform";
 import { GenericObject, } from "#utilities/GenericObject";
 
@@ -49,7 +49,7 @@ class MidaPlayground extends MidaTradingPlatform {
 
     public static addTradingAccount (id: string, tradingAccount: MidaPlaygroundAccount): void {
         if (MidaPlayground.#tradingAccounts.has(id)) {
-            fatal(`Playground trading account with id "${id}" already exists`);
+            internalLogger.fatal(`Playground trading account with id "${id}" already exists`);
 
             throw new Error();
         }

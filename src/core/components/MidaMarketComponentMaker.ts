@@ -25,16 +25,18 @@ import { MidaMarketComponent, } from "#components/MidaMarketComponent";
 import { MidaMarketComponentConstructor, } from "#components/MidaMarketComponentConstructor";
 import { MidaMarketComponentDependencyDeclaration, } from "#components/MidaMarketComponentDependencyDeclaration";
 import { MidaMarketComponentIndicatorDeclaration, } from "#components/MidaMarketComponentIndicatorDeclaration";
+import { MidaMarketComponentOptionDeclaration } from "#components/MidaMarketComponentOptionDeclaration";
 import { MidaMarketComponentOracle, } from "#components/MidaMarketComponentOracle";
 import { MidaMarketComponentState, } from "#components/MidaMarketComponentState";
 import { MidaIndicator, } from "#indicators/MidaIndicator";
-import { error, } from "#loggers/MidaLogger";
+import { internalLogger, } from "#loggers/MidaLogger";
 import { MidaTimeframe, } from "#timeframes/MidaTimeframe";
 
 export type MidaMarketComponentMakerParameters = {
     component: MidaMarketComponent;
     tradingAccount: MidaTradingAccount;
     symbol: string;
+    options?: Record<string, unknown>;
 };
 
 // eslint-disable-next-line max-lines-per-function, max-len
@@ -84,6 +86,37 @@ export const makeComponentState = async (parameters: MidaMarketComponentMakerPar
         ...component.watcher?.call(state),
     };
 
+    // <options>
+    const options: Record<string, MidaMarketComponentOptionDeclaration> = component.options ?? {};
+    const inputOptions: Record<string, unknown> = parameters.options ?? {};
+
+    for (const propertyName of Object.keys(options)) {
+        console.log(propertyName);
+        const {
+            type,
+            required,
+            default: defaultValue,
+        } = options[propertyName];
+        const value: any = inputOptions[propertyName] ?? defaultValue?.();
+
+        if (!value && required) {
+            internalLogger.fatal(`Required option ${propertyName} not provided`);
+
+            throw new Error();
+        }
+
+        if (type && value.constructor !== type) {
+            internalLogger.warn(`${propertyName} value doesn't match its declared type`);
+        }
+
+        Object.defineProperty(state, propertyName, {
+            get (): any {
+                return value;
+            },
+        });
+    }
+    // </options>
+
     // <computed>
     const computed = component.computed ?? {};
 
@@ -114,18 +147,18 @@ export const makeComponentState = async (parameters: MidaMarketComponentMakerPar
     for (const propertyName of Object.keys(indicators)) {
         const {
             type,
-            parameters,
+            options,
             input,
         } = indicators?.[propertyName];
         const timeframe: MidaTimeframe = input?.timeframe as MidaTimeframe;
 
         if (!MidaIndicator.has(type)) {
-            error(`Indicator "${type}" not found, have you installed its plugin?`);
+            internalLogger.error(`Indicator "${type}" not found, have you installed its plugin?`);
 
             continue;
         }
 
-        const indicator: MidaIndicator = MidaIndicator.create(type, parameters);
+        const indicator: MidaIndicator = MidaIndicator.create(type, options);
 
         state.$watcher.watchPeriods = true;
         state.$watcher.timeframes = [ ...new Set([ ...state.$watcher.timeframes ?? [], timeframe, ]), ];

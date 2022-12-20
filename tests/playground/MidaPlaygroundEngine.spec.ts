@@ -20,9 +20,9 @@
  * THE SOFTWARE.
 */
 
+import { MidaPlaygroundEngine, } from "!/src/playground/MidaPlaygroundEngine";
 import { MidaTick, } from "#ticks/MidaTick";
 import { readTicksFromFile, } from "#utilities/MidaFileSystem";
-import { MidaPlaygroundEngine, } from "!/src/playground/MidaPlaygroundEngine";
 
 // eslint-disable-next-line max-lines-per-function
 describe("MidaPlaygroundEngine", () => {

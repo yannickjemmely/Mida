@@ -24,6 +24,6 @@ import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
 import { MidaMarketComponent, } from "#components/MidaMarketComponent";
 import { MidaMarketComponentState, } from "#components/MidaMarketComponentState";
 
-export type MidaMarketComponentConstructor = ((tradingAccount: MidaTradingAccount, symbol: string) => Promise<MidaMarketComponentState>) & {
+export type MidaMarketComponentConstructor = {
     $component: MidaMarketComponent;
-};
+} & ((tradingAccount: MidaTradingAccount, symbol: string, options?: Record<string, unknown>) => Promise<MidaMarketComponentState>);

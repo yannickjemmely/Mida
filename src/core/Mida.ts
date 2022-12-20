@@ -22,16 +22,10 @@
 
 import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
 import { MidaIndicator, } from "#indicators/MidaIndicator";
-import {
-    defaultLogger,
-    info,
-    warn,
-    MidaLogger,
-} from "#loggers/MidaLogger";
+import { internalLogger, MidaLogger, } from "#loggers/MidaLogger";
 import { MidaTradingPlatform, } from "#platforms/MidaTradingPlatform";
 import { MidaPlugin, } from "#plugins/MidaPlugin";
 import { baseActions, } from "#plugins/MidaPluginActions";
-import { GenericObject, } from "#utilities/GenericObject";
 
 class Mida {
     private constructor () {
@@ -43,48 +37,50 @@ class Mida {
     static readonly #installedPlugins: Map<string, MidaPlugin> = new Map();
 
     public static get version (): string {
-        return "2022.4.0";
+        return "2022.5.0";
     }
 
     public static get logger (): MidaLogger {
-        return defaultLogger;
+        return internalLogger;
     }
 
     public static get installedPlugins (): MidaPlugin[] {
         return [ ...Mida.#installedPlugins.values(), ];
     }
 
-    public static use (plugin: MidaPlugin, options?: GenericObject): void {
+    public static use (plugin: MidaPlugin, options?: Record<string, unknown>): void {
         const pluginId: string = plugin.id;
         const pluginName: string = plugin.name;
 
         if (!pluginId) {
-            warn("The plugin is not valid");
+            internalLogger.warn("The plugin is not valid");
 
             return;
         }
 
         if (Mida.pluginIsInstalled(pluginId)) {
-            warn(`Plugin "${pluginName}:${pluginId}" is already installed`);
+            internalLogger.warn(`Plugin "${pluginName}:${pluginId}" is already installed`);
 
             return;
         }
 
-        info(`Installing plugin "${pluginName}:${pluginId}"`);
+        internalLogger.info(`Installing plugin "${pluginName}:${pluginId}"...`);
+
         plugin.install(baseActions, options);
         Mida.#installedPlugins.set(pluginId, plugin);
-        info(`Plugin "${pluginName}:${pluginId}" installed`);
+
+        internalLogger.info(`Plugin "${pluginName}:${pluginId}" installed`);
     }
 
     public static pluginIsInstalled (id: string): boolean {
         return Mida.#installedPlugins.has(id);
     }
 
-    public static async login (id: string, parameters: GenericObject): Promise<MidaTradingAccount> {
+    public static async login (id: string, parameters: Record<string, unknown>): Promise<MidaTradingAccount> {
         return MidaTradingPlatform.login(id, parameters);
     }
 
-    public static createIndicator (id: string, parameters: GenericObject = {}): MidaIndicator {
+    public static createIndicator (id: string, parameters: Record<string, unknown>): MidaIndicator {
         return MidaIndicator.create(id, parameters);
     }
 }
@@ -134,15 +130,7 @@ export { MidaIndicatorIo, } from "#indicators/MidaIndicatorIo";
 export { MidaIndicatorParameters, } from "#indicators/MidaIndicatorParameters";
 
 export { MidaLog, } from "#loggers/MidaLog";
-export {
-    defaultLogger,
-    debug,
-    info,
-    warn,
-    error,
-    fatal,
-    MidaLogger,
-} from "#loggers/MidaLogger";
+export { MidaLogger, } from "#loggers/MidaLogger";
 export { MidaLogNamespace, } from "#loggers/MidaLogNamespace";
 export { MidaLogParameters, } from "#loggers/MidaLogParameters";
 
@@ -241,3 +229,5 @@ export { MidaMarketWatcherParameters, } from "#watchers/MidaMarketWatcherParamet
 
 export { MidaCryptoWithdrawalDirectives, } from "#withdrawals/MidaCryptoWithdrawalDirectives";
 // </public-api>
+
+internalLogger.info(`Using Mida ${Mida.version}`);

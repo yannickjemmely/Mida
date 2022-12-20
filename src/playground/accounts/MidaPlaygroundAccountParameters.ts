@@ -20,9 +20,9 @@
  * THE SOFTWARE.
 */
 
-import { MidaTradingPlatform, } from "#platforms/MidaTradingPlatform";
 import { MidaPlaygroundLatencyCustomizer, } from "!/src/playground/customizers/MidaPlaygroundLatencyCustomizer";
 import { MidaPlaygroundEngine, } from "!/src/playground/MidaPlaygroundEngine";
+import { MidaTradingPlatform, } from "#platforms/MidaTradingPlatform";
 
 export type MidaPlaygroundAccountParameters = {
     id: string;

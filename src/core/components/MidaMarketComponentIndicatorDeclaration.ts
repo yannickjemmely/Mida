@@ -25,7 +25,7 @@ import { MidaTimeframe, } from "#timeframes/MidaTimeframe";
 
 export type MidaMarketComponentIndicatorDeclaration = {
     type: string;
-    parameters?: Record<string, unknown>;
+    options?: Record<string, unknown>;
     input?: {
         type?: MidaPeriodPriceKey;
         timeframe: MidaTimeframe;

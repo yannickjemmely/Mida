@@ -20,13 +20,13 @@
  * THE SOFTWARE.
 */
 
-import { inspect, } from "util";
 import { MidaDateConvertible, } from "#dates/MidaDateConvertible";
 import { utcTimestamp, } from "#dates/MidaDateUtilities";
-import { fatal, } from "#loggers/MidaLogger";
+import { internalLogger, } from "#loggers/MidaLogger";
 import { IMidaCloneable, } from "#utilities/cloneable/IMidaCloneable";
 import { IMidaEquatable, } from "#utilities/equatable/IMidaEquatable";
 import { GenericObject, } from "#utilities/GenericObject";
+import { inspect, } from "util";
 
 /** Represents an immutable UTC date */
 export class MidaDate implements IMidaCloneable, IMidaEquatable {
@@ -63,7 +63,7 @@ export class MidaDate implements IMidaCloneable, IMidaEquatable {
         }
 
         if (!Number.isFinite(date.getTime())) {
-            fatal("Invalid date");
+            internalLogger.fatal("Invalid date");
 
             throw new Error();
         }

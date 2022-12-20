@@ -24,5 +24,5 @@ import { MidaMarketComponentConstructor, } from "#components/MidaMarketComponent
 
 export type MidaMarketComponentDependencyDeclaration = MidaMarketComponentConstructor | {
     type: MidaMarketComponentConstructor;
-    parameters: Record<string, unknown>;
+    options: Record<string, unknown>;
 };

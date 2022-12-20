@@ -20,9 +20,9 @@
  * THE SOFTWARE.
 */
 
-import { inspect, } from "util";
 import { MidaDecimalConvertible, } from "#decimals/MidaDecimalConvertible";
-import { fatal, } from "#loggers/MidaLogger";
+import { internalLogger, } from "#loggers/MidaLogger";
+import { inspect, } from "util";
 
 export class MidaDecimal {
     readonly #value: bigint;
@@ -40,7 +40,7 @@ export class MidaDecimal {
         ] = MidaDecimal.#normalizeParts(parts[0], parts[1]);
 
         if (!Number.isFinite(Number(integerPart)) || !Number.isFinite(Number(decimalPart))) {
-            fatal(`Invalid decimal "${value}"`);
+            internalLogger.fatal(`Invalid decimal "${value}"`);
 
             throw new Error();
         }

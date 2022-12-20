@@ -22,8 +22,7 @@
 
 import { MidaIndicatorIo, } from "#indicators/MidaIndicatorIo";
 import { MidaIndicatorParameters, } from "#indicators/MidaIndicatorParameters";
-import { fatal, } from "#loggers/MidaLogger";
-import { GenericObject, } from "#utilities/GenericObject";
+import { internalLogger, } from "#loggers/MidaLogger";
 
 export abstract class MidaIndicator {
     readonly #name: string;
@@ -89,15 +88,15 @@ export abstract class MidaIndicator {
 
     /* *** *** *** Reiryoku Technologies *** *** *** */
 
-    static readonly #installedIndicators: Map<string, (parameters: GenericObject) => MidaIndicator> = new Map();
+    static readonly #installedIndicators: Map<string, (options?: Record<string, unknown>) => MidaIndicator> = new Map();
 
     public static get installedIndicators (): string[] {
         return [ ...MidaIndicator.#installedIndicators.keys(), ];
     }
 
-    public static add (id: string, indicator: (parameters: GenericObject) => MidaIndicator): void {
+    public static add (id: string, indicator: (options?: Record<string, unknown>) => MidaIndicator): void {
         if (MidaIndicator.#installedIndicators.has(id)) {
-            fatal(`Indicator "${id}" already exists`);
+            internalLogger.fatal(`Indicator "${id}" already exists`);
 
             throw new Error();
         }
@@ -109,15 +108,15 @@ export abstract class MidaIndicator {
         return MidaIndicator.#installedIndicators.has(id);
     }
 
-    public static create (id: string, parameters: GenericObject = {}): MidaIndicator {
-        const indicator: ((parameters: GenericObject) => MidaIndicator) | undefined = MidaIndicator.#installedIndicators.get(id);
+    public static create (id: string, options?: Record<string, unknown>): MidaIndicator {
+        const indicator: ((options?: Record<string, unknown>) => MidaIndicator) | undefined = MidaIndicator.#installedIndicators.get(id);
 
         if (!indicator) {
-            fatal(`Indicator "${id}" not found, have you installed its plugin?`);
+            internalLogger.fatal(`Indicator "${id}" not found, have you installed its plugin?`);
 
             throw new Error();
         }
 
-        return indicator(parameters);
+        return indicator(options);
     }
 }

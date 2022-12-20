@@ -27,9 +27,9 @@ export class MidaLogger {
     readonly #logs: MidaLog[];
     #namespace: MidaLogNamespace;
 
-    public constructor () {
+    public constructor (namespace?: MidaLogNamespace) {
         this.#logs = [];
-        this.#namespace = MidaLogNamespace.ALL;
+        this.#namespace = namespace ?? MidaLogNamespace.ALL;
     }
 
     public get logs (): MidaLog[] {
@@ -60,36 +60,7 @@ export class MidaLogger {
             return;
         }
 
-        let logMethodName: "debug" | "info" | "warn" | "error";
-
-        switch (log.namespace) {
-            case MidaLogNamespace.DEBUG: {
-                logMethodName = "debug";
-
-                break;
-            }
-            case MidaLogNamespace.INFO: {
-                logMethodName = "info";
-
-                break;
-            }
-            case MidaLogNamespace.WARN: {
-                logMethodName = "warn";
-
-                break;
-            }
-            case MidaLogNamespace.ERROR:
-            case MidaLogNamespace.FATAL: {
-                logMethodName = "error";
-
-                break;
-            }
-            default: {
-                throw new Error();
-            }
-        }
-
-        console[logMethodName](log.toString());
+        console.log(log.toString());
     }
 
     public debug (message: string): void {
@@ -113,23 +84,4 @@ export class MidaLogger {
     }
 }
 
-const defaultLogger: MidaLogger = new MidaLogger();
-
-defaultLogger.namespace = MidaLogNamespace.WARN;
-
-const log = (message: string): void => defaultLogger.log(message);
-const debug = (message: string): void => defaultLogger.debug(message);
-const info = (message: string): void => defaultLogger.info(message);
-const warn = (message: string): void => defaultLogger.warn(message);
-const error = (message: string): void => defaultLogger.error(message);
-const fatal = (message: string): void => defaultLogger.fatal(message);
-
-export {
-    defaultLogger,
-    log,
-    debug,
-    info,
-    warn,
-    error,
-    fatal,
-};
+export const internalLogger: MidaLogger = new MidaLogger(MidaLogNamespace.INFO);

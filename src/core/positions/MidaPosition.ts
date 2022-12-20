@@ -25,7 +25,7 @@ import { decimal, MidaDecimal, } from "#decimals/MidaDecimal";
 import { MidaDecimalConvertible, } from "#decimals/MidaDecimalConvertible";
 import { MidaEvent, } from "#events/MidaEvent";
 import { MidaEventListener, } from "#events/MidaEventListener";
-import { info, } from "#loggers/MidaLogger";
+import { internalLogger, } from "#loggers/MidaLogger";
 import { MidaOrder, } from "#orders/MidaOrder";
 import { MidaPositionDirection, } from "#positions/MidaPositionDirection";
 import { MidaPositionParameters, } from "#positions/MidaPositionParameters";
@@ -185,7 +185,7 @@ export abstract class MidaPosition {
         }
 
         this.#emitter.notifyListeners("trade", { trade, });
-        info(`Position ${this.id} | trade ${trade.id} executed`);
+        internalLogger.info(`Position ${this.id} | trade ${trade.id} executed`);
     }
 
     protected onProtectionChange (protection: MidaProtection): void {
@@ -219,7 +219,7 @@ export abstract class MidaPosition {
         }
 
         this.#emitter.notifyListeners("protection-change", { protection, });
-        info(`Position ${this.id} | protection changed`);
+        internalLogger.info(`Position ${this.id} | protection changed`);
     }
 
     protected onSwap (swap: MidaDecimal): void {
