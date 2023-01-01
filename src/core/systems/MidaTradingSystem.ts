@@ -27,7 +27,6 @@ import { internalLogger, } from "#loggers/MidaLogger";
 import { filterExecutedOrders, MidaOrder, } from "#orders/MidaOrder";
 import { MidaOrderDirectives, } from "#orders/MidaOrderDirectives";
 import { MidaPeriod, } from "#periods/MidaPeriod";
-import { filterEnabledComponents, MidaTradingSystemComponent, } from "#systems/MidaTradingSystemComponent";
 import { MidaTradingSystemParameters, } from "#systems/MidaTradingSystemParameters";
 import { MidaTick, } from "#ticks/MidaTick";
 import {
@@ -60,7 +59,6 @@ export abstract class MidaTradingSystem {
     readonly #periodUpdateEventQueue: MidaQueue<MidaPeriod>;
     #isConfigured: boolean;
     #marketWatcher?: MidaMarketWatcher;
-    readonly #components: MidaTradingSystemComponent[];
     readonly #symbolStates: Map<string, MidaTradingSystemSymbolState>;
     readonly #emitter: MidaEmitter;
 
@@ -82,7 +80,6 @@ export abstract class MidaTradingSystem {
         this.#periodUpdateEventQueue = new MidaQueue({ worker: (period: MidaPeriod): Promise<void> => this.#onPeriodUpdateWorker(period), });
         this.#isConfigured = false;
         this.#marketWatcher = undefined;
-        this.#components = [];
         this.#symbolStates = new Map();
         this.#emitter = new MidaEmitter();
     }
@@ -135,14 +132,6 @@ export abstract class MidaTradingSystem {
         return this.#marketWatcher;
     }
 
-    public get components (): MidaTradingSystemComponent[] {
-        return [ ...this.#components, ];
-    }
-
-    public get enabledComponents (): MidaTradingSystemComponent[] {
-        return filterEnabledComponents(this.#components);
-    }
-
     protected get shared (): GenericObject {
         const sharedSymbolStates: GenericObject = {};
 
@@ -160,7 +149,7 @@ export abstract class MidaTradingSystem {
             return;
         }
 
-        internalLogger.info(`Trading system "${this.name}" | Starting...`);
+        internalLogger.debug(`Trading system "${this.name}" | Starting...`);
 
         if (!this.#isConfigured) {
             const isSuccessfullyConfigured: boolean = await this.#configure();
@@ -201,17 +190,17 @@ export abstract class MidaTradingSystem {
         }
 
         this.notifyListeners("start");
-        internalLogger.info(`Trading system "${this.name}" | Started`);
+        internalLogger.info("Trading System | Started");
     }
 
     public async stop (): Promise<void> {
         if (!this.#isOperative) {
-            internalLogger.warn(`Trading system "${this.name}" | Already stopped`);
+            internalLogger.warn("Trading System | Already stopped");
 
             return;
         }
 
-        internalLogger.info(`Trading system "${this.name}" | Stopping...`);
+        internalLogger.debug("Trading System | Stopping...");
 
         this.#isOperative = false;
 
@@ -238,44 +227,7 @@ export abstract class MidaTradingSystem {
         // </stop-hooks>
 
         this.notifyListeners("stop");
-        internalLogger.info(`Trading system "${this.name}" | Stopped`);
-    }
-
-    public async useComponent (component: MidaTradingSystemComponent): Promise<MidaTradingSystemComponent> {
-        if (component.tradingSystem !== this) {
-            internalLogger.fatal("The component is binded to a different trading system");
-
-            throw new Error();
-        }
-
-        if (this.#components.indexOf(component) !== -1) {
-            return component;
-        }
-
-        this.#components.push(component);
-        await component.activate();
-
-        return component;
-    }
-
-    public getComponentByName (name: string): MidaTradingSystemComponent | undefined {
-        for (const component of this.#components) {
-            if (component.name === name) {
-                return component;
-            }
-        }
-
-        return undefined;
-    }
-
-    public getComponentByType (type: typeof MidaTradingSystemComponent): MidaTradingSystemComponent | undefined {
-        for (const component of this.#components) {
-            if (component instanceof type) {
-                return component;
-            }
-        }
-
-        return undefined;
+        internalLogger.info("Trading System | Stopped");
     }
 
     public on (type: string): Promise<MidaEvent>;
@@ -386,7 +338,7 @@ export abstract class MidaTradingSystem {
     }
 
     protected async placeOrder (directives: MidaOrderDirectives): Promise<MidaOrder | undefined> {
-        internalLogger.info(`Trading system "${this.name}" | Placing ${directives.direction} order`);
+        internalLogger.info(`Trading System | Placing ${directives.direction} order`);
 
         let finalDirectives: MidaOrderDirectives | undefined = undefined;
 
@@ -599,7 +551,7 @@ export abstract class MidaTradingSystem {
 
             if (!state || Object.getPrototypeOf(state) !== Object.prototype) {
                 internalLogger
-                    .warn(`Trading system "${this.name}" | Symbol state generator ${symbolStateGenerator} must return a plain object`);
+                    .warn(`Trading System | Symbol state generator ${symbolStateGenerator} must return a plain object`);
 
                 continue;
             }

@@ -1,4 +1,5 @@
 ### Features
+* **_BREAKING_** Remove old MidaExpertAdvisor API in favor of MidaTradingSystem, add params to market components [#82](https://github.com/Reiryoku-Technologies/Mida/pull/82)
 * **_BREAKING_** Use internal logger, remove API for default user logger, add options to market components [#81](https://github.com/Reiryoku-Technologies/Mida/pull/81)
 * Market Components API [#79](https://github.com/Reiryoku-Technologies/Mida/pull/79)
 

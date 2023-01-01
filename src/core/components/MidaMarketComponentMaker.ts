@@ -25,7 +25,7 @@ import { MidaMarketComponent, } from "#components/MidaMarketComponent";
 import { MidaMarketComponentConstructor, } from "#components/MidaMarketComponentConstructor";
 import { MidaMarketComponentDependencyDeclaration, } from "#components/MidaMarketComponentDependencyDeclaration";
 import { MidaMarketComponentIndicatorDeclaration, } from "#components/MidaMarketComponentIndicatorDeclaration";
-import { MidaMarketComponentOptionDeclaration } from "#components/MidaMarketComponentOptionDeclaration";
+import { MidaMarketComponentParameterDeclaration, } from "#components/MidaMarketComponentParameterDeclaration";
 import { MidaMarketComponentOracle, } from "#components/MidaMarketComponentOracle";
 import { MidaMarketComponentState, } from "#components/MidaMarketComponentState";
 import { MidaIndicator, } from "#indicators/MidaIndicator";
@@ -34,9 +34,9 @@ import { MidaTimeframe, } from "#timeframes/MidaTimeframe";
 
 export type MidaMarketComponentMakerParameters = {
     component: MidaMarketComponent;
+    params?: Record<string, any>;
     tradingAccount: MidaTradingAccount;
     symbol: string;
-    options?: Record<string, unknown>;
 };
 
 // eslint-disable-next-line max-lines-per-function, max-len
@@ -49,10 +49,11 @@ export const makeComponent = async (parameters: MidaMarketComponentMakerParamete
     return state;
 };
 
-// eslint-disable-next-line max-lines-per-function, max-len
+// eslint-disable-next-line max-lines-per-function, max-len, complexity
 export const makeComponentState = async (parameters: MidaMarketComponentMakerParameters): Promise<MidaMarketComponentState> => {
     const {
         component,
+        params,
         tradingAccount,
         symbol,
     } = parameters;
@@ -81,32 +82,25 @@ export const makeComponentState = async (parameters: MidaMarketComponentMakerPar
         ...state,
     };
 
-    state.$watcher = {
-        ...state.$watcher,
-        ...component.watcher?.call(state),
-    };
+    // <params>
+    const declaredParams: Record<string, MidaMarketComponentParameterDeclaration> = component.params ?? {};
 
-    // <options>
-    const options: Record<string, MidaMarketComponentOptionDeclaration> = component.options ?? {};
-    const inputOptions: Record<string, unknown> = parameters.options ?? {};
-
-    for (const propertyName of Object.keys(options)) {
-        console.log(propertyName);
+    for (const propertyName of Object.keys(declaredParams)) {
         const {
             type,
             required,
             default: defaultValue,
-        } = options[propertyName];
-        const value: any = inputOptions[propertyName] ?? defaultValue?.();
+        } = declaredParams[propertyName];
+        const value: any = params?.[propertyName] ?? (typeof defaultValue === "function" ? defaultValue() : defaultValue);
 
         if (!value && required) {
-            internalLogger.fatal(`Required option ${propertyName} not provided`);
+            internalLogger.fatal(`Market Component | Missing required param ${propertyName}`);
 
             throw new Error();
         }
 
         if (type && value.constructor !== type) {
-            internalLogger.warn(`${propertyName} value doesn't match its declared type`);
+            internalLogger.warn(`Market Component | Value of param ${propertyName} doesn't match its declared type`);
         }
 
         Object.defineProperty(state, propertyName, {
@@ -115,7 +109,14 @@ export const makeComponentState = async (parameters: MidaMarketComponentMakerPar
             },
         });
     }
-    // </options>
+    // </params>
+
+    // <watcher>
+    state.$watcher = {
+        ...state.$watcher,
+        ...component.watcher?.call(state),
+    };
+    // </watcher>
 
     // <computed>
     const computed = component.computed ?? {};
@@ -147,18 +148,18 @@ export const makeComponentState = async (parameters: MidaMarketComponentMakerPar
     for (const propertyName of Object.keys(indicators)) {
         const {
             type,
-            options,
+            params,
             input,
         } = indicators?.[propertyName];
         const timeframe: MidaTimeframe = input?.timeframe as MidaTimeframe;
 
         if (!MidaIndicator.has(type)) {
-            internalLogger.error(`Indicator "${type}" not found, have you installed its plugin?`);
+            internalLogger.fatal(`Market Component | Indicator ${type} not found, have you installed its plugin?`);
 
-            continue;
+            throw new Error();
         }
 
-        const indicator: MidaIndicator = MidaIndicator.create(type, options);
+        const indicator: MidaIndicator = MidaIndicator.create(type, params);
 
         state.$watcher.watchPeriods = true;
         state.$watcher.timeframes = [ ...new Set([ ...state.$watcher.timeframes ?? [], timeframe, ]), ];
@@ -184,16 +185,19 @@ export const makeComponentState = async (parameters: MidaMarketComponentMakerPar
         ? component.dependencies.call(state) : component.dependencies ?? {};
 
     for (const propertyName of Object.keys(dependencies)) {
-        const value: any = dependencies[propertyName];
-        const constructor: MidaMarketComponentConstructor = typeof value === "object" ? value.type : value;
+        const declaration: MidaMarketComponentDependencyDeclaration = dependencies[propertyName];
+        const constructor: MidaMarketComponentConstructor = typeof declaration === "object" ? declaration.type : declaration;
         const dependencyComponent: MidaMarketComponent = constructor.$component;
+        const dependencyParams: Record<string, any> | undefined = typeof declaration === "object" ? declaration.params : undefined;
         const dependencyState: MidaMarketComponentState = await makeComponentState({
             component: dependencyComponent,
+            params: dependencyParams,
             tradingAccount,
             symbol,
         });
 
         state.$dependencies.push(dependencyState);
+
         Object.defineProperty(state, propertyName, {
             get (): MidaMarketComponentState {
                 return dependencyState;

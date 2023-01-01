@@ -21,6 +21,7 @@
 */
 
 import { MidaMarketComponentState, } from "#components/MidaMarketComponentState";
+import { MidaDecimal } from "#decimals/MidaDecimal";
 import { MidaPeriod, } from "#periods/MidaPeriod";
 import { MidaPeriodPriceKey, } from "#periods/MidaPeriodPriceKey";
 import { MidaTradingSystem, } from "#systems/MidaTradingSystem";
@@ -185,10 +186,24 @@ export class MidaMarketComponentOracle extends MidaTradingSystem {
                 return;
             }
 
-            const priceKey: MidaPeriodPriceKey = input.type;
+            const processor: ((periods: MidaPeriod[]) => any) | undefined = input.processor;
+            const priceKeys: MidaPeriodPriceKey | MidaPeriodPriceKey[] = input.type;
+            let indicatorInput: any = [];
+
+            if (typeof processor === "function") {
+                indicatorInput = await processor(periods);
+            }
+            else if (Array.isArray(priceKeys)) {
+                for (const priceKey of priceKeys) {
+                    indicatorInput = [ ...indicatorInput, [ ...periods.map((period) => period[priceKey]), ], ];
+                }
+            }
+            else {
+                indicatorInput = [ ...periods.map((period) => period[priceKeys]), ];
+            }
 
             indicator.clear();
-            await indicator.next([ ...periods.map((period) => period[priceKey]), ]);
+            await indicator.next(indicatorInput);
         }));
     }
 }

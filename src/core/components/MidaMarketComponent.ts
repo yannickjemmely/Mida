@@ -25,7 +25,7 @@ import { MidaMarketComponentConstructor, } from "#components/MidaMarketComponent
 import { MidaMarketComponentDependencyDeclaration, } from "#components/MidaMarketComponentDependencyDeclaration";
 import { MidaMarketComponentIndicatorDeclaration, } from "#components/MidaMarketComponentIndicatorDeclaration";
 import { makeComponent, } from "#components/MidaMarketComponentMaker";
-import { MidaMarketComponentOptionDeclaration, } from "#components/MidaMarketComponentOptionDeclaration";
+import { MidaMarketComponentParameterDeclaration, } from "#components/MidaMarketComponentParameterDeclaration";
 import { MidaMarketComponentState, } from "#components/MidaMarketComponentState";
 import { MidaPeriod, } from "#periods/MidaPeriod";
 import { MidaTick, } from "#ticks/MidaTick";
@@ -33,12 +33,12 @@ import { MidaMarketWatcherDirectives, } from "#watchers/MidaMarketWatcherDirecti
 
 export const marketComponent = (component: MidaMarketComponent): MidaMarketComponentConstructor => {
     // eslint-disable-next-line arrow-body-style
-    const constructor: MidaMarketComponentConstructor = (tradingAccount: MidaTradingAccount, symbol: string, options?: Record<string, unknown>) => {
+    const constructor: MidaMarketComponentConstructor = (tradingAccount: MidaTradingAccount, symbol: string, params?: Record<string, any>) => {
         return makeComponent({
             component,
+            params,
             tradingAccount,
             symbol,
-            options,
         });
     };
 
@@ -50,21 +50,21 @@ export const marketComponent = (component: MidaMarketComponent): MidaMarketCompo
 export type MidaMarketComponent = {
     name?: string;
 
-    options?: Record<string, MidaMarketComponentOptionDeclaration>;
+    params?: Record<string, MidaMarketComponentParameterDeclaration>;
 
     dependencies?: Record<string, MidaMarketComponentDependencyDeclaration>
         | ((this: MidaMarketComponentState) => Record<string, MidaMarketComponentDependencyDeclaration>);
 
     watcher? (this: MidaMarketComponentState): MidaMarketWatcherDirectives;
 
-    state? (this: MidaMarketComponentState): Record<string, unknown>;
+    state? (this: MidaMarketComponentState): Record<string, any>;
 
-    computed?: Record<string, (this: MidaMarketComponentState) => unknown>;
+    computed?: Record<string, (this: MidaMarketComponentState) => any>;
 
     indicators?: Record<string, MidaMarketComponentIndicatorDeclaration>
         | ((this: MidaMarketComponentState) => Record<string, MidaMarketComponentIndicatorDeclaration>);
 
-    methods?: Record<string, (this: MidaMarketComponentState, ...parameters: unknown[]) => unknown>;
+    methods?: Record<string, (this: MidaMarketComponentState, ...parameters: any[]) => any>;
 
     beforeCreate? (this: MidaMarketComponentState): Promise<void>;
 

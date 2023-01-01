@@ -88,15 +88,15 @@ export abstract class MidaIndicator {
 
     /* *** *** *** Reiryoku Technologies *** *** *** */
 
-    static readonly #installedIndicators: Map<string, (options?: Record<string, unknown>) => MidaIndicator> = new Map();
+    static readonly #installedIndicators: Map<string, (params?: Record<string, any>) => MidaIndicator> = new Map();
 
     public static get installedIndicators (): string[] {
         return [ ...MidaIndicator.#installedIndicators.keys(), ];
     }
 
-    public static add (id: string, indicator: (options?: Record<string, unknown>) => MidaIndicator): void {
+    public static add (id: string, indicator: (params?: Record<string, any>) => MidaIndicator): void {
         if (MidaIndicator.#installedIndicators.has(id)) {
-            internalLogger.fatal(`Indicator "${id}" already exists`);
+            internalLogger.fatal(`Indicator | An indicator with ID "${id}" already exists`);
 
             throw new Error();
         }
@@ -108,15 +108,15 @@ export abstract class MidaIndicator {
         return MidaIndicator.#installedIndicators.has(id);
     }
 
-    public static create (id: string, options?: Record<string, unknown>): MidaIndicator {
-        const indicator: ((options?: Record<string, unknown>) => MidaIndicator) | undefined = MidaIndicator.#installedIndicators.get(id);
+    public static create (id: string, params?: Record<string, any>): MidaIndicator {
+        const indicator: ((params?: Record<string, any>) => MidaIndicator) | undefined = MidaIndicator.#installedIndicators.get(id);
 
         if (!indicator) {
-            internalLogger.fatal(`Indicator "${id}" not found, have you installed its plugin?`);
+            internalLogger.fatal(`Indicator | Indicator with ID "${id}" not found, have you installed its plugin?`);
 
             throw new Error();
         }
 
-        return indicator(options);
+        return indicator(params);
     }
 }

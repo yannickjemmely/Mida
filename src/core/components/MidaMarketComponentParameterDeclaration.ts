@@ -20,16 +20,8 @@
  * THE SOFTWARE.
 */
 
-import { MidaTradingSystem, } from "#systems/MidaTradingSystem";
-import { MidaTradingSystemComponent, } from "#systems/MidaTradingSystemComponent";
-
-/**
- * The trading system component constructor parameters
- * @see MidaTradingSystemComponent
- */
-export type MidaTradingSystemComponentParameters = {
-    name: string;
-    description?: string;
-    version: string;
-    tradingSystem: MidaTradingSystem;
+export type MidaMarketComponentParameterDeclaration = {
+    type?: any;
+    required?: boolean;
+    default?: any | (() => any);
 };

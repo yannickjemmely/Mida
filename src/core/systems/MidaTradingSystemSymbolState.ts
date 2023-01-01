@@ -22,10 +22,9 @@
 
 import { MidaTick, } from "#ticks/MidaTick";
 import { MidaPeriod, } from "#periods/MidaPeriod";
-import { GenericObject, } from "#utilities/GenericObject";
 
 export type MidaTradingSystemSymbolState = {
-    shared?: GenericObject;
+    shared?: Record<string, any>;
 
     /* - - - */
 

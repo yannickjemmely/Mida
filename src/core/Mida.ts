@@ -48,39 +48,40 @@ class Mida {
         return [ ...Mida.#installedPlugins.values(), ];
     }
 
-    public static use (plugin: MidaPlugin, options?: Record<string, unknown>): void {
+    public static use (plugin: MidaPlugin, params?: Record<string, any>): void {
         const pluginId: string = plugin.id;
         const pluginName: string = plugin.name;
 
         if (!pluginId) {
-            internalLogger.warn("The plugin is not valid");
+            internalLogger.warn("Plugin | The plugin is not valid");
 
             return;
         }
 
         if (Mida.pluginIsInstalled(pluginId)) {
-            internalLogger.warn(`Plugin "${pluginName}:${pluginId}" is already installed`);
+            internalLogger.warn(`Plugin | Plugin ${pluginName}:${pluginId} is already installed`);
 
             return;
         }
 
-        internalLogger.info(`Installing plugin "${pluginName}:${pluginId}"...`);
+        internalLogger.debug(`Plugin | Installing plugin ${pluginName}:${pluginId}...`);
 
-        plugin.install(baseActions, options);
+        plugin.install(baseActions, params);
         Mida.#installedPlugins.set(pluginId, plugin);
 
-        internalLogger.info(`Plugin "${pluginName}:${pluginId}" installed`);
+        internalLogger.debug(`Plugin | Plugin ${pluginName}:${pluginId} installed`);
+        internalLogger.info(`Plugin | Using ${pluginName} ${plugin.version}`);
     }
 
     public static pluginIsInstalled (id: string): boolean {
         return Mida.#installedPlugins.has(id);
     }
 
-    public static async login (id: string, parameters: Record<string, unknown>): Promise<MidaTradingAccount> {
+    public static async login (id: string, parameters: Record<string, any>): Promise<MidaTradingAccount> {
         return MidaTradingPlatform.login(id, parameters);
     }
 
-    public static createIndicator (id: string, parameters: Record<string, unknown>): MidaIndicator {
+    public static createIndicator (id: string, parameters: Record<string, any>): MidaIndicator {
         return MidaIndicator.create(id, parameters);
     }
 }
@@ -101,12 +102,16 @@ export { MidaAssetParameters, } from "#assets/MidaAssetParameters";
 export { MidaAssetStatement, } from "#assets/MidaAssetStatement";
 
 export { marketComponent, MidaMarketComponent, } from "#components/MidaMarketComponent";
+export { MidaMarketComponentConstructor, } from "#components/MidaMarketComponentConstructor";
+export { MidaMarketComponentDependencyDeclaration, } from "#components/MidaMarketComponentDependencyDeclaration";
+export { MidaMarketComponentIndicatorDeclaration, } from "#components/MidaMarketComponentIndicatorDeclaration";
 export {
     makeComponent,
     makeComponentState,
     MidaMarketComponentMakerParameters,
 } from "#components/MidaMarketComponentMaker";
 export { MidaMarketComponentOracle, } from "#components/MidaMarketComponentOracle";
+export { MidaMarketComponentParameterDeclaration, } from "#components/MidaMarketComponentParameterDeclaration";
 export { MidaMarketComponentState, } from "#components/MidaMarketComponentState";
 
 export { date, MidaDate, } from "#dates/MidaDate";
@@ -178,17 +183,7 @@ export { MidaSymbol, } from "#symbols/MidaSymbol";
 export { MidaSymbolParameters, } from "#symbols/MidaSymbolParameters";
 export { MidaSymbolTradeStatus, } from "#symbols/MidaSymbolTradeStatus";
 
-/** @deprecated */
-export { MidaTradingSystem as MidaExpertAdvisor, } from "#systems/MidaTradingSystem";
-/** @deprecated */
-export { MidaTradingSystemComponent as MidaExpertAdvisorComponent, } from "#systems/MidaTradingSystemComponent";
-/** @deprecated */
-export { MidaTradingSystemComponentParameters as MidaExpertAdvisorComponentParameters, } from "#systems/MidaTradingSystemComponentParameters";
-/** @deprecated */
-export { MidaTradingSystemParameters as MidaExpertAdvisorParameters, } from "#systems/MidaTradingSystemParameters";
 export { MidaTradingSystem, } from "#systems/MidaTradingSystem";
-export { MidaTradingSystemComponent, } from "#systems/MidaTradingSystemComponent";
-export { MidaTradingSystemComponentParameters, } from "#systems/MidaTradingSystemComponentParameters";
 export { MidaTradingSystemParameters, } from "#systems/MidaTradingSystemParameters";
 export { MidaTradingSystemSymbolState, } from "#systems/MidaTradingSystemSymbolState";
 
@@ -229,5 +224,3 @@ export { MidaMarketWatcherParameters, } from "#watchers/MidaMarketWatcherParamet
 
 export { MidaCryptoWithdrawalDirectives, } from "#withdrawals/MidaCryptoWithdrawalDirectives";
 // </public-api>
-
-internalLogger.info(`Using Mida ${Mida.version}`);

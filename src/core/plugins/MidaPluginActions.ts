@@ -25,7 +25,7 @@ import { MidaTradingPlatform, } from "#platforms/MidaTradingPlatform";
 
 export type MidaPluginBaseActions = {
     addPlatform (id: string, platform: MidaTradingPlatform): void;
-    addIndicator (id: string, indicator: (options?: Record<string, unknown>) => MidaIndicator): void;
+    addIndicator (id: string, indicator: (params?: Record<string, any>) => MidaIndicator): void;
 };
 
 export type MidaPluginActions = MidaPluginBaseActions;
@@ -37,7 +37,7 @@ export const baseActions: MidaPluginActions = {
         MidaTradingPlatform.add(id, platform);
     },
 
-    addIndicator (id: string, indicator: (options?: Record<string, unknown>) => MidaIndicator): void {
+    addIndicator (id: string, indicator: (params?: Record<string, any>) => MidaIndicator): void {
         MidaIndicator.add(id, indicator);
     },
 };

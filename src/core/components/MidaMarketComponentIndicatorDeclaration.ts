@@ -20,14 +20,17 @@
  * THE SOFTWARE.
 */
 
+import { MidaPeriod, } from "#periods/MidaPeriod";
 import { MidaPeriodPriceKey, } from "#periods/MidaPeriodPriceKey";
 import { MidaTimeframe, } from "#timeframes/MidaTimeframe";
 
 export type MidaMarketComponentIndicatorDeclaration = {
     type: string;
-    options?: Record<string, unknown>;
+    params?: Record<string, any>;
     input?: {
-        type?: MidaPeriodPriceKey;
+        type?: MidaPeriodPriceKey | MidaPeriodPriceKey[];
         timeframe: MidaTimeframe;
+
+        processor? (periods: MidaPeriod[]): any;
     };
 };
