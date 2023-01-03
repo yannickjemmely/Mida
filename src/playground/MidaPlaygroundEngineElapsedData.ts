@@ -20,4 +20,10 @@
  * THE SOFTWARE.
 */
 
-export type MidaQueueWorker<T> = (item: T) => Promise<unknown>;
+import { MidaPeriod, } from "#periods/MidaPeriod";
+import { MidaTick, } from "#ticks/MidaTick";
+
+export type MidaPlaygroundEngineElapsedData = {
+    elapsedTicks: MidaTick[];
+    elapsedPeriods: MidaPeriod[];
+};

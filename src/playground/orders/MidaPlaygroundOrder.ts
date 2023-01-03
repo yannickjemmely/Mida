@@ -25,11 +25,13 @@ import { MidaPlaygroundOrderParameters, } from "!/src/playground/orders/MidaPlay
 import { MidaEvent, } from "#events/MidaEvent";
 import { MidaOrder, } from "#orders/MidaOrder";
 import { MidaOrderStatus, } from "#orders/MidaOrderStatus";
+import { MidaProtectionDirectives, } from "#protections/MidaProtectionDirectives";
 import { MidaTrade, } from "#trades/MidaTrade";
 import { MidaEmitter, } from "#utilities/emitters/MidaEmitter";
 
 export class MidaPlaygroundOrder extends MidaOrder {
     readonly #engineEmitter: MidaEmitter;
+    readonly #requestedProtection?: MidaProtectionDirectives;
 
     public constructor ({
         id,
@@ -49,6 +51,7 @@ export class MidaPlaygroundOrder extends MidaOrder {
         isStopOut,
         label,
         engineEmitter,
+        requestedProtection,
     }: MidaPlaygroundOrderParameters) {
         super({
             id,
@@ -70,8 +73,13 @@ export class MidaPlaygroundOrder extends MidaOrder {
         });
 
         this.#engineEmitter = engineEmitter;
+        this.#requestedProtection = requestedProtection;
 
         this.#configureListeners();
+    }
+
+    public get requestedProtection (): MidaProtectionDirectives | undefined {
+        return this.#requestedProtection;
     }
 
     public override async cancel (): Promise<void> {

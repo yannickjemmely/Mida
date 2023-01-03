@@ -85,6 +85,12 @@ export const makeComponentState = async (parameters: MidaMarketComponentMakerPar
     // <params>
     const declaredParams: Record<string, MidaMarketComponentParameterDeclaration> = component.params ?? {};
 
+    for (const propertyName of Object.keys(params ?? {})) {
+        if (!declaredParams[propertyName]) {
+            internalLogger.warn(`Market Component | Undeclared param ${propertyName} will be ignored`);
+        }
+    }
+
     for (const propertyName of Object.keys(declaredParams)) {
         const {
             type,
@@ -168,6 +174,7 @@ export const makeComponentState = async (parameters: MidaMarketComponentMakerPar
             input: {
                 type: "close",
                 live: false,
+                limit: 2000,
                 ...input,
             },
         };

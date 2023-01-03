@@ -27,7 +27,7 @@ export enum MidaOrderDirection {
     SELL = "sell",
 }
 
-export namespace MidaOrderDirectionType {
+export namespace MidaOrderDirection {
     export const oppositeOf = (direction: MidaOrderDirection): MidaOrderDirection => {
         switch (direction) {
             case MidaOrderDirection.BUY: {

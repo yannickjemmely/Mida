@@ -21,8 +21,10 @@
 */
 
 import { MidaOrderParameters, } from "#orders/MidaOrderParameters";
+import { MidaProtectionDirectives, } from "#protections/MidaProtectionDirectives";
 import { MidaEmitter, } from "#utilities/emitters/MidaEmitter";
 
 export type MidaPlaygroundOrderParameters = MidaOrderParameters & {
     engineEmitter: MidaEmitter;
+    requestedProtection?: MidaProtectionDirectives;
 };

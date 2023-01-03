@@ -22,21 +22,54 @@
 
 import { MidaDate, } from "#dates/MidaDate";
 import { MidaDecimal, } from "#decimals/MidaDecimal";
-import { MidaQuotation, } from "#quotations/MidaQuotation";
+import { MidaPeriod, } from "#periods/MidaPeriod";
+import { MidaPeriodPriceKey, } from "#periods/MidaPeriodPriceKey";
 import { MidaTick, } from "#ticks/MidaTick";
 import { MidaTickMovement, } from "#ticks/MidaTickMovement";
 
-/**
- * The symbol tick constructor parameters
- * @see MidaTick
- */
-export type MidaTickParameters = {
-    symbol?: string;
-    bid?: MidaDecimal;
-    ask?: MidaDecimal;
-    date?: MidaDate;
-    movement?: MidaTickMovement;
-    quotation?: MidaQuotation;
-    previousTick?: MidaTick;
-    nextTick?: MidaTick;
+export const tickFromPeriod = (period: MidaPeriod, priceKey: MidaPeriodPriceKey, pricePriority: "low" | "high" = "low"): MidaTick => {
+    const quarter: number = (period.endDate.timestamp - period.startDate.timestamp) / 4;
+    const price: MidaDecimal = period[priceKey];
+    let date: MidaDate;
+
+    switch (priceKey) {
+        case "open": {
+            date = period.startDate;
+
+            break;
+        }
+        case "close": {
+            date = period.endDate;
+
+            break;
+        }
+        case "low": {
+            if (pricePriority === "high") {
+                date = period.endDate.subtract(quarter);
+            }
+            else {
+                date = period.startDate.add(quarter);
+            }
+
+            break;
+        }
+        case "high": {
+            if (pricePriority === "low") {
+                date = period.endDate.subtract(quarter);
+            }
+            else {
+                date = period.startDate.add(quarter);
+            }
+
+            break;
+        }
+    }
+
+    return new MidaTick({
+        symbol: period.symbol,
+        bid: price,
+        ask: price,
+        date,
+        movement: MidaTickMovement.UNKNOWN,
+    });
 };

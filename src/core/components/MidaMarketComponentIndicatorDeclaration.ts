@@ -30,6 +30,10 @@ export type MidaMarketComponentIndicatorDeclaration = {
     input?: {
         type?: MidaPeriodPriceKey | MidaPeriodPriceKey[];
         timeframe: MidaTimeframe;
+        // Indicates if the indicator should be computed also with the last live candlestick (and everytime it changes)
+        live?: boolean;
+        // Indicates the limit of periods passed to the indicator
+        limit?: number;
 
         processor? (periods: MidaPeriod[]): any;
     };

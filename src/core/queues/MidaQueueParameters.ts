@@ -24,4 +24,7 @@ import { MidaQueueWorker, } from "#queues/MidaQueueWorker";
 
 export type MidaQueueParameters<T> = {
     worker: MidaQueueWorker<T>;
+    // Indicates if only the last item should be passed to the worker,
+    // discarding all the previous items added when the worker was busy
+    lastEntryOnly?: boolean;
 };

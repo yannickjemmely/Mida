@@ -26,11 +26,13 @@ import { MidaQueueWorker, } from "#queues/MidaQueueWorker";
 export class MidaQueue<T> {
     readonly #items: T[];
     readonly #worker: MidaQueueWorker<T>;
+    readonly #lastEntryOnly: boolean;
     #isLocked: boolean;
 
-    public constructor ({ worker, }: MidaQueueParameters<T>) {
+    public constructor ({ worker, lastEntryOnly, }: MidaQueueParameters<T>) {
         this.#items = [];
         this.#worker = worker;
+        this.#lastEntryOnly = lastEntryOnly ?? false;
         this.#isLocked = false;
     }
 
@@ -44,7 +46,12 @@ export class MidaQueue<T> {
 
     async #processItem (item: T, bypassLock: boolean = false): Promise<void> {
         if (this.#isLocked && !bypassLock) {
-            this.#items.push(item);
+            if (this.#lastEntryOnly) {
+                this.#items[0] = item;
+            }
+            else {
+                this.#items.push(item);
+            }
 
             return;
         }

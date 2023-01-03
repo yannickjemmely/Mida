@@ -20,4 +20,15 @@
  * THE SOFTWARE.
 */
 
-export type MidaQueueWorker<T> = (item: T) => Promise<unknown>;
+import { MidaBacktestSymbolDirectives, } from "!/src/playground/backtests/MidaBacktestSymbolDirectives";
+import { MidaBacktestTargetDirectives, } from "!/src/playground/backtests/MidaBacktestTargetDirectives";
+import { MidaDateConvertible, } from "#dates/MidaDateConvertible";
+import { MidaDecimalConvertible, } from "#decimals/MidaDecimalConvertible";
+
+export type MidaBacktestDirectives = {
+    from: MidaDateConvertible;
+    to: MidaDateConvertible;
+    balanceSheet: Record<string, MidaDecimalConvertible>;
+    symbols: Record<string, MidaBacktestSymbolDirectives>;
+    target: MidaBacktestTargetDirectives;
+};

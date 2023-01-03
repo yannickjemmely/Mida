@@ -24,8 +24,6 @@ import { MidaPlaygroundAccountParameters, } from "!/src/playground/accounts/Mida
 import { MidaPlaygroundLatencyCustomizer, } from "!/src/playground/customizers/MidaPlaygroundLatencyCustomizer";
 import { MidaPlaygroundEngine, } from "!/src/playground/MidaPlaygroundEngine";
 import { MidaPlaygroundOrder, } from "!/src/playground/orders/MidaPlaygroundOrder";
-import { MidaPlaygroundPosition, } from "!/src/playground/positions/MidaPlaygroundPosition";
-import { MidaPlaygroundTrade, } from "!/src/playground/trades/MidaPlaygroundTrade";
 import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
 import { MidaTradingAccountOperativity, } from "#accounts/MidaTradingAccountOperativity";
 import { MidaTradingAccountPositionAccounting, } from "#accounts/MidaTradingAccountPositionAccounting";
@@ -35,12 +33,12 @@ import { date, MidaDate, } from "#dates/MidaDate";
 import { decimal, MidaDecimal, } from "#decimals/MidaDecimal";
 import { MidaDecimalConvertible, } from "#decimals/MidaDecimalConvertible";
 import { MidaEvent, } from "#events/MidaEvent";
+import { internalLogger, } from "#loggers/MidaLogger";
 import { MidaOrder, } from "#orders/MidaOrder";
 import { MidaOrderDirectives, } from "#orders/MidaOrderDirectives";
 import { MidaOrderStatus, } from "#orders/MidaOrderStatus";
 import { MidaPeriod, } from "#periods/MidaPeriod";
 import { MidaPosition, } from "#positions/MidaPosition";
-import { MidaPositionStatus, } from "#positions/MidaPositionStatus";
 import { MidaSymbol, } from "#symbols/MidaSymbol";
 import { MidaSymbolParameters, } from "#symbols/MidaSymbolParameters";
 import { MidaSymbolTradeStatus, } from "#symbols/MidaSymbolTradeStatus";
@@ -51,9 +49,6 @@ export class MidaPlaygroundAccount extends MidaTradingAccount {
     readonly #engine: MidaPlaygroundEngine;
     readonly #balanceSheet: Map<string, MidaAssetStatement>;
     readonly #symbols: Map<string, MidaSymbol>;
-    readonly #orders: Map<string, MidaPlaygroundOrder>;
-    readonly #trades: Map<string, MidaPlaygroundTrade>;
-    readonly #positions: Map<string, MidaPlaygroundPosition>;
     readonly #assets: Map<string, MidaAsset>;
     readonly #watchedSymbols: Set<string>;
     #latencyCustomizer?: MidaPlaygroundLatencyCustomizer;
@@ -80,14 +75,15 @@ export class MidaPlaygroundAccount extends MidaTradingAccount {
         this.#engine = engine;
         this.#balanceSheet = new Map();
         this.#symbols = new Map();
-        this.#orders = new Map();
-        this.#trades = new Map();
-        this.#positions = new Map();
         this.#assets = new Map();
         this.#watchedSymbols = new Set();
         this.#latencyCustomizer = latencyCustomizer;
 
         this.#configureListeners();
+    }
+
+    public get engine (): MidaPlaygroundEngine {
+        return this.#engine;
     }
 
     public setLatencyCustomizer (customizer?: MidaPlaygroundLatencyCustomizer): void {
@@ -98,7 +94,7 @@ export class MidaPlaygroundAccount extends MidaTradingAccount {
         const balance: MidaAssetStatement = await this.getAssetBalance(asset);
 
         this.#balanceSheet.set(asset, {
-            asset: this.primaryAsset,
+            asset,
             date: date(),
             tradingAccount: this,
             freeVolume: balance.freeVolume.add(volume),
@@ -111,7 +107,7 @@ export class MidaPlaygroundAccount extends MidaTradingAccount {
         const balance: MidaAssetStatement = await this.getAssetBalance(asset);
 
         this.#balanceSheet.set(asset, {
-            asset: this.primaryAsset,
+            asset,
             date: date(),
             tradingAccount: this,
             freeVolume: balance.freeVolume.subtract(volume),
@@ -138,7 +134,7 @@ export class MidaPlaygroundAccount extends MidaTradingAccount {
 
     public override async getAssetBalance (asset: string): Promise<MidaAssetStatement> {
         return this.#balanceSheet.get(asset) ?? {
-            asset: asset,
+            asset,
             date: date(),
             tradingAccount: this,
             freeVolume: decimal(0),
@@ -157,9 +153,21 @@ export class MidaPlaygroundAccount extends MidaTradingAccount {
         for (const assetStatement of await this.getBalanceSheet()) {
             if (assetStatement.asset === this.primaryAsset) {
                 equity = equity.add(assetStatement.freeVolume);
+
+                continue;
             }
 
-            // TODO: TODO
+            const symbol: string = `${assetStatement.asset}${this.primaryAsset}`;
+
+            try {
+                const bid: MidaDecimal = await this.getSymbolBid(symbol);
+                const profit: MidaDecimal = bid.multiply(assetStatement.freeVolume);
+
+                equity = equity.add(profit);
+            }
+            catch {
+                internalLogger.warn(`Playground | No quotes available for ${symbol}, not considered in equity calculation`);
+            }
         }
 
         return equity;
@@ -170,7 +178,7 @@ export class MidaPlaygroundAccount extends MidaTradingAccount {
     }
 
     public override async getOrders (symbol: string): Promise<MidaPlaygroundOrder[]> {
-        return [ ...this.#orders.values(), ].filter((order: MidaPlaygroundOrder) => order.symbol === symbol);
+        return this.#engine.getOrdersByAccount(this).filter((order: MidaPlaygroundOrder) => order.symbol === symbol);
     }
 
     public override async getSymbolTradeStatus (symbol: string): Promise<MidaSymbolTradeStatus> {
@@ -180,7 +188,7 @@ export class MidaPlaygroundAccount extends MidaTradingAccount {
     }
 
     public override async watchSymbolPeriods (symbol: string, timeframe: number): Promise<void> {
-        throw new Error("Method not implemented.");
+        // throw new Error("Method not implemented.");
     }
 
     public override async getDate (): Promise<MidaDate> {
@@ -190,7 +198,7 @@ export class MidaPlaygroundAccount extends MidaTradingAccount {
     public override async getPendingOrders (): Promise<MidaPlaygroundOrder[]> {
         const pendingOrders: MidaPlaygroundOrder[] = [];
 
-        for (const order of [ ...this.#orders.values(), ]) {
+        for (const order of this.#engine.getOrdersByAccount(this)) {
             if (order.status === MidaOrderStatus.PENDING) {
                 pendingOrders.push(order);
             }
@@ -200,11 +208,11 @@ export class MidaPlaygroundAccount extends MidaTradingAccount {
     }
 
     public override async getTrades (symbol: string): Promise<MidaTrade[]> {
-        return [ ...this.#trades.values(), ].filter((trade: MidaTrade) => trade.symbol === symbol);
+        return this.#engine.getTradesByAccount(this).filter((trade: MidaTrade) => trade.symbol === symbol);
     }
 
     public override async getOpenPositions (): Promise<MidaPosition[]> {
-        return [ ...this.#positions.values(), ].filter((position: MidaPosition) => position.status === MidaPositionStatus.OPEN);
+        return this.#engine.getOpenPositionsByAccount(this);
     }
 
     public async getOpenPositionById (id: string): Promise<MidaPosition | undefined> {
@@ -228,11 +236,7 @@ export class MidaPlaygroundAccount extends MidaTradingAccount {
         }
         // </latency-and-slippage>
 
-        const order: MidaPlaygroundOrder = await this.#engine.placeOrder(this, directives);
-
-        this.#orders.set(order.id, order);
-
-        return order;
+        return this.#engine.placeOrder(this, directives);
     }
 
     public override async getCryptoAssetDepositAddress (asset: string, net: string): Promise<string> {
@@ -256,7 +260,7 @@ export class MidaPlaygroundAccount extends MidaTradingAccount {
     public override async getSymbolPeriods (symbol: string, timeframe: number): Promise<MidaPeriod[]> {
         this.#assertSymbolExists(symbol);
 
-        return [];
+        return this.#engine.getSymbolPeriods(symbol, timeframe);
     }
 
     public override async getSymbolBid (symbol: string): Promise<MidaDecimal> {
@@ -280,7 +284,7 @@ export class MidaPlaygroundAccount extends MidaTradingAccount {
         this.#watchedSymbols.add(symbol);
     }
 
-    public async registerSymbol (symbol: MidaSymbol | Omit<MidaSymbolParameters, "tradingAccount">): Promise<void> {
+    public async addSymbol (symbol: MidaSymbol | Omit<MidaSymbolParameters, "tradingAccount">): Promise<void> {
         let finalSymbol: MidaSymbol;
 
         if (symbol instanceof MidaSymbol) {
@@ -308,7 +312,17 @@ export class MidaPlaygroundAccount extends MidaTradingAccount {
         }
     }
 
+    #onPeriodUpdate (period: MidaPeriod): void {
+        this.notifyListeners("period-update", { period, });
+    }
+
+    #onPeriodClose (period: MidaPeriod): void {
+        this.notifyListeners("period-close", { period, });
+    }
+
     #configureListeners (): void {
         this.#engine.on("tick", (event: MidaEvent): void => this.#onTick(event.descriptor.tick));
+        this.#engine.on("period-update", (event: MidaEvent): void => this.#onPeriodUpdate(event.descriptor.period));
+        this.#engine.on("period-close", (event: MidaEvent): void => this.#onPeriodClose(event.descriptor.period));
     }
 }

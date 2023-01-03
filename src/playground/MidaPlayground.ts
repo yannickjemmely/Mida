@@ -23,7 +23,6 @@
 import { MidaPlaygroundAccount, } from "!/src/playground/accounts/MidaPlaygroundAccount";
 import { internalLogger, } from "#loggers/MidaLogger";
 import { MidaTradingPlatform, } from "#platforms/MidaTradingPlatform";
-import { GenericObject, } from "#utilities/GenericObject";
 
 class MidaPlayground extends MidaTradingPlatform {
     public constructor () {
@@ -33,11 +32,14 @@ class MidaPlayground extends MidaTradingPlatform {
         });
     }
 
-    public override async login (parameters: GenericObject = {}): Promise<MidaPlaygroundAccount> {
-        const account: MidaPlaygroundAccount | undefined = MidaPlayground.#tradingAccounts.get(parameters.id);
+    public override async login (parameters: Record<string, any> = {}): Promise<MidaPlaygroundAccount> {
+        const id: string = parameters.id;
+        const account: MidaPlaygroundAccount | undefined = MidaPlayground.#tradingAccounts.get(id);
 
         if (!account) {
-            throw new Error("Playground account not found");
+            internalLogger.fatal(`Playground | Account with ID ${id} not found`);
+
+            throw new Error();
         }
 
         return account;
@@ -49,7 +51,7 @@ class MidaPlayground extends MidaTradingPlatform {
 
     public static addTradingAccount (id: string, tradingAccount: MidaPlaygroundAccount): void {
         if (MidaPlayground.#tradingAccounts.has(id)) {
-            internalLogger.fatal(`Playground trading account with id "${id}" already exists`);
+            internalLogger.fatal(`Playground | Account with ID ${id} already exists`);
 
             throw new Error();
         }
@@ -58,20 +60,29 @@ class MidaPlayground extends MidaTradingPlatform {
     }
 }
 
+const PLAYGROUND_PLATFORM_KEY: string = "Mida/Playground";
 const playgroundPlatform: MidaTradingPlatform = new MidaPlayground();
 
-MidaTradingPlatform.add("Mida/Playground", new MidaPlayground());
+MidaTradingPlatform.add(PLAYGROUND_PLATFORM_KEY, new MidaPlayground());
 
 // <public-api>
 export { MidaPlayground, };
 export { playgroundPlatform, };
 
 export { MidaPlaygroundEngine, } from "!/src/playground/MidaPlaygroundEngine";
+export { MidaPlaygroundEngineElapsedData, } from "!/src/playground/MidaPlaygroundEngineElapsedData";
 export { MidaPlaygroundEngineParameters, } from "!/src/playground/MidaPlaygroundEngineParameters";
+
+export { tickFromPeriod, } from "!/src/playground/MidaPlaygroundUtilities";
 
 export { MidaPlaygroundAccount, } from "!/src/playground/accounts/MidaPlaygroundAccount";
 export { MidaPlaygroundAccountConfiguration, } from "!/src/playground/accounts/MidaPlaygroundAccountConfiguration";
 export { MidaPlaygroundAccountParameters, } from "!/src/playground/accounts/MidaPlaygroundAccountParameters";
+
+export { backtest, } from "!/src/playground/backtests/MidaBacktest";
+export { MidaBacktestDirectives, } from "!/src/playground/backtests/MidaBacktestDirectives";
+export { MidaBacktestSymbolDirectives, } from "!/src/playground/backtests/MidaBacktestSymbolDirectives";
+export { MidaBacktestTargetDirectives, } from "!/src/playground/backtests/MidaBacktestTargetDirectives";
 
 export { MidaPlaygroundCommissionCustomizer, } from "!/src/playground/customizers/MidaPlaygroundCommissionCustomizer";
 export { MidaPlaygroundLatencyCustomizer, } from "!/src/playground/customizers/MidaPlaygroundLatencyCustomizer";

@@ -22,10 +22,14 @@
 
 import * as fs from "node:fs";
 import * as readline from "node:readline";
+
 import { date, } from "#dates/MidaDate";
 import { decimal, } from "#decimals/MidaDecimal";
+import { MidaPeriod, } from "#periods/MidaPeriod";
+import { MidaQuotationPrice, } from "#quotations/MidaQuotationPrice";
 import { MidaTick, } from "#ticks/MidaTick";
 import { MidaTickMovement, } from "#ticks/MidaTickMovement";
+import { MidaTimeframe, } from "#timeframes/MidaTimeframe";
 
 const openReaders: Map<string, readline.Interface> = new Map();
 
@@ -46,15 +50,53 @@ export const readTicksFromFile = async function* (file: string, symbol: string):
             continue;
         }
 
-        const rawTick = line.split(",");
+        const csvTick = line.split(",");
 
         try {
             yield new MidaTick({
                 symbol,
-                bid: decimal(rawTick[1]),
-                ask: decimal(rawTick[2]),
-                date: date(rawTick[0]),
+                bid: decimal(csvTick[1]),
+                ask: decimal(csvTick[2]),
+                date: date(csvTick[0]),
                 movement: MidaTickMovement.UNKNOWN,
+            });
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
+
+    closeFileReader(file);
+
+    return undefined;
+};
+
+export const readPeriodsFromFile = async function* (file: string, symbol: string, timeframe: MidaTimeframe): AsyncGenerator<MidaPeriod | undefined> {
+    const reader: readline.Interface = readline.createInterface({
+        input: fs.createReadStream(file),
+        crlfDelay: Infinity,
+    });
+
+    openReaders.set(file, reader);
+
+    for await (const line of reader) {
+        if (line.length === 0) {
+            continue;
+        }
+
+        const csvPeriod = line.split(",");
+
+        try {
+            yield new MidaPeriod({
+                symbol,
+                timeframe,
+                startDate: date(csvPeriod[0]),
+                open: decimal(csvPeriod[1]),
+                high: decimal(csvPeriod[2]),
+                low: decimal(csvPeriod[3]),
+                close: decimal(csvPeriod[4]),
+                quotationPrice: MidaQuotationPrice.BID,
+                volume: decimal(0),
             });
         }
         catch (e) {

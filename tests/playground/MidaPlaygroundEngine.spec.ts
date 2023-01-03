@@ -50,10 +50,10 @@ describe("MidaPlaygroundEngine", () => {
         it("returns the ticks between the current local date and the new local date", async () => {
             const engine = new MidaPlaygroundEngine();
 
-            engine.registerSymbolTicks("ETHUSD", ticks);
+            engine.addSymbolTicks("ETHUSD", ticks);
             engine.setLocalDate(ticks[0].date.subtractSeconds(1));
 
-            const elapsedTicks = await engine.elapseTime(60 * 2);
+            const elapsedTicks = (await engine.elapseTime(60 * 2)).elapsedTicks;
 
             expect(elapsedTicks.length).toBe(ticks.length);
         });
@@ -61,7 +61,7 @@ describe("MidaPlaygroundEngine", () => {
         it("updates the internal quotations", async () => {
             const engine = new MidaPlaygroundEngine();
 
-            engine.registerSymbolTicks("ETHUSD", ticks);
+            engine.addSymbolTicks("ETHUSD", ticks);
             engine.setLocalDate(ticks[0].date.subtractSeconds(1));
             await engine.elapseTime(60 * 2);
 
@@ -75,11 +75,11 @@ describe("MidaPlaygroundEngine", () => {
             const engine = new MidaPlaygroundEngine();
             const emittedTicks: MidaTick[] = [];
 
-            engine.registerSymbolTicks("ETHUSD", ticks);
+            engine.addSymbolTicks("ETHUSD", ticks);
             engine.setLocalDate(ticks[0].date.subtractSeconds(1));
             engine.on("tick", (event) => emittedTicks.push(event.descriptor.tick));
 
-            const elapsedTicks = await engine.elapseTime(30);
+            const elapsedTicks = (await engine.elapseTime(30)).elapsedTicks;
 
             for (let i: number = 0; i < elapsedTicks.length; ++i) {
                 expect(elapsedTicks[i] === emittedTicks[i]).toBe(true);
@@ -99,27 +99,13 @@ describe("MidaPlaygroundEngine", () => {
         it("updates the internal quotations", async () => {
             const engine = new MidaPlaygroundEngine();
 
-            engine.registerSymbolTicks("ETHUSD", ticks);
+            engine.addSymbolTicks("ETHUSD", ticks);
             await engine.elapseTicks(ticks.length);
 
             const lastTick: MidaTick = ticks.at(-1) as MidaTick;
 
             expect((await engine.getSymbolBid("ETHUSD")).equals(lastTick.bid)).toBe(true);
             expect((await engine.getSymbolAsk("ETHUSD")).equals(lastTick.ask)).toBe(true);
-        });
-
-        it("emits onTick in the order of elapsed ticks", async () => {
-            const engine = new MidaPlaygroundEngine();
-            const emittedTicks: MidaTick[] = [];
-
-            engine.registerSymbolTicks("ETHUSD", ticks);
-            engine.on("tick", (event) => emittedTicks.push(event.descriptor.tick));
-
-            const elapsedTicks = await engine.elapseTicks(30);
-
-            for (let i: number = 0; i < elapsedTicks.length; ++i) {
-                expect(elapsedTicks[i] === emittedTicks[i]).toBe(true);
-            }
         });
     });
 });

@@ -203,8 +203,9 @@ export { MidaTradeStatus, } from "#trades/MidaTradeStatus";
 export { MidaEmitter, } from "#utilities/emitters/MidaEmitter";
 export { GenericObject, } from "#utilities/GenericObject";
 export {
-    readTicksFromFile,
     closeFileReader,
+    readTicksFromFile,
+    readPeriodsFromFile,
 } from "#utilities/MidaFileSystem";
 export {
     wait,

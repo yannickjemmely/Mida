@@ -24,7 +24,9 @@ import { MidaPlaygroundAccount, } from "!/src/playground/accounts/MidaPlayground
 import { MidaPlaygroundAccountConfiguration, } from "!/src/playground/accounts/MidaPlaygroundAccountConfiguration";
 import { MidaPlaygroundCommissionCustomizer, } from "!/src/playground/customizers/MidaPlaygroundCommissionCustomizer";
 import { MidaPlayground, playgroundPlatform, } from "!/src/playground/MidaPlayground";
+import { MidaPlaygroundEngineElapsedData, } from "!/src/playground/MidaPlaygroundEngineElapsedData";
 import { MidaPlaygroundEngineParameters, } from "!/src/playground/MidaPlaygroundEngineParameters";
+import { tickFromPeriod, } from "!/src/playground/MidaPlaygroundUtilities";
 import { MidaPlaygroundOrder, } from "!/src/playground/orders/MidaPlaygroundOrder";
 import { MidaPlaygroundPosition, } from "!/src/playground/positions/MidaPlaygroundPosition";
 import { MidaPlaygroundTrade, } from "!/src/playground/trades/MidaPlaygroundTrade";
@@ -35,6 +37,7 @@ import { decimal, MidaDecimal, } from "#decimals/MidaDecimal";
 import { MidaDecimalConvertible, } from "#decimals/MidaDecimalConvertible";
 import { MidaEvent, } from "#events/MidaEvent";
 import { MidaEventListener, } from "#events/MidaEventListener";
+import { internalLogger, } from "#loggers/MidaLogger";
 import { MidaOrder, } from "#orders/MidaOrder";
 import { MidaOrderDirection, } from "#orders/MidaOrderDirection";
 import { MidaOrderDirectives, } from "#orders/MidaOrderDirectives";
@@ -46,28 +49,39 @@ import { MidaOrderTimeInForce, } from "#orders/MidaOrderTimeInForce";
 import { MidaPeriod, } from "#periods/MidaPeriod";
 import { MidaPosition, } from "#positions/MidaPosition";
 import { MidaPositionDirection, } from "#positions/MidaPositionDirection";
+import { MidaPositionStatus, } from "#positions/MidaPositionStatus";
+import { MidaProtection, } from "#protections/MidaProtection";
+import { MidaProtectionDirectives, } from "#protections/MidaProtectionDirectives";
 import { MidaSymbol, } from "#symbols/MidaSymbol";
 import { MidaTick, } from "#ticks/MidaTick";
+import { MidaTimeframe, } from "#timeframes/MidaTimeframe";
 import { MidaTrade, } from "#trades/MidaTrade";
 import { MidaTradeDirection, } from "#trades/MidaTradeDirection";
 import { MidaTradePurpose, } from "#trades/MidaTradePurpose";
 import { MidaTradeStatus, } from "#trades/MidaTradeStatus";
 import { MidaEmitter, } from "#utilities/emitters/MidaEmitter";
-import { GenericObject, } from "#utilities/GenericObject";
 import { createOrderResolver, uuid, } from "#utilities/MidaUtilities";
+
+/*
+ * 5W (Who, What, Where, When, Why)
+ * This is a trading simulator created by Vasile Pește, Reiryoku Technologies and its contributors.
+*/
 
 export class MidaPlaygroundEngine {
     #localDate: MidaDate;
     readonly #localTicks: Map<string, MidaTick[]>;
     readonly #lastTicks: Map<string, MidaTick>;
     readonly #lastTicksIndexes: Map<string, number>;
-    readonly #localPeriods: Map<string, Map<number, MidaPeriod[]>>;
-    readonly #lastPeriods: Map<string, Map<number, MidaPeriod>>;
-    readonly #orders: Map<string, MidaOrder>;
-    readonly #trades: Map<string, MidaTrade>;
-    readonly #positions: Map<string, MidaPosition>;
+    readonly #localPeriods: Map<string, Map<MidaTimeframe, MidaPeriod[]>>;
+    readonly #lastPeriodsIndexes: Map<string, Map<MidaTimeframe, number>>;
+    readonly #orders: Map<string, MidaPlaygroundOrder>;
+    readonly #trades: Map<string, MidaPlaygroundTrade>;
+    readonly #positions: Map<string, MidaPlaygroundPosition>;
     readonly #tradingAccounts: Map<string, MidaPlaygroundAccount>;
     #commissionCustomizer?: MidaPlaygroundCommissionCustomizer;
+    #waitFeedConfirmation: boolean;
+    #feedResolver?: () => void;
+    #feedResolverPromise: Promise<void> | undefined;
     readonly #emitter: MidaEmitter;
     readonly #protectedEmitter: MidaEmitter;
 
@@ -77,12 +91,15 @@ export class MidaPlaygroundEngine {
         this.#lastTicks = new Map();
         this.#lastTicksIndexes = new Map();
         this.#localPeriods = new Map();
-        this.#lastPeriods = new Map();
+        this.#lastPeriodsIndexes = new Map();
         this.#orders = new Map();
         this.#trades = new Map();
         this.#positions = new Map();
         this.#tradingAccounts = new Map();
         this.#commissionCustomizer = commissionCustomizer;
+        this.#waitFeedConfirmation = false;
+        this.#feedResolver = undefined;
+        this.#feedResolverPromise = undefined;
         this.#emitter = new MidaEmitter();
         this.#protectedEmitter = new MidaEmitter();
     }
@@ -91,10 +108,31 @@ export class MidaPlaygroundEngine {
         return this.#localDate;
     }
 
+    public get orders (): MidaOrder[] {
+        return [ ...this.#orders.values(), ];
+    }
+
+    public get trades (): MidaTrade[] {
+        return [ ...this.#trades.values(), ];
+    }
+
+    public get positions (): MidaPosition[] {
+        return [ ...this.#positions.values(), ];
+    }
+
+    public get waitFeedConfirmation (): boolean {
+        return this.#waitFeedConfirmation;
+    }
+
+    public set waitFeedConfirmation (waitFeedConfirmation: boolean) {
+        this.#waitFeedConfirmation = waitFeedConfirmation;
+    }
+
     public setLocalDate (date: MidaDateConvertible): void {
         this.#localDate = new MidaDate(date);
 
         this.#lastTicksIndexes.clear();
+        this.#lastPeriodsIndexes.clear();
     }
 
     public setCommissionCustomizer (customizer?: MidaPlaygroundCommissionCustomizer): void {
@@ -102,7 +140,17 @@ export class MidaPlaygroundEngine {
     }
 
     public async getSymbolExchangeRate (symbol: string): Promise<MidaDecimal[]> {
-        const lastTick: MidaTick | undefined = this.#lastTicks.get(symbol);
+        let lastTick: MidaTick | undefined = this.#lastTicks.get(symbol);
+
+        if (!lastTick) {
+            for (const tick of this.#localTicks.get(symbol) ?? []) {
+                if (tick.date.timestamp <= this.#localDate.timestamp) {
+                    lastTick = tick;
+
+                    this.#lastTicks.set(symbol, tick);
+                }
+            }
+        }
 
         if (!lastTick) {
             throw new Error("No quotes available");
@@ -117,6 +165,12 @@ export class MidaPlaygroundEngine {
 
     public async getSymbolAsk (symbol: string): Promise<MidaDecimal> {
         return (await this.getSymbolExchangeRate(symbol))[1];
+    }
+
+    public async getSymbolPeriods (symbol: string, timeframe: MidaTimeframe): Promise<MidaPeriod[]> {
+        const periods: MidaPeriod[] = this.#localPeriods.get(symbol)?.get(timeframe) ?? [];
+
+        return periods.filter((period: MidaPeriod) => period.endDate.timestamp <= this.#localDate.timestamp);
     }
 
     // eslint-disable-next-line max-lines-per-function
@@ -146,13 +200,7 @@ export class MidaPlaygroundEngine {
         }
         else {
             symbol = directives.symbol as string;
-
-            if (directives.direction === MidaOrderDirection.BUY) {
-                purpose = MidaOrderPurpose.OPEN;
-            }
-            else {
-                purpose = MidaOrderPurpose.CLOSE;
-            }
+            purpose = MidaOrderPurpose.OPEN; // Hedged account, always open a position if no specific position is impacted
         }
 
         const creationDate: MidaDate = this.#localDate;
@@ -173,6 +221,7 @@ export class MidaPlaygroundEngine {
             timeInForce: directives.timeInForce ?? MidaOrderTimeInForce.GOOD_TILL_CANCEL,
             isStopOut: false,
             engineEmitter: this.#protectedEmitter,
+            requestedProtection: directives.protection,
         });
 
         this.#orders.set(order.id, order);
@@ -184,17 +233,36 @@ export class MidaPlaygroundEngine {
             order.on(eventType, listeners[eventType]);
         }
 
-        this.#acceptOrder(order.id);
+        this.acceptOrder(order.id);
 
         if (order.execution === MidaOrderExecution.MARKET) {
-            this.#tryExecuteOrder(order); // Not necessary to await
+            this.tryExecuteOrder(order); // Not necessary to await because of resolver
         }
         else {
-            this.#moveOrderToPending(order.id);
+            this.moveOrderToPending(order.id);
 
             // Used to check if the pending order can be executed at the current tick
-            this.#updatePendingOrder(order, this.#lastTicks.get(symbol) as MidaTick); // Not necessary to await
+            this.#updatePendingOrder(order, this.#lastTicks.get(symbol) as MidaTick); // Not necessary to await because of resolver
         }
+
+        /*
+        if (directives.protection?.stopLoss) {
+            this.placeOrder(tradingAccount, {
+                ...directives,
+                protection: {},
+                direction: MidaOrderDirection.oppositeOf(directives.direction),
+                stop: directives.protection?.stopLoss,
+            });
+        }
+
+        if (directives.protection?.takeProfit) {
+            this.placeOrder(tradingAccount, {
+                ...directives,
+                protection: {},
+                direction: MidaOrderDirection.oppositeOf(directives.direction),
+                limit: directives.protection?.takeProfit,
+            });
+        }*/
 
         return resolver;
     }
@@ -203,46 +271,77 @@ export class MidaPlaygroundEngine {
      * Elapses a given amount of time (triggering the respective ticks)
      * @param seconds Amount of seconds to elapse
      */
-    public async elapseTime (seconds: number): Promise<MidaTick[]> {
+    // eslint-disable-next-line max-lines-per-function
+    public async elapseTime (seconds: number): Promise<MidaPlaygroundEngineElapsedData> {
         if (seconds <= 0) {
-            return [];
+            return {
+                elapsedTicks: [],
+                elapsedPeriods: [],
+            };
         }
 
         const previousDate: MidaDate = this.#localDate;
         const currentDate: MidaDate = previousDate.addSeconds(seconds);
+
+        // <elapsed-ticks>
         const elapsedTicks: MidaTick[] = [];
-        const symbols: string[] = [ ...this.#localTicks.keys(), ];
 
-        // eslint-disable-next-line @typescript-eslint/prefer-for-of
-        for (let i: number = 0; i < symbols.length; ++i) {
-            const symbol: string = symbols[i];
-
-            // <elapsed-ticks>
+        for (const symbol of [ ...this.#localTicks.keys(), ]) {
             const ticks: MidaTick[] = this.#localTicks.get(symbol) ?? [];
             const lastTickIndex: number = this.#lastTicksIndexes.get(symbol) ?? -1;
 
-            // eslint-disable-next-line @typescript-eslint/prefer-for-of
-            for (let j: number = lastTickIndex + 1; j < ticks.length; ++j) {
-                const tick: MidaTick = ticks[j];
+            for (let i: number = lastTickIndex + 1; i < ticks.length; ++i) {
+                const tick: MidaTick = ticks[i];
 
                 if (tick.date.timestamp > previousDate.timestamp && tick.date.timestamp <= currentDate.timestamp) {
                     elapsedTicks.push(tick);
-                    this.#lastTicksIndexes.set(symbol, j);
+                    this.#lastTicksIndexes.set(symbol, i);
                 }
             }
-            // </elapsed-ticks>
         }
 
         await this.#processTicks(elapsedTicks);
+        // </elapsed-ticks>
+
+        // <elapsed-periods>
+        const elapsedPeriods: MidaPeriod[] = [];
+
+        for (const symbol of [ ...this.#localPeriods.keys(), ]) {
+            for (const timeframe of [ ...this.#localPeriods.get(symbol)?.keys() ?? [], ]) {
+                const periods: MidaPeriod[] = this.#localPeriods.get(symbol)?.get(timeframe) ?? [];
+                const lastPeriodIndex: number = this.#lastPeriodsIndexes.get(symbol)?.get(timeframe) ?? -1;
+
+                for (let i: number = lastPeriodIndex + 1; i < periods.length; ++i) {
+                    const period: MidaPeriod = periods[i];
+
+                    if (period.endDate.timestamp > previousDate.timestamp && period.endDate.timestamp <= currentDate.timestamp) {
+                        elapsedPeriods.push(period);
+
+                        this.#lastPeriodsIndexes.get(symbol)?.set(timeframe, i);
+                    }
+                }
+            }
+        }
+
+        internalLogger.debug(`Playground | Preparing to elapse ${elapsedPeriods.length} periods`);
+
+        await this.#processPeriods(elapsedPeriods);
+        // </elapsed-periods>
 
         this.#localDate = currentDate;
 
-        return elapsedTicks;
+        return {
+            elapsedTicks,
+            elapsedPeriods,
+        };
     }
 
-    public async elapseTicks (volume: number = 1): Promise<MidaTick[]> {
+    public async elapseTicks (volume: number = 1): Promise<MidaPlaygroundEngineElapsedData> {
         if (volume <= 0) {
-            return [];
+            return {
+                elapsedTicks: [],
+                elapsedPeriods: [],
+            };
         }
 
         const elapsedTicks: MidaTick[] = [];
@@ -254,7 +353,6 @@ export class MidaPlaygroundEngine {
             const ticks: MidaTick[] = this.#localTicks.get(symbol) ?? [];
             const lastTickIndex: number = this.#lastTicksIndexes.get(symbol) ?? 0;
 
-            // eslint-disable-next-line @typescript-eslint/prefer-for-of
             for (let j: number = 1; j <= volume; ++j) {
                 const tick: MidaTick | undefined = ticks[lastTickIndex + j];
 
@@ -270,10 +368,23 @@ export class MidaPlaygroundEngine {
 
         await this.#processTicks(elapsedTicks);
 
-        return elapsedTicks;
+        return {
+            elapsedTicks,
+            elapsedPeriods: [],
+        };
     }
 
-    public registerSymbolTicks (symbol: string, ticks: MidaTick[]): void {
+    // <feed-confirmation>
+    public nextFeed (): void {
+        if (this.#feedResolver) {
+            this.#feedResolver();
+
+            this.#feedResolver = undefined;
+        }
+    }
+    // </feed-confirmation>
+
+    public addSymbolTicks (symbol: string, ticks: MidaTick[]): void {
         const localTicks: MidaTick[] = this.getSymbolTicks(symbol);
         const updatedTicks: MidaTick[] = localTicks.concat(ticks);
 
@@ -283,8 +394,36 @@ export class MidaPlaygroundEngine {
         this.#lastTicksIndexes.set(symbol, -1);
     }
 
+    public addSymbolPeriods (symbol: string, periods: MidaPeriod[]): void {
+        const timeframe: MidaTimeframe = periods[0].timeframe;
+        const localPeriods: MidaPeriod[] = this.#localPeriods.get(symbol)?.get(timeframe) ?? [];
+        const updatedPeriods: MidaPeriod[] = localPeriods.concat(periods);
+
+        updatedPeriods.sort((a: MidaPeriod, b: MidaPeriod): number => a.startDate.timestamp - b.startDate.timestamp);
+
+        if (!this.#localPeriods.has(symbol)) {
+            this.#localPeriods.set(symbol, new Map());
+        }
+
+        this.#localPeriods.get(symbol)?.set(timeframe, updatedPeriods);
+
+        if (!this.#lastPeriodsIndexes.has(symbol)) {
+            this.#lastPeriodsIndexes.set(symbol, new Map());
+        }
+
+        this.#lastPeriodsIndexes.get(symbol)?.set(timeframe, -1);
+    }
+
     public getSymbolTicks (symbol: string): MidaTick[] {
         return this.#localTicks.get(symbol) ?? [];
+    }
+
+    public getOrdersByAccount (tradingAccount: MidaPlaygroundAccount): MidaPlaygroundOrder[] {
+        return [ ...this.#orders.values(), ].filter((order: MidaOrder) => tradingAccount === order.tradingAccount);
+    }
+
+    public getTradesByAccount (tradingAccount: MidaPlaygroundAccount): MidaPlaygroundTrade[] {
+        return [ ...this.#trades.values(), ].filter((trade: MidaTrade) => tradingAccount === trade.tradingAccount);
     }
 
     public async getPendingOrders (): Promise<MidaPlaygroundOrder[]> {
@@ -298,13 +437,8 @@ export class MidaPlaygroundEngine {
     }
 
     public async getOpenPositions (): Promise<MidaPosition[]> {
-        const openPositions: MidaPosition[] = [];
-
-        for (const account of [ ...this.#tradingAccounts.values(), ]) {
-            openPositions.push(...await account.getOpenPositions());
-        }
-
-        return openPositions;
+        return [ ...this.#positions.values(), ]
+            .filter((position: MidaPosition) => position.status === MidaPositionStatus.OPEN);
     }
 
     public async getOpenPositionById (id: string): Promise<MidaPosition | undefined> {
@@ -319,14 +453,19 @@ export class MidaPlaygroundEngine {
         return undefined;
     }
 
-    // eslint-disable-next-line max-lines-per-function
-    async #tryExecuteOrder (order: MidaPlaygroundOrder): Promise<MidaOrder> {
+    public async getOpenPositionsByAccount (tradingAccount: MidaPlaygroundAccount): Promise<MidaPlaygroundPosition[]> {
+        return [ ...await this.getOpenPositions(), ]
+            .filter((position: MidaPosition) => tradingAccount === position.tradingAccount) as MidaPlaygroundPosition[];
+    }
+
+    // eslint-disable-next-line max-lines-per-function, complexity
+    protected async tryExecuteOrder (order: MidaPlaygroundOrder): Promise<MidaOrder> {
         const tradingAccount: MidaPlaygroundAccount = order.tradingAccount as MidaPlaygroundAccount;
         const executedVolume: MidaDecimal = order.requestedVolume;
         const symbol: MidaSymbol | undefined = await tradingAccount.getSymbol(order.symbol);
 
         if (!symbol) {
-            this.#rejectOrder(order.id, MidaOrderRejection.SYMBOL_NOT_FOUND);
+            this.rejectOrder(order.id, MidaOrderRejection.SYMBOL_NOT_FOUND);
 
             return order;
         }
@@ -338,7 +477,37 @@ export class MidaPlaygroundEngine {
         const executionDate: MidaDate = this.#localDate;
         // <execution-price>
 
-        const purpose: MidaTradePurpose = order.purpose === MidaOrderPurpose.OPEN ? MidaTradePurpose.OPEN : MidaTradePurpose.CLOSE;
+        // <protection-validation>
+        const requestedProtection: MidaProtectionDirectives = order.requestedProtection ?? {};
+
+        if (order.direction === MidaOrderDirection.BUY) {
+            if ("stopLoss" in requestedProtection && decimal(requestedProtection.stopLoss).greaterThanOrEqual(bid)) {
+                this.rejectOrder(order.id, MidaOrderRejection.INVALID_STOP_LOSS);
+
+                return order;
+            }
+
+            if ("takeProfit" in requestedProtection && decimal(requestedProtection.takeProfit).lessThanOrEqual(bid)) {
+                this.rejectOrder(order.id, MidaOrderRejection.INVALID_TAKE_PROFIT);
+
+                return order;
+            }
+        }
+        else {
+            if ("stopLoss" in requestedProtection && decimal(requestedProtection.stopLoss).lessThanOrEqual(ask)) {
+                this.rejectOrder(order.id, MidaOrderRejection.INVALID_STOP_LOSS);
+
+                return order;
+            }
+
+            if ("takeProfit" in requestedProtection && decimal(requestedProtection.takeProfit).greaterThanOrEqual(ask)) {
+                this.rejectOrder(order.id, MidaOrderRejection.INVALID_TAKE_PROFIT);
+
+                return order;
+            }
+        }
+        // </protection-validation>
+
         let grossProfit: MidaDecimal = executedVolume;
         let grossProfitAsset: string = symbol.baseAsset;
 
@@ -360,8 +529,8 @@ export class MidaPlaygroundEngine {
             volumeToDeposit = grossProfit;
         }
 
-        if (!await this.#accountHasEnoughFunds(tradingAccount, assetToWithdraw, volumeToWithdraw)) {
-            this.#rejectOrder(order.id, MidaOrderRejection.NOT_ENOUGH_MONEY);
+        if (!await this.accountHasFunds(tradingAccount, assetToWithdraw, volumeToWithdraw)) {
+            this.rejectOrder(order.id, MidaOrderRejection.NOT_ENOUGH_MONEY);
 
             return order;
         }
@@ -389,12 +558,23 @@ export class MidaPlaygroundEngine {
         let position: MidaPlaygroundPosition;
 
         if (!order.positionId) {
+            const protection: MidaProtection = {};
+            const protectionDirectives: MidaProtectionDirectives = order.requestedProtection ?? {};
+
+            if ("stopLoss" in protectionDirectives) {
+                protection.stopLoss = decimal(protectionDirectives.stopLoss);
+            }
+
+            if ("takeProfit" in protectionDirectives) {
+                protection.takeProfit = decimal(protectionDirectives.takeProfit);
+            }
+
             position = new MidaPlaygroundPosition({
                 id: uuid(),
                 symbol: order.symbol,
                 volume: decimal(0), // Automatically updated after execution
                 direction: order.direction === MidaOrderDirection.BUY ? MidaPositionDirection.LONG : MidaPositionDirection.SHORT,
-                protection: {},
+                protection,
                 tradingAccount: order.tradingAccount,
                 engineEmitter: this.#protectedEmitter,
             });
@@ -414,7 +594,7 @@ export class MidaPlaygroundEngine {
             volume: executedVolume,
             direction: order.direction === MidaOrderDirection.BUY ? MidaTradeDirection.BUY : MidaTradeDirection.SELL,
             status: MidaTradeStatus.EXECUTED,
-            purpose,
+            purpose: order.purpose === MidaOrderPurpose.OPEN ? MidaTradePurpose.OPEN : MidaTradePurpose.CLOSE,
             executionDate,
             executionPrice,
             grossProfit,
@@ -445,13 +625,11 @@ export class MidaPlaygroundEngine {
         });
 
         // <balance-sheet>
-        const balanceSheet: Record<string, MidaDecimalConvertible> | undefined = configuration.balanceSheet;
+        const balanceSheet: Record<string, MidaDecimalConvertible> = configuration.balanceSheet ?? {};
 
-        if (balanceSheet) {
-            for (const asset of Object.keys(balanceSheet)) {
-                if (balanceSheet.hasOwnProperty(asset)) {
-                    await account.deposit(asset, balanceSheet[asset]);
-                }
+        for (const asset of Object.keys(balanceSheet)) {
+            if (balanceSheet.hasOwnProperty(asset)) {
+                await account.deposit(asset, balanceSheet[asset]);
             }
         }
         // </balance-sheet>
@@ -476,7 +654,7 @@ export class MidaPlaygroundEngine {
         this.#emitter.removeEventListener(uuid);
     }
 
-    protected notifyListeners (type: string, descriptor?: GenericObject): void {
+    protected notifyListeners (type: string, descriptor?: Record<string, any>): void {
         this.#emitter.notifyListeners(type, descriptor);
     }
 
@@ -484,17 +662,25 @@ export class MidaPlaygroundEngine {
         ticks.sort((a: MidaTick, b: MidaTick): number => a.date.timestamp - b.date.timestamp);
 
         for (const tick of ticks) {
-            this.#localDate = tick.date;
-
-            this.#lastTicks.set(tick.symbol, tick);
             await this.#onTick(tick);
         }
     }
 
     async #onTick (tick: MidaTick): Promise<void> {
-        this.#emitter.notifyListeners("tick", { tick, });
+        // <feed-confirmation>
+        this.#feedResolverPromise = new Promise<void>((resolve) => {
+            this.#feedResolver = (): void => resolve();
+        });
+        // </feed-confirmation>
+
+        this.#localDate = tick.date;
+
+        this.#lastTicks.set(tick.symbol, tick);
+
         await this.#updatePendingOrders(tick);
         await this.#updateOpenPositions(tick);
+
+        this.#emitter.notifyListeners("tick", { tick, });
 
         /*
         for (const account of this.#tradingAccounts) {
@@ -507,10 +693,65 @@ export class MidaPlaygroundEngine {
             // </margin-call>
         }
         */
+
+        // <feed-confirmation>
+        if (this.#waitFeedConfirmation) {
+            await this.#feedResolverPromise;
+        }
+        // </feed-confirmation>
+    }
+
+    async #processPeriods (periods: MidaPeriod[]): Promise<MidaTick[]> {
+        const elapsedTicks: MidaTick[] = [];
+
+        periods.sort((a: MidaPeriod, b: MidaPeriod): number => a.startDate.timestamp - b.startDate.timestamp);
+
+        for (const period of periods) {
+            const ticks: MidaTick[] = [ tickFromPeriod(period, "close"), ];
+
+            await this.#processTicks(ticks);
+            await this.#onPeriodUpdate(period);
+
+            if (period.isClosed) {
+                await this.#onPeriodClose(period);
+            }
+
+            elapsedTicks.push(...ticks);
+        }
+
+        return elapsedTicks;
     }
 
     async #onPeriodUpdate (period: MidaPeriod): Promise<void> {
+        // <feed-confirmation>
+        this.#feedResolverPromise = new Promise<void>((resolve) => {
+            this.#feedResolver = (): void => resolve();
+        });
+        // </feed-confirmation>
+
         this.#emitter.notifyListeners("period-update", { period, });
+
+        // <feed-confirmation>
+        if (this.#waitFeedConfirmation) {
+            await this.#feedResolverPromise;
+        }
+        // </feed-confirmation>
+    }
+
+    async #onPeriodClose (period: MidaPeriod): Promise<void> {
+        // <feed-confirmation>
+        this.#feedResolverPromise = new Promise<void>((resolve) => {
+            this.#feedResolver = (): void => resolve();
+        });
+        // </feed-confirmation>
+
+        this.#emitter.notifyListeners("period-close", { period, });
+
+        // <feed-confirmation>
+        if (this.#waitFeedConfirmation) {
+            await this.#feedResolverPromise;
+        }
+        // </feed-confirmation>
     }
 
     async #updatePendingOrders (tick: MidaTick): Promise<void> {
@@ -533,7 +774,9 @@ export class MidaPlaygroundEngine {
                 order.direction === MidaOrderDirection.SELL && bid.greaterThanOrEqual(limitPrice)
                 || order.direction === MidaOrderDirection.BUY && ask.lessThanOrEqual(limitPrice)
             ) {
-                await this.#tryExecuteOrder(order);
+                internalLogger.info(`Playground | Pending Order ${order.id} hit limit`);
+
+                await this.tryExecuteOrder(order);
             }
         }
         // </limit>
@@ -544,14 +787,16 @@ export class MidaPlaygroundEngine {
                 order.direction === MidaOrderDirection.SELL && bid.lessThanOrEqual(stopPrice)
                 || order.direction === MidaOrderDirection.BUY && ask.greaterThanOrEqual(stopPrice)
             ) {
-                await this.#tryExecuteOrder(order);
+                internalLogger.info(`Playground | Pending Order ${order.id} hit stop`);
+
+                await this.tryExecuteOrder(order);
             }
         }
         // </stop>
     }
 
     async #updateOpenPositions (tick: MidaTick): Promise<void> {
-        const openPositions: MidaPosition[] = [ ...this.#positions.values(), ];
+        const openPositions: MidaPosition[] = await this.getOpenPositions();
 
         for (const position of openPositions) {
             await this.#updateOpenPosition(position, tick);
@@ -564,8 +809,6 @@ export class MidaPlaygroundEngine {
         const ask: MidaDecimal = tick.ask;
         const stopLoss: MidaDecimal | undefined = position.stopLoss;
         const takeProfit: MidaDecimal | undefined = position.takeProfit;
-        const equity: MidaDecimal = await tradingAccount.getEquity();
-        const marginLevel: MidaDecimal | undefined = await tradingAccount.getMarginLevel();
 
         // <stop-loss>
         if (stopLoss) {
@@ -573,6 +816,8 @@ export class MidaPlaygroundEngine {
                 position.direction === MidaPositionDirection.SHORT && ask.greaterThanOrEqual(stopLoss)
                 || position.direction === MidaPositionDirection.LONG && bid.lessThanOrEqual(stopLoss)
             ) {
+                internalLogger.info(`Playground | Position ${position.id} hit stop loss`);
+
                 await position.close();
             }
         }
@@ -584,6 +829,8 @@ export class MidaPlaygroundEngine {
                 position.direction === MidaPositionDirection.SHORT && ask.lessThanOrEqual(takeProfit)
                 || position.direction === MidaPositionDirection.LONG && bid.greaterThanOrEqual(takeProfit)
             ) {
+                internalLogger.info(`Playground | Position ${position.id} hit take profit`);
+
                 await position.close();
             }
         }
@@ -591,6 +838,8 @@ export class MidaPlaygroundEngine {
 
         /*
         // <stop-out>
+        const marginLevel: MidaDecimal | undefined = await tradingAccount.getMarginLevel();
+
         if (marginLevel?.lessThanOrEqual(account.stopOutLevel)) {
             await position.close();
 
@@ -600,12 +849,15 @@ export class MidaPlaygroundEngine {
             });
         }
         // </stop-out>
+        */
 
         // <negative-balance-protection>
-        if (account.negativeBalanceProtection && equity.lessThanOrEqual(0)) {
+        const equity: MidaDecimal = await tradingAccount.getEquity();
+
+        if (equity.lessThanOrEqual(0)) {
             await position.close();
         }
-        // </negative-balance-protection>*/
+        // </negative-balance-protection>
     }
 
     public cancelOrder (orderId: string): void {
@@ -613,31 +865,37 @@ export class MidaPlaygroundEngine {
             orderId,
             cancelDate: this.#localDate,
         });
+
+        internalLogger.warn(`Playground | Order ${orderId} canceled`);
     }
 
-    #rejectOrder (orderId: string, rejection: MidaOrderRejection): void {
+    protected rejectOrder (orderId: string, rejection: MidaOrderRejection): void {
         this.#protectedEmitter.notifyListeners("order-reject", {
             orderId,
             rejectionDate: this.#localDate,
             rejection,
         });
+
+        internalLogger.warn(`Playground | Order ${orderId} rejected: ${rejection}`);
     }
 
-    #acceptOrder (orderId: string): void {
+    protected acceptOrder (orderId: string): void {
         this.#protectedEmitter.notifyListeners("order-accept", {
             orderId,
             acceptDate: this.#localDate,
         });
     }
 
-    #moveOrderToPending (orderId: string): void {
+    protected moveOrderToPending (orderId: string): void {
         this.#protectedEmitter.notifyListeners("order-pending", {
             orderId,
             pendingDate: this.#localDate,
         });
     }
 
-    async #accountHasEnoughFunds (tradingAccount: MidaPlaygroundAccount, asset: string, volume: MidaDecimalConvertible): Promise<boolean> {
-        return (await tradingAccount.getAssetBalance(asset)).freeVolume.greaterThanOrEqual(volume);
+    protected async accountHasFunds (tradingAccount: MidaPlaygroundAccount, asset: string, volume: MidaDecimalConvertible): Promise<boolean> {
+        const { freeVolume, } = await tradingAccount.getAssetBalance(asset);
+
+        return freeVolume.greaterThanOrEqual(volume);
     }
 }

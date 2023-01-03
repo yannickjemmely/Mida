@@ -21,7 +21,6 @@
 */
 
 import { MidaMarketComponentState, } from "#components/MidaMarketComponentState";
-import { MidaDecimal } from "#decimals/MidaDecimal";
 import { MidaPeriod, } from "#periods/MidaPeriod";
 import { MidaPeriodPriceKey, } from "#periods/MidaPeriodPriceKey";
 import { MidaTradingSystem, } from "#systems/MidaTradingSystem";
@@ -72,9 +71,7 @@ export class MidaMarketComponentOracle extends MidaTradingSystem {
         await Promise.all(state.$dependencies.map((dependency: MidaMarketComponentState) => this.configureIndicators(dependency)));
         // </dependencies>
 
-        for (const { indicator, input, } of Object.values(state.$indicators)) {
-            indicator.clear();
-
+        for (const { input, } of Object.values(state.$indicators)) {
             await this.updateIndicators(state, state.$periods[input.timeframe]);
         }
     }
@@ -109,6 +106,7 @@ export class MidaMarketComponentOracle extends MidaTradingSystem {
 
         await state.$component.tick?.call(state, tick);
         await state.$component.update?.call(state);
+        await state.$component.lateUpdate?.call(state);
     }
 
     protected override async onTick (tick: MidaTick): Promise<void> {
@@ -138,6 +136,7 @@ export class MidaMarketComponentOracle extends MidaTradingSystem {
         await state.$component.periodUpdate?.call(state, period);
         await state.$component[`${MidaTimeframe[timeframe].toLowerCase()}PeriodUpdate`]?.call(state, period);
         await state.$component.update?.call(state);
+        await state.$component.lateUpdate?.call(state);
         // </hooks>
     }
 
@@ -168,6 +167,7 @@ export class MidaMarketComponentOracle extends MidaTradingSystem {
         await state.$component.periodClose?.call(state, period);
         await state.$component[`${MidaTimeframe[timeframe].toLowerCase()}PeriodClose`]?.call(state, period);
         await state.$component.update?.call(state);
+        await state.$component.lateUpdate?.call(state);
         // </hooks>
     }
 
@@ -188,18 +188,19 @@ export class MidaMarketComponentOracle extends MidaTradingSystem {
 
             const processor: ((periods: MidaPeriod[]) => any) | undefined = input.processor;
             const priceKeys: MidaPeriodPriceKey | MidaPeriodPriceKey[] = input.type;
+            const cappedPeriods: MidaPeriod[] = periods.slice(Math.max(periods.length - input.limit, 0));
             let indicatorInput: any = [];
 
             if (typeof processor === "function") {
-                indicatorInput = await processor(periods);
+                indicatorInput = await processor(cappedPeriods);
             }
             else if (Array.isArray(priceKeys)) {
                 for (const priceKey of priceKeys) {
-                    indicatorInput = [ ...indicatorInput, [ ...periods.map((period) => period[priceKey]), ], ];
+                    indicatorInput = [ ...indicatorInput, [ ...cappedPeriods.map((period) => period[priceKey]), ], ];
                 }
             }
             else {
-                indicatorInput = [ ...periods.map((period) => period[priceKeys]), ];
+                indicatorInput = [ ...cappedPeriods.map((period) => period[priceKeys]), ];
             }
 
             indicator.clear();

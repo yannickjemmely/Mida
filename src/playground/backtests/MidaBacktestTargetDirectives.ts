@@ -20,4 +20,10 @@
  * THE SOFTWARE.
 */
 
-export type MidaQueueWorker<T> = (item: T) => Promise<unknown>;
+import { MidaMarketComponentConstructor, } from "#components/MidaMarketComponentConstructor";
+
+export type MidaBacktestTargetDirectives = {
+    type: MidaMarketComponentConstructor;
+    params?: Record<string, any>;
+    symbol: string;
+};

@@ -185,7 +185,7 @@ export abstract class MidaPosition {
         }
 
         this.#emitter.notifyListeners("trade", { trade, });
-        internalLogger.info(`Position ${this.id} | trade ${trade.id} executed`);
+        internalLogger.info(`Position ${this.id} | Trade ${trade.id} executed`);
     }
 
     protected onProtectionChange (protection: MidaProtection): void {

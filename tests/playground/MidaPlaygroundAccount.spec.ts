@@ -58,7 +58,7 @@ describe("MidaPlaygroundAccount", () => {
         it("P/L is equal to spread when buying and selling at the same tick", async () => {
             const engine = new MidaPlaygroundEngine({ localDate: "2022-04-04T04:04:04.004Z", });
 
-            engine.registerSymbolTicks("ETHUSD", ticks);
+            engine.addSymbolTicks("ETHUSD", ticks);
             await engine.elapseTicks(1);
 
             const currentAsk: MidaDecimal = await engine.getSymbolAsk("ETHUSD");
@@ -68,7 +68,7 @@ describe("MidaPlaygroundAccount", () => {
                 },
             });
 
-            await account.registerSymbol(symbolParameters);
+            await account.addSymbol(symbolParameters);
             await account.placeOrder({
                 symbol: "ETHUSD",
                 direction: MidaOrderDirection.BUY,
@@ -94,7 +94,7 @@ describe("MidaPlaygroundAccount", () => {
             const engine = new MidaPlaygroundEngine({ localDate: "2022-04-04T04:04:04.004Z", });
 
             engine.setCommissionCustomizer(async () => [ "USD", fixedCommission, ]);
-            engine.registerSymbolTicks("ETHUSD", ticks);
+            engine.addSymbolTicks("ETHUSD", ticks);
             await engine.elapseTicks(1);
 
             const currentAsk: MidaDecimal = await engine.getSymbolAsk("ETHUSD");
@@ -104,7 +104,7 @@ describe("MidaPlaygroundAccount", () => {
                 },
             });
 
-            await account.registerSymbol(symbolParameters);
+            await account.addSymbol(symbolParameters);
             await account.placeOrder({
                 symbol: "ETHUSD",
                 direction: MidaOrderDirection.BUY,
@@ -128,7 +128,7 @@ describe("MidaPlaygroundAccount", () => {
         it("BUY LIMIT is executed at the expected price", async () => {
             const engine = new MidaPlaygroundEngine({ localDate: "2022-04-04T04:04:04.004Z", });
 
-            engine.registerSymbolTicks("ETHUSD", ticks);
+            engine.addSymbolTicks("ETHUSD", ticks);
             await engine.elapseTicks(1);
 
             const account = await engine.createAccount({
@@ -137,7 +137,7 @@ describe("MidaPlaygroundAccount", () => {
                 },
             });
 
-            await account.registerSymbol(symbolParameters);
+            await account.addSymbol(symbolParameters);
 
             const limitPrice = 3713.9;
             const limitOrder = await account.placeOrder({
@@ -164,7 +164,7 @@ describe("MidaPlaygroundAccount", () => {
         it("BUY STOP is executed at the expected price", async () => {
             const engine = new MidaPlaygroundEngine({ localDate: "2022-04-04T04:04:04.004Z", });
 
-            engine.registerSymbolTicks("ETHUSD", ticks);
+            engine.addSymbolTicks("ETHUSD", ticks);
             await engine.elapseTicks(1);
 
             const account = await engine.createAccount({
@@ -173,7 +173,7 @@ describe("MidaPlaygroundAccount", () => {
                 },
             });
 
-            await account.registerSymbol(symbolParameters);
+            await account.addSymbol(symbolParameters);
 
             const stopPrice = 3716.1;
             const limitOrder = await account.placeOrder({
@@ -199,12 +199,12 @@ describe("MidaPlaygroundAccount", () => {
         it("BUY is rejected when owned quote currency volume is not enough", async () => {
             const engine = new MidaPlaygroundEngine({ localDate: "2022-04-04T04:04:04.004Z", });
 
-            engine.registerSymbolTicks("ETHUSD", ticks);
+            engine.addSymbolTicks("ETHUSD", ticks);
             await engine.elapseTicks(1);
 
             const account = await engine.createAccount();
 
-            await account.registerSymbol(symbolParameters);
+            await account.addSymbol(symbolParameters);
             const order = await account.placeOrder({
                 symbol: "ETHUSD",
                 direction: MidaOrderDirection.BUY,
@@ -218,12 +218,12 @@ describe("MidaPlaygroundAccount", () => {
         it("SELL is rejected when owned base currency volume is not enough", async () => {
             const engine = new MidaPlaygroundEngine({ localDate: "2022-04-04T04:04:04.004Z", });
 
-            engine.registerSymbolTicks("ETHUSD", ticks);
+            engine.addSymbolTicks("ETHUSD", ticks);
             await engine.elapseTicks(1);
 
             const account = await engine.createAccount();
 
-            await account.registerSymbol(symbolParameters);
+            await account.addSymbol(symbolParameters);
 
             const order = await account.placeOrder({
                 symbol: "ETHUSD",

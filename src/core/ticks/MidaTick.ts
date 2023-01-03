@@ -60,7 +60,7 @@ export class MidaTick implements IMidaCloneable, IMidaEquatable {
         }
 
         this.#date = this.#quotation.date;
-        this.#movement = movement;
+        this.#movement = movement ?? MidaTickMovement.UNKNOWN;
         this.#previousTick = previousTick;
         this.#nextTick = nextTick;
     }

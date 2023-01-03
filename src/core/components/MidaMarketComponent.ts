@@ -74,13 +74,15 @@ export type MidaMarketComponent = {
 
     update? (this: MidaMarketComponentState): Promise<void>;
 
+    lateUpdate? (this: MidaMarketComponentState): Promise<void>;
+
     tick? (this: MidaMarketComponentState, tick: MidaTick): Promise<void>;
 
     periodUpdate? (this: MidaMarketComponentState, period: MidaPeriod): Promise<void>;
 
-    [periodUpdateTimeframe: `${string}PeriodUpdate`]: (this: MidaMarketComponentState, period: MidaPeriod) => Promise<void>;
+    [periodUpdateByTimeframe: `${string}PeriodUpdate`]: (this: MidaMarketComponentState, period: MidaPeriod) => Promise<void>;
 
     periodClose? (this: MidaMarketComponentState, period: MidaPeriod): Promise<void>;
 
-    [periodCloseTimeframe: `${string}PeriodClose`]: (this: MidaMarketComponentState, period: MidaPeriod) => Promise<void>;
+    [periodCloseByTimeframe: `${string}PeriodClose`]: (this: MidaMarketComponentState, period: MidaPeriod) => Promise<void>;
 };

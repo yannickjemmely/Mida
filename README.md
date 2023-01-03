@@ -5,7 +5,7 @@
 </p>
 <br>
 <p align="center">
-    <b>The open-source and cross-platform trading engine</b>
+    <b>The open-source and cross-platform trading framework</b>
     <br><br>
     <a href="https://www.mida.org">Home</a> &mdash;
     <a href="https://www.mida.org/documentation">Documentation</a> &mdash;
@@ -27,8 +27,8 @@
 <br><br>
 
 ## Introduction
-Mida is an open-source and cross-platform trading engine developed by Reiryoku Technologies and its contributors.
-The engine is designed from the ground up to provide a solid, versatile and platform-neutral
+Mida is an open-source and cross-platform trading framework developed by Reiryoku Technologies and its contributors.
+The framework is designed from the ground up to provide a solid, versatile and platform-neutral
 environment for creating algorithmic trading systems, indicators, market analysis tools or just trading
 applications depending on use cases.
 
@@ -403,7 +403,7 @@ marketWatcher.removeEventListener(id);
 ```
 
 ### Paper trading
-Mida comes with an out of the box engine simulating exchanges and spot trading accounts,
+Mida comes with an out of the box simulator of exchanges and spot trading accounts,
 for paper trading and backtesting read [Paper Trading with Mida](https://www.mida.org/posts/paper-trading-with-mida/).
 
 ### Trading systems
