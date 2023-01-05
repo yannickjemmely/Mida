@@ -25,11 +25,12 @@ import { MidaMarketComponent, } from "#components/MidaMarketComponent";
 import { MidaMarketComponentConstructor, } from "#components/MidaMarketComponentConstructor";
 import { MidaMarketComponentDependencyDeclaration, } from "#components/MidaMarketComponentDependencyDeclaration";
 import { MidaMarketComponentIndicatorDeclaration, } from "#components/MidaMarketComponentIndicatorDeclaration";
-import { MidaMarketComponentParameterDeclaration, } from "#components/MidaMarketComponentParameterDeclaration";
 import { MidaMarketComponentOracle, } from "#components/MidaMarketComponentOracle";
+import { MidaMarketComponentParameterDeclaration, } from "#components/MidaMarketComponentParameterDeclaration";
 import { MidaMarketComponentState, } from "#components/MidaMarketComponentState";
 import { MidaIndicator, } from "#indicators/MidaIndicator";
 import { internalLogger, } from "#loggers/MidaLogger";
+import { MidaSymbol, } from "#symbols/MidaSymbol";
 import { MidaTimeframe, } from "#timeframes/MidaTimeframe";
 
 export type MidaMarketComponentMakerParameters = {
@@ -57,6 +58,17 @@ export const makeComponentState = async (parameters: MidaMarketComponentMakerPar
         tradingAccount,
         symbol,
     } = parameters;
+
+    // <symbol>
+    const completeSymbol: MidaSymbol | undefined = await tradingAccount.getSymbol(symbol);
+
+    if (!completeSymbol) {
+        internalLogger.fatal(`Symbol ${symbol} not supported`);
+
+        throw new Error();
+    }
+    // </symbol>
+
     const [ bid, ask, ] = await Promise.all([ tradingAccount.getSymbolBid(symbol), tradingAccount.getSymbolAsk(symbol), ]);
     let state: MidaMarketComponentState = {
         $component: component,
@@ -67,6 +79,7 @@ export const makeComponentState = async (parameters: MidaMarketComponentMakerPar
             watchPeriods: false,
         },
         $symbol: symbol,
+        $completeSymbol: completeSymbol,
         $bid: bid,
         $ask: ask,
         $ticks: [],

@@ -24,6 +24,7 @@ import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
 import { MidaMarketComponent, } from "#components/MidaMarketComponent";
 import { MidaDecimal, } from "#decimals/MidaDecimal";
 import { MidaPeriod, } from "#periods/MidaPeriod";
+import { MidaSymbol, } from "#symbols/MidaSymbol";
 import { MidaTick, } from "#ticks/MidaTick";
 import { MidaMarketWatcherDirectives, } from "#watchers/MidaMarketWatcherDirectives";
 
@@ -33,6 +34,7 @@ export type MidaMarketComponentState = Record<string, any> & {
     $tradingAccount: MidaTradingAccount;
     $watcher: MidaMarketWatcherDirectives;
     $symbol: string;
+    $completeSymbol: MidaSymbol;
     $bid: MidaDecimal;
     $ask: MidaDecimal;
     $ticks: MidaTick[];

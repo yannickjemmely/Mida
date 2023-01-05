@@ -41,6 +41,7 @@ describe("MidaPlaygroundAccount", () => {
         maxLots: decimal(0),
         lotUnits: decimal(0),
         pipPosition: -1,
+        digits: 2,
     };
 
     beforeAll(async () => {

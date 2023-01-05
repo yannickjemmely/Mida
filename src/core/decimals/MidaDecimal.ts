@@ -26,8 +26,10 @@ import { inspect, } from "util";
 
 export class MidaDecimal {
     readonly #value: bigint;
+    readonly #digits: number;
+    readonly #shift: bigint;
 
-    public constructor (value: MidaDecimalConvertible = 0) {
+    public constructor (value: MidaDecimalConvertible, digits: number) {
         const parts: string[] = String(value).split(".").concat("");
         const [
             integerPart,
@@ -37,36 +39,62 @@ export class MidaDecimal {
             string,
             string,
             boolean,
-        ] = MidaDecimal.#normalizeParts(parts[0], parts[1]);
+        ] = MidaDecimal.#normalizeParts(parts[0], parts[1], digits);
 
         if (!Number.isFinite(Number(integerPart)) || !Number.isFinite(Number(decimalPart))) {
-            internalLogger.fatal(`Invalid decimal "${value}"`);
+            internalLogger.fatal(`Invalid decimal ${value}`);
 
             throw new Error();
         }
 
-        this.#value = BigInt((isNegative ? "-" : "") + integerPart + decimalPart.padEnd(MidaDecimal.#decimals, "0").slice(0, MidaDecimal.#decimals)) +
-            BigInt((isNegative ? "-" : "") + (MidaDecimal.#rounded && Number(decimalPart[MidaDecimal.#decimals]) >= 5 ? "1" : "0"));
+        this.#value = BigInt((isNegative ? "-" : "") + integerPart + decimalPart.padEnd(digits, "0").slice(0, digits)) +
+                BigInt((isNegative ? "-" : "") + (MidaDecimal.#rounded && Number(decimalPart[digits]) >= 5 ? "1" : "0"));
+        this.#digits = digits;
+        this.#shift = BigInt(`1${"0".repeat(digits)}`);
     }
 
     public add (operand: MidaDecimalConvertible): MidaDecimal {
-        return decimal(MidaDecimal.#toString(this.#value + decimal(operand).#value));
+        const normalized: MidaDecimal = decimal(this);
+
+        return decimal(normalized.#toString(normalized.#value + decimal(operand).#value));
     }
 
     public subtract (operand: MidaDecimalConvertible): MidaDecimal {
-        return decimal(MidaDecimal.#toString(this.#value - decimal(operand).#value));
+        const normalized: MidaDecimal = decimal(this);
+
+        return decimal(normalized.#toString(normalized.#value - decimal(operand).#value));
+    }
+
+    public sub (operand: MidaDecimal): MidaDecimal {
+        return this.subtract(operand);
     }
 
     public multiply (operand: MidaDecimalConvertible): MidaDecimal {
-        return MidaDecimal.#divideRound(this.#value * decimal(operand).#value, MidaDecimal.#shift);
+        const normalized: MidaDecimal = decimal(this);
+
+        return normalized.#divideRound(normalized.#value * decimal(operand).#value, normalized.#shift);
+    }
+
+    public mul (operand: MidaDecimalConvertible): MidaDecimal {
+        return this.multiply(operand);
     }
 
     public divide (operand: MidaDecimalConvertible): MidaDecimal {
-        return MidaDecimal.#divideRound(this.#value * MidaDecimal.#shift, decimal(operand).#value);
+        const normalized: MidaDecimal = decimal(this);
+
+        return normalized.#divideRound(normalized.#value * normalized.#shift, decimal(operand).#value);
+    }
+
+    public div (operand: MidaDecimalConvertible): MidaDecimal {
+        return this.divide(operand);
     }
 
     public equals (operand: MidaDecimalConvertible): boolean {
         return this.#value === decimal(operand).#value;
+    }
+
+    public eq (operand: MidaDecimalConvertible): boolean {
+        return this.equals(operand);
     }
 
     public greaterThan (operand: MidaDecimalConvertible): boolean {
@@ -85,23 +113,49 @@ export class MidaDecimal {
         return this.lessThan(operand) || this.equals(operand);
     }
 
+    public toFixed (digits: number): MidaDecimal {
+        if (digits === 0) {
+            return decimal(this.toString().split(".")[0]);
+        }
+
+        return decimal(this, digits);
+    }
+
     public toNumber (): number {
         return Number(this.toString());
     }
 
     public toString (): string {
-        return MidaDecimal.#toString(this.#value);
+        return this.#toString(this.#value);
     }
 
     public [inspect.custom] (): string {
         return `${this.toString()}d`;
     }
 
+    #divideRound (dividend: bigint, divisor: bigint): MidaDecimal {
+        return decimal(this.#toString(dividend / divisor + (MidaDecimal.#rounded ? dividend * 2n / divisor % 2n : 0n)));
+    }
+
+    #toString (value: bigint): string {
+        const descriptor: string = value.toString().padStart(this.#digits + 1, "0");
+
+        const [
+            integerPart,
+            decimalPart,
+            isNegative,
+        ]: [
+            string,
+            string,
+            boolean,
+        ] = MidaDecimal.#normalizeParts(descriptor.slice(0, -this.#digits), descriptor.slice(-this.#digits).replace(/\.?0+$/, ""), this.#digits);
+
+        return `${isNegative ? "-" : ""}${integerPart}.${decimalPart}`.replace(/\.$/, "");
+    }
+
     /* *** *** *** Reiryoku Technologies *** *** *** */
 
-    static readonly #decimals = 32;
     static readonly #rounded = true;
-    static readonly #shift = BigInt(`1${"0".repeat(MidaDecimal.#decimals)}`);
 
     public static abs (operand: MidaDecimal): MidaDecimal {
         if (operand.lessThan(0)) {
@@ -139,26 +193,7 @@ export class MidaDecimal {
         return max;
     }
 
-    static #divideRound (dividend: bigint, divisor: bigint): MidaDecimal {
-        return decimal(MidaDecimal.#toString(dividend / divisor + (MidaDecimal.#rounded ? dividend * 2n / divisor % 2n : 0n)));
-    }
-
-    static #toString (value: bigint): string {
-        const descriptor: string = value.toString().padStart(MidaDecimal.#decimals + 1, "0");
-        const [
-            integerPart,
-            decimalPart,
-            isNegative,
-        ]: [
-            string,
-            string,
-            boolean,
-        ] = MidaDecimal.#normalizeParts(descriptor.slice(0, -MidaDecimal.#decimals), descriptor.slice(-MidaDecimal.#decimals).replace(/\.?0+$/, ""));
-
-        return `${isNegative ? "-" : ""}${integerPart}.${decimalPart}`.replace(/\.$/, "");
-    }
-
-    static #normalizeParts (integerPart: string, decimalPart: string): [ string, string, boolean, ] {
+    static #normalizeParts (integerPart: string, decimalPart: string, digits: number): [ string, string, boolean, ] {
         let isNegative: boolean = false;
         let normalizedIntegerPart: string = integerPart;
         let normalizedDecimalPart: string = decimalPart;
@@ -173,6 +208,10 @@ export class MidaDecimal {
             normalizedDecimalPart = decimalPart.replace("-", "0");
         }
 
+        if (normalizedIntegerPart.length === 0) {
+            normalizedIntegerPart = "0";
+        }
+
         return [
             normalizedIntegerPart,
             normalizedDecimalPart,
@@ -181,4 +220,4 @@ export class MidaDecimal {
     }
 }
 
-export const decimal = (value: MidaDecimalConvertible = 0): MidaDecimal => new MidaDecimal(value);
+export const decimal = (value: MidaDecimalConvertible = 0, digits: number = 32): MidaDecimal => new MidaDecimal(value, digits);

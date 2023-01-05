@@ -20,8 +20,8 @@
  * THE SOFTWARE.
 */
 
-import { internalLogger, } from "#loggers/MidaLogger";
 import { Mida, } from "!/src/core/Mida";
+import { internalLogger, } from "#loggers/MidaLogger";
 
 export * from "!/src/core/Mida";
 export * from "!/src/playground/MidaPlayground";
