@@ -25,6 +25,7 @@ import { decimal, MidaDecimal, } from "#decimals/MidaDecimal";
 import { MidaPeriodParameters, } from "#periods/MidaPeriodParameters";
 import { MidaQuotationPrice, } from "#quotations/MidaQuotationPrice";
 import { MidaTick, } from "#ticks/MidaTick";
+import { MidaTimeframe, } from "#timeframes/MidaTimeframe";
 import { IMidaEquatable, } from "#utilities/equatable/IMidaEquatable";
 import { GenericObject, } from "#utilities/GenericObject";
 
@@ -32,19 +33,21 @@ import { GenericObject, } from "#utilities/GenericObject";
 export class MidaPeriod implements IMidaEquatable {
     readonly #symbol: string;
     readonly #startDate: MidaDate;
+    readonly #endDate: MidaDate;
     readonly #quotationPrice: MidaQuotationPrice;
     readonly #open: MidaDecimal;
     readonly #high: MidaDecimal;
     readonly #low: MidaDecimal;
     readonly #close: MidaDecimal;
     readonly #volume: MidaDecimal;
-    readonly #timeframe: number;
+    readonly #timeframe: MidaTimeframe;
     readonly #isClosed: boolean;
     readonly #ticks?: MidaTick[];
 
     public constructor ({
         symbol,
         startDate,
+        endDate,
         quotationPrice,
         open,
         high,
@@ -57,6 +60,7 @@ export class MidaPeriod implements IMidaEquatable {
     }: MidaPeriodParameters) {
         this.#symbol = symbol;
         this.#startDate = startDate;
+        this.#endDate = endDate;
         this.#quotationPrice = quotationPrice;
         this.#open = open;
         this.#high = high;
@@ -76,6 +80,11 @@ export class MidaPeriod implements IMidaEquatable {
     /** The period start date */
     public get startDate (): MidaDate {
         return this.#startDate;
+    }
+
+    /** The period end date */
+    public get endDate (): MidaDate {
+        return this.#endDate;
     }
 
     /** The price represented by the period (bid or ask) */
@@ -108,8 +117,8 @@ export class MidaPeriod implements IMidaEquatable {
         return this.#volume;
     }
 
-    /** The period timeframe (expressed in seconds) */
-    public get timeframe (): number {
+    /** The period timeframe */
+    public get timeframe (): MidaTimeframe {
         return this.#timeframe;
     }
 
@@ -121,11 +130,6 @@ export class MidaPeriod implements IMidaEquatable {
     /** The period ticks, usually ticks are not registered */
     public get ticks (): MidaTick[] | undefined {
         return [ ...this.#ticks ?? [], ];
-    }
-
-    /** The period end date */
-    public get endDate (): MidaDate {
-        return this.#startDate.add(this.#timeframe * 1000);
     }
 
     /** The period momentum */
@@ -201,17 +205,23 @@ export class MidaPeriod implements IMidaEquatable {
 export const composePeriods = (
     ticks: MidaTick[],
     startTime: MidaDate,
-    timeframe: number,
+    timeframe: MidaTimeframe,
     quotationPrice: MidaQuotationPrice = MidaQuotationPrice.BID,
     limit: number = -1
 ): MidaPeriod[] => {
-    if (ticks.length < 1 || timeframe <= 0) {
+    const timeframeSeconds: number | undefined = MidaTimeframe.toSeconds(timeframe);
+
+    if (timeframeSeconds === undefined) {
+        throw new Error();
+    }
+
+    if (ticks.length < 1 || timeframeSeconds <= 0) {
         return [];
     }
 
     let periodStartTime: MidaDate = startTime;
 
-    const getNextPeriodEndDate = (): MidaDate => date(periodStartTime.timestamp + timeframe * 1000);
+    const getNextPeriodEndDate = (): MidaDate => date(periodStartTime.timestamp + timeframeSeconds * 1000);
     const periods: MidaPeriod[] = [];
 
     let periodTicks: MidaTick[] = [];
@@ -225,6 +235,7 @@ export const composePeriods = (
         periods.push(new MidaPeriod({
             symbol: ticks[0].symbol,
             startDate: periodStartTime,
+            endDate: periodEndDate,
             quotationPrice,
             open: periodTicks[0][quotationPrice],
             high: MidaDecimal.max(...periodTicks.map((tick: MidaTick): MidaDecimal => tick[quotationPrice])),

@@ -20,43 +20,47 @@
  * THE SOFTWARE.
 */
 
-export enum MidaTimeframe {
-    /** 1 second */
-    S1 = 1,
-    /** 1 minute */
-    M1 = 60,
-    /** 5 minutes */
-    M5 = 300,
-    /** 15 minutes */
-    M15 = 900,
-    /** 30 minutes */
-    M30 = 1800,
-    /** 1 hour */
-    H1 = 3600,
-    /** 4 hours */
-    H4 = 14400,
-    /** 1 day */
-    D1 = 86400,
-    /** 1 week */
-    W1 = 604800,
-    /** 1 month */
-    MO1 = 2592000,
-    /** 1 year */
-    Y1 = 31536000,
-}
+export type MidaTimeframe = string;
 
 export namespace MidaTimeframe {
+    /** 1 second */
+    export const S1: string = "S1";
+    /** 1 minute */
+    export const M1: string = "M1";
+    /** 5 minutes */
+    export const M5: string = "M5";
+    /** 15 minutes */
+    export const M15: string = "M15";
+    /** 30 minutes */
+    export const M30: string = "M30";
+    /** 1 hour */
+    export const H1: string = "H1";
+    /** 2 hours */
+    export const H2: string = "H2";
+    /** 4 hours */
+    export const H4: string = "H4";
+    /** 1 day */
+    export const D1: string = "D1";
+    /** 1 week */
+    export const W1: string = "W1";
+    /** 1 month */
+    export const MO1: string = "MO1";
+    /** 1 year */
+    export const Y1: string = "Y1";
+
     const commonTimeframes: Map<string, number> = new Map([
         [ "S", 1, ],
         [ "M", 60, ],
         [ "H", 3600, ],
         [ "D", 86400, ],
         [ "W", 604800, ],
-        [ "MO", 2592000, ],
+        /** Average value */
+        [ "MO", 2630000, ],
+        /** Average value */
         [ "Y", 31536000, ],
     ]);
 
-    export const parseTimeframe = (timeframe: string): number | undefined => {
+    export const toSeconds = (timeframe: string): number | undefined => {
         const orderedTimeframes: string[] = [ ...commonTimeframes.keys(), ].sort((a: string, b: string) => a.length - b.length);
         let quantity: number = NaN;
 

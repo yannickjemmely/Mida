@@ -59,7 +59,7 @@ export const backtest = async (directives: MidaBacktestDirectives): Promise<Mida
         if (periodsByTimeframe) {
             for (const [ timeframe, periods, ] of Object.entries(periodsByTimeframe)) {
                 await engine.addSymbolPeriods(symbol, periods);
-                timeframes.push(Number(timeframe));
+                timeframes.push(timeframe);
             }
         }
         // </periods>

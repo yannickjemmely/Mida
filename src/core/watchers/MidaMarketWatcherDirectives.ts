@@ -20,9 +20,11 @@
  * THE SOFTWARE.
 */
 
+import { MidaTimeframe, } from "#timeframes/MidaTimeframe";
+
 export type MidaMarketWatcherDirectives = {
     watchTicks?: boolean;
     saveTicks?: boolean;
     watchPeriods?: boolean;
-    timeframes?: number[];
+    timeframes?: MidaTimeframe[];
 };

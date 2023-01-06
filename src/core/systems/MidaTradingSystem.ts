@@ -21,14 +21,20 @@
 */
 
 import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
+import { MidaDecimal, } from "#decimals/MidaDecimal";
 import { MidaEvent, } from "#events/MidaEvent";
 import { MidaEventListener, } from "#events/MidaEventListener";
 import { internalLogger, } from "#loggers/MidaLogger";
 import { filterExecutedOrders, MidaOrder, } from "#orders/MidaOrder";
 import { MidaOrderDirectives, } from "#orders/MidaOrderDirectives";
+import { MidaOrderStatus, } from "#orders/MidaOrderStatus";
 import { MidaPeriod, } from "#periods/MidaPeriod";
+import { MidaPosition, } from "#positions/MidaPosition";
+import { MidaQueue, } from "#queues/MidaQueue";
 import { MidaTradingSystemParameters, } from "#systems/MidaTradingSystemParameters";
+import { MidaTradingSystemSymbolState, } from "#systems/MidaTradingSystemSymbolState";
 import { MidaTick, } from "#ticks/MidaTick";
+import { MidaTimeframe, } from "#timeframes/MidaTimeframe";
 import {
     filterExecutedTrades,
     getTradesFromOrders,
@@ -36,15 +42,10 @@ import {
 } from "#trades/MidaTrade";
 import { MidaEmitter, } from "#utilities/emitters/MidaEmitter";
 import { GenericObject, } from "#utilities/GenericObject";
+import { getObjectPropertyNames, } from "#utilities/MidaUtilities";
 import { MidaMarketWatcher, } from "#watchers/MidaMarketWatcher";
 import { MidaMarketWatcherConfiguration, } from "#watchers/MidaMarketWatcherConfiguration";
 import { MidaMarketWatcherParameters, } from "#watchers/MidaMarketWatcherParameters";
-import { MidaPosition, } from "#positions/MidaPosition";
-import { MidaQueue, } from "#queues/MidaQueue";
-import { MidaTradingSystemSymbolState, } from "#systems/MidaTradingSystemSymbolState";
-import { getObjectPropertyNames, } from "#utilities/MidaUtilities";
-import { MidaOrderStatus, } from "#orders/MidaOrderStatus";
-import { MidaDecimal, } from "#decimals/MidaDecimal";
 
 export abstract class MidaTradingSystem {
     readonly #name: string;
@@ -324,8 +325,8 @@ export abstract class MidaTradingSystem {
         await this.marketWatcher?.watch(symbol, { watchTicks: true, });
     }
 
-    protected async watchPeriods (symbol: string, timeframes: number[] | number): Promise<void> {
-        const actualTimeframes: number[] = this.marketWatcher?.getSymbolDirectives(symbol)?.timeframes ?? [];
+    protected async watchPeriods (symbol: string, timeframes: MidaTimeframe[] | MidaTimeframe): Promise<void> {
+        const actualTimeframes: MidaTimeframe[] = this.marketWatcher?.getSymbolDirectives(symbol)?.timeframes ?? [];
 
         await this.marketWatcher?.watch(symbol, {
             watchPeriods: true,
@@ -392,7 +393,7 @@ export abstract class MidaTradingSystem {
         return this.tradingAccount.getSymbolAsk(symbol);
     }
 
-    protected async getSymbolPeriods (symbol: string, timeframe: number): Promise<MidaPeriod[]> {
+    protected async getSymbolPeriods (symbol: string, timeframe: MidaTimeframe): Promise<MidaPeriod[]> {
         return this.tradingAccount.getSymbolPeriods(symbol, timeframe);
     }
 

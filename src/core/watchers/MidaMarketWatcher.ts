@@ -26,19 +26,20 @@ import { MidaEvent, } from "#events/MidaEvent";
 import { MidaEventListener, } from "#events/MidaEventListener";
 import { MidaPeriod, } from "#periods/MidaPeriod";
 import { MidaTick, } from "#ticks/MidaTick";
+import { MidaTimeframe, } from "#timeframes/MidaTimeframe";
 import { MidaEmitter, } from "#utilities/emitters/MidaEmitter";
 import { GenericObject, } from "#utilities/GenericObject";
 import { mergeOptions, } from "#utilities/MidaUtilities";
+import { MidaMarketWatcherConfiguration, } from "#watchers/MidaMarketWatcherConfiguration";
 import { MidaMarketWatcherDirectives, } from "#watchers/MidaMarketWatcherDirectives";
 import { MidaMarketWatcherParameters, } from "#watchers/MidaMarketWatcherParameters";
-import { MidaMarketWatcherConfiguration, } from "#watchers/MidaMarketWatcherConfiguration";
 
 export class MidaMarketWatcher {
     readonly #tradingAccount: MidaTradingAccount;
     readonly #useBuiltinPeriodCloseDetector: boolean;
     #isActive: boolean;
     readonly #watchedSymbols: Map<string, MidaMarketWatcherDirectives>;
-    readonly #lastClosedPeriods: Map<string, Map<number, MidaPeriod>>;
+    readonly #lastClosedPeriods: Map<string, Map<MidaTimeframe, MidaPeriod>>;
     readonly #emitter: MidaEmitter;
     #tickListenerId?: string;
     #periodUpdateListenerId?: string;
@@ -95,7 +96,7 @@ export class MidaMarketWatcher {
     }
 
     public async watch (symbol: string, directives: MidaMarketWatcherDirectives): Promise<void> {
-        const timeframes: number[] | undefined = directives.timeframes;
+        const timeframes: MidaTimeframe[] | undefined = directives.timeframes;
 
         if (Array.isArray(timeframes) && timeframes.length > 0) {
             directives.timeframes = [ ...new Set(timeframes), ];
@@ -123,7 +124,7 @@ export class MidaMarketWatcher {
         }
     }
 
-    async #configureSymbolTimeframe (symbol: string, timeframe: number): Promise<void> {
+    async #configureSymbolTimeframe (symbol: string, timeframe: MidaTimeframe): Promise<void> {
         if (this.#useBuiltinPeriodCloseDetector) {
             const periods: MidaPeriod[] = await this.#tradingAccount.getSymbolPeriods(symbol, timeframe);
             const lastPeriod: MidaPeriod = periods[periods.length - 1];
@@ -187,7 +188,7 @@ export class MidaMarketWatcher {
 
         for (const symbol of this.watchedSymbols) {
             const directives: MidaMarketWatcherDirectives = this.#watchedSymbols.get(symbol) as MidaMarketWatcherDirectives;
-            const timeframes: number[] | undefined = directives.timeframes;
+            const timeframes: MidaTimeframe[] | undefined = directives.timeframes;
 
             if (!directives.watchPeriods || !Array.isArray(timeframes) || timeframes.length < 1) {
                 continue;
@@ -206,16 +207,17 @@ export class MidaMarketWatcher {
 
     // Used to check if the last known symbol candlestick has been closed
     // Must be called approximately with a 1 minute interval
-    async #checkClosedPeriod (symbol: string, timeframe: number): Promise<void> {
+    async #checkClosedPeriod (symbol: string, timeframe: MidaTimeframe): Promise<void> {
         if (!this.isActive || !this.#useBuiltinPeriodCloseDetector) {
             return;
         }
 
         const lastLocalPeriod: MidaPeriod = this.#lastClosedPeriods.get(symbol)?.get(timeframe) as MidaPeriod;
         const lastLocalPeriodCloseTimestamp: number = lastLocalPeriod.endDate.timestamp;
+        const timeframeSeconds: number | undefined = MidaTimeframe.toSeconds(timeframe);
 
         // Don't request the last period if the last known period has not ended yet
-        if (utcTimestamp() < lastLocalPeriodCloseTimestamp + timeframe) {
+        if (timeframeSeconds !== undefined && utcTimestamp() < lastLocalPeriodCloseTimestamp + timeframeSeconds) {
             return;
         }
 

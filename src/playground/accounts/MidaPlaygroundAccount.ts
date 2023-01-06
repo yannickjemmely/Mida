@@ -43,6 +43,7 @@ import { MidaSymbol, } from "#symbols/MidaSymbol";
 import { MidaSymbolParameters, } from "#symbols/MidaSymbolParameters";
 import { MidaSymbolTradeStatus, } from "#symbols/MidaSymbolTradeStatus";
 import { MidaTick, } from "#ticks/MidaTick";
+import { MidaTimeframe, } from "#timeframes/MidaTimeframe";
 import { MidaTrade, } from "#trades/MidaTrade";
 
 export class MidaPlaygroundAccount extends MidaTradingAccount {
@@ -187,7 +188,7 @@ export class MidaPlaygroundAccount extends MidaTradingAccount {
         return MidaSymbolTradeStatus.ENABLED;
     }
 
-    public override async watchSymbolPeriods (symbol: string, timeframe: number): Promise<void> {
+    public override async watchSymbolPeriods (symbol: string, timeframe: MidaTimeframe): Promise<void> {
         // throw new Error("Method not implemented.");
     }
 
@@ -257,7 +258,7 @@ export class MidaPlaygroundAccount extends MidaTradingAccount {
         throw new Error("Unsupported operation");
     }
 
-    public override async getSymbolPeriods (symbol: string, timeframe: number): Promise<MidaPeriod[]> {
+    public override async getSymbolPeriods (symbol: string, timeframe: MidaTimeframe): Promise<MidaPeriod[]> {
         this.#assertSymbolExists(symbol);
 
         return this.#engine.getSymbolPeriods(symbol, timeframe);

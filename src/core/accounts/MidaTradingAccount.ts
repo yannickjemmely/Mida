@@ -37,6 +37,7 @@ import { MidaTradingPlatform, } from "#platforms/MidaTradingPlatform";
 import { MidaPosition, } from "#positions/MidaPosition";
 import { MidaSymbol, } from "#symbols/MidaSymbol";
 import { MidaSymbolTradeStatus, } from "#symbols/MidaSymbolTradeStatus";
+import { MidaTimeframe, } from "#timeframes/MidaTimeframe";
 import { MidaTrade, } from "#trades/MidaTrade";
 import { MidaEmitter, } from "#utilities/emitters/MidaEmitter";
 import { GenericObject, } from "#utilities/GenericObject";
@@ -212,7 +213,7 @@ export abstract class MidaTradingAccount {
      * @param symbol The string representation of the symbol
      * @param timeframe The periods timeframe
      */
-    public abstract getSymbolPeriods (symbol: string, timeframe: number): Promise<MidaPeriod[]>;
+    public abstract getSymbolPeriods (symbol: string, timeframe: MidaTimeframe): Promise<MidaPeriod[]>;
 
     /**
      * Used to get the current best bid price of a symbol
@@ -251,7 +252,7 @@ export abstract class MidaTradingAccount {
      * @param symbol The string representation of the symbol
      * @param timeframe The timeframe to watch
      */
-    public abstract watchSymbolPeriods (symbol: string, timeframe: number): Promise<void>;
+    public abstract watchSymbolPeriods (symbol: string, timeframe: MidaTimeframe): Promise<void>;
 
     /** Used to get the trading platform date */
     public abstract getDate (): Promise<MidaDate>;

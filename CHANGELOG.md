@@ -1,4 +1,5 @@
 ### Features
+* **_BREAKING_** Add mandatory `endDate` parameter to `MidaPeriod`, represents timeframes as strings [#85](https://github.com/Reiryoku-Technologies/Mida/pull/85)
 * **_BREAKING_** Add `toFixed()` method and optional `digits` parameter to `MidaDecimal`, add mandatory `digits` parameter to `MidaSymbol`, add `$completeSymbol` to `MidaMarketComponentState` [#84](https://github.com/Reiryoku-Technologies/Mida/pull/84)
 * **_BREAKING_** Remove old MidaExpertAdvisor API in favor of MidaTradingSystem, add params to market components [#82](https://github.com/Reiryoku-Technologies/Mida/pull/82)
 * **_BREAKING_** Use internal logger, remove API for default user logger, add options to market components [#81](https://github.com/Reiryoku-Technologies/Mida/pull/81)

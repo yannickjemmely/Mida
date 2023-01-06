@@ -23,7 +23,7 @@
 import { MidaPeriod, } from "#periods/MidaPeriod";
 import { MidaSymbolParameters, } from "#symbols/MidaSymbolParameters";
 import { MidaTick, } from "#ticks/MidaTick";
-import { MidaTimeframe } from "#timeframes/MidaTimeframe";
+import { MidaTimeframe, } from "#timeframes/MidaTimeframe";
 
 export type MidaBacktestSymbolDirectives = {
     params: Omit<MidaSymbolParameters, "symbol" | "tradingAccount">;
