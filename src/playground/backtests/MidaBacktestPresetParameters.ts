@@ -20,10 +20,8 @@
  * THE SOFTWARE.
 */
 
-import { MidaMarketComponentConstructor, } from "#components/MidaMarketComponentConstructor";
+import { MidaBacktestDirectives, } from "!/src/playground/backtests/MidaBacktestDirectives";
 
-export type MidaBacktestTargetDirectives = {
-    type: MidaMarketComponentConstructor;
-    params?: Record<string, any>;
-    symbol: string;
+export type MidaBacktestPresetParameters = {
+    directives: MidaBacktestDirectives;
 };

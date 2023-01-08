@@ -26,4 +26,5 @@ module.exports = {
     roots: [ "./build/tests/", ],
     testMatch: [ "**/?(*.)+(spec|test).+(ts|tsx|js)", ],
     clearMocks: true,
+    globalSetup: "./build/tests/main.js",
 };

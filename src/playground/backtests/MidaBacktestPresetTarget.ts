@@ -20,21 +20,13 @@
  * THE SOFTWARE.
 */
 
-import { MidaPeriod, } from "#periods/MidaPeriod";
-import { MidaSymbolParameters, } from "#symbols/MidaSymbolParameters";
-import { MidaTick, } from "#ticks/MidaTick";
-import { MidaTimeframe, } from "#timeframes/MidaTimeframe";
+import { MidaMarketComponentConstructor, } from "#components/MidaMarketComponentConstructor";
+import { MidaDateConvertible, } from "#dates/MidaDateConvertible";
 
-export type MidaBacktestSymbolDirectives = {
-    params: Omit<MidaSymbolParameters, "symbol" | "tradingAccount">;
-    ticks?: MidaTick[] | string;
-    //                   ^
-    //                   |
-    //                   |
-    //              CSV FILE PATH
-    periods?: Record<MidaTimeframe, MidaPeriod[] | string>;
-    //                                             ^
-    //                                             |
-    //                                             |
-    //                                        CSV FILE PATH
+export type MidaBacktestPresetTarget = {
+    from?: MidaDateConvertible;
+    to?: MidaDateConvertible;
+    type: MidaMarketComponentConstructor;
+    params?: Record<string, any>;
+    symbol: string;
 };

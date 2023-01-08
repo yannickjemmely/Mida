@@ -37,7 +37,7 @@ import { decimal, MidaDecimal, } from "#decimals/MidaDecimal";
 import { MidaDecimalConvertible, } from "#decimals/MidaDecimalConvertible";
 import { MidaEvent, } from "#events/MidaEvent";
 import { MidaEventListener, } from "#events/MidaEventListener";
-import { internalLogger, } from "#loggers/MidaLogger";
+import { logger, } from "#loggers/MidaLogger";
 import { MidaOrder, } from "#orders/MidaOrder";
 import { MidaOrderDirection, } from "#orders/MidaOrderDirection";
 import { MidaOrderDirectives, } from "#orders/MidaOrderDirectives";
@@ -323,7 +323,7 @@ export class MidaPlaygroundEngine {
             }
         }
 
-        internalLogger.debug(`Playground | Preparing to elapse ${elapsedPeriods.length} periods`);
+        logger.debug(`Playground | Preparing to elapse ${elapsedPeriods.length} periods`);
 
         await this.#processPeriods(elapsedPeriods);
         // </elapsed-periods>
@@ -774,7 +774,7 @@ export class MidaPlaygroundEngine {
                 order.direction === MidaOrderDirection.SELL && bid.greaterThanOrEqual(limitPrice)
                 || order.direction === MidaOrderDirection.BUY && ask.lessThanOrEqual(limitPrice)
             ) {
-                internalLogger.info(`Playground | Pending Order ${order.id} hit limit`);
+                logger.info(`Playground | Pending Order ${order.id} hit limit`);
 
                 await this.tryExecuteOrder(order);
             }
@@ -787,7 +787,7 @@ export class MidaPlaygroundEngine {
                 order.direction === MidaOrderDirection.SELL && bid.lessThanOrEqual(stopPrice)
                 || order.direction === MidaOrderDirection.BUY && ask.greaterThanOrEqual(stopPrice)
             ) {
-                internalLogger.info(`Playground | Pending Order ${order.id} hit stop`);
+                logger.info(`Playground | Pending Order ${order.id} hit stop`);
 
                 await this.tryExecuteOrder(order);
             }
@@ -816,7 +816,7 @@ export class MidaPlaygroundEngine {
                 position.direction === MidaPositionDirection.SHORT && ask.greaterThanOrEqual(stopLoss)
                 || position.direction === MidaPositionDirection.LONG && bid.lessThanOrEqual(stopLoss)
             ) {
-                internalLogger.info(`Playground | Position ${position.id} hit stop loss`);
+                logger.info(`Playground | Position ${position.id} hit stop loss`);
 
                 await position.close();
             }
@@ -829,7 +829,7 @@ export class MidaPlaygroundEngine {
                 position.direction === MidaPositionDirection.SHORT && ask.lessThanOrEqual(takeProfit)
                 || position.direction === MidaPositionDirection.LONG && bid.greaterThanOrEqual(takeProfit)
             ) {
-                internalLogger.info(`Playground | Position ${position.id} hit take profit`);
+                logger.info(`Playground | Position ${position.id} hit take profit`);
 
                 await position.close();
             }
@@ -866,7 +866,7 @@ export class MidaPlaygroundEngine {
             cancelDate: this.#localDate,
         });
 
-        internalLogger.warn(`Playground | Order ${orderId} canceled`);
+        logger.warn(`Playground | Order ${orderId} canceled`);
     }
 
     protected rejectOrder (orderId: string, rejection: MidaOrderRejection): void {
@@ -876,7 +876,7 @@ export class MidaPlaygroundEngine {
             rejection,
         });
 
-        internalLogger.warn(`Playground | Order ${orderId} rejected: ${rejection}`);
+        logger.warn(`Playground | Order ${orderId} rejected: ${rejection}`);
     }
 
     protected acceptOrder (orderId: string): void {

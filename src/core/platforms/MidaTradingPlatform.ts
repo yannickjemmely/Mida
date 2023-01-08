@@ -21,7 +21,7 @@
 */
 
 import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
-import { internalLogger, } from "#loggers/MidaLogger";
+import { logger, } from "#loggers/MidaLogger";
 import { MidaTradingPlatformParameters, } from "#platforms/MidaTradingPlatformParameters";
 import { GenericObject, } from "#utilities/GenericObject";
 
@@ -64,7 +64,7 @@ export abstract class MidaTradingPlatform {
 
     public static add (id: string, platform: MidaTradingPlatform): void {
         if (MidaTradingPlatform.#installedPlatforms.has(id)) {
-            internalLogger.fatal(`Trading platform "${id}" already exists`);
+            logger.fatal(`Trading platform "${id}" already exists`);
 
             throw new Error();
         }
@@ -76,7 +76,7 @@ export abstract class MidaTradingPlatform {
         const platform: MidaTradingPlatform | undefined = MidaTradingPlatform.#installedPlatforms.get(id);
 
         if (!platform) {
-            internalLogger.fatal(`Trading platform "${id}" not found, have you installed its plugin?`);
+            logger.fatal(`Trading platform "${id}" not found, have you installed its plugin?`);
 
             throw new Error();
         }

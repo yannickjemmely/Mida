@@ -22,7 +22,7 @@
 
 import { MidaIndicatorIo, } from "#indicators/MidaIndicatorIo";
 import { MidaIndicatorParameters, } from "#indicators/MidaIndicatorParameters";
-import { internalLogger, } from "#loggers/MidaLogger";
+import { logger, } from "#loggers/MidaLogger";
 
 export abstract class MidaIndicator {
     readonly #name: string;
@@ -96,7 +96,7 @@ export abstract class MidaIndicator {
 
     public static add (id: string, indicator: (params?: Record<string, any>) => MidaIndicator): void {
         if (MidaIndicator.#installedIndicators.has(id)) {
-            internalLogger.fatal(`Indicator | An indicator with ID "${id}" already exists`);
+            logger.fatal(`Indicator | An indicator with ID "${id}" already exists`);
 
             throw new Error();
         }
@@ -112,7 +112,7 @@ export abstract class MidaIndicator {
         const indicator: ((params?: Record<string, any>) => MidaIndicator) | undefined = MidaIndicator.#installedIndicators.get(id);
 
         if (!indicator) {
-            internalLogger.fatal(`Indicator | Indicator with ID "${id}" not found, have you installed its plugin?`);
+            logger.fatal(`Indicator | Indicator with ID "${id}" not found, have you installed its plugin?`);
 
             throw new Error();
         }

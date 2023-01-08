@@ -21,9 +21,9 @@
 */
 
 import { Mida, } from "!/src/core/Mida";
-import { internalLogger, } from "#loggers/MidaLogger";
+import { logger, } from "#loggers/MidaLogger";
 
 export * from "!/src/core/Mida";
 export * from "!/src/playground/MidaPlayground";
 
-internalLogger.info(`Using Mida ${Mida.version}`);
+logger.info(`Using Mida ${Mida.version}`);

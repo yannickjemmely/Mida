@@ -24,7 +24,7 @@ import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
 import { MidaDecimal, } from "#decimals/MidaDecimal";
 import { MidaEvent, } from "#events/MidaEvent";
 import { MidaEventListener, } from "#events/MidaEventListener";
-import { internalLogger, } from "#loggers/MidaLogger";
+import { logger, } from "#loggers/MidaLogger";
 import { filterExecutedOrders, MidaOrder, } from "#orders/MidaOrder";
 import { MidaOrderDirectives, } from "#orders/MidaOrderDirectives";
 import { MidaOrderStatus, } from "#orders/MidaOrderStatus";
@@ -145,12 +145,12 @@ export abstract class MidaTradingSystem {
 
     public async start (): Promise<void> {
         if (this.#isOperative) {
-            internalLogger.warn(`Trading system "${this.name}" | Already started`);
+            logger.warn(`Trading system "${this.name}" | Already started`);
 
             return;
         }
 
-        internalLogger.debug(`Trading system "${this.name}" | Starting...`);
+        logger.debug(`Trading system "${this.name}" | Starting...`);
 
         if (!this.#isConfigured) {
             const isSuccessfullyConfigured: boolean = await this.#configure();
@@ -191,17 +191,17 @@ export abstract class MidaTradingSystem {
         }
 
         this.notifyListeners("start");
-        internalLogger.info("Trading System | Started");
+        logger.info("Trading System | Started");
     }
 
     public async stop (): Promise<void> {
         if (!this.#isOperative) {
-            internalLogger.warn("Trading System | Already stopped");
+            logger.warn("Trading System | Already stopped");
 
             return;
         }
 
-        internalLogger.debug("Trading System | Stopping...");
+        logger.debug("Trading System | Stopping...");
 
         this.#isOperative = false;
 
@@ -228,7 +228,7 @@ export abstract class MidaTradingSystem {
         // </stop-hooks>
 
         this.notifyListeners("stop");
-        internalLogger.info("Trading System | Stopped");
+        logger.info("Trading System | Stopped");
     }
 
     public on (type: string): Promise<MidaEvent>;
@@ -312,11 +312,6 @@ export abstract class MidaTradingSystem {
         return directives;
     }
 
-    /** @deprecated */
-    protected async onImpactPosition (position: MidaPosition): Promise<void> {
-        // Silence is golden
-    }
-
     protected async onPositionImpact (position: MidaPosition): Promise<void> {
         // Silence is golden
     }
@@ -339,7 +334,7 @@ export abstract class MidaTradingSystem {
     }
 
     protected async placeOrder (directives: MidaOrderDirectives): Promise<MidaOrder | undefined> {
-        internalLogger.info(`Trading System | Placing ${directives.direction} order`);
+        logger.info(`Trading System | Placing ${directives.direction} order`);
 
         let finalDirectives: MidaOrderDirectives | undefined = undefined;
 
@@ -358,18 +353,12 @@ export abstract class MidaTradingSystem {
 
         const order: MidaOrder = await this.#tradingAccount.placeOrder(finalDirectives);
 
-        // <position-impact-hooks>
+        // <position-impact-hook>
         // Used to wait for the position impact hooks to resolve if the order has been resolved as executed
         if (order.status === MidaOrderStatus.EXECUTED) {
             const position: MidaPosition | undefined = await order.getPosition();
-            if (position) {
-                try {
-                    await this.onImpactPosition(position);
-                }
-                catch (error) {
-                    console.log(error);
-                }
 
+            if (position) {
                 try {
                     await this.onPositionImpact(position);
                 }
@@ -378,7 +367,7 @@ export abstract class MidaTradingSystem {
                 }
             }
         }
-        // </position-impact-hooks>
+        // </position-impact-hook>
 
         this.#orders.push(order);
 
@@ -551,7 +540,7 @@ export abstract class MidaTradingSystem {
             const state: MidaTradingSystemSymbolState = this[symbolStateGenerator as `$${string}`](symbol);
 
             if (!state || Object.getPrototypeOf(state) !== Object.prototype) {
-                internalLogger
+                logger
                     .warn(`Trading System | Symbol state generator ${symbolStateGenerator} must return a plain object`);
 
                 continue;

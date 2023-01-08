@@ -20,21 +20,22 @@
  * THE SOFTWARE.
 */
 
-import { MidaPeriod, } from "#periods/MidaPeriod";
-import { MidaSymbolParameters, } from "#symbols/MidaSymbolParameters";
-import { MidaTick, } from "#ticks/MidaTick";
-import { MidaTimeframe, } from "#timeframes/MidaTimeframe";
+import { decimal, MidaDecimal, } from "#decimals/MidaDecimal";
+import { MidaDecimalConvertible, } from "#decimals/MidaDecimalConvertible";
 
-export type MidaBacktestSymbolDirectives = {
-    params: Omit<MidaSymbolParameters, "symbol" | "tradingAccount">;
-    ticks?: MidaTick[] | string;
-    //                   ^
-    //                   |
-    //                   |
-    //              CSV FILE PATH
-    periods?: Record<MidaTimeframe, MidaPeriod[] | string>;
-    //                                             ^
-    //                                             |
-    //                                             |
-    //                                        CSV FILE PATH
-};
+/**
+ * Terminologies
+ *
+ * MAR = Minimum Acceptable Return
+ */
+
+export namespace MidaAnalysis {
+    export const getDownsideDeviation = (returns: MidaDecimalConvertible[], mar: MidaDecimalConvertible): MidaDecimal => {
+        const marReturns: MidaDecimal[] = returns.map((value: MidaDecimalConvertible) => decimal(value).subtract(mar));
+        const negativeMarReturns: MidaDecimal[] = marReturns.filter((value: MidaDecimal) => value.lessThan(0));
+        const total: MidaDecimal =
+                negativeMarReturns.reduce((accumulator: MidaDecimal, value: MidaDecimal) => accumulator.add(value.multiply(value)), decimal(0));
+
+        return decimal(Math.sqrt(Math.abs(total.div(returns.length).toNumber())));
+    };
+}

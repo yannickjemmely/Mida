@@ -84,4 +84,5 @@ export class MidaLogger {
     }
 }
 
-export const internalLogger: MidaLogger = new MidaLogger(MidaLogNamespace.INFO);
+/** Used as internal logger */
+export const logger: MidaLogger = new MidaLogger(MidaLogNamespace.INFO);

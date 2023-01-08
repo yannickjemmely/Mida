@@ -22,7 +22,7 @@
 
 import { MidaDateConvertible, } from "#dates/MidaDateConvertible";
 import { utcTimestamp, } from "#dates/MidaDateUtilities";
-import { internalLogger, } from "#loggers/MidaLogger";
+import { logger, } from "#loggers/MidaLogger";
 import { IMidaCloneable, } from "#utilities/cloneable/IMidaCloneable";
 import { IMidaEquatable, } from "#utilities/equatable/IMidaEquatable";
 import { GenericObject, } from "#utilities/GenericObject";
@@ -63,7 +63,7 @@ export class MidaDate implements IMidaCloneable, IMidaEquatable {
         }
 
         if (!Number.isFinite(date.getTime())) {
-            internalLogger.fatal("Invalid date");
+            logger.fatal("Invalid date");
 
             throw new Error();
         }

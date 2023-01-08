@@ -33,7 +33,7 @@ import { date, MidaDate, } from "#dates/MidaDate";
 import { decimal, MidaDecimal, } from "#decimals/MidaDecimal";
 import { MidaDecimalConvertible, } from "#decimals/MidaDecimalConvertible";
 import { MidaEvent, } from "#events/MidaEvent";
-import { internalLogger, } from "#loggers/MidaLogger";
+import { logger, } from "#loggers/MidaLogger";
 import { MidaOrder, } from "#orders/MidaOrder";
 import { MidaOrderDirectives, } from "#orders/MidaOrderDirectives";
 import { MidaOrderStatus, } from "#orders/MidaOrderStatus";
@@ -167,7 +167,7 @@ export class MidaPlaygroundAccount extends MidaTradingAccount {
                 equity = equity.add(profit);
             }
             catch {
-                internalLogger.warn(`Playground | No quotes available for ${symbol}, not considered in equity calculation`);
+                logger.warn(`Playground | No quotes available for ${symbol}, not considered in equity calculation`);
             }
         }
 

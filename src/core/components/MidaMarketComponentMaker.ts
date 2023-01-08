@@ -29,7 +29,7 @@ import { MidaMarketComponentOracle, } from "#components/MidaMarketComponentOracl
 import { MidaMarketComponentParameterDeclaration, } from "#components/MidaMarketComponentParameterDeclaration";
 import { MidaMarketComponentState, } from "#components/MidaMarketComponentState";
 import { MidaIndicator, } from "#indicators/MidaIndicator";
-import { internalLogger, } from "#loggers/MidaLogger";
+import { logger, } from "#loggers/MidaLogger";
 import { MidaSymbol, } from "#symbols/MidaSymbol";
 import { MidaTimeframe, } from "#timeframes/MidaTimeframe";
 
@@ -63,7 +63,7 @@ export const makeComponentState = async (parameters: MidaMarketComponentMakerPar
     const completeSymbol: MidaSymbol | undefined = await tradingAccount.getSymbol(symbol);
 
     if (!completeSymbol) {
-        internalLogger.fatal(`Symbol ${symbol} not supported`);
+        logger.fatal(`Symbol ${symbol} not supported`);
 
         throw new Error();
     }
@@ -100,7 +100,7 @@ export const makeComponentState = async (parameters: MidaMarketComponentMakerPar
 
     for (const propertyName of Object.keys(params ?? {})) {
         if (!declaredParams[propertyName]) {
-            internalLogger.warn(`Market Component | Undeclared param ${propertyName} will be ignored`);
+            logger.warn(`Market Component | Undeclared param ${propertyName} will be ignored`);
         }
     }
 
@@ -113,13 +113,13 @@ export const makeComponentState = async (parameters: MidaMarketComponentMakerPar
         const value: any = params?.[propertyName] ?? (typeof defaultValue === "function" ? defaultValue() : defaultValue);
 
         if (!value && required) {
-            internalLogger.fatal(`Market Component | Missing required param ${propertyName}`);
+            logger.fatal(`Market Component | Missing required param ${propertyName}`);
 
             throw new Error();
         }
 
-        if (type && value.constructor !== type) {
-            internalLogger.warn(`Market Component | Value of param ${propertyName} doesn't match its declared type`);
+        if (type && value?.constructor !== type) {
+            logger.warn(`Market Component | Value of param ${propertyName} doesn't match its declared type`);
         }
 
         Object.defineProperty(state, propertyName, {
@@ -173,7 +173,7 @@ export const makeComponentState = async (parameters: MidaMarketComponentMakerPar
         const timeframe: MidaTimeframe = input?.timeframe as MidaTimeframe;
 
         if (!MidaIndicator.has(type)) {
-            internalLogger.fatal(`Market Component | Indicator ${type} not found, have you installed its plugin?`);
+            logger.fatal(`Market Component | Indicator ${type} not found, have you installed its plugin?`);
 
             throw new Error();
         }

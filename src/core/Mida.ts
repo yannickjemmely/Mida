@@ -22,7 +22,7 @@
 
 import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
 import { MidaIndicator, } from "#indicators/MidaIndicator";
-import { internalLogger, MidaLogger, } from "#loggers/MidaLogger";
+import { logger, MidaLogger, } from "#loggers/MidaLogger";
 import { MidaTradingPlatform, } from "#platforms/MidaTradingPlatform";
 import { MidaPlugin, } from "#plugins/MidaPlugin";
 import { baseActions, } from "#plugins/MidaPluginActions";
@@ -41,7 +41,7 @@ class Mida {
     }
 
     public static get logger (): MidaLogger {
-        return internalLogger;
+        return logger;
     }
 
     public static get installedPlugins (): MidaPlugin[] {
@@ -53,24 +53,24 @@ class Mida {
         const pluginName: string = plugin.name;
 
         if (!pluginId) {
-            internalLogger.warn("Plugin | The plugin is not valid");
+            logger.warn("Plugin | The plugin is not valid");
 
             return;
         }
 
         if (Mida.pluginIsInstalled(pluginId)) {
-            internalLogger.warn(`Plugin | Plugin ${pluginName}:${pluginId} is already installed`);
+            logger.warn(`Plugin | Plugin ${pluginName}:${pluginId} is already installed`);
 
             return;
         }
 
-        internalLogger.debug(`Plugin | Installing plugin ${pluginName}:${pluginId}...`);
+        logger.debug(`Plugin | Installing plugin ${pluginName}:${pluginId}...`);
 
         plugin.install(baseActions, params);
         Mida.#installedPlugins.set(pluginId, plugin);
 
-        internalLogger.debug(`Plugin | Plugin ${pluginName}:${pluginId} installed`);
-        internalLogger.info(`Plugin | Using ${pluginName} ${plugin.version}`);
+        logger.debug(`Plugin | Plugin ${pluginName}:${pluginId} installed`);
+        logger.info(`Plugin | Using ${pluginName} ${plugin.version}`);
     }
 
     public static pluginIsInstalled (id: string): boolean {
@@ -202,6 +202,7 @@ export { MidaTradeStatus, } from "#trades/MidaTradeStatus";
 
 export { MidaEmitter, } from "#utilities/emitters/MidaEmitter";
 export { GenericObject, } from "#utilities/GenericObject";
+export { MidaAnalysis, } from "#utilities/MidaAnalysis";
 export {
     closeFileReader,
     readTicksFromFile,

@@ -21,7 +21,7 @@
 */
 
 import { MidaPlaygroundAccount, } from "!/src/playground/accounts/MidaPlaygroundAccount";
-import { internalLogger, } from "#loggers/MidaLogger";
+import { logger, } from "#loggers/MidaLogger";
 import { MidaTradingPlatform, } from "#platforms/MidaTradingPlatform";
 
 class MidaPlayground extends MidaTradingPlatform {
@@ -37,7 +37,7 @@ class MidaPlayground extends MidaTradingPlatform {
         const account: MidaPlaygroundAccount | undefined = MidaPlayground.#tradingAccounts.get(id);
 
         if (!account) {
-            internalLogger.fatal(`Playground | Account with ID ${id} not found`);
+            logger.fatal(`Playground | Account with ID ${id} not found`);
 
             throw new Error();
         }
@@ -51,7 +51,7 @@ class MidaPlayground extends MidaTradingPlatform {
 
     public static addTradingAccount (id: string, tradingAccount: MidaPlaygroundAccount): void {
         if (MidaPlayground.#tradingAccounts.has(id)) {
-            internalLogger.fatal(`Playground | Account with ID ${id} already exists`);
+            logger.fatal(`Playground | Account with ID ${id} already exists`);
 
             throw new Error();
         }
@@ -79,10 +79,12 @@ export { MidaPlaygroundAccount, } from "!/src/playground/accounts/MidaPlayground
 export { MidaPlaygroundAccountConfiguration, } from "!/src/playground/accounts/MidaPlaygroundAccountConfiguration";
 export { MidaPlaygroundAccountParameters, } from "!/src/playground/accounts/MidaPlaygroundAccountParameters";
 
-export { backtest, } from "!/src/playground/backtests/MidaBacktest";
+export { MidaBacktest, } from "!/src/playground/backtests/MidaBacktest";
 export { MidaBacktestDirectives, } from "!/src/playground/backtests/MidaBacktestDirectives";
+export { backtestPreset, MidaBacktestPreset, } from "!/src/playground/backtests/MidaBacktestPreset";
+export { MidaBacktestPresetParameters, } from "!/src/playground/backtests/MidaBacktestPresetParameters";
+export { MidaBacktestPresetTarget, } from "!/src/playground/backtests/MidaBacktestPresetTarget";
 export { MidaBacktestSymbolDirectives, } from "!/src/playground/backtests/MidaBacktestSymbolDirectives";
-export { MidaBacktestTargetDirectives, } from "!/src/playground/backtests/MidaBacktestTargetDirectives";
 
 export { MidaPlaygroundCommissionCustomizer, } from "!/src/playground/customizers/MidaPlaygroundCommissionCustomizer";
 export { MidaPlaygroundLatencyCustomizer, } from "!/src/playground/customizers/MidaPlaygroundLatencyCustomizer";

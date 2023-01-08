@@ -21,7 +21,7 @@
 */
 
 import { MidaDecimalConvertible, } from "#decimals/MidaDecimalConvertible";
-import { internalLogger, } from "#loggers/MidaLogger";
+import { logger, } from "#loggers/MidaLogger";
 import { inspect, } from "util";
 
 export class MidaDecimal {
@@ -42,7 +42,7 @@ export class MidaDecimal {
         ] = MidaDecimal.#normalizeParts(parts[0], parts[1], digits);
 
         if (!Number.isFinite(Number(integerPart)) || !Number.isFinite(Number(decimalPart))) {
-            internalLogger.fatal(`Invalid decimal ${value}`);
+            logger.fatal(`Invalid decimal ${value}`);
 
             throw new Error();
         }

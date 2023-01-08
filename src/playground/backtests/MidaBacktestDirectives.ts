@@ -21,7 +21,6 @@
 */
 
 import { MidaBacktestSymbolDirectives, } from "!/src/playground/backtests/MidaBacktestSymbolDirectives";
-import { MidaBacktestTargetDirectives, } from "!/src/playground/backtests/MidaBacktestTargetDirectives";
 import { MidaDateConvertible, } from "#dates/MidaDateConvertible";
 import { MidaDecimalConvertible, } from "#decimals/MidaDecimalConvertible";
 
@@ -30,5 +29,4 @@ export type MidaBacktestDirectives = {
     to: MidaDateConvertible;
     balanceSheet: Record<string, MidaDecimalConvertible>;
     symbols: Record<string, MidaBacktestSymbolDirectives>;
-    target: MidaBacktestTargetDirectives;
 };

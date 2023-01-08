@@ -20,21 +20,6 @@
  * THE SOFTWARE.
 */
 
-import { MidaPeriod, } from "#periods/MidaPeriod";
-import { MidaSymbolParameters, } from "#symbols/MidaSymbolParameters";
-import { MidaTick, } from "#ticks/MidaTick";
-import { MidaTimeframe, } from "#timeframes/MidaTimeframe";
-
-export type MidaBacktestSymbolDirectives = {
-    params: Omit<MidaSymbolParameters, "symbol" | "tradingAccount">;
-    ticks?: MidaTick[] | string;
-    //                   ^
-    //                   |
-    //                   |
-    //              CSV FILE PATH
-    periods?: Record<MidaTimeframe, MidaPeriod[] | string>;
-    //                                             ^
-    //                                             |
-    //                                             |
-    //                                        CSV FILE PATH
+export default async (): Promise<void> => {
+    // Silence is golden
 };

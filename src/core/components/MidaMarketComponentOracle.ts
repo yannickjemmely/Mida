@@ -134,7 +134,7 @@ export class MidaMarketComponentOracle extends MidaTradingSystem {
 
         // <hooks>
         await state.$component.periodUpdate?.call(state, period);
-        await state.$component[`${timeframe.toLowerCase()}PeriodUpdate`]?.call(state, period);
+        await state.$component[`periodUpdate$${timeframe}`]?.call(state, period);
         await state.$component.update?.call(state);
         await state.$component.lateUpdate?.call(state);
         // </hooks>
@@ -165,7 +165,7 @@ export class MidaMarketComponentOracle extends MidaTradingSystem {
 
         // <hooks>
         await state.$component.periodClose?.call(state, period);
-        await state.$component[`${timeframe.toLowerCase()}PeriodClose`]?.call(state, period);
+        await state.$component[`periodClose$${timeframe}`]?.call(state, period);
         await state.$component.update?.call(state);
         await state.$component.lateUpdate?.call(state);
         // </hooks>

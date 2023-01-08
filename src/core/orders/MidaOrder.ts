@@ -25,7 +25,7 @@ import { MidaDate, } from "#dates/MidaDate";
 import { decimal, MidaDecimal, } from "#decimals/MidaDecimal";
 import { MidaEvent, } from "#events/MidaEvent";
 import { MidaEventListener, } from "#events/MidaEventListener";
-import { internalLogger, } from "#loggers/MidaLogger";
+import { logger, } from "#loggers/MidaLogger";
 import { MidaOrderDirection, } from "#orders/MidaOrderDirection";
 import { MidaOrderExecution, } from "#orders/MidaOrderExecution";
 import { MidaOrderFill, } from "#orders/MidaOrderFill";
@@ -331,7 +331,7 @@ export abstract class MidaOrder {
 
         this.#status = status;
 
-        internalLogger.info(`Order ${this.id} | Status changed from ${previousStatus} to ${status}`);
+        logger.info(`Order ${this.id} | Status changed from ${previousStatus} to ${status}`);
 
         this.notifyListeners("status-change", { status, previousStatus, });
 
@@ -383,7 +383,7 @@ export abstract class MidaOrder {
             this.#stopPrice = price;
         }
 
-        internalLogger.info(`Order ${this.id} | Pending price changed from ${previousPrice} to ${price}`);
+        logger.info(`Order ${this.id} | Pending price changed from ${previousPrice} to ${price}`);
 
         this.notifyListeners("pending-price-change", { price, previousPrice, });
     }
@@ -397,7 +397,7 @@ export abstract class MidaOrder {
 
         this.#requestedVolume = volume;
 
-        internalLogger.info(`Order ${this.id} | Pending volume changed from ${previousVolume} to ${volume}`);
+        logger.info(`Order ${this.id} | Pending volume changed from ${previousVolume} to ${volume}`);
 
         this.notifyListeners("pending-volume-change", { volume, previousVolume, });
     }
@@ -411,7 +411,7 @@ export abstract class MidaOrder {
 
         this.#expirationDate = date;
 
-        internalLogger.info(`Order ${this.id} | Expiration date changed from ${previousDate} to ${date}`);
+        logger.info(`Order ${this.id} | Expiration date changed from ${previousDate} to ${date}`);
 
         this.notifyListeners("expiration-date-change", { date, previousDate, });
     }
@@ -419,7 +419,7 @@ export abstract class MidaOrder {
     protected onTrade (trade: MidaTrade): void {
         this.#trades.push(trade);
 
-        internalLogger.info(`Order ${this.id} | Trade ${trade.id} executed`);
+        logger.info(`Order ${this.id} | Trade ${trade.id} executed`);
 
         this.notifyListeners("trade", { trade, });
     }
