@@ -22,6 +22,7 @@
 
 import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
 import { MidaDecimal, } from "#decimals/MidaDecimal";
+import { MidaSymbolFundingDescriptor, } from "#symbols/MidaSymbolFundingDescriptor";
 import { MidaSymbolParameters, } from "#symbols/MidaSymbolParameters";
 import { MidaEmitter, } from "#utilities/emitters/MidaEmitter";
 
@@ -130,6 +131,11 @@ export class MidaSymbol {
     /** Used to get the symbol current average price */
     public async getAverage (): Promise<MidaDecimal> {
         return this.#tradingAccount.getSymbolAverage(this.#symbol);
+    }
+
+    /** Used to get the symbol current funding descriptor */
+    public async getFundingDescriptor (): Promise<MidaSymbolFundingDescriptor> {
+        return this.#tradingAccount.getSymbolFundingDescriptor(this.#symbol);
     }
 
     /** Indicates if the symbol market is open */

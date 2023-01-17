@@ -23,7 +23,7 @@
 import { MidaPlaygroundAccount, } from "!/src/playground/accounts/MidaPlaygroundAccount";
 import { MidaPlaygroundAccountConfiguration, } from "!/src/playground/accounts/MidaPlaygroundAccountConfiguration";
 import { MidaPlaygroundCommissionCustomizer, } from "!/src/playground/customizers/MidaPlaygroundCommissionCustomizer";
-import { MidaPlayground, playgroundPlatform, } from "!/src/playground/MidaPlayground";
+import { MidaPlayground, } from "!/src/playground/MidaPlayground";
 import { MidaPlaygroundEngineElapsedData, } from "!/src/playground/MidaPlaygroundEngineElapsedData";
 import { MidaPlaygroundEngineParameters, } from "!/src/playground/MidaPlaygroundEngineParameters";
 import { tickFromPeriod, } from "!/src/playground/MidaPlaygroundUtilities";
@@ -41,7 +41,7 @@ import { logger, } from "#loggers/MidaLogger";
 import { MidaOrder, } from "#orders/MidaOrder";
 import { MidaOrderDirection, } from "#orders/MidaOrderDirection";
 import { MidaOrderDirectives, } from "#orders/MidaOrderDirectives";
-import { MidaOrderExecution, } from "#orders/MidaOrderExecution";
+import { MidaOrderExecutionType, } from "#orders/MidaOrderExecutionType";
 import { MidaOrderPurpose, } from "#orders/MidaOrderPurpose";
 import { MidaOrderRejection, } from "#orders/MidaOrderRejection";
 import { MidaOrderStatus, } from "#orders/MidaOrderStatus";
@@ -235,7 +235,7 @@ export class MidaPlaygroundEngine {
 
         this.acceptOrder(order.id);
 
-        if (order.execution === MidaOrderExecution.MARKET) {
+        if (order.executionType === MidaOrderExecutionType.MARKET) {
             this.tryExecuteOrder(order); // Not necessary to await because of resolver
         }
         else {
@@ -619,7 +619,7 @@ export class MidaPlaygroundEngine {
         const account: MidaPlaygroundAccount = new MidaPlaygroundAccount({
             id,
             ownerName: configuration.ownerName ?? "",
-            platform: playgroundPlatform,
+            platform: {} as MidaPlayground,
             primaryAsset: configuration.primaryAsset ?? "USD",
             engine: this,
         });

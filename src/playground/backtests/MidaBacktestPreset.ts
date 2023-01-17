@@ -78,7 +78,7 @@ export class MidaBacktestPreset {
                 for (const [ timeframe, periods, ] of Object.entries(periodsByTimeframe)) {
                     // @ts-ignore
                     await engine.addSymbolPeriods(symbol, periods);
-                    timeframes.push(timeframe);
+                    timeframes.push(timeframe as MidaTimeframe);
                 }
             }
             // </periods>

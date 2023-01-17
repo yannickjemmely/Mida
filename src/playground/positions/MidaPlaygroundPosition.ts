@@ -22,7 +22,7 @@
 
 import { MidaPlaygroundPositionParameters, } from "!/src/playground/positions/MidaPlaygroundPositionParameters";
 import { decimal, MidaDecimal, } from "#decimals/MidaDecimal";
-import { MidaUnsupportedOperationError, } from "#errors/MidaUnsupportedOperationError";
+import { unsupportedOperationError, } from "#errors/MidaErrorUtilities";
 import { MidaOrder, } from "#orders/MidaOrder";
 import { MidaOrderDirection, } from "#orders/MidaOrderDirection";
 import { MidaPosition, } from "#positions/MidaPosition";
@@ -107,7 +107,7 @@ export class MidaPlaygroundPosition extends MidaPosition {
     }
 
     public override async changeProtection (protection: MidaProtection): Promise<MidaProtectionChange> {
-        throw new MidaUnsupportedOperationError();
+        throw unsupportedOperationError(this.tradingAccount.platform);
     }
 
     #configureListeners (): void {

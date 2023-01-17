@@ -20,8 +20,7 @@
  * THE SOFTWARE.
 */
 
-export enum MidaOrderExecution {
-    MARKET = "market",
-    LIMIT = "limit",
-    STOP = "stop",
-}
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export const log = (value: any): void => {
+    console.log(value);
+};

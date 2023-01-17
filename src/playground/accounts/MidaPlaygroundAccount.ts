@@ -56,7 +56,6 @@ export class MidaPlaygroundAccount extends MidaTradingAccount {
 
     public constructor ({
         id,
-        ownerName,
         platform,
         primaryAsset,
         engine,
@@ -66,7 +65,6 @@ export class MidaPlaygroundAccount extends MidaTradingAccount {
             id,
             platform,
             creationDate: new MidaDate(),
-            ownerName,
             primaryAsset,
             operativity: MidaTradingAccountOperativity.DEMO,
             positionAccounting: MidaTradingAccountPositionAccounting.HEDGED,
@@ -252,7 +250,7 @@ export class MidaPlaygroundAccount extends MidaTradingAccount {
         return this.#symbols.get(symbol);
     }
 
-    public async isSymbolMarketOpen (symbol: string): Promise<boolean> {
+    public override async isSymbolMarketOpen (symbol: string): Promise<boolean> {
         this.#assertSymbolExists(symbol);
 
         throw new Error("Unsupported operation");
@@ -279,7 +277,7 @@ export class MidaPlaygroundAccount extends MidaTradingAccount {
         return bid.add(ask).divide(2);
     }
 
-    public async watchSymbolTicks (symbol: string): Promise<void> {
+    public override async watchSymbolTicks (symbol: string): Promise<void> {
         this.#assertSymbolExists(symbol);
 
         this.#watchedSymbols.add(symbol);

@@ -20,9 +20,13 @@
  * THE SOFTWARE.
 */
 
+import { inspect, } from "node:util";
+
 import { MidaDecimalConvertible, } from "#decimals/MidaDecimalConvertible";
 import { logger, } from "#loggers/MidaLogger";
-import { inspect, } from "util";
+
+export const decimal =
+    (value: MidaDecimalConvertible = 0, digits: number = 32): MidaDecimal => new MidaDecimal(value, digits);
 
 export class MidaDecimal {
     readonly #value: bigint;
@@ -30,7 +34,6 @@ export class MidaDecimal {
     readonly #shift: bigint;
 
     public constructor (value: MidaDecimalConvertible, digits: number) {
-        const parts: string[] = String(value).split(".").concat("");
         const [
             integerPart,
             decimalPart,
@@ -39,11 +42,10 @@ export class MidaDecimal {
             string,
             string,
             boolean,
-        ] = MidaDecimal.#normalizeParts(parts[0], parts[1], digits);
+        ] = MidaDecimal.#getParts(String(value));
 
         if (!Number.isFinite(Number(integerPart)) || !Number.isFinite(Number(decimalPart))) {
-            logger.fatal(`Invalid decimal ${value}`);
-
+            logger.error(`Decimal | ${value} cannot be converted to decimal`);
             throw new Error();
         }
 
@@ -148,7 +150,7 @@ export class MidaDecimal {
             string,
             string,
             boolean,
-        ] = MidaDecimal.#normalizeParts(descriptor.slice(0, -this.#digits), descriptor.slice(-this.#digits).replace(/\.?0+$/, ""), this.#digits);
+        ] = MidaDecimal.#getParts(`${descriptor.slice(0, -this.#digits)}.${descriptor.slice(-this.#digits).replace(/\.?0+$/, "")}`);
 
         return `${isNegative ? "-" : ""}${integerPart}.${decimalPart}`.replace(/\.$/, "");
     }
@@ -193,7 +195,9 @@ export class MidaDecimal {
         return max;
     }
 
-    static #normalizeParts (integerPart: string, decimalPart: string, digits: number): [ string, string, boolean, ] {
+    static #getParts (value: string): [ string, string, boolean, ] {
+        const parts: string[] = value.split(".").concat("");
+        const [ integerPart, decimalPart, ]: string[] = parts;
         let isNegative: boolean = false;
         let normalizedIntegerPart: string = integerPart;
         let normalizedDecimalPart: string = decimalPart;
@@ -219,5 +223,3 @@ export class MidaDecimal {
         ];
     }
 }
-
-export const decimal = (value: MidaDecimalConvertible = 0, digits: number = 32): MidaDecimal => new MidaDecimal(value, digits);

@@ -20,15 +20,16 @@
  * THE SOFTWARE.
 */
 
+import { randomUUID as uuid4, } from "node:crypto";
+
 import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
 import { decimal, MidaDecimal, } from "#decimals/MidaDecimal";
-import { MidaUnsupportedOperationError, } from "#errors/MidaUnsupportedOperationError";
+import { MidaError, } from "#errors/MidaError";
 import { MidaOrder, } from "#orders/MidaOrder";
 import { MidaPosition, } from "#positions/MidaPosition";
 import { MidaProtectionChange, } from "#protections/MidaProtectionChange";
 import { MidaProtectionDirectives, } from "#protections/MidaProtectionDirectives";
 import { GenericObject, } from "#utilities/GenericObject";
-import { randomUUID as uuid4, } from "crypto";
 
 /** Used to create a Promise resolved after a given number of milliseconds */
 export const wait = async (milliseconds: number): Promise<void> => {
@@ -97,15 +98,15 @@ export const createClosedPosition = (id: string, tradingAccount: MidaTradingAcco
         }
 
         public override async addVolume (volume: MidaDecimal): Promise<MidaOrder> {
-            throw new MidaUnsupportedOperationError();
+            throw new MidaError();
         }
 
         public override async subtractVolume (volume: MidaDecimal): Promise<MidaOrder> {
-            throw new MidaUnsupportedOperationError();
+            throw new MidaError();
         }
 
         public override async changeProtection (protection: MidaProtectionDirectives): Promise<MidaProtectionChange> {
-            throw new MidaUnsupportedOperationError();
+            throw new MidaError();
         }
 
         public override async getUnrealizedCommission (): Promise<MidaDecimal> {

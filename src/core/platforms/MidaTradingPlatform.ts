@@ -23,7 +23,6 @@
 import { MidaTradingAccount, } from "#accounts/MidaTradingAccount";
 import { logger, } from "#loggers/MidaLogger";
 import { MidaTradingPlatformParameters, } from "#platforms/MidaTradingPlatformParameters";
-import { GenericObject, } from "#utilities/GenericObject";
 
 /** Represents a trading platform */
 export abstract class MidaTradingPlatform {
@@ -52,7 +51,7 @@ export abstract class MidaTradingPlatform {
      * Used to login into a trading account
      * @param parameters The login parameters
      */
-    public abstract login (parameters: GenericObject): Promise<MidaTradingAccount>;
+    public abstract login (parameters: Record<string, any>): Promise<MidaTradingAccount>;
 
     /* *** *** *** Reiryoku Technologies *** *** *** */
 
@@ -72,7 +71,7 @@ export abstract class MidaTradingPlatform {
         MidaTradingPlatform.#installedPlatforms.set(id, platform);
     }
 
-    public static async login (id: string, parameters: GenericObject): Promise<MidaTradingAccount> {
+    public static async login (id: string, parameters: Record<string, any>): Promise<MidaTradingAccount> {
         const platform: MidaTradingPlatform | undefined = MidaTradingPlatform.#installedPlatforms.get(id);
 
         if (!platform) {

@@ -20,13 +20,13 @@
  * THE SOFTWARE.
 */
 
+import { inspect, } from "node:util";
+
 import { MidaDateConvertible, } from "#dates/MidaDateConvertible";
 import { utcTimestamp, } from "#dates/MidaDateUtilities";
 import { logger, } from "#loggers/MidaLogger";
 import { IMidaCloneable, } from "#utilities/cloneable/IMidaCloneable";
 import { IMidaEquatable, } from "#utilities/equatable/IMidaEquatable";
-import { GenericObject, } from "#utilities/GenericObject";
-import { inspect, } from "util";
 
 /** Represents an immutable UTC date */
 export class MidaDate implements IMidaCloneable, IMidaEquatable {
@@ -176,7 +176,7 @@ export class MidaDate implements IMidaCloneable, IMidaEquatable {
         return date(this);
     }
 
-    public equals (object: GenericObject): boolean {
+    public equals (object: Record<string, any>): boolean {
         return (
             object instanceof MidaDate && object.timestamp === this.timestamp
             || object instanceof Date && object.getTime() === this.timestamp

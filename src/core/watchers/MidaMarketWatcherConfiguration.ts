@@ -22,6 +22,8 @@
 
 import { MidaMarketWatcherDirectives, } from "#watchers/MidaMarketWatcherDirectives";
 
-export type MidaMarketWatcherConfiguration = {
-    [symbol: string]: MidaMarketWatcherDirectives;
-};
+export type MidaMarketWatcherConfiguration = Record<string, MidaMarketWatcherDirectives>;
+//                                                  ^
+//                                                  |
+//                                                  |
+//                                                SYMBOL

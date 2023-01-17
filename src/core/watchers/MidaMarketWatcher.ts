@@ -277,7 +277,7 @@ export class MidaMarketWatcher {
 }
 
 // eslint-disable-next-line max-len
-export const createMarketWatcher = async (parameters: MidaMarketWatcherParameters, configuration: MidaMarketWatcherConfiguration = {}): Promise<MidaMarketWatcher> => {
+export const marketWatcher = async (parameters: MidaMarketWatcherParameters, configuration: MidaMarketWatcherConfiguration = {}): Promise<MidaMarketWatcher> => {
     const marketWatcher: MidaMarketWatcher = new MidaMarketWatcher(parameters);
 
     for (const symbol of Object.keys(configuration)) {

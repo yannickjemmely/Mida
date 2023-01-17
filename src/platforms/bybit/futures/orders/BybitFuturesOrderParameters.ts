@@ -20,7 +20,13 @@
  * THE SOFTWARE.
 */
 
-export enum MidaOrderFill {
-    FULL = "full",
-    PARTIAL = "partial",
-}
+import { MidaOrderDirectives, } from "#orders/MidaOrderDirectives";
+import { MidaOrderParameters, } from "#orders/MidaOrderParameters";
+import { MidaEmitter, } from "#utilities/emitters/MidaEmitter";
+import { ContractClient, } from "bybit-api";
+
+export type BybitFuturesOrderParameters = MidaOrderParameters & {
+    directives?: MidaOrderDirectives;
+    bybitConnection: ContractClient;
+    bybitEmitter: MidaEmitter;
+};

@@ -23,4 +23,5 @@
 export enum MidaTradePurpose {
     OPEN = "open",
     CLOSE = "close",
+    UNKNOWN = "unknown",
 }

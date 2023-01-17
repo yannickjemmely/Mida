@@ -20,13 +20,10 @@
  * THE SOFTWARE.
 */
 
-import { MidaError, } from "#errors/MidaError";
+import { MidaDate, } from "#dates/MidaDate";
+import { MidaDecimal, } from "#decimals/MidaDecimal";
 
-export class MidaUnsupportedOperationError extends MidaError {
-    public constructor () {
-        super({
-            type: "MidaUnsupportedOperationError",
-            message: "This operation is not supported",
-        });
-    }
-}
+export type MidaSymbolFundingDescriptor = {
+    fundingRate: MidaDecimal;
+    nextFundingDate: MidaDate;
+};

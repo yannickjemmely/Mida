@@ -55,11 +55,11 @@ export class MidaAsset {
         return this.#tradingAccount;
     }
 
-    public toString (): string {
-        return this.#asset;
-    }
-
     public async getBalance (): Promise<MidaAssetStatement> {
         return this.#tradingAccount.getAssetBalance(this.#asset);
+    }
+
+    public toString (): string {
+        return this.#asset;
     }
 }

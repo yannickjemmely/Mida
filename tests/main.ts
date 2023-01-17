@@ -21,5 +21,5 @@
 */
 
 export default async (): Promise<void> => {
-    // Silence is golden
+    process.env.TEST = "true";
 };

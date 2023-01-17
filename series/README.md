@@ -1,5 +1,5 @@
 # Time series
 Time series used for tests.
 
-## Ticks format
+## Ticks CSV format
 `TIMESTAMP,BID,ASK`

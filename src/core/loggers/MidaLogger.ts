@@ -85,4 +85,4 @@ export class MidaLogger {
 }
 
 /** Used as internal logger */
-export const logger: MidaLogger = new MidaLogger(MidaLogNamespace.INFO);
+export const logger: MidaLogger = new MidaLogger(process.env.TEST ? MidaLogNamespace.ERROR : MidaLogNamespace.INFO);

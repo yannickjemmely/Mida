@@ -35,7 +35,6 @@ export type MidaTradingAccountParameters = {
     id: string;
     platform: MidaTradingPlatform;
     creationDate: MidaDate;
-    ownerName: string;
     primaryAsset: string;
     operativity: MidaTradingAccountOperativity;
     positionAccounting: MidaTradingAccountPositionAccounting;

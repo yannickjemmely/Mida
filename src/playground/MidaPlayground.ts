@@ -60,14 +60,9 @@ class MidaPlayground extends MidaTradingPlatform {
     }
 }
 
-const PLAYGROUND_PLATFORM_KEY: string = "Mida/Playground";
-const playgroundPlatform: MidaTradingPlatform = new MidaPlayground();
-
-MidaTradingPlatform.add(PLAYGROUND_PLATFORM_KEY, new MidaPlayground());
 
 // <public-api>
 export { MidaPlayground, };
-export { playgroundPlatform, };
 
 export { MidaPlaygroundEngine, } from "!/src/playground/MidaPlaygroundEngine";
 export { MidaPlaygroundEngineElapsedData, } from "!/src/playground/MidaPlaygroundEngineElapsedData";

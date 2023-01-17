@@ -20,43 +20,56 @@
  * THE SOFTWARE.
 */
 
-export type MidaTimeframe = string;
+export enum MidaTimeframe {
+    /** 1 second */
+    S1 = "S1",
+    /** 1 minute */
+    M1 = "M1",
+    /** 2 minutes */
+    M2 = "M2",
+    /** 3 minutes */
+    M3 = "M3",
+    /** 4 minutes */
+    M4 = "M4",
+    /** 5 minutes */
+    M5 = "M5",
+    /** 10 minutes */
+    M10 = "M10",
+    /** 15 minutes */
+    M15 = "M15",
+    /** 30 minutes */
+    M30 = "M30",
+    /** 1 hour */
+    H1 = "H1",
+    /** 2 hours */
+    H2 = "H2",
+    /** 4 hours */
+    H4 = "H4",
+    /** 6 hours */
+    H6 = "H6",
+    /** 12 hours */
+    H12 = "H12",
+    /** 1 day */
+    D1 = "D1",
+    /** 3 dayS */
+    D3 = "D3",
+    /** 1 week */
+    W1 = "W1",
+    /** 1 month */
+    MO1 = "MO1",
+    /** 1 year */
+    Y1 = "Y1",
+}
 
 export namespace MidaTimeframe {
-    /** 1 second */
-    export const S1: string = "S1";
-    /** 1 minute */
-    export const M1: string = "M1";
-    /** 5 minutes */
-    export const M5: string = "M5";
-    /** 15 minutes */
-    export const M15: string = "M15";
-    /** 30 minutes */
-    export const M30: string = "M30";
-    /** 1 hour */
-    export const H1: string = "H1";
-    /** 2 hours */
-    export const H2: string = "H2";
-    /** 4 hours */
-    export const H4: string = "H4";
-    /** 1 day */
-    export const D1: string = "D1";
-    /** 1 week */
-    export const W1: string = "W1";
-    /** 1 month */
-    export const MO1: string = "MO1";
-    /** 1 year */
-    export const Y1: string = "Y1";
-
+    /** Average values */
     const commonTimeframes: Map<string, number> = new Map([
         [ "S", 1, ],
         [ "M", 60, ],
         [ "H", 3600, ],
         [ "D", 86400, ],
         [ "W", 604800, ],
-        /** Average value */
         [ "MO", 2630000, ],
-        /** Average value */
         [ "Y", 31536000, ],
     ]);
 
@@ -78,4 +91,6 @@ export namespace MidaTimeframe {
 
         return quantity;
     };
+
+    export const fromSeconds = (seconds: number): MidaTimeframe | undefined => undefined;
 }

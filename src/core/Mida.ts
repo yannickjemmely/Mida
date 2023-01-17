@@ -123,7 +123,9 @@ export { MidaDecimalConvertible, } from "#decimals/MidaDecimalConvertible";
 
 export { MidaError, } from "#errors/MidaError";
 export { MidaErrorParameters, } from "#errors/MidaErrorParameters";
-export { MidaUnsupportedOperationError, } from "#errors/MidaUnsupportedOperationError";
+export {
+    unsupportedOperationError,
+} from "#errors/MidaErrorUtilities";
 
 export { MidaEvent, } from "#events/MidaEvent";
 export { MidaEventListener, } from "#events/MidaEventListener";
@@ -136,14 +138,15 @@ export { MidaIndicatorParameters, } from "#indicators/MidaIndicatorParameters";
 
 export { MidaLog, } from "#loggers/MidaLog";
 export { MidaLogger, } from "#loggers/MidaLogger";
+export { log, } from "#loggers/MidaLoggerUtilities";
 export { MidaLogNamespace, } from "#loggers/MidaLogNamespace";
 export { MidaLogParameters, } from "#loggers/MidaLogParameters";
 
 export { MidaOrder, } from "#orders/MidaOrder";
 export { MidaOrderDirection, } from "#orders/MidaOrderDirection";
 export { MidaOrderDirectives, } from "#orders/MidaOrderDirectives";
-export { MidaOrderExecution, } from "#orders/MidaOrderExecution";
-export { MidaOrderFill, } from "#orders/MidaOrderFill";
+export { MidaOrderExecutionType, } from "#orders/MidaOrderExecutionType";
+export { MidaOrderFillType, } from "#orders/MidaOrderFillType";
 export { MidaOrderParameters, } from "#orders/MidaOrderParameters";
 export { MidaOrderPurpose, } from "#orders/MidaOrderPurpose";
 export { MidaOrderRejection, } from "#orders/MidaOrderRejection";
@@ -219,7 +222,7 @@ export {
     createOrderResolver,
 } from "#utilities/MidaUtilities";
 
-export { MidaMarketWatcher, } from "#watchers/MidaMarketWatcher";
+export { marketWatcher, MidaMarketWatcher, } from "#watchers/MidaMarketWatcher";
 export { MidaMarketWatcherConfiguration, } from "#watchers/MidaMarketWatcherConfiguration";
 export { MidaMarketWatcherDirectives, } from "#watchers/MidaMarketWatcherDirectives";
 export { MidaMarketWatcherParameters, } from "#watchers/MidaMarketWatcherParameters";

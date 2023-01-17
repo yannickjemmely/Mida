@@ -20,10 +20,4 @@
  * THE SOFTWARE.
 */
 
-import { Mida, } from "!/src/core/Mida";
-import { logger, } from "#loggers/MidaLogger";
-
-export * from "!/src/core/Mida";
-export * from "!/src/playground/MidaPlayground";
-
-logger.info(`Using Mida ${Mida.version}`);
+export * from "!/src/main";

@@ -27,8 +27,8 @@ import { MidaEvent, } from "#events/MidaEvent";
 import { MidaEventListener, } from "#events/MidaEventListener";
 import { logger, } from "#loggers/MidaLogger";
 import { MidaOrderDirection, } from "#orders/MidaOrderDirection";
-import { MidaOrderExecution, } from "#orders/MidaOrderExecution";
-import { MidaOrderFill, } from "#orders/MidaOrderFill";
+import { MidaOrderExecutionType, } from "#orders/MidaOrderExecutionType";
+import { MidaOrderFillType, } from "#orders/MidaOrderFillType";
 import { MidaOrderParameters, } from "#orders/MidaOrderParameters";
 import { MidaOrderPurpose, } from "#orders/MidaOrderPurpose";
 import { MidaOrderRejection, } from "#orders/MidaOrderRejection";
@@ -213,16 +213,16 @@ export abstract class MidaOrder {
         return filledVolume;
     }
 
-    public get fill (): MidaOrderFill | undefined {
+    public get fillType (): MidaOrderFillType | undefined {
         if (this.executedTrades.length === 0) {
             return undefined;
         }
 
         if (this.filledVolume.equals(this.#requestedVolume)) {
-            return MidaOrderFill.FULL;
+            return MidaOrderFillType.FULL;
         }
 
-        return MidaOrderFill.PARTIAL;
+        return MidaOrderFillType.PARTIAL;
     }
 
     public get executionPrice (): MidaDecimal | undefined {
@@ -263,16 +263,16 @@ export abstract class MidaOrder {
         return this.#purpose === MidaOrderPurpose.CLOSE;
     }
 
-    public get execution (): MidaOrderExecution {
+    public get executionType (): MidaOrderExecutionType {
         if (this.#limitPrice) {
-            return MidaOrderExecution.LIMIT;
+            return MidaOrderExecutionType.LIMIT;
         }
 
         if (this.#stopPrice) {
-            return MidaOrderExecution.STOP;
+            return MidaOrderExecutionType.STOP;
         }
 
-        return MidaOrderExecution.MARKET;
+        return MidaOrderExecutionType.MARKET;
     }
 
     public get isRejected (): boolean {

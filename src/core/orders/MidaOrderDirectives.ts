@@ -26,7 +26,6 @@ import { MidaEventListener, } from "#events/MidaEventListener";
 import { MidaOrderDirection, } from "#orders/MidaOrderDirection";
 import { MidaOrderTimeInForce, } from "#orders/MidaOrderTimeInForce";
 import { MidaProtectionDirectives, } from "#protections/MidaProtectionDirectives";
-import { GenericObject, } from "#utilities/GenericObject";
 
 export type MidaOrderDirectives = {
     symbol?: string;
@@ -40,7 +39,7 @@ export type MidaOrderDirectives = {
     timeInForce?: MidaOrderTimeInForce;
     expirationDate?: MidaDateConvertible;
     label?: string;
-    platforms?: GenericObject;
+    postOnly?: boolean;
     listeners?: {
         [eventType: string]: MidaEventListener;
     };
