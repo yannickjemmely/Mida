@@ -1,4 +1,5 @@
 ### Features
+* **_BREAKING_** Unify plugins [#87](https://github.com/Reiryoku-Technologies/Mida/pull/87)
 * **_BREAKING_** Remove deprecated onImpactPosition hook from `MidaTradingSystem`, change syntax to target timeframes in market components [#86](https://github.com/Reiryoku-Technologies/Mida/pull/86)
 * **_BREAKING_** Add mandatory `endDate` parameter to `MidaPeriod`, represents timeframes as strings [#85](https://github.com/Reiryoku-Technologies/Mida/pull/85)
 * **_BREAKING_** Add `toFixed()` method and optional `digits` parameter to `MidaDecimal`, add mandatory `digits` parameter to `MidaSymbol`, add `$completeSymbol` to `MidaMarketComponentState` [#84](https://github.com/Reiryoku-Technologies/Mida/pull/84)
