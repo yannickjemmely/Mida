@@ -23,6 +23,7 @@
 import { inspect, } from "node:util";
 
 import { MidaDecimalConvertible, } from "#decimals/MidaDecimalConvertible";
+import { MidaError, } from "#errors/MidaError";
 import { logger, } from "#loggers/MidaLogger";
 
 export const decimal =
@@ -46,7 +47,7 @@ export class MidaDecimal {
 
         if (!Number.isFinite(Number(integerPart)) || !Number.isFinite(Number(decimalPart))) {
             logger.error(`Decimal | ${value} cannot be converted to decimal`);
-            throw new Error();
+            throw new MidaError({ type: "InvalidDecimalError", });
         }
 
         this.#value = BigInt((isNegative ? "-" : "") + integerPart + decimalPart.padEnd(digits, "0").slice(0, digits)) +
