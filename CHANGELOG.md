@@ -1,3 +1,5 @@
+2023.1.0 - 03-03-2023
+===================
 ### Features
 * **_BREAKING_** Unify plugins [#87](https://github.com/Reiryoku-Technologies/Mida/pull/87)
 * **_BREAKING_** Remove deprecated onImpactPosition hook from `MidaTradingSystem`, change syntax to target timeframes in market components [#86](https://github.com/Reiryoku-Technologies/Mida/pull/86)
