@@ -111,7 +111,7 @@ const myAccount = await login("cTrader", {
     clientId: "***",
     clientSecret: "***",
     accessToken: "***",
-    cTraderBrokerAccountId: "***",
+    accountId: "***",
 });
 ```
 Read [how to use Mida with cTrader](https://www.mida.org/posts/how-to-use-mida-with-ctrader/) to
