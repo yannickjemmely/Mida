@@ -216,7 +216,8 @@ export class CTraderAccount extends MidaTradingAccount {
     }
 
     public override async getSymbolPeriods (symbol: string, timeframe: MidaTimeframe): Promise<MidaPeriod[]> {
-        const W1: number = MidaTimeframe.toSeconds("W1") as number;
+        // cTrader protooagettrendbarsreq works in milliseconds
+        const W1: number = MidaTimeframe.toSeconds("W1") as number*1000;
         const now: number = Date.now();
         const stringTimeframe: string = timeframe;
         let from = now - W1;
