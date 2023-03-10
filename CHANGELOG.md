@@ -1,3 +1,6 @@
+### Bug fixes
+* cTrader | Correctly set `ProtoOAGetTrendbarsReq` timestamps to milliseconds [#96](https://github.com/Reiryoku-Technologies/Mida/pull/96)
+
 2023.1.0 - 03-03-2023
 ===================
 ### Features
