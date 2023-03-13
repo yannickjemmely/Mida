@@ -91,7 +91,7 @@ export const readPeriodsFromFile = async function* (file: string, symbol: string
                 symbol,
                 timeframe,
                 startDate: date(csvPeriod[0]),
-                endDate: date(csvPeriod[0]).add(MidaTimeframe.toSeconds(timeframe) as number),
+                endDate: date(csvPeriod[0]).add(MidaTimeframe.toSeconds(timeframe) as number * 1000),
                 open: decimal(csvPeriod[1]),
                 high: decimal(csvPeriod[2]),
                 low: decimal(csvPeriod[3]),

@@ -217,7 +217,7 @@ export class MidaMarketWatcher {
         const timeframeSeconds: number | undefined = MidaTimeframe.toSeconds(timeframe);
 
         // Don't request the last period if the last known period has not ended yet
-        if (timeframeSeconds !== undefined && utcTimestamp() < lastLocalPeriodCloseTimestamp + timeframeSeconds) {
+        if (timeframeSeconds !== undefined && utcTimestamp() < lastLocalPeriodCloseTimestamp + timeframeSeconds * 1000) {
             return;
         }
 

@@ -388,7 +388,7 @@ export class CTraderAccount extends MidaTradingAccount {
     }
 
     public override async getOrders (symbol: string): Promise<MidaOrder[]> {
-        const W1: number = MidaTimeframe.toSeconds("W1") as number;
+        const W1: number = MidaTimeframe.toSeconds("W1") as number * 1000;
         const now: number = Date.now();
         const from: number = now - W1;
 
@@ -420,7 +420,7 @@ export class CTraderAccount extends MidaTradingAccount {
     }
 
     public override async getTrades (symbol: string): Promise<MidaTrade[]> {
-        const W1: number = MidaTimeframe.toSeconds("W1") as number;
+        const W1: number = MidaTimeframe.toSeconds("W1") as number * 1000;
         const now: number = Date.now();
         const from: number = now - W1;
 
@@ -1371,7 +1371,7 @@ export class CTraderAccount extends MidaTradingAccount {
         }
 
         // Max. 1 week as indicated at https://spotware.github.io/open-api-docs/messages/#protooadeallistreq
-        const W1: number = MidaTimeframe.toSeconds("W1") as number;
+        const W1: number = MidaTimeframe.toSeconds("W1") as number * 1000;
         let toTimestamp: number = Date.now();
         let fromTimestamp: number = toTimestamp - W1;
         let totalTimestamp: number = W1;
