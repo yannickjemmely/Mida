@@ -1,3 +1,5 @@
+2023.1.2 - 13-03-2023
+===================
 ### Bug fixes
 * cTrader | Convert requests timestamps to milliseconds where required [#98](https://github.com/Reiryoku-Technologies/Mida/pull/98) | [#97](https://github.com/Reiryoku-Technologies/Mida/issues/97)
 
