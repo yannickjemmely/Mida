@@ -422,9 +422,9 @@ log("Last candlestick close price: " + lastPeriod.close);
 
 In Mida, the `on()` method returns an id which can be used later to unsubscribe from the event listener.
 ```javascript
-const id = marketWatcher.on("period-close", (event) => { /* ... */ });
+const id = watcher.on("period-close", (event) => { /* ... */ });
 
-marketWatcher.removeEventListener(id);
+watcher.removeEventListener(id);
 ```
 
 ### Market components
